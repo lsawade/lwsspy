@@ -49,7 +49,7 @@ def updaterc(rebuild=False):
         'legend.fancybox': False,
         'legend.frameon': True,
         'legend.loc': 'best',
-        'legend.numpoints': 2,
+        'legend.numpoints': 1,
         'legend.fontsize': 10,
         'legend.framealpha': 1,
         'legend.scatterpoints': 3,
