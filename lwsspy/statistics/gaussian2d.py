@@ -16,18 +16,25 @@ def gaussian2d(xdata, amplitude: float = 1, xo: float = 0, yo: float = 0,
             y coordinates
         amplitude (float):
             amplitude of the Gaussian function
-        xo ([type]): [description]
-        yo ([type]): [description]
-        sigma_x ([type]): [description]
-        sigma_y ([type]): [description]
-        theta ([type]): [description]
-        offset ([type]): [description]
+        xo (float):
+            center in x direction
+        yo (float):
+            center in y direction
+        sigma_x ():
+            std in x direction
+        sigma_y (float):
+            std in y direction
+        theta (float):
+            angle of the distribution
+        offset (float):
+            offset of the distribution (could be gaussian + offset)
 
     Returns:
         G(x, y) as np.ndarray
     
-    Last modified: Lucas Sawade, 2020.09.15 15.30 (lsawade@princeton.edu)
+    Last modified: Lucas Sawade, 2020.09.15 19.44 (lsawade@princeton.edu)
     """
+
     # Get x and y 
     (x, y) = xdata
 

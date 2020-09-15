@@ -7,7 +7,25 @@ from .gaussian2d import gaussian2d
 
 
 def fitgaussian2d(x, y, data, p0):
-    """Last modified: Lucas Sawade, 2020.09.15 15.30 (lsawade@princeton.edu)
+    """Takes in x and y and corresponding data as well as an initial 
+    guess of the Gaussian parameters and invertes for optttimized parameters.
+
+    Args:
+        x (numpy.ndarray):
+            x part of a meshgrid
+        y (numpy.ndarray):
+            y part of a meshgrid
+        data (numpy.ndarray):
+            corresponding data
+        p0 (numpy.ndarray or list or tuple):
+            intitial guess for gaussian2d((x,y), ), parameters
+
+    Returns:
+        optimal p, covariance matrix of model parameters
+            (`perr = np.sqrt(np.diag(pcov))` gives standard deviation error
+             in each parameter)
+
+    Last modified: Lucas Sawade, 2020.09.15 19.44 (lsawade@princeton.edu)
     """
 
     # Optimize
@@ -82,6 +100,7 @@ if __name__ == "__main__":
                  "aspect": 40,
                  "shrink": 0.4
                  }
+
     c = figcolorbar(fig, axes, vmin=vmin, vmax=vmax, **cbar_dict)
 
     plt.show()
