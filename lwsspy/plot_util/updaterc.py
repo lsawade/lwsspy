@@ -11,7 +11,6 @@ def updaterc(rebuild=False):
             Rebuilds fontcache incase it needs it.
 
     Last modified: Lucas Sawade, 2020.09.15 01.00 (lsawade@princeton.edu)
-
     """
 
     params = {

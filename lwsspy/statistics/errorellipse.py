@@ -22,6 +22,8 @@ def errorellipse(x, y, nstd: int = 2,
 
     Returns:
         ellipse handle
+    
+    Last modified: Lucas Sawade, 2020.09.15 15.30 (lsawade@princeton.edu)
     """
 
     # Get covariance and eigenvectors
@@ -56,7 +58,7 @@ if __name__ == "__main__":
                                 pars={'loc': 0.0, 'scale': 1.0})
 
     import matplotlib.pyplot as plt  # type: ignore
-    from ..plot.updaterc import updaterc  # type: ignore
+    from ..plot_util.updaterc import updaterc  # type: ignore
     updaterc()
 
     # Define where the text for correlation coefficient should go

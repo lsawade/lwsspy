@@ -1,0 +1,53 @@
+Tips And Tricks for Matplotlib
+==============================
+
+This page is not really a part of the documentation of the package, but rather
+some tips and tricks I have gathered over time.
+
+
+Partially rasterizing your PDF output
++++++++++++++++++++++++++++++++++++++
+
+You probably have tried outputting your meshplot in matplotlib and wondered
+why the heck it is taking soo long! 
+The explanation is simple. Every coordinate and data combination is creating a 
+box (with coordinattes) with a color that has to be output and written to 
+the PDF file.
+When your figure includes multiple meshplots with 1000x1000 plots, 
+the number of boxes becomes very large and the number of colors/coordinates even
+larger.
+One way to get around it, is simply saving it as `png` file.
+That however doesn't make your plots exactly publishable.
+
+A workaround is partially rasterizing your plots. That can be done with the
+following command:
+
+.. code-block:: python
+
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    # Create data
+    x = linspace(-1,1, 100)
+    y = linspace(-1,1, 100)
+    xx, yy = meshgrid(x,y)
+
+    # Plot figure
+    plt.figure()
+    ax = plt.gca()
+    ax.set_rasterization_zorder(-10)  # Important line!
+    plt.plot(x,y**2, 'w')  # Zorder default is 0
+    plt.pcolormesh(xx,yy, xx ** 2 + yy ** 2, edgecolor=None, zorder=-15)
+
+
+    # Save figure with rasterization with 300dpi
+    plt.savefig("test_rasterize.svg", dpi=300)
+    plt.savefig("test_rasterize.pdf", dpi=300)
+    plt.show()
+
+
+It works for both `.svg` and `.pdf`. Probably others too, but I haven't tried.
+
+Below the image produced by the code above
+
+.. image:: figures/test_rasterize.svg
