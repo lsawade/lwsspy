@@ -8,7 +8,7 @@ from .gaussian2d import gaussian2d
 
 
 def fitgaussian2d(x, y, data, p0):
-    """Takes in x and y and corresponding data as well as an initial 
+    """Takes in x and y and corresponding data as well as an initial
     guess of the Gaussian parameters and invertes for optttimized parameters.
 
     Args:
@@ -39,11 +39,12 @@ def fitgaussian2d(x, y, data, p0):
 
 if __name__ == "__main__":
 
-    import matplotlib.pyplot as plt  # type: ignore
-    from ..plot_util.updaterc import updaterc  # type: ignore
-    from ..plot_util.figcolorbar import figcolorbar  # type: ignore
-    from ..plot_util.remove_ticklabels import remove_yticklabels  # type: ignore
-    from .. import DOCFIGURES  # type: ignore
+    import matplotlib.pyplot as plt
+    from ..plot_util.updaterc import updaterc
+    from ..plot_util.figcolorbar import figcolorbar
+    from ..plot_util.remove_ticklabels import remove_yticklabels  \
+
+    from .. import DOCFIGURES
     updaterc()
 
     # actual m: amplitude, x0, yo, sigma_x, sigma_y, theta, offset
@@ -99,7 +100,7 @@ if __name__ == "__main__":
             plt.ylabel('y')
         counter += 1
 
-    # Only rasterize the meshgrids in the axes frames by putting them below 
+    # Only rasterize the meshgrids in the axes frames by putting them below
     # a certain zorder.
     for ax in axes:  # axes is a list of subplots
         ax.set_rasterization_zorder(-10)

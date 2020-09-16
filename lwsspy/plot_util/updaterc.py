@@ -2,7 +2,7 @@ import matplotlib
 
 
 def updaterc(rebuild=False):
-    """Updates the rcParams to something generic that looks ok good out of 
+    """Updates the rcParams to something generic that looks ok good out of
     the box.
 
     Args:

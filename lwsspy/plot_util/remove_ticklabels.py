@@ -1,5 +1,6 @@
 from matplotlib.axes import Axes
 
+
 def remove_xticklabels(ax: Axes):
     """Removes xticklabels of an axes
 
@@ -7,6 +8,7 @@ def remove_xticklabels(ax: Axes):
         ax (Axes): Axes handles
     """
     ax.axes.xaxis.set_ticklabels([])
+
 
 def remove_yticklabels(ax: Axes):
     """Removes yticklabels of an axes

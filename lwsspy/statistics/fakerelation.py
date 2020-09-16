@@ -1,6 +1,6 @@
 import os
 from typing import List
-import numpy as np  # type: ignore
+import numpy as np
 
 
 def fakerelation(C12: List[float] = [1.0, 0.5, 1.0],
@@ -58,13 +58,13 @@ def fakerelation(C12: List[float] = [1.0, 0.5, 1.0],
 
 if __name__ == "__main__":
 
-    # Testrun 
+    # Testrun
     X, Y, R, CXY = fakerelation(C12=[1.0, 0.5, 1.0], N=100, distro='normal',
                                 pars={'loc': 0.0, 'scale': 1.0})
 
-    import matplotlib.pyplot as plt  # type: ignore
-    from ..plot_util.updaterc import updaterc  # type: ignore
-    from .. import DOCFIGURES  # type: ignore
+    import matplotlib.pyplot as plt
+    from ..plot_util.updaterc import updaterc
+    from .. import DOCFIGURES
     updaterc()
 
     # Define where the text for correlation coefficient should go
