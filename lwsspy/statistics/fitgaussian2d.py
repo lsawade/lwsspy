@@ -74,7 +74,7 @@ if __name__ == "__main__":
 
     titles = ['Data', r'Data + $\epsilon$', r'Initial Guess',
               r'Inverted Distribution (Contour)']
-    datas = [data, data_noisy, guess, inverted_data]
+    datas = [data, data_noisy, guess, data_noisy]
 
     # plot gaussian2d data generated above
     axes = []
@@ -85,6 +85,9 @@ if __name__ == "__main__":
         axes.append(plt.subplot(counter))
         plt.pcolormesh(data, edgecolor=None, vmin=vmin, vmax=vmax,
                        zorder=-15)
+        if counter == 144:
+            plt.contour(x, y, inverted_data, 8, colors='w')
+
         plt.axis([0, 200, 0, 200])
         plt.xlabel('x')
         plt.title(title)

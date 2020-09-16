@@ -67,7 +67,6 @@ if __name__ == "__main__":
     from .. import DOCFIGURES  # type: ignore
     updaterc()
 
-
     # Define where the text for correlation coefficient should go
     textdict = {"horizontalalignment": "left",
                 "verticalalignment": "top"}
