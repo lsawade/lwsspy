@@ -32,11 +32,11 @@ def gaussian2d(xdata, amplitude: float = 1, xo: float = 0, yo: float = 0,
 
     Returns:
         G(x, y) as np.ndarray
-    
+
     Last modified: Lucas Sawade, 2020.09.15 19.44 (lsawade@princeton.edu)
     """
 
-    # Get x and y 
+    # Get x and y
     (x, y) = xdata
 
     # Compute coefficient
@@ -51,9 +51,9 @@ def gaussian2d(xdata, amplitude: float = 1, xo: float = 0, yo: float = 0,
 
 if __name__ == "__main__":
 
-    import matplotlib.pyplot as plt  # type: ignore
-    from ..plot_util.updaterc import updaterc  # type: ignore
-    from .. import DOCFIGURES  # type: ignore
+    import matplotlib.pyplot as plt
+    from ..plot_util.updaterc import updaterc
+    from .. import DOCFIGURES
     updaterc()
 
     # Create requested points

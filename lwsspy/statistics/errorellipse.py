@@ -1,12 +1,12 @@
-import os 
+import os
 from typing import Union
-import numpy as np  # type: ignore
-import matplotlib.pyplot as plt  # type: ignore
-from matplotlib.patches import Ellipse  # type: ignore
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.patches import Ellipse
 
 # Local imports
-from ..math.eigsort import eigsort  # type: ignore
-from ..statistics.fakerelation import fakerelation  # type: ignore
+from ..math.eigsort import eigsort
+from ..statistics.fakerelation import fakerelation
 
 
 def errorellipse(x, y, nstd: int = 2,
@@ -60,9 +60,9 @@ if __name__ == "__main__":
     X, Y, R, CXY = fakerelation(C12=[1.0, 0.5, 1.0], N=100, distro='normal',
                                 pars={'loc': 0.0, 'scale': 1.0})
 
-    import matplotlib.pyplot as plt  # type: ignore
-    from ..plot_util.updaterc import updaterc  # type: ignore
-    from .. import DOCFIGURES  # type: ignore
+    import matplotlib.pyplot as plt
+    from ..plot_util.updaterc import updaterc
+    from .. import DOCFIGURES
     updaterc()
 
     # Define where the text for correlation coefficient should go
