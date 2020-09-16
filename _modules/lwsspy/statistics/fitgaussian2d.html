@@ -149,6 +149,7 @@
             
   <h1>Source code for lwsspy.statistics.fitgaussian2d</h1><div class="highlight"><pre>
 <span></span><span class="c1"># External imports</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">curve_fit</span>
 
@@ -157,7 +158,25 @@
 
 
 <div class="viewcode-block" id="fitgaussian2d"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.statistics.fitgaussian2d.fitgaussian2d">[docs]</a><span class="k">def</span> <span class="nf">fitgaussian2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">p0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Last modified: Lucas Sawade, 2020.09.15 15.30 (lsawade@princeton.edu)</span>
+    <span class="sd">&quot;&quot;&quot;Takes in x and y and corresponding data as well as an initial </span>
+<span class="sd">    guess of the Gaussian parameters and invertes for optttimized parameters.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x (numpy.ndarray):</span>
+<span class="sd">            x part of a meshgrid</span>
+<span class="sd">        y (numpy.ndarray):</span>
+<span class="sd">            y part of a meshgrid</span>
+<span class="sd">        data (numpy.ndarray):</span>
+<span class="sd">            corresponding data</span>
+<span class="sd">        p0 (numpy.ndarray or list or tuple):</span>
+<span class="sd">            intitial guess for gaussian2d((x,y), ), parameters</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        optimal p, covariance matrix of model parameters</span>
+<span class="sd">            (`perr = np.sqrt(np.diag(pcov))` gives standard deviation error</span>
+<span class="sd">             in each parameter)</span>
+
+<span class="sd">    Last modified: Lucas Sawade, 2020.09.15 19.44 (lsawade@princeton.edu)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Optimize</span>
@@ -174,6 +193,7 @@
     <span class="kn">from</span> <span class="nn">..plot_util.updaterc</span> <span class="kn">import</span> <span class="n">updaterc</span>  <span class="c1"># type: ignore</span>
     <span class="kn">from</span> <span class="nn">..plot_util.figcolorbar</span> <span class="kn">import</span> <span class="n">figcolorbar</span>  <span class="c1"># type: ignore</span>
     <span class="kn">from</span> <span class="nn">..plot_util.remove_ticklabels</span> <span class="kn">import</span> <span class="n">remove_yticklabels</span>  <span class="c1"># type: ignore</span>
+    <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">DOCFIGURES</span>  <span class="c1"># type: ignore</span>
     <span class="n">updaterc</span><span class="p">()</span>
 
     <span class="c1"># actual m: amplitude, x0, yo, sigma_x, sigma_y, theta, offset</span>
@@ -213,7 +233,7 @@
 
     <span class="k">for</span> <span class="n">title</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">titles</span><span class="p">,</span> <span class="n">datas</span><span class="p">):</span>
         <span class="n">axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">counter</span><span class="p">))</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> 
+        <span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span>
                        <span class="n">zorder</span><span class="o">=-</span><span class="mi">15</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">])</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
@@ -226,14 +246,22 @@
             <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
         <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
 
+    <span class="c1"># Only rasterize the meshgrids in the axes frames by putting them below </span>
+    <span class="c1"># a certain zorder.</span>
+    <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>  <span class="c1"># axes is a list of subplots</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_rasterization_zorder</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">)</span>
+
     <span class="c1"># Create colorbar with dict for all four plots</span>
     <span class="n">cbar_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;orientation&quot;</span><span class="p">:</span> <span class="s2">&quot;horizontal&quot;</span><span class="p">,</span>
                  <span class="s2">&quot;pad&quot;</span><span class="p">:</span> <span class="mf">0.175</span><span class="p">,</span>
                  <span class="s2">&quot;aspect&quot;</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
                  <span class="s2">&quot;shrink&quot;</span><span class="p">:</span> <span class="mf">0.4</span>
                  <span class="p">}</span>
+
     <span class="n">c</span> <span class="o">=</span> <span class="n">figcolorbar</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="o">**</span><span class="n">cbar_dict</span><span class="p">)</span>
 
+    <span class="c1"># Save pdf</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DOCFIGURES</span><span class="p">,</span> <span class="s1">&#39;fitgaussian2d.svg&#39;</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 

@@ -148,7 +148,8 @@
            <div itemprop="articleBody">
             
   <h1>Source code for lwsspy.statistics.gaussian2d</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
 <div class="viewcode-block" id="gaussian2d"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.statistics.gaussian2d.gaussian2d">[docs]</a><span class="k">def</span> <span class="nf">gaussian2d</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">amplitude</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">xo</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">yo</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -166,18 +167,25 @@
 <span class="sd">            y coordinates</span>
 <span class="sd">        amplitude (float):</span>
 <span class="sd">            amplitude of the Gaussian function</span>
-<span class="sd">        xo ([type]): [description]</span>
-<span class="sd">        yo ([type]): [description]</span>
-<span class="sd">        sigma_x ([type]): [description]</span>
-<span class="sd">        sigma_y ([type]): [description]</span>
-<span class="sd">        theta ([type]): [description]</span>
-<span class="sd">        offset ([type]): [description]</span>
+<span class="sd">        xo (float):</span>
+<span class="sd">            center in x direction</span>
+<span class="sd">        yo (float):</span>
+<span class="sd">            center in y direction</span>
+<span class="sd">        sigma_x ():</span>
+<span class="sd">            std in x direction</span>
+<span class="sd">        sigma_y (float):</span>
+<span class="sd">            std in y direction</span>
+<span class="sd">        theta (float):</span>
+<span class="sd">            angle of the distribution</span>
+<span class="sd">        offset (float):</span>
+<span class="sd">            offset of the distribution (could be gaussian + offset)</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        G(x, y) as np.ndarray</span>
 <span class="sd">    </span>
-<span class="sd">    Last modified: Lucas Sawade, 2020.09.15 15.30 (lsawade@princeton.edu)</span>
+<span class="sd">    Last modified: Lucas Sawade, 2020.09.15 19.44 (lsawade@princeton.edu)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="c1"># Get x and y </span>
     <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="n">xdata</span>
 
@@ -195,6 +203,7 @@
 
     <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>  <span class="c1"># type: ignore</span>
     <span class="kn">from</span> <span class="nn">..plot_util.updaterc</span> <span class="kn">import</span> <span class="n">updaterc</span>  <span class="c1"># type: ignore</span>
+    <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">DOCFIGURES</span>  <span class="c1"># type: ignore</span>
     <span class="n">updaterc</span><span class="p">()</span>
 
     <span class="c1"># Create requested points</span>
@@ -208,9 +217,11 @@
 
     <span class="c1"># plot gaussian2d data generated above</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=-</span><span class="mi">15</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_rasterization_zorder</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">])</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DOCFIGURES</span><span class="p">,</span> <span class="s1">&#39;gaussian2d.svg&#39;</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
