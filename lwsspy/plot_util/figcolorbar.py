@@ -14,10 +14,10 @@ def figcolorbar(fig: Figure, axes: List[Axes], cmap='viridis',
     Args:
         fig (Figure): Figure
         axes (List[Axes]): List of axes (subplots)
-        cmap (str, optional): colormap name. Defaults to 'viridis'.
+        cmap (str, optional): colormap name. Defaults to ``viridis``.
         vmin (Union[float, None], optional): Smallest value. Defaults to None.
         vmax (Union[float, None], optional): Largest values . Defaults to None.
-        **kwargs: parsed to colorbar function
+        ``**kwargs``: parsed to colorbar function
 
     Returns:
         colorbar handle

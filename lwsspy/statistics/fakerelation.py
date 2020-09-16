@@ -7,8 +7,7 @@ def fakerelation(C12: List[float] = [1.0, 0.5, 1.0],
                  N: int = 25,
                  distro: str = 'normal',
                  pars: dict = {'loc': 0.0, 'scale': 1.0}):
-    """
-    Creates data pairs with a particular relation.
+    """Creates data pairs with a particular relation.
 
     Args:
         C12 (list, optional):
@@ -22,8 +21,7 @@ def fakerelation(C12: List[float] = [1.0, 0.5, 1.0],
             Check `numpy.random.<dist>`
 
     Returns:
-        (X,Y, R, CXY) (numpy.ndarray, numpy.ndarray,
-                       numpy.ndarray, numpy.ndarray):
+        (X,Y, R, CXY) (``ndarray``, ``ndarray``, ``ndarray``, ``ndarray``):
             Two variables with correlation and their correlation and covariance
             matrices.
 
