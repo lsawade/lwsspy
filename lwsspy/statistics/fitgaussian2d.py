@@ -1,4 +1,5 @@
 # External imports
+import os
 import numpy as np
 from scipy.optimize import curve_fit
 
@@ -42,6 +43,7 @@ if __name__ == "__main__":
     from ..plot_util.updaterc import updaterc  # type: ignore
     from ..plot_util.figcolorbar import figcolorbar  # type: ignore
     from ..plot_util.remove_ticklabels import remove_yticklabels  # type: ignore
+    from .. import DOCFIGURES  # type: ignore
     updaterc()
 
     # actual m: amplitude, x0, yo, sigma_x, sigma_y, theta, offset
@@ -81,7 +83,7 @@ if __name__ == "__main__":
 
     for title, data in zip(titles, datas):
         axes.append(plt.subplot(counter))
-        plt.pcolormesh(data, edgecolor=None, vmin=vmin, vmax=vmax, 
+        plt.pcolormesh(data, edgecolor=None, vmin=vmin, vmax=vmax,
                        zorder=-15)
         plt.axis([0, 200, 0, 200])
         plt.xlabel('x')
@@ -94,6 +96,11 @@ if __name__ == "__main__":
             plt.ylabel('y')
         counter += 1
 
+    # Only rasterize the meshgrids in the axes frames by putting them below 
+    # a certain zorder.
+    for ax in axes:  # axes is a list of subplots
+        ax.set_rasterization_zorder(-10)
+
     # Create colorbar with dict for all four plots
     cbar_dict = {"orientation": "horizontal",
                  "pad": 0.175,
@@ -103,4 +110,6 @@ if __name__ == "__main__":
 
     c = figcolorbar(fig, axes, vmin=vmin, vmax=vmax, **cbar_dict)
 
+    # Save pdf
+    plt.savefig(os.path.join(DOCFIGURES, 'fitgaussian2d.svg'), dpi=300)
     plt.show()

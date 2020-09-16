@@ -1,8 +1,13 @@
 import sys
+import os
 
 # Global imports when running the modules for testing
 if "-m" in sys.argv:
-    pass
+    DOCFIGURES = os.path.join(
+        os.path.dirname(
+            os.path.dirname(
+                os.path.abspath(__file__))), 
+        'docs', 'source', 'chapters', 'figures')
 else:
     # Statistics
     from .statistics.fakerelation import fakerelation  # type: ignore # noqa

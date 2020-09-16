@@ -1,4 +1,4 @@
-
+import os
 from typing import List
 import numpy as np  # type: ignore
 
@@ -65,6 +65,10 @@ if __name__ == "__main__":
                                 pars={'loc': 0.0, 'scale': 1.0})
 
     import matplotlib.pyplot as plt  # type: ignore
+    from ..plot_util.updaterc import updaterc  # type: ignore
+    from .. import DOCFIGURES  # type: ignore
+    updaterc()
+
 
     # Define where the text for correlation coefficient should go
     textdict = {"horizontalalignment": "left",
@@ -77,4 +81,5 @@ if __name__ == "__main__":
     plt.xlabel('x')
     plt.ylabel('y')
     plt.title('Modelled covarying data set.')
+    plt.savefig(os.path.join(DOCFIGURES, 'fakerelation.svg'))
     plt.show()

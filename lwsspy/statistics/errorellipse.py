@@ -1,3 +1,4 @@
+import os 
 from typing import Union
 import numpy as np  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
@@ -18,12 +19,14 @@ def errorellipse(x, y, nstd: int = 2,
             N element list
         y (np.ndarray or list):
             N element list
-        kwargs: parsed to matplotlibs Ellipse function
+        kwargs: 
+            parsed to matplotlibs Ellipse function
 
     Returns:
         ellipse handle
-    
+
     Last modified: Lucas Sawade, 2020.09.15 15.30 (lsawade@princeton.edu)
+
     """
 
     # Get covariance and eigenvectors
@@ -59,6 +62,7 @@ if __name__ == "__main__":
 
     import matplotlib.pyplot as plt  # type: ignore
     from ..plot_util.updaterc import updaterc  # type: ignore
+    from .. import DOCFIGURES  # type: ignore
     updaterc()
 
     # Define where the text for correlation coefficient should go
@@ -79,4 +83,5 @@ if __name__ == "__main__":
     plt.xlabel('x')
     plt.ylabel('y')
     plt.title('Modelled covarying data set.')
+    plt.savefig(os.path.join(DOCFIGURES, 'error_ellipse.svg'))
     plt.show()

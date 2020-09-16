@@ -1,3 +1,4 @@
+import os
 import numpy as np
 
 
@@ -52,6 +53,7 @@ if __name__ == "__main__":
 
     import matplotlib.pyplot as plt  # type: ignore
     from ..plot_util.updaterc import updaterc  # type: ignore
+    from .. import DOCFIGURES  # type: ignore
     updaterc()
 
     # Create requested points
@@ -68,4 +70,5 @@ if __name__ == "__main__":
     plt.pcolormesh(data, edgecolor=None)
     plt.axis([0, 200, 0, 200])
     plt.colorbar()
+    plt.savefig(os.path.join(DOCFIGURES, 'gaussian2d.svg'))
     plt.show()
