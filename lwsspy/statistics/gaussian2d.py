@@ -67,8 +67,9 @@ if __name__ == "__main__":
 
     # plot gaussian2d data generated above
     plt.figure()
-    plt.pcolormesh(data, edgecolor=None)
+    plt.pcolormesh(data, edgecolor=None, zorder=-15)
+    plt.gca().set_rasterization_zorder(-10)
     plt.axis([0, 200, 0, 200])
     plt.colorbar()
-    plt.savefig(os.path.join(DOCFIGURES, 'gaussian2d.svg'))
+    plt.savefig(os.path.join(DOCFIGURES, 'gaussian2d.svg'), dpi=300)
     plt.show()

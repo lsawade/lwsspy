@@ -19,7 +19,7 @@ def errorellipse(x, y, nstd: int = 2,
             N element list
         y (np.ndarray or list):
             N element list
-        kwargs: 
+        kwargs:
             parsed to matplotlibs Ellipse function
 
     Returns:
