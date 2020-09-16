@@ -224,7 +224,7 @@
 
     <span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Data&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;Data + $\epsilon$&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;Initial Guess&#39;</span><span class="p">,</span>
               <span class="sa">r</span><span class="s1">&#39;Inverted Distribution (Contour)&#39;</span><span class="p">]</span>
-    <span class="n">datas</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="p">,</span> <span class="n">data_noisy</span><span class="p">,</span> <span class="n">guess</span><span class="p">,</span> <span class="n">inverted_data</span><span class="p">]</span>
+    <span class="n">datas</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="p">,</span> <span class="n">data_noisy</span><span class="p">,</span> <span class="n">guess</span><span class="p">,</span> <span class="n">data_noisy</span><span class="p">]</span>
 
     <span class="c1"># plot gaussian2d data generated above</span>
     <span class="n">axes</span> <span class="o">=</span> <span class="p">[]</span>
@@ -235,6 +235,9 @@
         <span class="n">axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">counter</span><span class="p">))</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span>
                        <span class="n">zorder</span><span class="o">=-</span><span class="mi">15</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">counter</span> <span class="o">==</span> <span class="mi">144</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">inverted_data</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+
         <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">])</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
