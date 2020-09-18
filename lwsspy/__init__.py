@@ -23,5 +23,6 @@ else:
     from .plot_util.figcolorbar import figcolorbar  # noqa
 
     # Shell
+    from .shell.cat import cat  # noqa
     from .shell.readfile import readfile  # noqa
     from .shell.writefile import writefile  # noqa
