@@ -21,3 +21,7 @@ else:
     from .plot_util.remove_ticklabels import remove_xticklabels  # noqa
     from .plot_util.remove_ticklabels import remove_yticklabels  # noqa
     from .plot_util.figcolorbar import figcolorbar  # noqa
+
+    # Shell
+    from .shell.readfile import readfile  # noqa
+    from .shell.writefile import writefile  # noqa
