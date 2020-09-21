@@ -1,0 +1,248 @@
+{
+    "Headline": {
+      "EffectiveDate": "2020-09-20T20:00:00-04:00",
+      "EffectiveEpochDate": 1600646400,
+      "Severity": 7,
+      "Text": "Cool from tonight to tomorrow night",
+      "Category": "cold",
+      "EndDate": "2020-09-22T08:00:00-04:00",
+      "EndEpochDate": 1600776000,
+      "MobileLink": "http://m.accuweather.com/en/us/princeton-nj/08544/extended-weather-forecast/339523?unit=c&lang=en-us",
+      "Link": "http://www.accuweather.com/en/us/princeton-nj/08544/daily-weather-forecast/339523?unit=c&lang=en-us"
+    },
+    "DailyForecasts": [
+      {
+        "Date": "2020-09-20T07:00:00-04:00",
+        "EpochDate": 1600599600,
+        "Sun": {
+          "Rise": "2020-09-20T06:45:00-04:00",
+          "EpochRise": 1600598700,
+          "Set": "2020-09-20T18:58:00-04:00",
+          "EpochSet": 1600642680
+        },
+        "Moon": {
+          "Rise": "2020-09-20T10:26:00-04:00",
+          "EpochRise": 1600611960,
+          "Set": "2020-09-20T21:14:00-04:00",
+          "EpochSet": 1600650840,
+          "Phase": "WaxingCrescent",
+          "Age": 3
+        },
+        "Temperature": {
+          "Minimum": {
+            "Value": 5.5,
+            "Unit": "C",
+            "UnitType": 17
+          },
+          "Maximum": {
+            "Value": 17.5,
+            "Unit": "C",
+            "UnitType": 17
+          }
+        },
+        "RealFeelTemperature": {
+          "Minimum": {
+            "Value": 4.1,
+            "Unit": "C",
+            "UnitType": 17
+          },
+          "Maximum": {
+            "Value": 17.8,
+            "Unit": "C",
+            "UnitType": 17
+          }
+        },
+        "RealFeelTemperatureShade": {
+          "Minimum": {
+            "Value": 4.1,
+            "Unit": "C",
+            "UnitType": 17
+          },
+          "Maximum": {
+            "Value": 16,
+            "Unit": "C",
+            "UnitType": 17
+          }
+        },
+        "HoursOfSun": 11.7,
+        "DegreeDaySummary": {
+          "Heating": {
+            "Value": 7,
+            "Unit": "C",
+            "UnitType": 17
+          },
+          "Cooling": {
+            "Value": 0,
+            "Unit": "C",
+            "UnitType": 17
+          }
+        },
+        "AirAndPollen": [
+          {
+            "Name": "AirQuality",
+            "Value": 40,
+            "Category": "Good",
+            "CategoryValue": 1,
+            "Type": "Particle Pollution"
+          },
+          {
+            "Name": "Grass",
+            "Value": 12,
+            "Category": "Moderate",
+            "CategoryValue": 2
+          },
+          {
+            "Name": "Mold",
+            "Value": 3250,
+            "Category": "Low",
+            "CategoryValue": 1
+          },
+          {
+            "Name": "Ragweed",
+            "Value": 275,
+            "Category": "High",
+            "CategoryValue": 3
+          },
+          {
+            "Name": "Tree",
+            "Value": 7,
+            "Category": "Low",
+            "CategoryValue": 1
+          },
+          {
+            "Name": "UVIndex",
+            "Value": 5,
+            "Category": "Moderate",
+            "CategoryValue": 2
+          }
+        ],
+        "Day": {
+          "Icon": 1,
+          "IconPhrase": "Sunny",
+          "HasPrecipitation": false,
+          "ShortPhrase": "Sunshine",
+          "LongPhrase": "Sunshine",
+          "PrecipitationProbability": 0,
+          "ThunderstormProbability": 1,
+          "RainProbability": 0,
+          "SnowProbability": 0,
+          "IceProbability": 0,
+          "Wind": {
+            "Speed": {
+              "Value": 16.7,
+              "Unit": "km/h",
+              "UnitType": 7
+            },
+            "Direction": {
+              "Degrees": 30,
+              "Localized": "NNE",
+              "English": "NNE"
+            }
+          },
+          "WindGust": {
+            "Speed": {
+              "Value": 29.6,
+              "Unit": "km/h",
+              "UnitType": 7
+            },
+            "Direction": {
+              "Degrees": 39,
+              "Localized": "NE",
+              "English": "NE"
+            }
+          },
+          "TotalLiquid": {
+            "Value": 0,
+            "Unit": "mm",
+            "UnitType": 3
+          },
+          "Rain": {
+            "Value": 0,
+            "Unit": "mm",
+            "UnitType": 3
+          },
+          "Snow": {
+            "Value": 0,
+            "Unit": "cm",
+            "UnitType": 4
+          },
+          "Ice": {
+            "Value": 0,
+            "Unit": "mm",
+            "UnitType": 3
+          },
+          "HoursOfPrecipitation": 0,
+          "HoursOfRain": 0,
+          "HoursOfSnow": 0,
+          "HoursOfIce": 0,
+          "CloudCover": 4
+        },
+        "Night": {
+          "Icon": 33,
+          "IconPhrase": "Clear",
+          "HasPrecipitation": false,
+          "ShortPhrase": "Clear and chilly",
+          "LongPhrase": "Clear and chilly",
+          "PrecipitationProbability": 0,
+          "ThunderstormProbability": 0,
+          "RainProbability": 0,
+          "SnowProbability": 0,
+          "IceProbability": 0,
+          "Wind": {
+            "Speed": {
+              "Value": 9.3,
+              "Unit": "km/h",
+              "UnitType": 7
+            },
+            "Direction": {
+              "Degrees": 5,
+              "Localized": "N",
+              "English": "N"
+            }
+          },
+          "WindGust": {
+            "Speed": {
+              "Value": 13,
+              "Unit": "km/h",
+              "UnitType": 7
+            },
+            "Direction": {
+              "Degrees": 34,
+              "Localized": "NE",
+              "English": "NE"
+            }
+          },
+          "TotalLiquid": {
+            "Value": 0,
+            "Unit": "mm",
+            "UnitType": 3
+          },
+          "Rain": {
+            "Value": 0,
+            "Unit": "mm",
+            "UnitType": 3
+          },
+          "Snow": {
+            "Value": 0,
+            "Unit": "cm",
+            "UnitType": 4
+          },
+          "Ice": {
+            "Value": 0,
+            "Unit": "mm",
+            "UnitType": 3
+          },
+          "HoursOfPrecipitation": 0,
+          "HoursOfRain": 0,
+          "HoursOfSnow": 0,
+          "HoursOfIce": 0,
+          "CloudCover": 1
+        },
+        "Sources": [
+          "AccuWeather"
+        ],
+        "MobileLink": "http://m.accuweather.com/en/us/princeton-nj/08544/daily-weather-forecast/339523?day=1&unit=c&lang=en-us",
+        "Link": "http://www.accuweather.com/en/us/princeton-nj/08544/daily-weather-forecast/339523?day=1&unit=c&lang=en-us"
+      }
+    ]
+  }
