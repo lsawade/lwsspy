@@ -1,14 +1,14 @@
 import sys
 import os
 
-# Global imports when running the modules for testing
-if "-m" in sys.argv:
-    DOCFIGURES = os.path.join(
+DOCFIGURES = os.path.join(
         os.path.dirname(
             os.path.dirname(
                 os.path.abspath(__file__))),
         'docs', 'source', 'chapters', 'figures')
-else:
+
+# Global imports when running the modules for testing
+if "-m" not in sys.argv:
     # Statistics
     from .statistics.fakerelation import fakerelation  # noqa
     from .statistics.errorellipse import errorellipse  # noqa
@@ -26,3 +26,6 @@ else:
     from .shell.cat import cat  # noqa
     from .shell.readfile import readfile  # noqa
     from .shell.writefile import writefile  # noqa
+
+    # Weather
+    from .weather.requestweather import requestweather  # noqa
