@@ -38,7 +38,7 @@ def create_dirtree(root: str, dictionary: dict, dry: bool = False):
     """
 
     if os.path.exists(root) is False:
-        os.mkdir(root)
+        os.makedirs(root)
 
     for key, value in dictionary.items():
 
@@ -52,7 +52,7 @@ def create_dirtree(root: str, dictionary: dict, dry: bool = False):
             if dry:
                 print("Test created path: %s" % path)
             else:
-                os.mkdir(path)
+                os.makedirs(path)
                 print("Created path: %s" % path)
 
         if value is not None:

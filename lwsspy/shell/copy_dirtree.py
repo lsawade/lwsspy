@@ -56,7 +56,7 @@ def copy_dirtree(source: str, destination: str, dictionary: dict,
         if verbose:
             print("Created path: %s" % destination)
         if not dry:
-            os.mkdirs(destination)
+            os.makedirs(destination)
 
     for key, value in dictionary.items():
 
@@ -75,6 +75,6 @@ def copy_dirtree(source: str, destination: str, dictionary: dict,
             if verbose:
                 print("Created path: %s" % destination_path)
             if not dry:
-                os.mkdirs(source_path)
+                os.makedirs(source_path)
         else:
             copy_dirtree(source_path, destination_path, value, dry=dry)
