@@ -26,7 +26,7 @@ def fitgaussian2d(x, y, data, p0):
             (`perr = np.sqrt(np.diag(pcov))` gives standard deviation error
              in each parameter)
 
-    Last modified: Lucas Sawade, 2020.09.15 19.44 (lsawade@princeton.edu)
+    Last modified: Lucas Sawade, 2020.09.21 21.00 (lsawade@princeton.edu)
     """
 
     # Optimize
@@ -60,21 +60,28 @@ if __name__ == "__main__":
 
     # Create data
     data = gaussian2d((x, y), *actual)
-
     guess = gaussian2d((x, y), *initial_guess)
 
     # Generate noisy data from original data
     data_noisy = data + 0.2 * np.random.normal(size=data.shape)
 
-    # Optimize
-    popt, pcov = fitgaussian2d(x, y, data_noisy, initial_guess)
+    # Select random set of points
+    randomset = np.random.randint(0, x.shape[0]*x.shape[1], 200)
+    xrand = x.ravel()[randomset]
+    yrand = y.ravel()[randomset]
+    data_noisy_rand = data_noisy.ravel()[randomset]
+
+    # Optimize 
+    popt, pcov = fitgaussian2d(xrand, yrand,
+                               data_noisy_rand,
+                               initial_guess)
     inverted_data = gaussian2d((x, y), *popt)
 
     # Plotting
     vmin, vmax = (5, 9)
 
     titles = ['Data', r'Data + $\epsilon$', r'Initial Guess',
-              r'Inverted Distribution (Contour)']
+              r'Inv. data (bg), data (scatter)']
     datas = [data, data_noisy, guess, data_noisy]
 
     # plot gaussian2d data generated above
@@ -84,10 +91,15 @@ if __name__ == "__main__":
 
     for title, data in zip(titles, datas):
         axes.append(plt.subplot(counter))
-        plt.pcolormesh(data, edgecolor=None, vmin=vmin, vmax=vmax,
-                       zorder=-15)
+        if (counter == 142) or (counter == 144):
+            plt.scatter(xrand, yrand, c=data_noisy_rand, marker='o',
+                        vmin=vmin, vmax=vmax, edgecolors='w')
+        else:
+            plt.pcolormesh(data, edgecolor=None, vmin=vmin, vmax=vmax,
+                           zorder=-15)
         if counter == 144:
-            plt.contour(x, y, inverted_data, 8, colors='w')
+            plt.pcolormesh(inverted_data, edgecolor=None, vmin=vmin, vmax=vmax,
+                           zorder=-16)
 
         plt.axis([0, 200, 0, 200])
         plt.xlabel('x')
