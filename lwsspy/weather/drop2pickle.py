@@ -12,6 +12,20 @@ from .weather import weather
 def drop2pickle(filename: Union[str, None] = None,
                 outfilename: Union[str, None] = None,
                 default_run: bool = False):
+    """Takes in an exported Kestrel file and converts it to a weather object.
+
+    Args:
+        filename (Union[str, None], optional):
+            exported kestrel file. Defaults to None.
+        outfilename (Union[str, None], optional):
+            outputfilename. Defaults to None, then
+            <filename>.csv --> <filename>.p
+        default_run (bool, optional):
+            Default file is called from ``data`` dir. Defaults to False.
+
+    Returns:
+        weather object.
+    """
 
     if default_run or (type(filename) is None):
         filename = p.join(p.dirname(p.abspath(__file__)), 'data',
@@ -76,5 +90,3 @@ def drop2pickle(filename: Union[str, None] = None,
     else:
         w.save(filename=outfilename)
     return weather
-
-        

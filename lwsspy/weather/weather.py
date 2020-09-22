@@ -27,7 +27,7 @@ class weather:
         """Forecast class that contains everything you need for the weather.
 
         Args:
-            dates (list, optional): 
+            dates (list, optional):
                 Datetime object list. Defaults to [].
             minTemp (``numpy.ndarray``, optional):
                 Array of minimum temperatures. Defaults to ``np.zeros(0)``.
@@ -35,11 +35,15 @@ class weather:
                 Array of maximum temperatures. Defaults to ``np.zeros(0)``.
             rain (``numpy.ndarray``, optional):
                 Array of rainfall values. Defaults to ``np.zeros(0)``.
-            unitTemp (str, optional): [description]. Defaults to ``r'$^\circ$'``.
-            unitRain (st, optional): [description]. Defaults to ``r'$^\circ$'``.
+            unitTemp (str, optional):
+                [description]. Defaults to ``r'$^\\circ$'``.
+            unitRain (st, optional):
+                [description]. Defaults to ``r'$^\\circ$'``.
 
         Returns:
             ``weather`` ``Class``.
+
+        Last modified: Lucas Sawade, 2020.09.22 12.00 (lsawade@princeton.edu)
         """
 
         self.dates = dates

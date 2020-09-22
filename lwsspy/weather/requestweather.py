@@ -6,6 +6,7 @@ from datetime import datetime
 import numpy as np
 from .weather import weather
 
+
 class requestweather:
     """
     This class requires a bit of a setup. To make this work you will have to
@@ -21,6 +22,7 @@ class requestweather:
     3. Then you can use the class to get both the location key for your lat
        lon (it will provide you the closets station) and get the forecast.
 
+    Last modified: Lucas Sawade, 2020.09.22 12.00 (lsawade@princeton.edu)
     """
 
     def __init__(self,
@@ -33,7 +35,7 @@ class requestweather:
                  countrycode: Union[str, None] = 'US',
                  forecast: Union[weather, None] = None,
                  default_run: bool = False):
-        """Creates request weather class to request weather forecast from 
+        """Creates request weather class to request weather forecast from
         the accuweather website.
 
         Args:
@@ -74,7 +76,7 @@ class requestweather:
             self.forcecast = weather([], np.zeros(0), np.zeros(0), np.zeros(0))
         else:
             self. forecast = forecast
-        
+
         # Through error if neither location or location key is given.
         if ((self.lat is None) or (self.lon is None)) \
                 and self.locationkey is None \
@@ -116,7 +118,7 @@ class requestweather:
         axTemp.tick_params(axis='y', labelcolor=color)
         plt.axis('tight')
         plt.grid('off')
-        
+
         # # Plot Rain Fall
         axRain = axTemp.twinx()
         color = 'tab:blue'
@@ -129,7 +131,6 @@ class requestweather:
 
         plt.savefig(os.path.join(DOCFIGURES, 'requestweather.svg'), dpi=300)
         plt.show()
-
 
     def _get_location(self):
         """Uses location and location search api url to get the location key
@@ -159,7 +160,8 @@ class requestweather:
             self.countrycode = location_dict["country"]["ID"]
 
         elif ((self.lat is None) or (self.lon is None)) \
-                and ((self.city is not None) and (self.countrycode is not None)):
+                and ((self.city is not None)
+                     and (self.countrycode is not None)):
 
             self.city_search_url = \
                 f"http://dataservice.accuweather.com/locations/v1/cities/" \
@@ -188,7 +190,8 @@ class requestweather:
                 checklist = [i+1 for i in range(len(location_list))]
                 choice = int(input("Choose: "))
                 while (choice not in checklist):
-                    choice = int(input("Choose from the above cities by there number: "))
+                    choice = int(input("Choose from the above cities by "
+                                       "there number: "))
                 print("Choice: ", choice)
 
             self.locationkey = location_list[choice - 1]["Key"]
@@ -200,7 +203,7 @@ class requestweather:
                              "City, Country, Combination")
 
     def get_forecast(self, days: int):
-        """Gets forcast for a given number of days using the found or given 
+        """Gets forcast for a given number of days using the found or given
         location key.
 
         Args:
@@ -258,7 +261,7 @@ class requestweather:
         Args:
             status (int): error code
         """
-    
+
         if status != 200:
             print(f"Request Error: {status}")
             if status == 400:
@@ -303,6 +306,5 @@ class requestweather:
         string += f"    City:_____________{city:_>35}\n"
         string += f"    Country Code:_____{countrycode:_>35}\n"
         string += f"    API Key:__________{self.apikey:_>35}"
-        
 
         return string
