@@ -146,7 +146,7 @@ def perturb_cmt_dir(cmtdir: str = "./CMT", outputdir: str = "./",
     for i, _file in enumerate(cmtfiles):
         print(f"#{i+1:0>5}/{len(cmtfiles)}:{_file:_>50}")
         perturb_cmt(_file, output_dir=outputdir,
-                    dmoment_tensor=dmoment_tensor, ddepth_km=ddepth,
+                    dmoment_tensor=dmoment_tensor, ddepth_km=ddepth_km,
                     dlatitude=dlatitude, dlongitude=dlongitude)
 
 
