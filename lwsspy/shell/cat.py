@@ -12,6 +12,7 @@ def cat(filename: str):
     Returns:
         None
 
+    Last modified: Lucas Sawade, 2020.09.22 12.00 (lsawade@princeton.edu)
     """
 
     print(readfile(filename))
