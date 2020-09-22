@@ -29,3 +29,13 @@ if "-m" not in sys.argv:
 
     # Weather
     from .weather.requestweather import requestweather  # noqa
+    from .weather.weather import weather  # noqa
+    from .weather.drop2pickle import drop2pickle  # noqa
+
+    # Seismology
+    from .seismo.source import CMTSource # noqa
+    from .seismo.validate_cmt import validate_cmt # noqa
+    from .seismo.perturb_cmt import perturb_cmt # noqa
+    from .seismo.perturb_cmt import perturb_cmt_dir # noqa
+
+
