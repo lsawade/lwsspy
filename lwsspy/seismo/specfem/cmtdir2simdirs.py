@@ -1,8 +1,8 @@
-from os import path as p
 from glob import glob
+from os import path as p
+from typing import Union
 
 from .cmt2simdir import cmt2simdir
-
 
 
 def cmtdir2simdirs(cmtdir: str, specfemdir: str, outputdir: str = "./",
