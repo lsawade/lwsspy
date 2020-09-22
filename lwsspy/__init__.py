@@ -27,7 +27,7 @@ if "-m" not in sys.argv:
     from .shell.cp import cp  # noqa
     from .shell.cat import cat  # noqa
     from .shell.cpdir import cpdir  # noqa
-    from shell.touch import touch  # noqa
+    from .shell.touch import touch  # noqa
     from .shell.readfile import readfile  # noqa
     from .shell.writefile import writefile  # noqa
     from .shell.copy_dirtree import copy_dirtree  # noqa
