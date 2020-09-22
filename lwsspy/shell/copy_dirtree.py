@@ -6,7 +6,7 @@ from .touch import touch
 
 
 def copy_dirtree(source: str, destination: str, dictionary: dict,
-                 ow=False, dry: bool = False, verbose: bool = False):
+                 ow: bool = True, dry: bool = False, verbose: bool = False):
     """
     Creates paths from dictionaries structures.
 
@@ -17,6 +17,8 @@ def copy_dirtree(source: str, destination: str, dictionary: dict,
             Destination root
         dictionary (dict):
             dictionary defining the structure of the directory
+        ow (bool):
+            Choice of overwriting. Default is ``True``.
         dry (bool):
             If ``True``, no structure is created but structure is
             printed to the terminal.
