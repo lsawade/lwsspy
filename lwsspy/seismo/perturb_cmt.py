@@ -35,6 +35,8 @@ def perturb_one_var(origin_cmt: CMTSource, pert_type: str,
         outputdir (str):
             Output directory/where to write the perturbed file with a suffix 
             depending on the perturbation.
+    
+    Last modified: Lucas Sawade, 2020.09.22 12.00 (lsawade@princeton.edu)
 
     """
     cmt = deepcopy(origin_cmt)
@@ -89,6 +91,8 @@ def perturb_cmt(input_cmtfile: str, output_dir: str = ".",
         ddepth_km (Union[float, None], optional):
             Perturbation in depth. Defaults to None.
 
+    Last modified: Lucas Sawade, 2020.09.22 12.00 (lsawade@princeton.edu)
+
     """
     # Create output directory if it doesn't exists
     if not os.path.exists(output_dir):
@@ -132,6 +136,8 @@ def perturb_cmt_dir(cmtdir: str = "./CMT", outputdir: str = "./",
             Perturbation in latitude. Defaults to None.
         ddepth_km (Union[float, None], optional):
             Perturbation in depth. Defaults to None.
+
+    Last modified: Lucas Sawade, 2020.09.22 12.00 (lsawade@princeton.edu)
     """
     # Get all CMT files
     cmtfiles = glob.glob(os.path.join(cmtdir, "*"))

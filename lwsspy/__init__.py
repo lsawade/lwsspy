@@ -23,9 +23,15 @@ if "-m" not in sys.argv:
     from .plot_util.figcolorbar import figcolorbar  # noqa
 
     # Shell
+    from .shell.ln import ln  # noqa
+    from .shell.cp import cp  # noqa
     from .shell.cat import cat  # noqa
+    from .shell.cpdir import cpdir  # noqa
+    from shell.touch import touch  # noqa
     from .shell.readfile import readfile  # noqa
     from .shell.writefile import writefile  # noqa
+    from .shell.copy_dirtree import copy_dirtree  # noqa
+    from .shell.create_dirtree import create_dirtree  # noqa
 
     # Weather
     from .weather.requestweather import requestweather  # noqa
@@ -34,8 +40,10 @@ if "-m" not in sys.argv:
 
     # Seismology
     from .seismo.source import CMTSource # noqa
-    from .seismo.validate_cmt import validate_cmt # noqa
     from .seismo.perturb_cmt import perturb_cmt # noqa
     from .seismo.perturb_cmt import perturb_cmt_dir # noqa
+    from .seismo.validate_cmt import validate_cmt # noqa
+    from .seismo.specfem.cmt2simdir import cmt2simdir  # noqa
+    from .seismo.specfem.createsimdir import createsimdir  # noqa
 
 
