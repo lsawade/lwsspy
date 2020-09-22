@@ -52,4 +52,4 @@ def cmt2simdir(cmtfilename: str, specfemdir: str, outputdir: str = "./",
     createsimdir(specfemdir, root, specfem_dict=specfem_dict)
 
     # Overwrite cmt solution
-    cp(cmtfilename, p.join(root, "DATA", "CMTSOLUTION")
+    cp(cmtfilename, p.join(root, "DATA", "CMTSOLUTION"))
