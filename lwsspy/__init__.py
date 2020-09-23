@@ -45,6 +45,8 @@ if "-m" not in sys.argv:
     from .seismo.validate_cmt import validate_cmt # noqa
     from .seismo.specfem.cmt2simdir import cmt2simdir  # noqa
     from .seismo.specfem.cmtdir2simdirs import cmtdir2simdirs  # noqa
+    from .seismo.specfem.cmt2rundir import cmt2rundir  # noqa
+    from .seismo.specfem.cmtdir2rundirs import cmtdir2rundirs  # noqa
     from .seismo.specfem.createsimdir import createsimdir  # noqa
 
 
