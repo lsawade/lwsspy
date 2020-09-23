@@ -104,16 +104,16 @@ def perturb_cmt(input_cmtfile: str, output_dir: str = ".",
     if dmoment_tensor is not None:
         pert_type_list = ['m_rr', 'm_tt', 'm_pp', 'm_rt', 'm_rp', 'm_tp']
         for pert_type in pert_type_list:
-            perturb_one_var(pert_type, cmt, dmoment_tensor, output_dir)
+            perturb_one_var(cmt, pert_type, dmoment_tensor, output_dir)
 
     if dlongitude is not None:
-        perturb_one_var("longitude", cmt, dlongitude, output_dir)
+        perturb_one_var(cmt, "longitude", dlongitude, output_dir)
 
     if dlatitude is not None:
-        perturb_one_var("latitude", cmt, dlatitude, output_dir)
+        perturb_one_var(cmt, "latitude", dlatitude, output_dir)
 
     if ddepth_km is not None:
-        perturb_one_var("depth_in_m", cmt, ddepth_km*1000.0, output_dir)
+        perturb_one_var(cmt, "depth_in_m", ddepth_km*1000.0, output_dir)
 
 
 def perturb_cmt_dir(cmtdir: str = "./CMT", outputdir: str = "./",
