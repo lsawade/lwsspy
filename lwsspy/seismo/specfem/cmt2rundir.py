@@ -20,7 +20,7 @@ def cmt2rundir(cmtfilename: str, specfemdir: str, rundir: str,
             Output Directory. Defaults to "./".
         specfem_dict (Union[dict, None], optional):
             Optional dictionary. Defaults to None which gives the following
-            copy dirtree dict from the ``createsimdir`` function
+            copy dirtree dict:
 
             .. code:: python
 
@@ -28,7 +28,6 @@ def cmt2rundir(cmtfilename: str, specfemdir: str, rundir: str,
                     "bin": "link",
                     "DATA": {
                         "CMTSOLUTION": "file",
-                        "Par_file": "file",
                         "STATIONS": "file"
                     },
                     "DATABASES_MPI": "link",
@@ -41,6 +40,18 @@ def cmt2rundir(cmtfilename: str, specfemdir: str, rundir: str,
     Last modified: Lucas Sawade, 2020.09.22 12.00 (lsawade@princeton.edu)
 
     """
+
+    # Modifying the copy 
+    if specfem_dict is None:
+        specfem_dict = {
+            "bin": "link",
+            "DATA": {
+                "CMTSOLUTION": "file",
+                "STATIONS": "file"
+            },
+            "DATABASES_MPI": "link",
+            "OUTPUT_FILES": "dir"
+            }
 
     # Copy directory to new destination
     createsimdir(specfemdir, rundir, specfem_dict=specfem_dict)
