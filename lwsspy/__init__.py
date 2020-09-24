@@ -15,6 +15,7 @@ if "-m" not in sys.argv:
 
     # Math
     from .math.eigsort import eigsort  # noqa
+    from .math.magnitude import magnitude  # noqa
 
     # Plot
     from .plot_util.updaterc import updaterc  # noqa
