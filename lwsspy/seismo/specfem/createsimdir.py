@@ -43,4 +43,4 @@ def createsimdir(specfemdir: str, outputdirname: str,
             }
 
     # Copy Specfem directory
-    copy_dirtree(specfemdir, outputdirname, dictionary=specfem_dict)
+    copy_dirtree(specfemdir, outputdirname, dictionary=specfem_dict, ow=True)
