@@ -19,7 +19,7 @@ def ln(source: str, destination: str, ow: bool = False, verbose: bool = False,
             Dry run. Defaults to False.
 
     Last modified: Lucas Sawade, 2020.09.22 12.00 (lsawade@princeton.edu)
-    
+
     """
     # change verbose to true if we perform a dryrun
     if dry:
@@ -45,5 +45,5 @@ def ln(source: str, destination: str, ow: bool = False, verbose: bool = False,
 
     # Copying
     if not dry:
-        os.symlink(source, destination,
+        os.symlink(os.path.abspath(source), destination,
                    target_is_directory=os.path.isdir(source))
