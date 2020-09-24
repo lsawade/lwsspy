@@ -43,10 +43,12 @@ if "-m" not in sys.argv:
     from .seismo.perturb_cmt import perturb_cmt # noqa
     from .seismo.perturb_cmt import perturb_cmt_dir # noqa
     from .seismo.validate_cmt import validate_cmt # noqa
+    from .seismo.cmt2inv import cmt2inv # noqa
+    from .seismo.inv2stationxml import inv2stationxml  # noqa
     from .seismo.specfem.cmt2simdir import cmt2simdir  # noqa
     from .seismo.specfem.cmtdir2simdirs import cmtdir2simdirs  # noqa
     from .seismo.specfem.cmt2rundir import cmt2rundir  # noqa
     from .seismo.specfem.cmtdir2rundirs import cmtdir2rundirs  # noqa
     from .seismo.specfem.createsimdir import createsimdir  # noqa
-
-
+    from .seismo.specfem.inv2STATIONS import inv2STATIONS  # noqa
+    from .seismo.specfem.cmt2STATIONS import cmt2STATIONS  # noqa
