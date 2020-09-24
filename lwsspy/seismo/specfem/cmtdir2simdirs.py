@@ -4,7 +4,7 @@ from typing import Union
 
 from .cmt2simdir import cmt2simdir
 from ..source import CMTSource
-
+from ...math.magnitude import magnitude
 
 def cmtdir2simdirs(cmtdir: str, specfemdir: str, outputdir: str = "./",
                    specfem_dict: Union[dict, None] = None,
@@ -46,6 +46,9 @@ def cmtdir2simdirs(cmtdir: str, specfemdir: str, outputdir: str = "./",
 
     print("Number of CMT files: %d" % len(cmtfiles))
 
+    Nev = len(cmtfiles)
+    mag = magnitude(Nev)
+
     for i, _file in enumerate(cmtfiles):
 
         # Create Simdir
@@ -59,7 +62,7 @@ def cmtdir2simdirs(cmtdir: str, specfemdir: str, outputdir: str = "./",
                 raise ValueError(f"{stationsfile} does not exist.")
 
         # Print progress
-        print(f"#{i+1:0>5}/{len(cmtfiles)}:{_file:_>50}")
+        print(f"#{i+1:0>{mag}}/{Nev}:{_file:_>50}")
 
         # Create simdir
         cmt2simdir(_file, specfemdir, outputdir=outputdir,

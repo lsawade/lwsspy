@@ -68,7 +68,6 @@ def copy_dirtree(source: str, destination: str, dictionary: dict,
 
         # Check dir for file typ
         if value == "link":
-            print(f"OW: {ow}")
             ln(source_path, destination_path, ow=ow, verbose=verbose, dry=dry)
         elif value == "file":
             cp(source_path, destination_path, ow=ow, verbose=verbose, dry=dry)
