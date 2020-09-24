@@ -5,7 +5,8 @@ from .createsimdir import createsimdir
 
 
 def cmt2simdir(cmtfilename: str, specfemdir: str, outputdir: str = "./",
-               specfem_dict: Union[dict, None] = None):
+               specfem_dict: Union[dict, None] = None,
+               stationsfile: Union[str, None] = None):
     """Takes in ``CMTSOLUTION`` file and specfem directory and creates specfem
     simulation directory.
     Uses the ``cmtfilename`` to create new simulation directory in the
@@ -34,6 +35,10 @@ def cmt2simdir(cmtfilename: str, specfemdir: str, outputdir: str = "./",
                     "DATABASES_MPI": "link",
                     "OUTPUT_FILES": "dir"
                 }
+        stationsfile (Union[str, None], optional):
+            Define ``STATIONS`` file to be written to the simulation directory.
+            Default is ``None``, which won't overwrite the specfem's 
+            ``STATIONS`` file.
 
     Returns:
         None
@@ -53,3 +58,7 @@ def cmt2simdir(cmtfilename: str, specfemdir: str, outputdir: str = "./",
 
     # Overwrite cmt solution
     cp(cmtfilename, p.join(root, "DATA", "CMTSOLUTION"), ow=True)
+
+    # Overwrite STATIONS file if given
+    if stationsfile is not None:
+        cp(stationsfile, p.join(root, "DATA", "STATIONS"), ow=True)
