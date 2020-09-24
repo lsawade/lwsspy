@@ -1,7 +1,11 @@
+# External
 import os
 import os.path as p
 from copy import deepcopy
 from glob import glob
+from typing import Union
+
+# Internal
 from .cmt2stationxml import cmt2stationxml
 
 
@@ -31,8 +35,8 @@ def cmtdir2stationxmldir(cmtdir: str, stationxmldir: str,
             Stations to be requested. Defaults to None.
         client (Union[str, None], optional):
             Clients to be used. Defaults to "IRIS".
-    
-    Last modified: Lucas Sawade, 2020.09.24 14.00 (lsawade@princeton.edu)
+
+    Last modified: Lucas Sawade, 2020.09.24 15.30 (lsawade@princeton.edu)
 
     """
     # Parse all inputs to the cmt2inv function except the STATIONS file
