@@ -7,6 +7,7 @@ from typing import Union
 
 # Internal
 from .cmt2stationxml import cmt2stationxml
+from ..math.magnitude import magnitude
 
 
 def cmtdir2stationxmldir(cmtdir: str, stationxmldir: str,
@@ -54,7 +55,11 @@ def cmtdir2stationxmldir(cmtdir: str, stationxmldir: str,
         # directory already exists
         pass
 
+    Nev = len(cmtfiles)
+    mag = magnitude(Nev)
     # Loop over files and write
-    for _cmtfile in cmtfiles:
+    for _i, _cmtfile in enumerate(cmtfiles):
         outname = p.join(stationxmldir, p.basename(_cmtfile) + ".xml")
+        print(f"#{_i:0>{mag}}/{Nev}: {_cmtfile} --> {outname}")
+
         cmt2stationxml(_cmtfile, **input_dict, outputfilename=outname)
