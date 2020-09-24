@@ -60,6 +60,7 @@ def cmtdir2stationxmldir(cmtdir: str, stationxmldir: str,
     # Loop over files and write
     for _i, _cmtfile in enumerate(cmtfiles):
         outname = p.join(stationxmldir, p.basename(_cmtfile) + ".xml")
-        print(f"#{_i:0>{mag}}/{Nev}: {_cmtfile} --> {outname}")
+        # Print progress
+        print(f"#{_i+1:0>{mag+1}}/{Nev}: {_cmtfile} --> {outname}")
 
         cmt2stationxml(_cmtfile, **input_dict, outputfilename=outname)
