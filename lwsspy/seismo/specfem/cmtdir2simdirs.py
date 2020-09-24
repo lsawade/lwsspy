@@ -3,10 +3,12 @@ from os import path as p
 from typing import Union
 
 from .cmt2simdir import cmt2simdir
+from ..source import CMTSource
 
 
 def cmtdir2simdirs(cmtdir: str, specfemdir: str, outputdir: str = "./",
-                   specfem_dict: Union[dict, None] = None):
+                   specfem_dict: Union[dict, None] = None,
+                   stationsdir: Union[str, None] = None):
     """Wrapper arount ``cmt2simdir`` to process an entire directory
 
     Args:
@@ -45,6 +47,21 @@ def cmtdir2simdirs(cmtdir: str, specfemdir: str, outputdir: str = "./",
     print("Number of CMT files: %d" % len(cmtfiles))
 
     for i, _file in enumerate(cmtfiles):
+
+        # Create Simdir
+        if stationsdir is not None:
+            cmtid = p.basename(_file).split(".")[0].split("_")[0]
+            stationsfile = p.join(stationsdir, cmtid + ".stations")
+
+            if p.exists(stationsfile) is False:
+                stationsfile = p.join(stationsdir, cmtid)
+            if p.exists(stationsfile) is False:
+                raise ValueError(f"{stationsfile} does not exist.")
+
+        # Print progress
         print(f"#{i+1:0>5}/{len(cmtfiles)}:{_file:_>50}")
+
+        # Create simdir
         cmt2simdir(_file, specfemdir, outputdir=outputdir,
-                   specfem_dict=specfem_dict)
+                   specfem_dict=specfem_dict,
+                   stationsfile=stationsfile)
