@@ -33,6 +33,11 @@ def clm(x: np.ndarray, distr: List[np.ndarray],
         Tuple[float, float, float]: 
             Expected Value, Variance, cost sum of squares compared to Normal D.
     
+    **Note**:
+        The model plot below is not technically correct, as marked in the
+        code, it is just for illustration of the shape. The correct
+        implementation of the convolution operation is commented.
+
     Last modified: Lucas Sawade, 2020.09.30 11.00 (lsawade@princeton.edu)
 
     """
@@ -65,7 +70,11 @@ def clm(x: np.ndarray, distr: List[np.ndarray],
         ppdf1 = distr[_i + 1]
 
         ppdf = np.convolve(ppdf, ppdf1, mode='full')
-        x = np.arange(len(ppdf)) * dx + np.min(x)
+
+        # Theoretically correct implemenation:
+        # np.arange(len(ppdf)) * dx + np.min(x)
+        # Illustrative implementation:
+        x = np.linspace(np.min(x), np.max(x), len(ppdf))
         ppdf = ppdf/np.trapz(ppdf, x=x)
 
         # Get expected value of PDF
