@@ -19,7 +19,6 @@ def cmt2STATIONS(cmtfilename: str, duration: float = 11000.0,
     been recording at the time
 
     Args:
-        Args:
         cmtfilename (str):
             CMTSOLUTION file name
         duration (float, optional):

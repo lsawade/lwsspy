@@ -12,7 +12,8 @@ def cmtdir2simdirs(cmtdir: str, specfemdir: str, outputdir: str = "./",
     """Wrapper arount ``cmt2simdir`` to process an entire directory
 
     Args:
-        cmtdir (str): Directory of CMT solutions
+        cmtdir (str):
+            Directory of CMT solutions
         specfemdir (str):
             Path to specfem dir
         outputdir (str, optional):
