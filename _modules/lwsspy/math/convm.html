@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>lwsspy.math.eigsort &mdash; lwsspy 0.0.1alpha documentation</title>
+  <title>lwsspy.math.convm &mdash; lwsspy 0.0.1alpha documentation</title>
   
 
   
@@ -132,7 +132,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>lwsspy.math.eigsort</li>
+      <li>lwsspy.math.convm</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -147,31 +147,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for lwsspy.math.eigsort</h1><div class="highlight"><pre>
+  <h1>Source code for lwsspy.math.convm</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span>
 
-
-<div class="viewcode-block" id="eigsort"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.math.eigsort.eigsort">[docs]</a><span class="k">def</span> <span class="nf">eigsort</span><span class="p">(</span><span class="n">mat</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns sorted eigenvalues of a given matrix</span>
+<div class="viewcode-block" id="convm"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.math.convm.convm">[docs]</a><span class="k">def</span> <span class="nf">convm</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Implements Matlab&#39;s conv(x, y, &#39;same&#39;)</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        mat (np.array): Square matrix</span>
+<span class="sd">        x (np.ndarray):</span>
+<span class="sd">            First Array</span>
+<span class="sd">        y (np.ndarray):</span>
+<span class="sd">            Second Array</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        sorted eigenvalue [vector], and -vectors [matrix]</span>
-
-<span class="sd">    Last modified: Lucas Sawade, 2020.09.14 23.00 (lsawade@princeton.edu)</span>
+<span class="sd">        np.ndarray: Length(x) convolution of x with y.</span>
+<span class="sd">    </span>
+<span class="sd">    Last modified: Lucas Sawade, 2020.09.22 12.00 (lsawade@princeton.edu)</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># Get Eigenvalues</span>
-    <span class="n">vals</span><span class="p">,</span> <span class="n">vecs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
-
-    <span class="c1"># Sort them</span>
-    <span class="n">order</span> <span class="o">=</span> <span class="n">vals</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="c1"># Return sorted values and vectors</span>
-
-    <span class="k">return</span> <span class="n">vals</span><span class="p">[</span><span class="n">order</span><span class="p">],</span> <span class="n">vecs</span><span class="p">[:,</span> <span class="n">order</span><span class="p">]</span></div>
+    <span class="n">npad</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">full</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s1">&#39;full&#39;</span><span class="p">)</span>
+    <span class="n">first</span> <span class="o">=</span> <span class="n">npad</span> <span class="o">-</span> <span class="n">npad</span><span class="o">//</span><span class="mi">2</span>
+    <span class="k">return</span> <span class="n">full</span><span class="p">[</span><span class="n">first</span><span class="p">:</span><span class="n">first</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span></div>
+    
 </pre></div>
 
            </div>

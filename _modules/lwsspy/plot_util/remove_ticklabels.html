@@ -150,13 +150,15 @@
   <h1>Source code for lwsspy.plot_util.remove_ticklabels</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">matplotlib.axes</span> <span class="kn">import</span> <span class="n">Axes</span>
 
+
 <div class="viewcode-block" id="remove_xticklabels"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.plot_util.remove_ticklabels.remove_xticklabels">[docs]</a><span class="k">def</span> <span class="nf">remove_xticklabels</span><span class="p">(</span><span class="n">ax</span><span class="p">:</span> <span class="n">Axes</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Removes xticklabels of an axes</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ax (Axes): Axes handles</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_ticklabels</span><span class="p">([])</span></div>
+    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelbottom</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="remove_yticklabels"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.plot_util.remove_ticklabels.remove_yticklabels">[docs]</a><span class="k">def</span> <span class="nf">remove_yticklabels</span><span class="p">(</span><span class="n">ax</span><span class="p">:</span> <span class="n">Axes</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Removes yticklabels of an axes</span>
@@ -164,7 +166,7 @@
 <span class="sd">    Args:</span>
 <span class="sd">        ax (Axes): Axes handles</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_ticklabels</span><span class="p">([])</span></div>
+    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelleft</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

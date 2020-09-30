@@ -88,6 +88,11 @@
 <li class="toctree-l2"><a class="reference internal" href="#statistics">Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#plotting-utilities">Plotting Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#math">Math</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#seismology">Seismology</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#specfem-handling">SPECFEM handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#weather">Weather</a></li>
 </ul>
 </li>
 </ul>
@@ -244,7 +249,7 @@ and offset distributions model parameters theta and offset are included.</p>
 <img alt="../_images/gaussian2d.svg" src="../_images/gaussian2d.svg" /><dl class="py function">
 <dt id="lwsspy.statistics.fitgaussian2d.fitgaussian2d">
 <code class="sig-prename descclassname">lwsspy.statistics.fitgaussian2d.</code><code class="sig-name descname">fitgaussian2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">p0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/statistics/fitgaussian2d.html#fitgaussian2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.statistics.fitgaussian2d.fitgaussian2d" title="Permalink to this definition">¶</a></dt>
-<dd><p>Takes in x and y and corresponding data as well as an initial 
+<dd><p>Takes in x and y and corresponding data as well as an initial
 guess of the Gaussian parameters and invertes for optttimized parameters.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><dl class="simple">
@@ -267,10 +272,60 @@ guess of the Gaussian parameters and invertes for optttimized parameters.</p>
 </dl>
 </dd>
 </dl>
-<p>Last modified: Lucas Sawade, 2020.09.15 19.44 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+<p>Last modified: Lucas Sawade, 2020.09.21 21.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
 </dd></dl>
 
-<img alt="../_images/fitgaussian2d.svg" src="../_images/fitgaussian2d.svg" /></div>
+<img alt="../_images/fitgaussian2d.svg" src="../_images/fitgaussian2d.svg" /><dl class="py function">
+<dt id="lwsspy.statistics.distlist.distlist">
+<code class="sig-prename descclassname">lwsspy.statistics.distlist.</code><code class="sig-name descname">distlist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">N</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>None<span class="p">, </span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">plot</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>numpy.ndarray<span class="p">, </span>List<span class="p">[</span>numpy.ndarray<span class="p">]</span><span class="p">]</span><a class="reference internal" href="../_modules/lwsspy/statistics/distlist.html#distlist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.statistics.distlist.distlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates list of some distributions</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>N (Union[None, int], optional):</dt><dd><p>Number of convolutions to be done. Defaults to None.</p>
+</dd>
+<dt>plot (bool, optional):</dt><dd><p>Plotting flag. Defaults to True.</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>Tuple[np.ndarray, List[np.ndarray]]: x vector, list of distributions</p>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.30 11.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<img alt="../_images/distlist.svg" src="../_images/distlist.svg" /><dl class="py function">
+<dt id="lwsspy.statistics.clm.clm">
+<code class="sig-prename descclassname">lwsspy.statistics.clm.</code><code class="sig-name descname">clm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">distr</span><span class="p">:</span> <span class="n">List<span class="p">[</span>numpy.ndarray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">N</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">plot</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>float<span class="p">, </span>float<span class="p">, </span>float<span class="p">]</span><a class="reference internal" href="../_modules/lwsspy/statistics/clm.html#clm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.statistics.clm.clm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function that takes a list of distributions of length N and shows that
+the central limit theorem holds.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>x (np.ndarray):</dt><dd><p>x location of the distributions</p>
+</dd>
+<dt>distr (List[np.ndarray]):</dt><dd><p>List of discrete PDFs</p>
+</dd>
+<dt>N (int, optional):</dt><dd><p>Number of convolutions to be performed by iteration over
+the list of distributions. Defaults to 1.</p>
+</dd>
+<dt>plot (bool, optional):</dt><dd><p>plotting flag. Defaults to True.</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>ValueError: Raised of list of distributions only contains one</dt><dd><p>distribution.</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>Tuple[float, float, float]: </dt><dd><p>Expected Value, Variance, cost sum of squares compared to Normal D.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.30 11.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<img alt="../_images/clm.svg" src="../_images/clm.svg" /></div>
 <div class="section" id="plotting-utilities">
 <h2>Plotting Utilities<a class="headerlink" href="#plotting-utilities" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
@@ -314,7 +369,7 @@ vmax (Union[float, None], optional): Largest values . Defaults to None.
 <dl class="py function">
 <dt id="lwsspy.plot_util.updaterc.updaterc">
 <code class="sig-prename descclassname">lwsspy.plot_util.updaterc.</code><code class="sig-name descname">updaterc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rebuild</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/plot_util/updaterc.html#updaterc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.plot_util.updaterc.updaterc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates the rcParams to something generic that looks ok good out of 
+<dd><p>Updates the rcParams to something generic that looks ok good out of
 the box.</p>
 <p>Args:</p>
 <blockquote>
@@ -330,6 +385,24 @@ the box.</p>
 <div class="section" id="math">
 <h2>Math<a class="headerlink" href="#math" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
+<dt id="lwsspy.math.convm.convm">
+<code class="sig-prename descclassname">lwsspy.math.convm.</code><code class="sig-name descname">convm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">y</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="../_modules/lwsspy/math/convm.html#convm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.convm.convm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements Matlab’s conv(x, y, ‘same’)</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>x (np.ndarray):</dt><dd><p>First Array</p>
+</dd>
+<dt>y (np.ndarray):</dt><dd><p>Second Array</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>np.ndarray: Length(x) convolution of x with y.</p>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.22 12.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="lwsspy.math.eigsort.eigsort">
 <code class="sig-prename descclassname">lwsspy.math.eigsort.</code><code class="sig-name descname">eigsort</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mat</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/eigsort.html#eigsort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.eigsort.eigsort" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns sorted eigenvalues of a given matrix</p>
@@ -341,6 +414,531 @@ the box.</p>
 </dl>
 <p>Last modified: Lucas Sawade, 2020.09.14 23.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
 </dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.math.magnitude.magnitude">
+<code class="sig-prename descclassname">lwsspy.math.magnitude.</code><code class="sig-name descname">magnitude</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/magnitude.html#magnitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.magnitude.magnitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the magnitude of a number</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>x (float):</dt><dd><p>just a float</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns”</dt><dd><dl class="simple">
+<dt>int:</dt><dd><p>Magnitude of x</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="lwsspy.math.SphericalNN">
+<code class="sig-prename descclassname">lwsspy.math.</code><code class="sig-name descname">SphericalNN</code><a class="headerlink" href="#lwsspy.math.SphericalNN" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#lwsspy.math.SphericalNN" title="lwsspy.math.SphericalNN"><code class="xref py py-class docutils literal notranslate"><span class="pre">lwsspy.math.SphericalNN</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="seismology">
+<h2>Seismology<a class="headerlink" href="#seismology" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="lwsspy.seismo.cmt2inv.cmt2inv">
+<code class="sig-prename descclassname">lwsspy.seismo.cmt2inv.</code><code class="sig-name descname">cmt2inv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmtfilename</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">duration</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">11000.0</span></em>, <em class="sig-param"><span class="n">startoffset</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">- 300.0</span></em>, <em class="sig-param"><span class="n">endoffset</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">network</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'IU,II,G'</span></em>, <em class="sig-param"><span class="n">station</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">client</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'IRIS'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/cmt2inv.html#cmt2inv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.cmt2inv.cmt2inv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in a CMTSOLUTION file and creates requests an inventory.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>cmtfilename (str):</dt><dd><p>CMTSOLUTION file name</p>
+</dd>
+<dt>duration (float, optional):</dt><dd><p>Duration of recording. Defaults to 11000.0.</p>
+</dd>
+<dt>startoffset (float, optional):</dt><dd><p>Starttime offset. Defaults to -300.0.</p>
+</dd>
+<dt>endoffset (float, optional):</dt><dd><p>Endtime offset. Defaults to 0.0.</p>
+</dd>
+<dt>network (Union[str, None], optional):</dt><dd><p>Networks to request. Defaults to “IU,II,G”.</p>
+</dd>
+<dt>station (Union[str, None], optional):</dt><dd><p>Stations to request. Defaults to None.</p>
+</dd>
+<dt>client (Union[str, None], optional):</dt><dd><p>Clients to use. Defaults to “IRIS”.</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>Inventory: Inventory of stations.</p>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.24 12.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.cmt2stationxml.cmt2stationxml">
+<code class="sig-prename descclassname">lwsspy.seismo.cmt2stationxml.</code><code class="sig-name descname">cmt2stationxml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmtfilename</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">duration</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">11000.0</span></em>, <em class="sig-param"><span class="n">startoffset</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">- 300.0</span></em>, <em class="sig-param"><span class="n">endoffset</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">network</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'IU,II,G'</span></em>, <em class="sig-param"><span class="n">station</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">client</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'IRIS'</span></em>, <em class="sig-param"><span class="n">outputfilename</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'station.xml'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/cmt2stationxml.html#cmt2stationxml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.cmt2stationxml.cmt2stationxml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in CMTSOLUTION and writes out StationXML containing all stations
+that contain</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>cmtfilename (str):</dt><dd><p>Path to CMTSOLUTION file.</p>
+</dd>
+<dt>duration (float, optional):</dt><dd><p>Duration. Defaults to 11000.0.</p>
+</dd>
+<dt>startoffset (float, optional):</dt><dd><p>Starttime in seconds. Defaults to -300.0.</p>
+</dd>
+<dt>endoffset (float, optional):</dt><dd><p>Endtime offset in seconds. Defaults to 0.0.</p>
+</dd>
+<dt>network (Union[str, None], optional):</dt><dd><p>Networks to be requested. Defaults to “IU,II,G”.</p>
+</dd>
+<dt>station (Union[str, None], optional):</dt><dd><p>Stations to be requested. Defaults to None.</p>
+</dd>
+<dt>client (Union[str, None], optional):</dt><dd><p>Clients to be used. Defaults to “IRIS”.</p>
+</dd>
+<dt>outputfilename (str, optional):</dt><dd><p>Output filename for the StationXML. Defaults to “station.xml”.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.24 14.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.cmtdir2stationxmldir.cmtdir2stationxmldir">
+<code class="sig-prename descclassname">lwsspy.seismo.cmtdir2stationxmldir.</code><code class="sig-name descname">cmtdir2stationxmldir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmtdir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">stationxmldir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">duration</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">11000.0</span></em>, <em class="sig-param"><span class="n">startoffset</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">- 300.0</span></em>, <em class="sig-param"><span class="n">endoffset</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">network</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'IU,II,G'</span></em>, <em class="sig-param"><span class="n">station</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">client</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'IRIS'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/cmtdir2stationxmldir.html#cmtdir2stationxmldir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.cmtdir2stationxmldir.cmtdir2stationxmldir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in CMTSOLUTION directory and creates a stationxml directory</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>cmtdir (str):</dt><dd><p>Path to cmt directory.</p>
+</dd>
+<dt>stationxmldir (str):</dt><dd><p>Path to stationxmldir</p>
+</dd>
+<dt>duration (float, optional):</dt><dd><p>Duration. Defaults to 11000.0.</p>
+</dd>
+<dt>startoffset (float, optional):</dt><dd><p>Starttime in seconds. Defaults to -300.0.</p>
+</dd>
+<dt>endoffset (float, optional):</dt><dd><p>Endtime offset in seconds. Defaults to 0.0.</p>
+</dd>
+<dt>network (Union[str, None], optional):</dt><dd><p>Networks to be requested. Defaults to “IU,II,G”.</p>
+</dd>
+<dt>station (Union[str, None], optional):</dt><dd><p>Stations to be requested. Defaults to None.</p>
+</dd>
+<dt>client (Union[str, None], optional):</dt><dd><p>Clients to be used. Defaults to “IRIS”.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.24 15.30 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.inv2stationxml.inv2stationxml">
+<code class="sig-prename descclassname">lwsspy.seismo.inv2stationxml.</code><code class="sig-name descname">inv2stationxml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inv</span><span class="p">:</span> <span class="n">obspy.core.inventory.inventory.Inventory</span></em>, <em class="sig-param"><span class="n">outputfilename</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'station.xml'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/inv2stationxml.html#inv2stationxml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.inv2stationxml.inv2stationxml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tankes in inv and writes stationxml.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>inv (Inventory):</dt><dd><p>Obspy station inventory</p>
+</dd>
+<dt>outputfilename (str, optional):</dt><dd><p>Outputfilename. Defaults to “station.xml”.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.24 13.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.perturb_cmt.perturb_cmt">
+<code class="sig-prename descclassname">lwsspy.seismo.perturb_cmt.</code><code class="sig-name descname">perturb_cmt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_cmtfile</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">output_dir</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'.'</span></em>, <em class="sig-param"><span class="n">dmoment_tensor</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dlongitude</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dlatitude</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ddepth_km</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/perturb_cmt.html#perturb_cmt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.perturb_cmt.perturb_cmt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perturb a single CMTSOLUTION given certain perturbation value.
+If the perturbation value is <code class="docutils literal notranslate"><span class="pre">None</span></code>. The file will not be perturbed with 
+respect to that value.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>input_cmtfile (str):</dt><dd><p>Path to CMTSOLUTION file</p>
+</dd>
+<dt>output_dir (str, optional):</dt><dd><p>Output directory, where to save the perturbed file.
+Defaults to “.”.</p>
+</dd>
+<dt>dmoment_tensor (Union[float, None], optional):</dt><dd><p>Perturbation in seismic moment. Defaults to None.</p>
+</dd>
+<dt>dlongitude (Union[float, None], optional):</dt><dd><p>Perturbation in longitude. Defaults to None.</p>
+</dd>
+<dt>dlatitude (Union[float, None], optional):</dt><dd><p>Perturbation in latitude. Defaults to None.</p>
+</dd>
+<dt>ddepth_km (Union[float, None], optional):</dt><dd><p>Perturbation in depth. Defaults to None.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.22 12.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="lwsspy.seismo.source.CMTSource">
+<em class="property">class </em><code class="sig-prename descclassname">lwsspy.seismo.source.</code><code class="sig-name descname">CMTSource</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">origin_time</span><span class="o">=</span><span class="default_value">UTCDateTime(1970, 1, 1, 0, 0)</span></em>, <em class="sig-param"><span class="n">pde_latitude</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">pde_longitude</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">mb</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">ms</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">pde_depth_in_m</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">region_tag</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">eventname</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cmt_time</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">half_duration</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">latitude</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">longitude</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">depth_in_m</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">m_rr</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">m_tt</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">m_pp</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">m_rt</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">m_rp</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">m_tp</span><span class="o">=</span><span class="default_value">0.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/source.html#CMTSource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.source.CMTSource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to handle a seismic moment tensor source including a source time
+function.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.validate_cmt.validate_cmt">
+<code class="sig-prename descclassname">lwsspy.seismo.validate_cmt.</code><code class="sig-name descname">validate_cmt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmt</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#lwsspy.seismo.source.CMTSource" title="lwsspy.seismo.source.CMTSource">lwsspy.seismo.source.CMTSource</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/validate_cmt.html#validate_cmt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.validate_cmt.validate_cmt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether source has valid location parameters</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>cmt (CMTSource): cmt</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: if depth is smaller than 0
+ValueError: if latitude is outside [-90, 90]</p>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.22 11.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<div class="section" id="specfem-handling">
+<h3>SPECFEM handling<a class="headerlink" href="#specfem-handling" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="lwsspy.seismo.specfem.cmt2rundir.cmt2rundir">
+<code class="sig-prename descclassname">lwsspy.seismo.specfem.cmt2rundir.</code><code class="sig-name descname">cmt2rundir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmtfilename</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">specfemdir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">rundir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">specfem_dict</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>dict<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/specfem/cmt2rundir.html#cmt2rundir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.specfem.cmt2rundir.cmt2rundir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in <code class="docutils literal notranslate"><span class="pre">CMTSOLUTION</span></code> file and specfem directory and creates specfem
+simulation directory.
+Uses the <code class="docutils literal notranslate"><span class="pre">cmtfilename</span></code> to create new simulation directory in the
+output directory.</p>
+<dl>
+<dt>Args:</dt><dd><dl>
+<dt>cmtfilename (str):</dt><dd><p>Path to CMTSOLUTION</p>
+</dd>
+<dt>specfemdir (str):</dt><dd><p>Path to specfem dir</p>
+</dd>
+<dt>outputdir (str, optional):</dt><dd><p>Output Directory. Defaults to “./”.</p>
+</dd>
+<dt>specfem_dict (Union[dict, None], optional):</dt><dd><p>Optional dictionary. Defaults to None which gives the following
+copy dirtree dict:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;bin&quot;</span><span class="p">:</span> <span class="s2">&quot;link&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DATA&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;CMTSOLUTION&quot;</span><span class="p">:</span> <span class="s2">&quot;file&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;STATIONS&quot;</span><span class="p">:</span> <span class="s2">&quot;file&quot;</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;DATABASES_MPI&quot;</span><span class="p">:</span> <span class="s2">&quot;link&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;OUTPUT_FILES&quot;</span><span class="p">:</span> <span class="s2">&quot;dir&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.22 12.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.specfem.cmt2simdir.cmt2simdir">
+<code class="sig-prename descclassname">lwsspy.seismo.specfem.cmt2simdir.</code><code class="sig-name descname">cmt2simdir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmtfilename</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">specfemdir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">outputdir</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'./'</span></em>, <em class="sig-param"><span class="n">specfem_dict</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>dict<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stationsfile</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/specfem/cmt2simdir.html#cmt2simdir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.specfem.cmt2simdir.cmt2simdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in <code class="docutils literal notranslate"><span class="pre">CMTSOLUTION</span></code> file and specfem directory and creates specfem
+simulation directory.
+Uses the <code class="docutils literal notranslate"><span class="pre">cmtfilename</span></code> to create new simulation directory in the
+output directory.</p>
+<dl>
+<dt>Args:</dt><dd><dl>
+<dt>cmtfilename (str):</dt><dd><p>Path to CMTSOLUTION</p>
+</dd>
+<dt>specfemdir (str):</dt><dd><p>Path to specfem dir</p>
+</dd>
+<dt>outputdir (str, optional):</dt><dd><p>Output Directory. Defaults to “./”.</p>
+</dd>
+<dt>specfem_dict (Union[dict, None], optional):</dt><dd><p>Optional dictionary. Defaults to None which gives the following
+copy dirtree dict from the <code class="docutils literal notranslate"><span class="pre">createsimdir</span></code> function</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;bin&quot;</span><span class="p">:</span> <span class="s2">&quot;link&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DATA&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;CMTSOLUTION&quot;</span><span class="p">:</span> <span class="s2">&quot;file&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Par_file&quot;</span><span class="p">:</span> <span class="s2">&quot;file&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;STATIONS&quot;</span><span class="p">:</span> <span class="s2">&quot;file&quot;</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;DATABASES_MPI&quot;</span><span class="p">:</span> <span class="s2">&quot;link&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;OUTPUT_FILES&quot;</span><span class="p">:</span> <span class="s2">&quot;dir&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+<dt>stationsfile (Union[str, None], optional):</dt><dd><p>Define <code class="docutils literal notranslate"><span class="pre">STATIONS</span></code> file to be written to the simulation directory.
+Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, which won’t overwrite the specfem’s 
+<code class="docutils literal notranslate"><span class="pre">STATIONS</span></code> file.</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.22 12.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.specfem.cmt2STATIONS.cmt2STATIONS">
+<code class="sig-prename descclassname">lwsspy.seismo.specfem.cmt2STATIONS.</code><code class="sig-name descname">cmt2STATIONS</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmtfilename</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">duration</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">11000.0</span></em>, <em class="sig-param"><span class="n">startoffset</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">- 300.0</span></em>, <em class="sig-param"><span class="n">endoffset</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">network</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'IU,II,G'</span></em>, <em class="sig-param"><span class="n">station</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">client</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'IRIS'</span></em>, <em class="sig-param"><span class="n">outputfilename</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'STATIONS'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/specfem/cmt2STATIONS.html#cmt2STATIONS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.specfem.cmt2STATIONS.cmt2STATIONS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in CMTSOLUTION and requests a set of STATIONS through obspy that have
+been recording at the time</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>cmtfilename (str):</dt><dd><p>CMTSOLUTION file name</p>
+</dd>
+<dt>duration (float, optional):</dt><dd><p>Duration of recording. Defaults to 11000.0.</p>
+</dd>
+<dt>startoffset (float, optional):</dt><dd><p>Starttime offset. Defaults to -300.0.</p>
+</dd>
+<dt>endoffset (float, optional):</dt><dd><p>Endtime offset. Defaults to 0.0.</p>
+</dd>
+<dt>network (Union[str, None], optional):</dt><dd><p>Networks to request. Defaults to “IU,II,G”.</p>
+</dd>
+<dt>station (Union[str, None], optional):</dt><dd><p>Stations to request. Defaults to None.</p>
+</dd>
+<dt>client (Union[str, None], optional):</dt><dd><p>Clients to use. Defaults to “IRIS”.</p>
+</dd>
+<dt>outputfilename (str):</dt><dd><p>Path to file that is supposed to be written</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.24 12.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.specfem.cmtdir2rundirs.cmtdir2rundirs">
+<code class="sig-prename descclassname">lwsspy.seismo.specfem.cmtdir2rundirs.</code><code class="sig-name descname">cmtdir2rundirs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmtdir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">specfemdir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">specfem_dict</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>dict<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/specfem/cmtdir2rundirs.html#cmtdir2rundirs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.specfem.cmtdir2rundirs.cmtdir2rundirs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper arount <code class="docutils literal notranslate"><span class="pre">cmt2simdir</span></code> to process an entire directory</p>
+<dl>
+<dt>Args:</dt><dd><dl>
+<dt>cmtdir (str):</dt><dd><p>Directory of CMT solutions</p>
+</dd>
+<dt>specfemdir (str):</dt><dd><p>Path to specfem dir</p>
+</dd>
+<dt>outputdir (str, optional):</dt><dd><p>Output Directory. Defaults to “./”.</p>
+</dd>
+<dt>specfem_dict (Union[dict, None], optional):</dt><dd><p>Optional dictionary. Defaults to None which gives the following
+copy dirtree dict from the <code class="docutils literal notranslate"><span class="pre">createsimdir</span></code> function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;bin&quot;</span><span class="p">:</span> <span class="s2">&quot;link&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DATA&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;CMTSOLUTION&quot;</span><span class="p">:</span> <span class="s2">&quot;file&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Par_file&quot;</span><span class="p">:</span> <span class="s2">&quot;file&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;STATIONS&quot;</span><span class="p">:</span> <span class="s2">&quot;file&quot;</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;DATABASES_MPI&quot;</span><span class="p">:</span> <span class="s2">&quot;link&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;OUTPUT_FILES&quot;</span><span class="p">:</span> <span class="s2">&quot;dir&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.22 12.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.specfem.cmtdir2simdirs.cmtdir2simdirs">
+<code class="sig-prename descclassname">lwsspy.seismo.specfem.cmtdir2simdirs.</code><code class="sig-name descname">cmtdir2simdirs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmtdir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">specfemdir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">outputdir</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'./'</span></em>, <em class="sig-param"><span class="n">specfem_dict</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>dict<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stationsdir</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/specfem/cmtdir2simdirs.html#cmtdir2simdirs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.specfem.cmtdir2simdirs.cmtdir2simdirs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper arount <code class="docutils literal notranslate"><span class="pre">cmt2simdir</span></code> to process an entire directory</p>
+<dl>
+<dt>Args:</dt><dd><dl>
+<dt>cmtdir (str):</dt><dd><p>Directory of CMT solutions</p>
+</dd>
+<dt>specfemdir (str):</dt><dd><p>Path to specfem dir</p>
+</dd>
+<dt>outputdir (str, optional):</dt><dd><p>Output Directory. Defaults to “./”.</p>
+</dd>
+<dt>specfem_dict (Union[dict, None], optional):</dt><dd><p>Optional dictionary. Defaults to None which gives the following
+copy dirtree dict from the <code class="docutils literal notranslate"><span class="pre">createsimdir</span></code> function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;bin&quot;</span><span class="p">:</span> <span class="s2">&quot;link&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DATA&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;CMTSOLUTION&quot;</span><span class="p">:</span> <span class="s2">&quot;file&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Par_file&quot;</span><span class="p">:</span> <span class="s2">&quot;file&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;STATIONS&quot;</span><span class="p">:</span> <span class="s2">&quot;file&quot;</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;DATABASES_MPI&quot;</span><span class="p">:</span> <span class="s2">&quot;link&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;OUTPUT_FILES&quot;</span><span class="p">:</span> <span class="s2">&quot;dir&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.22 12.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.specfem.createsimdir.createsimdir">
+<code class="sig-prename descclassname">lwsspy.seismo.specfem.createsimdir.</code><code class="sig-name descname">createsimdir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">specfemdir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">outputdirname</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">specfem_dict</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>dict<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/specfem/createsimdir.html#createsimdir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.specfem.createsimdir.createsimdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creae simulation directory from specfem directory.</p>
+<dl>
+<dt>Args:</dt><dd><dl>
+<dt>specfemdir (str):</dt><dd><p>specfem3d_globe directory</p>
+</dd>
+<dt>outputdirname (str):</dt><dd><p>new simulation directory with link to specfem directory.</p>
+</dd>
+<dt>specfem_dict (Union[dict, None], optional):</dt><dd><p>Optional dictionary. Defaults to None which gives the following
+copy dirtree dict:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;bin&quot;</span><span class="p">:</span> <span class="s2">&quot;link&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DATA&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;CMTSOLUTION&quot;</span><span class="p">:</span> <span class="s2">&quot;file&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Par_file&quot;</span><span class="p">:</span> <span class="s2">&quot;file&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;STATIONS&quot;</span><span class="p">:</span> <span class="s2">&quot;file&quot;</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;DATABASES_MPI&quot;</span><span class="p">:</span> <span class="s2">&quot;link&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;OUTPUT_FILES&quot;</span><span class="p">:</span> <span class="s2">&quot;dir&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.22 12.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.specfem.getsimdirSTATIONS.getsimdirSTATIONS">
+<code class="sig-prename descclassname">lwsspy.seismo.specfem.getsimdirSTATIONS.</code><code class="sig-name descname">getsimdirSTATIONS</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">specfemdir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">duration</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">11000.0</span></em>, <em class="sig-param"><span class="n">startoffset</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">- 300.0</span></em>, <em class="sig-param"><span class="n">endoffset</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">network</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'IU,II,G'</span></em>, <em class="sig-param"><span class="n">station</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">client</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'IRIS'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/specfem/getsimdirSTATIONS.html#getsimdirSTATIONS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.specfem.getsimdirSTATIONS.getsimdirSTATIONS" title="Permalink to this definition">¶</a></dt>
+<dd><p>This one takes in a specfemdirectory that contains a cmtsolution and creates
+a corresponding stations file from it.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>specfemdir (str):</dt><dd><p>specfem3d_globe simulation directory</p>
+</dd>
+<dt>duration (float, optional):</dt><dd><p>Duration of the recording. Defaults to 11000.0.</p>
+</dd>
+<dt>startoffset (float, optional):</dt><dd><p>Starttime offset in seconds. Defaults to -300.0.</p>
+</dd>
+<dt>endoffset (float, optional):</dt><dd><p>Endtime offset in seconds. Defaults to 0.0.</p>
+</dd>
+<dt>network (Union[str, None], optional):</dt><dd><p>Networks to be requested. Defaults to “IU,II,G”.</p>
+</dd>
+<dt>station (Union[str, None], optional):</dt><dd><p>Stations to be requested. Defaults to None.</p>
+</dd>
+<dt>client (Union[str, None], optional):</dt><dd><p>Clients to be used. Defaults to “IRIS”.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.specfem.inv2STATIONS.inv2STATIONS">
+<code class="sig-prename descclassname">lwsspy.seismo.specfem.inv2STATIONS.</code><code class="sig-name descname">inv2STATIONS</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inv</span><span class="p">:</span> <span class="n">obspy.core.inventory.inventory.Inventory</span></em>, <em class="sig-param"><span class="n">outputfilename</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'./STATIONS'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/specfem/inv2STATIONS.html#inv2STATIONS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.specfem.inv2STATIONS.inv2STATIONS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in an obspy inventory and creates a STATIONS file from</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>inv (Inventory):</dt><dd><p>Input inventory</p>
+</dd>
+<dt>outputfilename (str, optional):</dt><dd><p>Outputfilename. Defaults to “./STATIONS”.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.24 12.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.specfem.readParfile.readParfile">
+<code class="sig-prename descclassname">lwsspy.seismo.specfem.readParfile.</code><code class="sig-name descname">readParfile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/lwsspy/seismo/specfem/readParfile.html#readParfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.specfem.readParfile.readParfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads in a <code class="docutils literal notranslate"><span class="pre">Par_file</span></code> and returns a dictionary containing the
+parameters.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>filename (str): Path to Par_file</p>
+</dd>
+<dt>Returns:</dt><dd><p>dict: dictionary with all parameters</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.specfem.stationxml2STATIONS.stationxml2STATIONS">
+<code class="sig-prename descclassname">lwsspy.seismo.specfem.stationxml2STATIONS.</code><code class="sig-name descname">stationxml2STATIONS</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xmlfilename</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">stationsfilename</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/specfem/stationxml2STATIONS.html#stationxml2STATIONS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.specfem.stationxml2STATIONS.stationxml2STATIONS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in StationsXML file and output STATIONS file.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>xmlfilename (str): stationsXML
+stationsfilename (str): stations</p>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.24 13.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.specfem.stationxmldir2STATIONSdir.stationxmldir2STATIONSdir">
+<code class="sig-prename descclassname">lwsspy.seismo.specfem.stationxmldir2STATIONSdir.</code><code class="sig-name descname">stationxmldir2STATIONSdir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stationxmldir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">stationsdir</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/specfem/stationxmldir2STATIONSdir.html#stationxmldir2STATIONSdir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.specfem.stationxmldir2STATIONSdir.stationxmldir2STATIONSdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in the path to a stationxml directory and outputs the corresponding
+station files in the stationsdir.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>stationxmldir (str):</dt><dd><p>Path to StationXML directory</p>
+</dd>
+<dt>stationsdir (str):</dt><dd><p>Path to STATIONS directory</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="weather">
+<h2>Weather<a class="headerlink" href="#weather" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="lwsspy.weather.drop2pickle.drop2pickle">
+<code class="sig-prename descclassname">lwsspy.weather.drop2pickle.</code><code class="sig-name descname">drop2pickle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">outfilename</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default_run</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/weather/drop2pickle.html#drop2pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.weather.drop2pickle.drop2pickle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in an exported Kestrel file and converts it to a weather object.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>filename (Union[str, None], optional):</dt><dd><p>exported kestrel file. Defaults to None.</p>
+</dd>
+<dt>outfilename (Union[str, None], optional):</dt><dd><p>outputfilename. Defaults to None, then
+&lt;filename&gt;.csv –&gt; &lt;filename&gt;.p</p>
+</dd>
+<dt>default_run (bool, optional):</dt><dd><p>Default file is called from <code class="docutils literal notranslate"><span class="pre">data</span></code> dir. Defaults to False.</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>weather object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="lwsspy.weather.requestweather.requestweather">
+<em class="property">class </em><code class="sig-prename descclassname">lwsspy.weather.requestweather.</code><code class="sig-name descname">requestweather</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lat</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">40.351978</span></em>, <em class="sig-param"><span class="n">lon</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">- 74.660744</span></em>, <em class="sig-param"><span class="n">apikey</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'x0UHCli9qKjkJzxHRDwRa9FWmn4XW31h'</span></em>, <em class="sig-param"><span class="n">locationkey</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'339523'</span></em>, <em class="sig-param"><span class="n">historical</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">city</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'Princeton'</span></em>, <em class="sig-param"><span class="n">countrycode</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'US'</span></em>, <em class="sig-param"><span class="n">forecast</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="#lwsspy.weather.weather.weather" title="lwsspy.weather.weather.weather">lwsspy.weather.weather.weather</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default_run</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/weather/requestweather.html#requestweather"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.weather.requestweather.requestweather" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class requires a bit of a setup. To make this work you will have to</p>
+<ol class="arabic simple">
+<li><p>Setup an Accuweather Developer account (Limited Trial, which let’s you
+request data 50 times a day for free.)</p></li>
+<li><dl class="simple">
+<dt>Setup an app under the <cite>My Apps</cite> tab.</dt><dd><ol class="loweralpha simple">
+<li><p>Choose limited trial</p></li>
+<li><p>Weather app and</p></li>
+<li><p>Python as language</p></li>
+<li><p>after creating the app get the API key that is displayed when
+clicking on the app.</p></li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><p>Then you can use the class to get both the location key for your lat
+lon (it will provide you the closets station) and get the forecast.</p></li>
+</ol>
+<p>Last modified: Lucas Sawade, 2020.09.22 12.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="lwsspy.weather.weather.weather">
+<em class="property">class </em><code class="sig-prename descclassname">lwsspy.weather.weather.</code><code class="sig-name descname">weather</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dates</span><span class="p">:</span> <span class="n">list</span> <span class="o">=</span> <span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">temperature</span><span class="p">:</span> <span class="n">numpy.ndarray</span> <span class="o">=</span> <span class="default_value">array([], dtype=float64)</span></em>, <em class="sig-param"><span class="n">relativeHumidity</span><span class="p">:</span> <span class="n">numpy.ndarray</span> <span class="o">=</span> <span class="default_value">array([], dtype=float64)</span></em>, <em class="sig-param"><span class="n">heatStressIndex</span><span class="p">:</span> <span class="n">numpy.ndarray</span> <span class="o">=</span> <span class="default_value">array([], dtype=float64)</span></em>, <em class="sig-param"><span class="n">dewPoint</span><span class="p">:</span> <span class="n">numpy.ndarray</span> <span class="o">=</span> <span class="default_value">array([], dtype=float64)</span></em>, <em class="sig-param"><span class="n">wetBulbTemperature</span><span class="p">:</span> <span class="n">numpy.ndarray</span> <span class="o">=</span> <span class="default_value">array([], dtype=float64)</span></em>, <em class="sig-param"><span class="n">stationPressure</span><span class="p">:</span> <span class="n">numpy.ndarray</span> <span class="o">=</span> <span class="default_value">array([], dtype=float64)</span></em>, <em class="sig-param"><span class="n">rain</span><span class="p">:</span> <span class="n">numpy.ndarray</span> <span class="o">=</span> <span class="default_value">array([], dtype=float64)</span></em>, <em class="sig-param"><span class="n">deviceName</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">''</span></em>, <em class="sig-param"><span class="n">deviceModel</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">''</span></em>, <em class="sig-param"><span class="n">serialNumber</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">''</span></em>, <em class="sig-param"><span class="n">unitTemp</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'$^\\circ C$'</span></em>, <em class="sig-param"><span class="n">unitRelativeHumidity</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'%'</span></em>, <em class="sig-param"><span class="n">unitHeatStressIndex</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'$^\\circ C$'</span></em>, <em class="sig-param"><span class="n">unitRain</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'mm'</span></em>, <em class="sig-param"><span class="n">unitDew</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'$^\\circ C$'</span></em>, <em class="sig-param"><span class="n">unitWetBulbTemp</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'$^\\circ C$'</span></em>, <em class="sig-param"><span class="n">unitStationPressure</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'mb'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/weather/weather.html#weather"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.weather.weather.weather" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 </div>

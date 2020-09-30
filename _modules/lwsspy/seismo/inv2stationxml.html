@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>lwsspy.math.eigsort &mdash; lwsspy 0.0.1alpha documentation</title>
+  <title>lwsspy.seismo.inv2stationxml &mdash; lwsspy 0.0.1alpha documentation</title>
   
 
   
@@ -132,7 +132,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>lwsspy.math.eigsort</li>
+      <li>lwsspy.seismo.inv2stationxml</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -147,31 +147,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for lwsspy.math.eigsort</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+  <h1>Source code for lwsspy.seismo.inv2stationxml</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">Inventory</span>
 
 
-<div class="viewcode-block" id="eigsort"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.math.eigsort.eigsort">[docs]</a><span class="k">def</span> <span class="nf">eigsort</span><span class="p">(</span><span class="n">mat</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns sorted eigenvalues of a given matrix</span>
+<div class="viewcode-block" id="inv2stationxml"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.seismo.inv2stationxml.inv2stationxml">[docs]</a><span class="k">def</span> <span class="nf">inv2stationxml</span><span class="p">(</span><span class="n">inv</span><span class="p">:</span> <span class="n">Inventory</span><span class="p">,</span> <span class="n">outputfilename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;station.xml&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tankes in inv and writes stationxml.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        mat (np.array): Square matrix</span>
+<span class="sd">        inv (Inventory):</span>
+<span class="sd">            Obspy station inventory</span>
+<span class="sd">        outputfilename (str, optional):</span>
+<span class="sd">            Outputfilename. Defaults to &quot;station.xml&quot;.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        sorted eigenvalue [vector], and -vectors [matrix]</span>
+<span class="sd">    Last modified: Lucas Sawade, 2020.09.24 13.00 (lsawade@princeton.edu)</span>
 
-<span class="sd">    Last modified: Lucas Sawade, 2020.09.14 23.00 (lsawade@princeton.edu)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># Get Eigenvalues</span>
-    <span class="n">vals</span><span class="p">,</span> <span class="n">vecs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
-
-    <span class="c1"># Sort them</span>
-    <span class="n">order</span> <span class="o">=</span> <span class="n">vals</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="c1"># Return sorted values and vectors</span>
-
-    <span class="k">return</span> <span class="n">vals</span><span class="p">[</span><span class="n">order</span><span class="p">],</span> <span class="n">vecs</span><span class="p">[:,</span> <span class="n">order</span><span class="p">]</span></div>
+    <span class="c1"># write inventory to file</span>
+    <span class="n">inv</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">outputfilename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;STATIONXML&#39;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

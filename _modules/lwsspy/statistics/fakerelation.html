@@ -150,7 +150,7 @@
   <h1>Source code for lwsspy.statistics.fakerelation</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>  <span class="c1"># type: ignore</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
 <div class="viewcode-block" id="fakerelation"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.statistics.fakerelation.fakerelation">[docs]</a><span class="k">def</span> <span class="nf">fakerelation</span><span class="p">(</span><span class="n">C12</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
@@ -208,13 +208,13 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 
-    <span class="c1"># Testrun </span>
+    <span class="c1"># Testrun</span>
     <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">CXY</span> <span class="o">=</span> <span class="n">fakerelation</span><span class="p">(</span><span class="n">C12</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">distro</span><span class="o">=</span><span class="s1">&#39;normal&#39;</span><span class="p">,</span>
                                 <span class="n">pars</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;loc&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;scale&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
 
-    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>  <span class="c1"># type: ignore</span>
-    <span class="kn">from</span> <span class="nn">..plot_util.updaterc</span> <span class="kn">import</span> <span class="n">updaterc</span>  <span class="c1"># type: ignore</span>
-    <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">DOCFIGURES</span>  <span class="c1"># type: ignore</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+    <span class="kn">from</span> <span class="nn">..plot_util.updaterc</span> <span class="kn">import</span> <span class="n">updaterc</span>
+    <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">DOCFIGURES</span>
     <span class="n">updaterc</span><span class="p">()</span>
 
     <span class="c1"># Define where the text for correlation coefficient should go</span>
