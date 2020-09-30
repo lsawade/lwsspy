@@ -51,3 +51,16 @@ It works for both `.svg` and `.pdf`. Probably others too, but I haven't tried.
 Below the image produced by the code above
 
 .. image:: figures/test_rasterize.svg
+
+
+
+Make x/y labels invisible on shared axes plots
+++++++++++++++++++++++++++++++++++++++++++++++
+
+To make plots with subfigures more beautiful, you may want to remove axes
+labels if the plots share the axes!
+
+.. literalinclude:: figures/scripts/remove_labels.py
+  :language: python
+
+.. image:: figure/remove_labels.svg

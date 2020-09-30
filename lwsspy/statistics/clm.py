@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 
 # Internal
 from .normalstdheight import normalstdheight
-from ..math.convm import convm
 
 
 def clm(x: np.ndarray, distr: List[np.ndarray],
@@ -42,10 +41,6 @@ def clm(x: np.ndarray, distr: List[np.ndarray],
 
     """
 
-
-    # Get spacing
-    dx = x[1] - x[0]
-
     if len(distr) < 2:
         raise ValueError("You need at least 2 distributions")
     Ndist = len(distr)
@@ -61,7 +56,7 @@ def clm(x: np.ndarray, distr: List[np.ndarray],
     # Counter used to control the index and number of convolutions
     _i = 0
 
-    # 
+    # Looping over the number of convolutions
     for _j in range(N):
         # for _i in range(1, Ndist):
         # Get new values
@@ -71,7 +66,7 @@ def clm(x: np.ndarray, distr: List[np.ndarray],
 
         ppdf = np.convolve(ppdf, ppdf1, mode='full')
 
-        # Theoretically correct implemenation:
+        # Theoretically correct implemenation with dx = x[1] - x[0]:
         # np.arange(len(ppdf)) * dx + np.min(x)
         # Illustrative implementation:
         x = np.linspace(np.min(x), np.max(x), len(ppdf))
