@@ -9,13 +9,21 @@ DOCFIGURES = os.path.join(
 
 # Global imports when running the modules for testing
 if "-m" not in sys.argv:
+
     # Statistics
-    from .statistics.fakerelation import fakerelation  # noqa
+    from .statistics.clm import clm  # noqa
+    from .statistics.distlist import distlist  # noqa
     from .statistics.errorellipse import errorellipse  # noqa
+    from .statistics.fakerelation import fakerelation  # noqa
+    from .statistics.fitgaussian2d import fitgaussian2d  # noqa
+    from .statistics.gaussian2d import gaussian2d  # noqa
+    from .statistics.normalstdheight import normalstdheight  # noqa
 
     # Math
+    from .math.convm import convm  # noqa
     from .math.eigsort import eigsort  # noqa
     from .math.magnitude import magnitude  # noqa
+    from .math.SphericalNN import SphericalNN  # noqa
 
     # Plot
     from .plot_util.updaterc import updaterc  # noqa
@@ -58,3 +66,7 @@ if "-m" not in sys.argv:
     from .seismo.specfem.inv2STATIONS import inv2STATIONS  # noqa
     from .seismo.specfem.stationxml2STATIONS import stationxml2STATIONS  # noqa
     from .seismo.specfem.stationxmldir2STATIONSdir import stationxmldir2STATIONSdir  # noqa
+
+
+    # -------- CONSTANTS ------------------------------------------------------
+    from .constants import EARTH_RADIUS  # noqa
