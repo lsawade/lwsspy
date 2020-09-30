@@ -63,4 +63,4 @@ labels if the plots share the axes!
 .. literalinclude:: figures/scripts/remove_labels.py
   :language: python
 
-.. image:: figure/remove_labels.svg
+.. image:: figures/remove_labels.svg
