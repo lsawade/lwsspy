@@ -183,6 +183,11 @@
 <span class="sd">        Tuple[float, float, float]: </span>
 <span class="sd">            Expected Value, Variance, cost sum of squares compared to Normal D.</span>
 <span class="sd">    </span>
+<span class="sd">    **Note**:</span>
+<span class="sd">        The model plot below is not technically correct, as marked in the</span>
+<span class="sd">        code, it is just for illustration of the shape. The correct</span>
+<span class="sd">        implementation of the convolution operation is commented.</span>
+
 <span class="sd">    Last modified: Lucas Sawade, 2020.09.30 11.00 (lsawade@princeton.edu)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -215,7 +220,11 @@
         <span class="n">ppdf1</span> <span class="o">=</span> <span class="n">distr</span><span class="p">[</span><span class="n">_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
 
         <span class="n">ppdf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">ppdf</span><span class="p">,</span> <span class="n">ppdf1</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">)</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ppdf</span><span class="p">))</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># Theoretically correct implemenation:</span>
+        <span class="c1"># np.arange(len(ppdf)) * dx + np.min(x)</span>
+        <span class="c1"># Illustrative implementation:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ppdf</span><span class="p">))</span>
         <span class="n">ppdf</span> <span class="o">=</span> <span class="n">ppdf</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">ppdf</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
 
         <span class="c1"># Get expected value of PDF</span>
