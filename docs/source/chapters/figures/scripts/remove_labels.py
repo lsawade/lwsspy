@@ -2,8 +2,10 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Import location to where to save the documentation figures
-from lwsspy import DOCFIGURES
+# Internal
+from lwsspy import DOCFIGURES  # Location to store figure
+from lwsspy import updaterc    # Makes figure pretty in my opinion
+updaterc()
 
 # Create vector
 x = np.linspace(-1, 1, 100)
@@ -32,7 +34,7 @@ for _i in range(4):
         ax.tick_params(labelleft=False)  # The important line
 
     # Generate legend
-    plt.legend(loc=4, fancybox=False, edgecolor='k')
+    plt.legend(loc=4)
 
 # Adjusting the plots
 plt.subplots_adjust(hspace=0.125, wspace=0.125)
