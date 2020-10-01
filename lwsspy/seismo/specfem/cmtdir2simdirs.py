@@ -6,6 +6,7 @@ from .cmt2simdir import cmt2simdir
 from ..source import CMTSource
 from ...math.magnitude import magnitude
 
+
 def cmtdir2simdirs(cmtdir: str, specfemdir: str, outputdir: str = "./",
                    specfem_dict: Union[dict, None] = None,
                    stationsdir: Union[str, None] = None):
@@ -54,12 +55,16 @@ def cmtdir2simdirs(cmtdir: str, specfemdir: str, outputdir: str = "./",
 
         # Create Simdir
         if stationsdir is not None:
-            cmtid = p.basename(_file).split(".")[0].split("_")[0]
+            cmtid_pert = p.basename(_file).split(".")[0]
+            cmtid = cmtid_pert.split("_")[0]
             stationsfile = p.join(stationsdir, cmtid + ".stations")
+            print(f"CMT: {cmtid_pert} -- STATIONS: {stationsfile}")
 
             if p.exists(stationsfile) is False:
                 stationsfile = p.join(stationsdir, cmtid)
+
             if p.exists(stationsfile) is False:
+                print("-----> No STATIONS file found.")
                 raise ValueError(f"{stationsfile} does not exist.")
 
         # Print progress
