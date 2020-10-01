@@ -45,7 +45,7 @@ def cmtdir2simdirs(cmtdir: str, specfemdir: str, outputdir: str = "./",
 
     # Get list of cmt files
     cmtfiles = glob(p.join(cmtdir, "*"))
-
+    cmtfiles.sort()
     print("Number of CMT files: %d" % len(cmtfiles))
 
     Nev = len(cmtfiles)
