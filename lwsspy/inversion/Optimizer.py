@@ -310,7 +310,7 @@ def perform_linesearch(optim):
             break
             # error('Not a descent direction... STOP');
 
-        if (optim.w1 == True) and (optim.w2 == True):  # both are satisfied, then terminate
+        if (optim.w1 is True) and (optim.w2 is True):  # both are satisfied, then terminate
             print(
                 f"\niter = {optim.current_iter}, ",
                 f"f./fo={optim.fcost_new./optim.fcost_ini:5.4e}, "
@@ -325,7 +325,7 @@ def perform_linesearch(optim):
             optim.al = optim.alpha
             if optim.ar > 0:                 # sufficient decrease but too close already backeted decrease in interval
                 optim.alpha = (optim.al + optim.ar)*0.5
-            else:                        # sufficient decrease but too close, then increase a
+            else:  # sufficient decrease but too close, then increase a
                 optim.alpha = optim.factor * optim.alpha
 
     # Check linesearch
