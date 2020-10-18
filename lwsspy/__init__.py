@@ -16,7 +16,7 @@ if "-m" not in sys.argv:
     # -------- FUNCTIONS & CLASSES --------------------------------------------
 
     # Inversion
-    from .inversion.Optimizer import Optimization  # noqa
+    from .inversion.optimizer import Optimization  # noqa
 
     # Math
     from .math.convm import convm  # noqa

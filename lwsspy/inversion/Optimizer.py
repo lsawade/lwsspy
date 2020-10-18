@@ -1,135 +1,87 @@
-from numpy import np
-from copy import deepcopy
+import numpy as np
+from copy import deepcopy, copy
 
 
-def NOP(*args, **kwargs):
+def NOP(args):
     """Does nothing
     """
-    pass
-
-
-class Optimization:
-
-    def __init__(
-        self,
-        otype: str = 'bfgs',
-        fcost_init: float = 0.0,
-        fcost: float = 0.0,
-        norm_grad_init: float = 0.0,
-        norm_grad: float = 0.0,
-        stopping_criterion: float = 1e-10,
-        niter_max: int = 50,
-        qk: float = 0.0,
-        q: float = 0.0,
-        is_preco: bool = True,
-        alpha: float = 0.0,
-        n: int = 0,  # number of parameters
-        model: list = [],
-        grad: list = [],
-        descent: = [],
-        nsave: int = 0,
-        perc: float = 0.025,
-        fcost_hist: list = [],
-        flag: str = "suceed",
-        # for linesearch
-        nls_max: int = 20,
-        c1: float = 1e-4,
-        c2: float = 0.9,
-        al: float = 0.,
-        ar: float = 0.,
-        strong: bool = False,
-        factor: float = 10.0,
-        # For BFGS
-        gsave: list = [],
-        msave: list = [],
-        # Routine
-        compute_cost: callable = NOP,
-        compute_gradient: callable = NOP,
-        compute_cost_and_gradient: callable = NOP,
-        descent_direction: callable = NOP,
-        apply_preconditioner: callable = NOP,
-        save_model_to_disk: callable = NOP,
-        save_model_and_gradient: callable = store_grad_and_model,
-        solve: callable = Solve_Optimisation_Problem,
-        get_optim_si_yi: callable = get_optim_si_yi,
-        compute_beta: callable = fletcher_reeves)
-
-    # Useful things
-    self.type = otype
-    self.fcost_init = fcost_init
-    self.fcost = fcost
-    self.norm_grad_init = norm_grad_init
-    self.norm_grad = norm_grad
-    self.stopping_criterion = stopping_criterion
-    self.niter_max = niter_max
-    self.qk = qk
-    self.q = q
-    self.is_preco = is_preco
-    self.alpha = alpha
-    self.n = n      # number of parameters
-    self.model = model
-    self.grad = grad
-    self.descent = descent
-    self.nsave = nsave
-    self.perc = perc
-    self.fcost_hist = fcost_hist
-    self.flag = flag
-
-    # for linesearch
-    self.nls_max = nls
-    self.c1 = cs
-    self.c2 = c2
-    self.al = al
-    self.ar = ar
-    self.strong = strong
-    self.factor = factor
-
-    # For BFGS
-    self.nb_mem = self.niter_max  # by default
-    self.gsave = gsave
-    self.msave = msave
-
-    # Routine
-    self.compute_cost = compute_cost
-    self.compute_gradient = compute_gradient
-    self.compute_cost_and_gradient = compute_cost_and_gradient
-    self.descent_direction = descent_direction
-    self.apply_preconditioner = apply_preconditioner
-    self.save_model_to_disk = save_model_to_disk
-    self.save_model_and_gradient = save_model_and_gradient
-    self.solve = solve
-    self.get_optim_si_yi = get_optim_si_yi
-    self.compute_beta = compute_beta
-    # self.compute_beta  = polak_ribiere # could also be fletcher reeves
+    return args
 
 
 def norm_l2(a):
-    val = sqrt(sum(a.*a))
+    """Computes the L2 norm of a vector
+
+    Parameters
+    ----------
+    a : numpy.ndarray
+        array of arbitrary size, but it makes only sense for a 1d vector
+
+    Returns
+    -------
+    float
+        float witht L2 norm
+    """
+    val = np.sqrt(np.sum(a*a))
     return val
 
 
 def scalar_product(a, b):
-    val = sum(a.*b)
+    """Computes scalar product
+
+    Parameters
+    ----------
+    a : numpy.ndarray
+        array
+    b : numpy.ndarray
+        array of same size as array a
+
+    Returns
+    -------
+    float
+        containing scalar product
+    """
+    val = np.sum(a*b)
     return val
 
 
 def Solve_Optimisation_Problem(optim, model):
+    """Takes in class:`lwsspy.Optimization`
+
+    Parameters
+    ----------
+    optim : lwsspy.Optimization
+        Optimization struct
+    model : numpy.ndarray
+        model vector
+
+    Returns
+    -------
+    lwsspy.Optimization
+        returns a copy of the optimization struct that has been optimized.
+
+    Raises
+    ------
+    ValueError
+        if wrong optimizaiton algorithm is used
+    """
+    # because python is weird
+    optim = deepcopy(optim)
 
     if optim.type == "steepest":
         optim.descent_direction = get_steepest_descent_direction
-        if optim.is_preco == False:
+        if optim.is_preco is False:
             optim.apply_preconditioner = NOP
 
-    elseif optim.type == "bfgs":
+    elif optim.type == "bfgs":
         optim.descent_direction = get_bfgs_descent_direction
-        if (~optim.is_preco):
+        if (optim.is_preco is False):
             optim.apply_preconditioner = preconditioner_nocedal
 
-        optim.ro = zeros(optim.niter_max)
-        optim.ai = zeros(optim.niter_max)
-    elseif optim.type == "nlcg":
+        optim.ro = np.zeros(optim.niter_max)
+        optim.ai = np.zeros(optim.niter_max)
+    elif optim.type == "nlcg":
         optim.descent_direction = get_nonlinear_conjugate_gradient_direction
-        if optim.is_preco == False:
+        if optim.is_preco is False:
             optim.apply_preconditioner = NOP
 
     else:
@@ -138,9 +90,12 @@ def Solve_Optimisation_Problem(optim, model):
     optim.model_ini = deepcopy(model)
     optim.model = model
 
-    optim.fcost_ini = deepcopy(optim.compute_cost(optim.model))
-
-    optim.grad_ini = optim.compute_gradient(optim.model)
+    if optim.compute_cost_and_gradient is not None:
+        optim.fcost_ini, optim.grad_ini = \
+            optim.compute_cost_and_gradient(optim.model)
+    else:
+        optim.fcost_ini = deepcopy(optim.compute_cost(optim.model))
+        optim.grad_ini = optim.compute_gradient(optim.model)
 
     optim.fcost = optim.fcost_ini
     optim.grad = optim.grad_ini
@@ -159,8 +114,8 @@ def Solve_Optimisation_Problem(optim, model):
         optim.nb_mem = optim.niter_max  # by default
 
     # optim.alpha = 1.
-    optim.msave = np.zeros(optim.n, optim.nb_mem)
-    optim.gsave = np.zeros(optim.n, optim.nb_mem)
+    optim.msave = np.zeros((optim.n, optim.nb_mem))
+    optim.gsave = np.zeros((optim.n, optim.nb_mem))
 
     # Some attached defs
     optim.bfgs_formula = bfgs_formula         # accessible outside for resolution
@@ -168,16 +123,16 @@ def Solve_Optimisation_Problem(optim, model):
     optim.store_grad_and_model = store_grad_and_model  # could be overwritten
 
     # Perform optimization
-    optim.fcost_hist.append(optim.fcost./optim.fcost_ini)
-    for iter in range(optim.niter_max):
+    optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
+    for _iter in range(optim.niter_max):
 
-        print("\n\nModel: ", optim.model)
-        print("Grad:  ", optim.grad, "\n\n")
+        # print("\n\nModel: ", optim.model)
+        # print("Grad:  ", optim.grad, "\n\n")
 
         # Initialize
         optim.al = 0
         optim.ar = 0
-        optim.current_iter = iter
+        optim.current_iter = _iter
 
         # Save gradient and model
         optim.save_model_and_gradient(optim)
@@ -190,8 +145,8 @@ def Solve_Optimisation_Problem(optim, model):
 
         # Perform linesearch
         perform_linesearch(optim)
-        if optim.flag == "fail"
-        break
+        if optim.flag == "fail":
+            break
 
         # If linesearch successful update informations
         optim.fcost = optim.fcost_new
@@ -202,18 +157,27 @@ def Solve_Optimisation_Problem(optim, model):
         optim.grad = optim.grad_new
         optim.q = optim.qnew
 
-        push(optim.fcost_hist, optim.fcost./optim.fcost_ini)
+        optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
 
         # Check stopping criteria
-        if ((optim.fcost / optim.fcost_ini) < optim.stopping_criterion) or (iter > optim.niter_max):
+        if ((optim.fcost / optim.fcost_ini) < optim.stopping_criterion) \
+                or (_iter > optim.niter_max):
             optim.save_model_and_gradient(optim)
             print("Optimization algorithm has converged.")
             break
 
-    return deepcopy(optim)
+    return optim
 
 
 def get_steepest_descent_direction(optim):
+    """Gets steepest descent direction
+
+    Parameters
+    ----------
+    optim : Optimization
+        optimization class
+
+    """
     if (optim.is_preco is True):
         optim.norm_grad = norm_l2(optim.grad)
         optim.descent = -optim.apply_preconditioner(optim.grad)
@@ -224,9 +188,16 @@ def get_steepest_descent_direction(optim):
 
 
 def get_nonlinear_conjugate_gradient_direction(optim):
+    """Get nonlinear conjugate Gradient descent Direction
+
+    Parameters
+    ----------
+    optim : Optimization
+        optimization class
+    """
 
     # At first iteration perform a steepest descent update
-    if (optim.current_iter == 1):
+    if (optim.current_iter == 0):
         get_steepest_descent_direction(optim)
 
     else:
@@ -238,9 +209,16 @@ def get_nonlinear_conjugate_gradient_direction(optim):
 
 
 def get_bfgs_descent_direction(optim):
+    """Gets BFGS descent direction.
+
+    Parameters
+    ----------
+    optim : Optimization
+        optimization class
+    """
 
     # At first iteration perform a steepest descent update
-    if (optim.current_iter == 1):
+    if (optim.current_iter == 0):
         get_steepest_descent_direction(optim)
     else:
         # Call BFGS formula
@@ -250,17 +228,25 @@ def get_bfgs_descent_direction(optim):
 
 
 def bfgs_formula(optim):
+    """Runs BFGS formula to get descent direction
+
+    Parameters
+    ----------
+    optim : Optimization
+        optimization class
+    """
     # First loop
-    iter = optim.current_iter
+    _iter = optim.current_iter
     optim.descent = optim.grad
-    for i in range(iter, -1, 0):
+    for i in range(_iter-1, 1, -1):
         optim.get_si_and_yi(optim, i)
         sty = scalar_product(optim.si, optim.yi)
         std = scalar_product(optim.si, optim.descent)
-        optim.ro[i] = 1 . / sty
-        optim.ai[i] = optim.ro[i] .* std
-        optim.descent = optim.descent - optim.ai[i] .* optim.yi
+        optim.ro[i] = 1 / sty
+        optim.ai[i] = optim.ro[i] * std
+        optim.descent = optim.descent - optim.ai[i] * optim.yi
 
+    # Apply preco
     # Apply preco
     if (optim.is_preco):
         optim.apply_preconditioner(optim.descent)
@@ -268,31 +254,58 @@ def bfgs_formula(optim):
         optim.apply_preconditioner(optim)
 
     # Second loop
-    for i in range(0: iter):
+    for i in range(_iter):
         optim.get_si_and_yi(optim, i)
         optim.yitd = scalar_product(optim.yi, optim.descent)
         beta = optim.ro[i] * optim.yitd
-        optim.descent = optim.descent + optim.si .* (optim.ai[i] - beta)
+        optim.descent = optim.descent + optim.si * (optim.ai[i] - beta)
 
 
 def get_optim_si_yi(optim, i):
-    optim.si = optim.msave[:, i+1] - optim.msave[:, i]
-    optim.yi = optim.gsave[:, i+1] - optim.gsave[:, i]
+    """Gets the si and and yi history for the descent direction.
+
+    Parameters
+    ----------
+    optim : Optimization 
+        Optimization class
+    i : int
+        iteration counter
+    """
+    optim.si = optim.msave[:, i] - optim.msave[:, i-1]
+    optim.yi = optim.gsave[:, i] - optim.gsave[:, i-1]
     # add def to read from disk
 
 
 def perform_linesearch(optim):
+    """Performs linesearch on class:`lwsspy.Optimization`
+
+    Parameters
+    ----------
+    optim : Optimization
+        optimization class
+
+    Raises
+    ------
+    ValueError
+        If linesearch fails (max number of linesearch itterations are reached).
+    """
 
     # Line search
     for ils in range(optim.nls_max):
 
         # New model and evaluate
-        optim.model_new = optim.model + optim.alpha .* optim.descent
-        optim.fcost_new = optim.compute_cost(optim.model_new)
-        optim.grad_new = optim.compute_gradient(optim.model_new)
+        optim.model_new = optim.model + optim.alpha * optim.descent
+
+        # If simultaneous cost and grad computation is defined do that.
+        if optim.compute_cost_and_gradient is not None:
+            optim.fcost_new, optim.grad_new = \
+                optim.compute_cost_and_gradient(optim.model_new)
+        else:
+            optim.fcost_new = optim.compute_cost(optim.model_new)
+            optim.grad_new = optim.compute_gradient(optim.model_new)
 
         # Safeguard check for inf and nans...
-        if isnan(optim.fcost_new) or isinf(optim.fcost_new):
+        if np.isnan(optim.fcost_new) or np.isinf(optim.fcost_new):
             # assume we've been too far and reduce step
             optim.ar = optim.alpha
             optim.alpha = (optim.al+optim.ar)*0.5
@@ -313,7 +326,7 @@ def perform_linesearch(optim):
         if (optim.w1 is True) and (optim.w2 is True):  # both are satisfied, then terminate
             print(
                 f"\niter = {optim.current_iter}, ",
-                f"f./fo={optim.fcost_new./optim.fcost_ini:5.4e}, "
+                f"f/fo={optim.fcost_new/optim.fcost_ini:5.4e}, "
                 f"nls = {ils}, wolfe1 = {optim.w1} wolfe2 = {optim.w2}, "
                 f"a={optim.alpha}, al={optim.al}, ar={optim.ar}\n")
             break
@@ -334,12 +347,26 @@ def perform_linesearch(optim):
 
 
 def store_grad_and_model(optim):
-    iter = optim.current_iter
-    optim.msave[:, iter] = optim.model[:]
-    optim.gsave[:, iter] = optim.grad[:]
+    """Function to store the model and the gradient.
+
+    Parameters
+    ----------
+    optim : Optimization
+        Optimization class
+    """
+    _iter = optim.current_iter
+    optim.msave[:, _iter] = optim.model[:]
+    optim.gsave[:, _iter] = optim.grad[:]
 
 
 def check_wolfe_conditions(optim):
+    """Checks Wolfe conditions
+
+    Parameters
+    ----------
+    optim : Optimization
+        Optimization class
+    """
 
     # Init wolfe boolean
     optim.w1 = False
@@ -356,9 +383,9 @@ def check_wolfe_conditions(optim):
         optim.w1 = True
 
     # Check second wolfe
-    if optim.strong == False:
-        if (optim.qnew >= optim.c2 * optim.q)
-        optim.w2 = True
+    if optim.strong is False:
+        if optim.qnew >= optim.c2 * optim.q:
+            optim.w2 = True
 
     else:
         if abs(optim.qnew) >= abs(optim.c2 * optim.q):
@@ -366,8 +393,15 @@ def check_wolfe_conditions(optim):
 
 
 def preconditioner_nocedal(optim):
-    iter = optim.current_iter
-    optim.get_si_and_yi(optim, iter-1)
+    """Applies Nocedal style preconditioner to class:`Optimization`.
+
+    Parameters
+    ----------
+    optim : Optimization
+        Optimization
+    """
+    _iter = optim.current_iter
+    optim.get_si_and_yi(optim, _iter)
     sty = scalar_product(optim.si, optim.yi)
     yty = scalar_product(optim.yi, optim.yi)
     optim.gam = sty / yty
@@ -375,12 +409,26 @@ def preconditioner_nocedal(optim):
 
 
 def fletcher_reeves(optim):
+    """Fletcher-Reeves algorithm to get beta
+
+    Parameters
+    ----------
+    optim : Optimizatiton
+        Optimization class
+    """
     xtx = scalar_product(optim.grad, optim.grad)
     xtxp = scalar_product(optim.grad_prev, optim.grad_prev)
     optim.beta = xtx / xtxp
 
 
 def polak_ribiere(optim):
+    """Polak-Ribiere algorithm to get beta
+
+    Parameters
+    ----------
+    optim : Optimization
+        Optimization struct
+    """
     # not sure what happens with this one
     dgrad = optim.grad - optim.grad_prev
     xtx = scalar_product(optim.grad, dgrad)
@@ -388,3 +436,183 @@ def polak_ribiere(optim):
     optim.beta = np.max(0, xtx / xtxp)
     print(optim.beta)
     # pause
+
+
+class Optimization:
+
+    def __init__(
+        self,
+        otype: str = 'bfgs',
+        fcost_init: float = 0.0,
+        fcost: float = 0.0,
+        norm_grad_init: float = 0.0,
+        norm_grad: float = 0.0,
+        stopping_criterion: float = 1e-10,
+        niter_max: int = 50,
+        qk: float = 0.0,
+        q: float = 0.0,
+        is_preco: bool = True,
+        alpha: float = 0.0,
+        n: int = 0,  # number of parameters
+        model: np.ndarray = np.array([]),
+        grad: np.ndarray = np.array([]),
+        descent: np.ndarray = np.array([]),
+        nsave: int = 0,
+        perc: float = 0.025,
+        fcost_hist: list = [],
+        flag: str = "suceed",
+        # for linesearch
+        nls_max: int = 20,
+        c1: float = 1e-4,
+        c2: float = 0.9,
+        al: float = 0.,
+        ar: float = 0.,
+        strong: bool = False,
+        factor: float = 10.0,
+        # For BFGS
+        gsave: list = [],
+        msave: list = [],
+        # Routine
+        compute_cost: callable = NOP,
+        compute_gradient: callable = NOP,
+        compute_cost_and_gradient: callable or None = None,
+        descent_direction: callable = NOP,
+        apply_preconditioner: callable = NOP,
+        save_model_to_disk: callable = NOP,
+        save_model_and_gradient: callable = store_grad_and_model,
+        solve: callable = Solve_Optimisation_Problem,
+        get_optim_si_yi: callable = get_optim_si_yi,
+            compute_beta: callable = fletcher_reeves):
+        """Optimization class to run optimize a problem with given cost function
+        and cost function gradient.
+
+        Parameters
+        ----------
+        otype : str, optional
+            Optimization algorithm, by default 'bfgs'
+        fcost_init : float, optional
+            initial cost, by default 0.0
+        fcost : float, optional
+            cost function value, by default 0.0
+        norm_grad_init : float, optional
+            initial norm of the gradient, by default 0.0
+        norm_grad : float, optional
+            current norm of the gradient, by default 0.0
+        stopping_criterion : float, optional
+            value to cost function has to reach, by default 1e-10
+        niter_max : int, optional
+            max iteration (excluding the linesearch), by default 50
+        qk : float, optional
+            qk, for linesearch, by default 0.0
+        q : float, optional
+            q, for linesearch, by default 0.0
+        is_preco : bool, optional
+            proconditioning flag, by default True
+        alpha : float, optional
+            alpha sttep length to be found by by linesearch, by default 0.0
+        n : int, optional
+            number of model parameters, by default 0
+        grad : np.ndarray, optional
+            current gradient, by default np.array([])
+        descent : np.ndarray, optional
+            current descent direction, by default np.array([])
+        nsave : int, optional
+            matrix to store model iterations, by default 0
+        perc : float, optional
+            precentage of step, by default 0.025
+        fcost_hist : list, optional
+            cost function history, by default []
+        flag : str, optional
+            success flag, by default "suceed"
+        nls_max : int, optional
+            maximum linesearch itterations, by default 20
+        c1 : float, optional
+            linesearch parameter c1, by default 1e-4
+        c2 : float, optional
+            linesearch parameter c1, by default 0.9
+        al : float, optional
+            left alpha boundary, by default 0.
+        ar : float, optional
+            right alpha boundary, by default 0.
+        strong : bool, optional
+            strong wolfe condition are abided if True, by default False
+        factor : float, optional
+            Factor to multiply alpha by, by default 10.0
+        gsave : list, optional
+            array to save the past gradients, by default []
+        msave : list, optional
+            array to save past models, by default []
+        compute_cost : callable, optional
+            function that computes the cost, by default NOP
+        compute_gradient : callable, optional
+            function that computes the gradient, by default NOP
+        compute_cost_and_gradient : callable or None, optional
+            function that computes the cost and the gradient at the same time,
+            by default None
+        descent_direction : callable, optional
+            function that computes the descent direction, by default NOP
+        apply_preconditioner : callable, optional
+            function that applies a preconditioner, by default NOP
+        save_model_to_disk : callable, optional
+            function that writes the model to disk, not implemented,
+            by default NOP
+        save_model_and_gradient : callable, optional
+            funciton that stores model and gradient within the optimization
+            class, by default store_grad_and_model
+        solve : callable, optional
+            solves the optimization problem,
+            by default Solve_Optimisation_Problem
+        get_optim_si_yi : callable, optional
+            function that gets the optimal si and yi,
+            by default get_optim_si_yi
+        compute_beta : callable, optional
+            function that computes beta, by default fletcher_reeves
+        """
+
+        # Useful things
+        self.type = otype
+        self.fcost_init = fcost_init
+        self.fcost = fcost
+        self.norm_grad_init = norm_grad_init
+        self.norm_grad = norm_grad
+        self.stopping_criterion = stopping_criterion
+        self.niter_max = niter_max
+        self.qk = qk
+        self.q = q
+        self.is_preco = is_preco
+        self.alpha = alpha
+        self.n = n      # number of parameters
+        self.model = model
+        self.grad = grad
+        self.descent = descent
+        self.nsave = nsave
+        self.perc = perc
+        self.fcost_hist = fcost_hist
+        self.flag = flag
+
+        # for linesearch
+        self.nls_max = nls_max
+        self.c1 = c1
+        self.c2 = c2
+        self.al = al
+        self.ar = ar
+        self.strong = strong
+        self.factor = factor
+
+        # For BFGS
+        self.nb_mem = self.niter_max  # by default
+        self.gsave = gsave
+        self.msave = msave
+
+        # Routine
+        self.compute_cost = compute_cost
+        self.compute_gradient = compute_gradient
+        self.compute_cost_and_gradient = compute_cost_and_gradient
+        self.descent_direction = descent_direction
+        self.apply_preconditioner = apply_preconditioner
+        self.save_model_to_disk = save_model_to_disk
+        self.save_model_and_gradient = save_model_and_gradient
+        self.solve = solve
+        self.get_optim_si_yi = get_optim_si_yi
+        self.compute_beta = compute_beta
+        # self.compute_beta  = polak_ribiere # could also be fletcher reeves
