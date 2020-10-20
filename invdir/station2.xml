@@ -1,0 +1,1847 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<FDSNStationXML xmlns="http://www.fdsn.org/xml/station/1" schemaVersion="1.1">
+  <Source>IRIS-DMC</Source>
+  <Sender>IRIS-DMC</Sender>
+  <Module>IRIS WEB SERVICE: fdsnws-station | version: 1.1.46</Module>
+  <ModuleURI>http://service.iris.edu/fdsnws/station/1/query?starttime=2018-06-09T00%3A28%3A16.400000&amp;endtime=2018-06-09T00%3A53%3A16.400000&amp;network=IU%2CII%2CG</ModuleURI>
+  <Created>2020-10-19T03:03:01.000000Z</Created>
+  <Network code="G" startDate="1982-01-01T00:00:00.000000Z" restrictedStatus="open">
+    <Description>GEOSCOPE ()</Description>
+    <Identifier type="DOI">10.18715/GEOSCOPE.G
+   </Identifier>
+    <TotalNumberStations>55</TotalNumberStations>
+    <SelectedNumberStations>35</SelectedNumberStations>
+    <Station code="AIS" startDate="1993-12-25T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-37.796349</Latitude>
+      <Longitude unit="DEGREES">77.569183</Longitude>
+      <Elevation>35.9</Elevation>
+      <Site>
+        <Name>Nouvelle-Amsterdam - TAAF, France</Name>
+      </Site>
+      <CreationDate>1993-12-25T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>42</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="ATD" startDate="1993-07-07T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">11.530725</Latitude>
+      <Longitude unit="DEGREES">42.846634</Longitude>
+      <Elevation>610.0</Elevation>
+      <Site>
+        <Name>Arta Cave - Arta, Republic of Djibouti</Name>
+      </Site>
+      <CreationDate>1993-07-07T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>39</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="CAN" startDate="1987-11-27T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-35.318714</Latitude>
+      <Longitude unit="DEGREES">148.996323</Longitude>
+      <Elevation>700.0</Elevation>
+      <Site>
+        <Name>Canberra, Australia</Name>
+      </Site>
+      <CreationDate>1987-11-27T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>35</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="CCD" startDate="2007-01-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-75.1065</Latitude>
+      <Longitude unit="DEGREES">123.305</Longitude>
+      <Elevation>3240.0</Elevation>
+      <Site>
+        <Name>Concordia Base, Dome C, Antartica</Name>
+      </Site>
+      <CreationDate>2007-01-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>24</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="CLF" startDate="2008-07-10T00:00:00.000000Z" endDate="2020-09-10T14:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.02579</Latitude>
+      <Longitude unit="DEGREES">2.26</Longitude>
+      <Elevation>145.0</Elevation>
+      <Site>
+        <Name>Chambon la Foret Observatory, France</Name>
+      </Site>
+      <CreationDate>2008-07-10T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>10</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="COYC" startDate="2004-12-17T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-45.57299</Latitude>
+      <Longitude unit="DEGREES">-72.08139</Longitude>
+      <Elevation>235.0</Elevation>
+      <Site>
+        <Name>Coyhaique, Chile</Name>
+      </Site>
+      <CreationDate>2004-12-17T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>41</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="CRZF" startDate="1986-02-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-46.43096</Latitude>
+      <Longitude unit="DEGREES">51.855308</Longitude>
+      <Elevation>140.0</Elevation>
+      <Site>
+        <Name>Port Alfred - Ile de la Possession - Crozet Islands, France</Name>
+      </Site>
+      <CreationDate>1986-02-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>75</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="DRV" startDate="1986-02-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-66.664909</Latitude>
+      <Longitude unit="DEGREES">140.002075</Longitude>
+      <Elevation>40.0</Elevation>
+      <Site>
+        <Name>Dumont d'Urville - Terre Adelie, Antarctica</Name>
+      </Site>
+      <CreationDate>1986-02-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>60</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="DZM" startDate="2003-09-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-22.07164</Latitude>
+      <Longitude unit="DEGREES">166.44377</Longitude>
+      <Elevation>878.0</Elevation>
+      <Site>
+        <Name>Dzumac - New Caledonia, France</Name>
+      </Site>
+      <CreationDate>2003-09-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>7</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="ECH" startDate="1990-11-08T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.216312</Latitude>
+      <Longitude unit="DEGREES">7.158961</Longitude>
+      <Elevation>580.0</Elevation>
+      <Site>
+        <Name>Echery - Sainte Marie aux Mines, France</Name>
+      </Site>
+      <CreationDate>1990-11-08T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>64</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="FDF" startDate="1998-11-25T00:00:00.000000Z" endDate="2019-10-21T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">14.734971</Latitude>
+      <Longitude unit="DEGREES">-61.146311</Longitude>
+      <Elevation>467.0</Elevation>
+      <Site>
+        <Name>Fort de France - Martinique island, France</Name>
+      </Site>
+      <CreationDate>1998-11-25T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>61</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="FOMA" startDate="2008-09-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-24.97565</Latitude>
+      <Longitude unit="DEGREES">46.978877</Longitude>
+      <Elevation>28.0</Elevation>
+      <Site>
+        <Name>Nahampoana Reserve - Fort Dauphin, Madagascar</Name>
+      </Site>
+      <CreationDate>2008-09-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>17</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="FUTU" startDate="2016-06-26T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-14.307673</Latitude>
+      <Longitude unit="DEGREES">-178.121063</Longitude>
+      <Elevation>97.0</Elevation>
+      <Site>
+        <Name>Maopo'opo, Futuna</Name>
+      </Site>
+      <CreationDate>2016-06-26T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>12</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="HDC" startDate="1997-03-08T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">10.00201</Latitude>
+      <Longitude unit="DEGREES">-84.11142</Longitude>
+      <Elevation>1186.0</Elevation>
+      <Site>
+        <Name>Heredia, Costa Rica</Name>
+      </Site>
+      <CreationDate>1997-03-08T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>46</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="HYB" startDate="1989-01-15T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">17.41867</Latitude>
+      <Longitude unit="DEGREES">78.55213</Longitude>
+      <Elevation>510.0</Elevation>
+      <Site>
+        <Name>Hyderabad, India</Name>
+      </Site>
+      <CreationDate>1989-01-15T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>16</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="ICC" startDate="1996-04-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-20.284</Latitude>
+      <Longitude unit="DEGREES">-70.035004</Longitude>
+      <Elevation>950.0</Elevation>
+      <Site>
+        <Name>Iquique, Chile</Name>
+      </Site>
+      <CreationDate>1996-04-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>6</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="INU" startDate="1987-03-04T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">35.35</Latitude>
+      <Longitude unit="DEGREES">137.029</Longitude>
+      <Elevation>132.0</Elevation>
+      <Site>
+        <Name>Inuyama, Japan</Name>
+      </Site>
+      <CreationDate>1987-03-04T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>30</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="IVI" startDate="2011-09-12T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">61.205808</Latitude>
+      <Longitude unit="DEGREES">-48.171178</Longitude>
+      <Elevation>15.0</Elevation>
+      <Site>
+        <Name>Ivittuut, Greenland</Name>
+      </Site>
+      <CreationDate>2011-09-12T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>11</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="KIP" startDate="1986-04-17T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">21.42</Latitude>
+      <Longitude unit="DEGREES">-158.0112</Longitude>
+      <Elevation>110.0</Elevation>
+      <Site>
+        <Name>Kipapa, Hawaii, USA</Name>
+      </Site>
+      <CreationDate>1986-04-17T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>146</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="MBO" startDate="1985-09-01T00:00:00.000000Z" endDate="2020-03-04T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">14.392024</Latitude>
+      <Longitude unit="DEGREES">-16.955467</Longitude>
+      <Elevation>3.0</Elevation>
+      <Site>
+        <Name>M'Bour, Senegal</Name>
+      </Site>
+      <CreationDate>1985-09-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>56</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="MPG" startDate="2000-07-03T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">5.11011</Latitude>
+      <Longitude unit="DEGREES">-52.644483</Longitude>
+      <Elevation>147.0</Elevation>
+      <Site>
+        <Name>Montagne des Peres - French Guiana, France</Name>
+      </Site>
+      <CreationDate>2000-07-03T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>27</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="NOUC" startDate="1988-03-21T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-22.09863</Latitude>
+      <Longitude unit="DEGREES">166.30665</Longitude>
+      <Elevation>137.0</Elevation>
+      <Site>
+        <Name>Port Laguerre - New Caledonia, France</Name>
+      </Site>
+      <CreationDate>1988-03-21T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>40</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="PAF" startDate="1983-01-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-49.351</Latitude>
+      <Longitude unit="DEGREES">70.210708</Longitude>
+      <Elevation>17.0</Elevation>
+      <Site>
+        <Name>Port aux Francais - Kerguelen - TAAF, France</Name>
+      </Site>
+      <CreationDate>1983-01-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>100</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="PEL" startDate="1995-10-04T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-33.143607</Latitude>
+      <Longitude unit="DEGREES">-70.67494</Longitude>
+      <Elevation>700.0</Elevation>
+      <Site>
+        <Name>Peldehue, Chile</Name>
+      </Site>
+      <CreationDate>1995-10-04T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>56</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="PPTF" startDate="2009-04-25T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-17.5896</Latitude>
+      <Longitude unit="DEGREES">-149.565247</Longitude>
+      <Elevation>705.0</Elevation>
+      <Site>
+        <Name>Pamatai - Papeete - Tahiti island - French Polynesia, France</Name>
+      </Site>
+      <CreationDate>2009-04-25T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>11</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="RER" startDate="1986-02-10T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-21.1712</Latitude>
+      <Longitude unit="DEGREES">55.739861</Longitude>
+      <Elevation>834.0</Elevation>
+      <Site>
+        <Name>Riviere de l'Est - Sainte Rose - La Reunion island, France</Name>
+      </Site>
+      <CreationDate>1986-02-10T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>88</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="ROCAM" startDate="2012-12-15T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-19.75553</Latitude>
+      <Longitude unit="DEGREES">63.37014</Longitude>
+      <Elevation>52.0</Elevation>
+      <Site>
+        <Name>Leguat Reserve, Rodrigues Island, Republic of Mauritius</Name>
+      </Site>
+      <CreationDate>2012-12-15T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>28</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SANVU" startDate="2011-11-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-15.447148</Latitude>
+      <Longitude unit="DEGREES">167.203232</Longitude>
+      <Elevation>56.0</Elevation>
+      <Site>
+        <Name>Espiritu Santo, Vanuatu</Name>
+      </Site>
+      <CreationDate>2011-11-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>17</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SPB" startDate="1996-06-17T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-23.592691</Latitude>
+      <Longitude unit="DEGREES">-47.426979</Longitude>
+      <Elevation>647.0</Elevation>
+      <Site>
+        <Name>Sao Paulo, Brazil</Name>
+      </Site>
+      <CreationDate>1996-06-17T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>39</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SSB" startDate="1982-05-02T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">45.279</Latitude>
+      <Longitude unit="DEGREES">4.542</Longitude>
+      <Elevation>700.0</Elevation>
+      <Site>
+        <Name>Tunnel de Badole - Saint Sauveur en Rue, France</Name>
+      </Site>
+      <CreationDate>1982-05-02T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>240</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="TAM" startDate="1983-11-16T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">22.791491</Latitude>
+      <Longitude unit="DEGREES">5.52838</Longitude>
+      <Elevation>1410.0</Elevation>
+      <Site>
+        <Name>Tamanrasset, Algeria</Name>
+      </Site>
+      <CreationDate>1983-11-16T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>40</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="TAOE" startDate="2004-11-01T20:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-8.85492</Latitude>
+      <Longitude unit="DEGREES">-140.14775</Longitude>
+      <Elevation>800.0</Elevation>
+      <Site>
+        <Name>Taiohae - Marquesas islands, France</Name>
+      </Site>
+      <CreationDate>2004-11-01T20:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>4</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="TRIS" startDate="2004-03-03T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-37.0681</Latitude>
+      <Longitude unit="DEGREES">-12.3152</Longitude>
+      <Elevation>60.0</Elevation>
+      <Site>
+        <Name>Tristan da Cunha</Name>
+      </Site>
+      <CreationDate>2004-03-03T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>31</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="UNM" startDate="1990-06-06T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">19.329662</Latitude>
+      <Longitude unit="DEGREES">-99.178062</Longitude>
+      <Elevation>2280.0</Elevation>
+      <Site>
+        <Name>Unam - Mexico, Mexico</Name>
+      </Site>
+      <CreationDate>1990-06-06T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>44</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="WUS" startDate="1988-10-31T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">41.200716</Latitude>
+      <Longitude unit="DEGREES">79.216498</Longitude>
+      <Elevation>1468.0</Elevation>
+      <Site>
+        <Name>Wushi - Xinjiang Uygur, China</Name>
+      </Site>
+      <CreationDate>1988-10-31T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>45</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+  </Network>
+  <Network code="II" startDate="1986-01-01T00:00:00.000000Z" restrictedStatus="open">
+    <Description>Global Seismograph Network - IRIS/IDA (GSN)</Description>
+    <Identifier type="DOI">10.7914/SN/II
+   </Identifier>
+    <TotalNumberStations>57</TotalNumberStations>
+    <SelectedNumberStations>43</SelectedNumberStations>
+    <Station code="AAK" startDate="1990-10-12T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">42.6375</Latitude>
+      <Longitude unit="DEGREES">74.4942</Longitude>
+      <Elevation>1633.1</Elevation>
+      <Site>
+        <Name>Ala Archa, Kyrgyzstan</Name>
+      </Site>
+      <CreationDate>1990-10-12T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>344</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="ABPO" startDate="2007-04-04T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-19.018</Latitude>
+      <Longitude unit="DEGREES">47.229</Longitude>
+      <Elevation>1528.0</Elevation>
+      <Site>
+        <Name>Ambohimpanompo, Madagascar</Name>
+      </Site>
+      <CreationDate>2007-04-04T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>147</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="ALE" startDate="1990-02-19T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">82.5033</Latitude>
+      <Longitude unit="DEGREES">-62.35</Longitude>
+      <Elevation>60.0</Elevation>
+      <Site>
+        <Name>Alert, NU, Canada</Name>
+      </Site>
+      <CreationDate>1990-02-19T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>191</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="ARU" startDate="2009-09-28T00:00:00.000000Z" endDate="2018-09-08T23:59:59.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">56.4293</Latitude>
+      <Longitude unit="DEGREES">58.5615</Longitude>
+      <Elevation>260.0</Elevation>
+      <Site>
+        <Name>Arti, Russia</Name>
+      </Site>
+      <CreationDate>2009-09-28T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>51</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="ASCN" startDate="1994-10-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-7.9327</Latitude>
+      <Longitude unit="DEGREES">-14.3601</Longitude>
+      <Elevation>173.0</Elevation>
+      <Site>
+        <Name>Butt Crater, Ascension Island</Name>
+      </Site>
+      <CreationDate>1994-10-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>221</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="BFO" startDate="1996-05-29T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.3301</Latitude>
+      <Longitude unit="DEGREES">8.3296</Longitude>
+      <Elevation>638.0</Elevation>
+      <Site>
+        <Name>Black Forest Observatory, Schiltach, Germany</Name>
+      </Site>
+      <CreationDate>1996-05-29T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>138</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="BORG" startDate="1994-07-30T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">64.7474</Latitude>
+      <Longitude unit="DEGREES">-21.3268</Longitude>
+      <Elevation>110.0</Elevation>
+      <Site>
+        <Name>Borgarfjordur, Asbjarnarstadir, Iceland</Name>
+      </Site>
+      <CreationDate>1994-07-30T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>228</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="BRVK" startDate="1994-09-01T00:00:00.000000Z" endDate="2019-08-21T23:59:59.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">53.0581</Latitude>
+      <Longitude unit="DEGREES">70.2828</Longitude>
+      <Elevation>330.0</Elevation>
+      <Site>
+        <Name>Borovoye, Kazakhstan</Name>
+      </Site>
+      <CreationDate>1994-09-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>181</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="CMLA" startDate="1996-03-10T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">37.7637</Latitude>
+      <Longitude unit="DEGREES">-25.5243</Longitude>
+      <Elevation>429.0</Elevation>
+      <Site>
+        <Name>Cha de Macela, Sao Miguel Island, Azores</Name>
+      </Site>
+      <CreationDate>1996-03-10T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>292</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="COCO" startDate="1996-12-15T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-12.1901</Latitude>
+      <Longitude unit="DEGREES">96.8349</Longitude>
+      <Elevation>1.0</Elevation>
+      <Site>
+        <Name>West Island, Cocos (Keeling) Islands</Name>
+      </Site>
+      <CreationDate>1996-12-15T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>177</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="DGAR" startDate="2004-01-22T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-7.4121</Latitude>
+      <Longitude unit="DEGREES">72.4525</Longitude>
+      <Elevation>1.0</Elevation>
+      <Site>
+        <Name>Diego Garcia, Chagos Islands, Indian Ocean</Name>
+      </Site>
+      <CreationDate>2004-01-22T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>183</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="EFI" startDate="1996-02-16T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-51.6753</Latitude>
+      <Longitude unit="DEGREES">-58.0637</Longitude>
+      <Elevation>110.0</Elevation>
+      <Site>
+        <Name>Mount Kent, East Falkland Island</Name>
+      </Site>
+      <CreationDate>1996-02-16T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>185</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="ERM" startDate="1990-05-21T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">42.015</Latitude>
+      <Longitude unit="DEGREES">143.1572</Longitude>
+      <Elevation>40.0</Elevation>
+      <Site>
+        <Name>Erimo, Hokkaido Island, Japan</Name>
+      </Site>
+      <CreationDate>1990-05-21T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>169</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="ESK" startDate="1987-11-13T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">55.3167</Latitude>
+      <Longitude unit="DEGREES">-3.205</Longitude>
+      <Elevation>242.0</Elevation>
+      <Site>
+        <Name>Eskdalemuir, Scotland, UK</Name>
+      </Site>
+      <CreationDate>1987-11-13T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>125</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="FFC" startDate="1993-08-28T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">54.725</Latitude>
+      <Longitude unit="DEGREES">-101.9783</Longitude>
+      <Elevation>338.0</Elevation>
+      <Site>
+        <Name>Flin Flon, Canada</Name>
+      </Site>
+      <CreationDate>1993-08-28T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>190</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="HOPE" startDate="1996-12-10T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-54.2836</Latitude>
+      <Longitude unit="DEGREES">-36.4879</Longitude>
+      <Elevation>20.0</Elevation>
+      <Site>
+        <Name>Hope Point, South Georgia Island</Name>
+      </Site>
+      <CreationDate>1996-12-10T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>186</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="IBFO" startDate="2011-04-10T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.331902</Latitude>
+      <Longitude unit="DEGREES">8.3311</Longitude>
+      <Elevation>589.0</Elevation>
+      <Site>
+        <Name>Black Forest Observatory, Schiltach, Germany</Name>
+      </Site>
+      <CreationDate>2011-04-10T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>2</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="JTS" startDate="1995-04-23T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">10.2908</Latitude>
+      <Longitude unit="DEGREES">-84.9525</Longitude>
+      <Elevation>340.0</Elevation>
+      <Site>
+        <Name>Las Juntas de Abangares, Costa Rica</Name>
+      </Site>
+      <CreationDate>1995-04-23T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>472</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="KAPI" startDate="1999-02-06T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-5.0142</Latitude>
+      <Longitude unit="DEGREES">119.7517</Longitude>
+      <Elevation>300.0</Elevation>
+      <Site>
+        <Name>Kappang, Sulawesi, Indonesia</Name>
+      </Site>
+      <CreationDate>1999-02-06T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>231</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="KDAK" startDate="1997-06-09T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">57.7828</Latitude>
+      <Longitude unit="DEGREES">-152.5835</Longitude>
+      <Elevation>152.0</Elevation>
+      <Site>
+        <Name>Kodiak Island, Alaska, USA</Name>
+      </Site>
+      <CreationDate>1997-06-09T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>224</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="KIV" startDate="1994-02-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">43.9553</Latitude>
+      <Longitude unit="DEGREES">42.6863</Longitude>
+      <Elevation>1054.0</Elevation>
+      <Site>
+        <Name>Kislovodsk, Russia</Name>
+      </Site>
+      <CreationDate>1994-02-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>170</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="KURK" startDate="1995-03-26T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">50.7154</Latitude>
+      <Longitude unit="DEGREES">78.6202</Longitude>
+      <Elevation>184.0</Elevation>
+      <Site>
+        <Name>Kurchatov, Kazakhstan</Name>
+      </Site>
+      <CreationDate>1995-03-26T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>215</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="KWJN" startDate="2017-07-29T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">9.2873</Latitude>
+      <Longitude unit="DEGREES">167.5369</Longitude>
+      <Elevation>0.0</Elevation>
+      <Site>
+        <Name>Gagan, Kwajalein Atoll, Marshall Islands</Name>
+      </Site>
+      <CreationDate>2017-07-29T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>98</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="LVZ" startDate="1992-12-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">67.8979</Latitude>
+      <Longitude unit="DEGREES">34.6514</Longitude>
+      <Elevation>630.0</Elevation>
+      <Site>
+        <Name>Lovozero, Russia</Name>
+      </Site>
+      <CreationDate>1992-12-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>145</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="MBAR" startDate="1999-09-22T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-0.6019</Latitude>
+      <Longitude unit="DEGREES">30.7382</Longitude>
+      <Elevation>1390.0</Elevation>
+      <Site>
+        <Name>Mbarara, Uganda</Name>
+      </Site>
+      <CreationDate>1999-09-22T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>214</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="MSEY" startDate="1995-05-15T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-4.6737</Latitude>
+      <Longitude unit="DEGREES">55.4792</Longitude>
+      <Elevation>475.0</Elevation>
+      <Site>
+        <Name>Mahe, Seychelles</Name>
+      </Site>
+      <CreationDate>1995-05-15T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>160</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="MSVF" startDate="1994-05-24T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-17.7448</Latitude>
+      <Longitude unit="DEGREES">178.0528</Longitude>
+      <Elevation>801.1</Elevation>
+      <Site>
+        <Name>Monasavu, Fiji</Name>
+      </Site>
+      <CreationDate>1994-05-24T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>182</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="NIL" startDate="1994-12-18T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">33.6506</Latitude>
+      <Longitude unit="DEGREES">73.2686</Longitude>
+      <Elevation>629.0</Elevation>
+      <Site>
+        <Name>Nilore, Pakistan</Name>
+      </Site>
+      <CreationDate>1994-12-18T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>162</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="NNA" startDate="1988-06-22T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-11.9875</Latitude>
+      <Longitude unit="DEGREES">-76.8422</Longitude>
+      <Elevation>575.0</Elevation>
+      <Site>
+        <Name>Nana, Peru</Name>
+      </Site>
+      <CreationDate>1988-06-22T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>187</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="OBN" startDate="1988-09-14T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">55.1146</Latitude>
+      <Longitude unit="DEGREES">36.5674</Longitude>
+      <Elevation>160.0</Elevation>
+      <Site>
+        <Name>Obninsk, Russia</Name>
+      </Site>
+      <CreationDate>1988-09-14T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>160</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="PALK" startDate="2000-08-22T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">7.2728</Latitude>
+      <Longitude unit="DEGREES">80.7022</Longitude>
+      <Elevation>460.0</Elevation>
+      <Site>
+        <Name>Pallekele, Sri Lanka</Name>
+      </Site>
+      <CreationDate>2000-08-22T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>365</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="PFO" startDate="2006-07-13T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">33.6107</Latitude>
+      <Longitude unit="DEGREES">-116.4555</Longitude>
+      <Elevation>1280.0</Elevation>
+      <Site>
+        <Name>Pinon Flat, California, USA</Name>
+      </Site>
+      <CreationDate>2006-07-13T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>316</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="RAYN" startDate="1996-01-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">23.5225</Latitude>
+      <Longitude unit="DEGREES">45.5032</Longitude>
+      <Elevation>631.0</Elevation>
+      <Site>
+        <Name>Ar Rayn, Saudi Arabia</Name>
+      </Site>
+      <CreationDate>1996-01-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>188</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="RPN" startDate="1987-06-15T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-27.1267</Latitude>
+      <Longitude unit="DEGREES">-109.3344</Longitude>
+      <Elevation>110.0</Elevation>
+      <Site>
+        <Name>Rapanui, Easter Island, Chile</Name>
+      </Site>
+      <CreationDate>1987-06-15T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>327</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SACV" startDate="2000-05-29T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">14.9702</Latitude>
+      <Longitude unit="DEGREES">-23.6085</Longitude>
+      <Elevation>387.0</Elevation>
+      <Site>
+        <Name>Santiago Island, Cape Verde</Name>
+      </Site>
+      <CreationDate>2000-05-29T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>136</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SHEL" startDate="1995-06-19T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-15.9594</Latitude>
+      <Longitude unit="DEGREES">-5.7455</Longitude>
+      <Elevation>537.0</Elevation>
+      <Site>
+        <Name>Horse Pasture, St. Helena Island</Name>
+      </Site>
+      <CreationDate>1995-06-19T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>116</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SIMI" startDate="2016-10-06T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">38.6585</Latitude>
+      <Longitude unit="DEGREES">69.0083</Longitude>
+      <Elevation>1400.5</Elevation>
+      <Site>
+        <Name>Simiganj, Tajikistan</Name>
+      </Site>
+      <CreationDate>2016-10-06T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>20</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SUR" startDate="1990-10-30T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-32.3797</Latitude>
+      <Longitude unit="DEGREES">20.8117</Longitude>
+      <Elevation>1770.0</Elevation>
+      <Site>
+        <Name>Sutherland, South Africa</Name>
+      </Site>
+      <CreationDate>1990-10-30T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>170</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="TAU" startDate="1994-01-17T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-42.9099</Latitude>
+      <Longitude unit="DEGREES">147.3204</Longitude>
+      <Elevation>132.0</Elevation>
+      <Site>
+        <Name>Hobart, Tasmania, Australia</Name>
+      </Site>
+      <CreationDate>1994-01-17T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>176</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="TLY" startDate="1990-10-12T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">51.6807</Latitude>
+      <Longitude unit="DEGREES">103.6438</Longitude>
+      <Elevation>579.0</Elevation>
+      <Site>
+        <Name>Talaya, Russia</Name>
+      </Site>
+      <CreationDate>1990-10-12T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>131</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="UOSS" startDate="2009-05-07T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">24.9453</Latitude>
+      <Longitude unit="DEGREES">56.2042</Longitude>
+      <Elevation>284.4</Elevation>
+      <Site>
+        <Name>Univ. of Sharjah, Sharjah, United Arab Emirates</Name>
+      </Site>
+      <CreationDate>2009-05-07T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>156</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="WRAB" startDate="1994-03-27T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">-19.9336</Latitude>
+      <Longitude unit="DEGREES">134.36</Longitude>
+      <Elevation>366.0</Elevation>
+      <Site>
+        <Name>Tennant Creek, NT, Australia</Name>
+      </Site>
+      <CreationDate>1994-03-27T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>247</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="XPFO" startDate="2007-06-26T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">33.6107</Latitude>
+      <Longitude unit="DEGREES">-116.4555</Longitude>
+      <Elevation>1280.0</Elevation>
+      <Site>
+        <Name>Pinon Flat, California, USA</Name>
+      </Site>
+      <CreationDate>2007-06-26T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>978</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+  </Network>
+  <Network code="IU" startDate="1988-01-01T00:00:00.000000Z" restrictedStatus="open">
+    <Description>Global Seismograph Network - IRIS/USGS (GSN)</Description>
+    <Identifier type="DOI">10.7914/SN/IU
+   </Identifier>
+    <TotalNumberStations>270</TotalNumberStations>
+    <SelectedNumberStations>80</SelectedNumberStations>
+    <Station code="ADK" startDate="2009-07-19T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) Global Seismograph Network (IRIS/USGS)</Description>
+      <Latitude unit="DEGREES">51.8823</Latitude>
+      <Longitude unit="DEGREES">-176.6842</Longitude>
+      <Elevation>130.0</Elevation>
+      <Site>
+        <Name>Adak, Aleutian Islands, Alaska</Name>
+      </Site>
+      <CreationDate>2009-07-19T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>88</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="AFI" startDate="2010-02-23T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and Samoa Met. Div.</Description>
+      <Latitude unit="DEGREES">-13.9085</Latitude>
+      <Longitude unit="DEGREES">-171.7827</Longitude>
+      <Elevation>706.0</Elevation>
+      <Site>
+        <Name>Afiamalu, Samoa</Name>
+      </Site>
+      <CreationDate>2010-02-23T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>102</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="ANMO" startDate="2008-06-30T20:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and ANSS</Description>
+      <Latitude unit="DEGREES">34.94591</Latitude>
+      <Longitude unit="DEGREES">-106.4572</Longitude>
+      <Elevation>1820.0</Elevation>
+      <Site>
+        <Name>Albuquerque, New Mexico, USA</Name>
+      </Site>
+      <CreationDate>2008-06-30T20:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>239</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="ANTO" startDate="2010-07-23T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), DEPREM, and METU</Description>
+      <Latitude unit="DEGREES">39.868</Latitude>
+      <Longitude unit="DEGREES">32.7934</Longitude>
+      <Elevation>1090.0</Elevation>
+      <Site>
+        <Name>Ankara, Turkey</Name>
+      </Site>
+      <CreationDate>2010-07-23T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>76</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="BBSR" startDate="2008-08-01T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU)</Description>
+      <Latitude unit="DEGREES">32.371299</Latitude>
+      <Longitude unit="DEGREES">-64.696299</Longitude>
+      <Elevation>30.0</Elevation>
+      <Site>
+        <Name>Bermuda Institute of Ocean Sciences, St George's Bermuda</Name>
+      </Site>
+      <CreationDate>2008-08-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>119</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="BILL" startDate="2014-11-16T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and GSRAS</Description>
+      <Latitude unit="DEGREES">68.0653</Latitude>
+      <Longitude unit="DEGREES">166.4531</Longitude>
+      <Elevation>320.0</Elevation>
+      <Site>
+        <Name>Bilibino, Russia</Name>
+      </Site>
+      <CreationDate>2014-11-16T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>24</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="CASY" startDate="2012-01-20T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and ANARE</Description>
+      <Latitude unit="DEGREES">-66.2792</Latitude>
+      <Longitude unit="DEGREES">110.5354</Longitude>
+      <Elevation>10.0</Elevation>
+      <Site>
+        <Name>Casey, Antarctica</Name>
+      </Site>
+      <CreationDate>2012-01-20T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>53</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="CCM" startDate="2011-07-14T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), St Louis Univ., and ANSS</Description>
+      <Latitude unit="DEGREES">38.0557</Latitude>
+      <Longitude unit="DEGREES">-91.2446</Longitude>
+      <Elevation>222.0</Elevation>
+      <Site>
+        <Name>Cathedral Cave, Missouri, USA</Name>
+      </Site>
+      <CreationDate>2011-07-14T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>122</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="CHTO" startDate="2009-09-19T14:35:27.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and Thai Met. Dept.</Description>
+      <Latitude unit="DEGREES">18.8141</Latitude>
+      <Longitude unit="DEGREES">98.9443</Longitude>
+      <Elevation>420.0</Elevation>
+      <Site>
+        <Name>Chiang Mai, Thailand</Name>
+      </Site>
+      <CreationDate>2009-09-19T14:35:27.000000Z</CreationDate>
+      <TotalNumberChannels>134</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="COLA" startDate="2009-07-09T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), Univ. of Alaska, and ANSS</Description>
+      <Latitude unit="DEGREES">64.873599</Latitude>
+      <Longitude unit="DEGREES">-147.8616</Longitude>
+      <Elevation>200.0</Elevation>
+      <Site>
+        <Name>College Outpost, Alaska, USA</Name>
+      </Site>
+      <CreationDate>2009-07-09T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>144</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="COR" startDate="2009-09-26T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), Oregon State Univ., and ANSS</Description>
+      <Latitude unit="DEGREES">44.5855</Latitude>
+      <Longitude unit="DEGREES">-123.3046</Longitude>
+      <Elevation>110.0</Elevation>
+      <Site>
+        <Name>Corvallis, Oregon, USA</Name>
+      </Site>
+      <CreationDate>2009-09-26T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>146</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="CTAO" startDate="2011-04-29T03:00:00.000000Z" endDate="2019-02-04T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and Geoscience Australia</Description>
+      <Latitude unit="DEGREES">-20.0882</Latitude>
+      <Longitude unit="DEGREES">146.2545</Longitude>
+      <Elevation>357.0</Elevation>
+      <Site>
+        <Name>Charters Towers, Australia</Name>
+      </Site>
+      <CreationDate>2011-04-29T03:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>59</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="DAV" startDate="2011-07-27T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and PHIVOLCS</Description>
+      <Latitude unit="DEGREES">7.0697</Latitude>
+      <Longitude unit="DEGREES">125.5791</Longitude>
+      <Elevation>151.0</Elevation>
+      <Site>
+        <Name>Davao, Philippines</Name>
+      </Site>
+      <CreationDate>2011-07-27T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>44</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="DWPF" startDate="2010-09-24T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and ANSS</Description>
+      <Latitude unit="DEGREES">28.1103</Latitude>
+      <Longitude unit="DEGREES">-81.4327</Longitude>
+      <Elevation>30.0</Elevation>
+      <Site>
+        <Name>Disney Wilderness Preserve, Florida, USA</Name>
+      </Site>
+      <CreationDate>2010-09-24T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>122</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="FUNA" startDate="2011-01-12T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), NIED, Tuvalu Met Serv</Description>
+      <Latitude unit="DEGREES">-8.5259</Latitude>
+      <Longitude unit="DEGREES">179.1966</Longitude>
+      <Elevation>20.0</Elevation>
+      <Site>
+        <Name>Funafuti, Tuvalu</Name>
+      </Site>
+      <CreationDate>2011-01-12T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>98</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="FURI" startDate="2012-10-26T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), MEDNET, Addis Ababa Univ</Description>
+      <Latitude unit="DEGREES">8.8952</Latitude>
+      <Longitude unit="DEGREES">38.6798</Longitude>
+      <Elevation>2570.0</Elevation>
+      <Site>
+        <Name>Mt. Furi, Ethiopia</Name>
+      </Site>
+      <CreationDate>2012-10-26T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>47</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="GNI" startDate="2010-10-07T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and WSSP</Description>
+      <Latitude unit="DEGREES">40.148</Latitude>
+      <Longitude unit="DEGREES">44.741</Longitude>
+      <Elevation>1609.0</Elevation>
+      <Site>
+        <Name>Garni, Armenia</Name>
+      </Site>
+      <CreationDate>2010-10-07T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>69</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="GRFO" startDate="2015-01-19T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and GFZ</Description>
+      <Latitude unit="DEGREES">49.6909</Latitude>
+      <Longitude unit="DEGREES">11.2203</Longitude>
+      <Elevation>384.0</Elevation>
+      <Site>
+        <Name>Grafenberg, Germany</Name>
+      </Site>
+      <CreationDate>2015-01-19T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>27</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="GUMO" startDate="2010-01-12T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU)</Description>
+      <Latitude unit="DEGREES">13.5893</Latitude>
+      <Longitude unit="DEGREES">144.8684</Longitude>
+      <Elevation>170.0</Elevation>
+      <Site>
+        <Name>Guam, Mariana Islands</Name>
+      </Site>
+      <CreationDate>2010-01-12T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>97</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="HKT" startDate="2018-01-26T16:50:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), UT Austin, and ANSS</Description>
+      <Latitude unit="DEGREES">29.96478</Latitude>
+      <Longitude unit="DEGREES">-95.83812</Longitude>
+      <Elevation>69.0</Elevation>
+      <Site>
+        <Name>Hockley, Texas</Name>
+      </Site>
+      <CreationDate>2018-01-26T16:50:00.000000Z</CreationDate>
+      <TotalNumberChannels>68</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="HNR" startDate="2010-04-24T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), Solomon Is. Min Mines &amp; Ener</Description>
+      <Latitude unit="DEGREES">-9.4387</Latitude>
+      <Longitude unit="DEGREES">159.9475</Longitude>
+      <Elevation>100.0</Elevation>
+      <Site>
+        <Name>Honiara, Solomon Islands</Name>
+      </Site>
+      <CreationDate>2010-04-24T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>162</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="HRV" startDate="2008-09-22T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS, Harvard University</Description>
+      <Latitude unit="DEGREES">42.5064</Latitude>
+      <Longitude unit="DEGREES">-71.5583</Longitude>
+      <Elevation>200.0</Elevation>
+      <Site>
+        <Name>Adam Dziewonski Observatory (Oak Ridge), Massachusetts, USA</Name>
+      </Site>
+      <CreationDate>2008-09-22T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>169</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="INCN" startDate="2013-11-21T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and Korea Met. Adminstration</Description>
+      <Latitude unit="DEGREES">37.47768</Latitude>
+      <Longitude unit="DEGREES">126.62436</Longitude>
+      <Elevation>55.0</Elevation>
+      <Site>
+        <Name>Inchon, Republic of Korea</Name>
+      </Site>
+      <CreationDate>2013-11-21T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>47</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="JOHN" startDate="2010-08-09T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU)</Description>
+      <Latitude unit="DEGREES">16.7329</Latitude>
+      <Longitude unit="DEGREES">-169.5292</Longitude>
+      <Elevation>2.0</Elevation>
+      <Site>
+        <Name>Johnston Island, USA</Name>
+      </Site>
+      <CreationDate>2010-08-09T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>56</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="KBL" startDate="2006-11-09T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN affil.), USGS (IU), and AFTAC</Description>
+      <Latitude unit="DEGREES">34.5408</Latitude>
+      <Longitude unit="DEGREES">69.0432</Longitude>
+      <Elevation>1920.0</Elevation>
+      <Site>
+        <Name>Kabul, Afghanistan</Name>
+      </Site>
+      <CreationDate>2006-11-09T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>3</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="KBS" startDate="2010-06-08T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), GEOFON (GE), AWI, and UB</Description>
+      <Latitude unit="DEGREES">78.9154</Latitude>
+      <Longitude unit="DEGREES">11.9385</Longitude>
+      <Elevation>90.0</Elevation>
+      <Site>
+        <Name>Ny-Alesund, Spitzbergen, Norway</Name>
+      </Site>
+      <CreationDate>2010-06-08T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>68</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="KEV" startDate="2008-09-11T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and Univ. Helsinki</Description>
+      <Latitude unit="DEGREES">69.7565</Latitude>
+      <Longitude unit="DEGREES">27.0035</Longitude>
+      <Elevation>100.0</Elevation>
+      <Site>
+        <Name>Kevo, Finland</Name>
+      </Site>
+      <CreationDate>2008-09-11T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>105</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="KIEV" startDate="2017-11-07T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and Nat. Acad. Sci. Ukraine</Description>
+      <Latitude unit="DEGREES">50.7012</Latitude>
+      <Longitude unit="DEGREES">29.2242</Longitude>
+      <Elevation>180.0</Elevation>
+      <Site>
+        <Name>Kiev, Ukraine</Name>
+      </Site>
+      <CreationDate>2017-11-07T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>32</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="KIP" startDate="2010-08-18T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), GEOSCOPE (G), and NOAA</Description>
+      <Latitude unit="DEGREES">21.42</Latitude>
+      <Longitude unit="DEGREES">-158.0112</Longitude>
+      <Elevation>110.0</Elevation>
+      <Site>
+        <Name>Kipapa, Hawaii, USA</Name>
+      </Site>
+      <CreationDate>2010-08-18T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>152</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="KMBO" startDate="2010-04-15T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), GEOFON (GE), &amp; Univ. Nairobi</Description>
+      <Latitude unit="DEGREES">-1.1271</Latitude>
+      <Longitude unit="DEGREES">37.2525</Longitude>
+      <Elevation>1950.0</Elevation>
+      <Site>
+        <Name>Kilima Mbogo, Kenya</Name>
+      </Site>
+      <CreationDate>2010-04-15T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>109</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="KNTN" startDate="2009-05-11T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), NIED, Kiribati Weather Serv</Description>
+      <Latitude unit="DEGREES">-2.7744</Latitude>
+      <Longitude unit="DEGREES">-171.7186</Longitude>
+      <Elevation>20.0</Elevation>
+      <Site>
+        <Name>Kanton, Kiritibati</Name>
+      </Site>
+      <CreationDate>2009-05-11T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>50</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="KONO" startDate="2009-09-12T15:02:42.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and Univ. Bergen</Description>
+      <Latitude unit="DEGREES">59.6491</Latitude>
+      <Longitude unit="DEGREES">9.5982</Longitude>
+      <Elevation>216.0</Elevation>
+      <Site>
+        <Name>Kongsberg, Norway</Name>
+      </Site>
+      <CreationDate>2009-09-12T15:02:42.000000Z</CreationDate>
+      <TotalNumberChannels>81</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="KOWA" startDate="2011-05-27T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and CNRST Mali</Description>
+      <Latitude unit="DEGREES">14.4967</Latitude>
+      <Longitude unit="DEGREES">-4.014</Longitude>
+      <Elevation>321.0</Elevation>
+      <Site>
+        <Name>Kowa, Mali</Name>
+      </Site>
+      <CreationDate>2011-05-27T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>80</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="LCO" startDate="2014-08-04T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU),CIW,Fund Andes,Las Camp. Obs.</Description>
+      <Latitude unit="DEGREES">-29.011</Latitude>
+      <Longitude unit="DEGREES">-70.7005</Longitude>
+      <Elevation>2274.0</Elevation>
+      <Site>
+        <Name>Las Campanas Astronomical Observatory, Chile</Name>
+      </Site>
+      <CreationDate>2014-08-04T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>50</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="LSZ" startDate="2008-09-08T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and Zambia Geological Survey</Description>
+      <Latitude unit="DEGREES">-15.2779</Latitude>
+      <Longitude unit="DEGREES">28.1882</Longitude>
+      <Elevation>1200.0</Elevation>
+      <Site>
+        <Name>Lusaka, Zambia</Name>
+      </Site>
+      <CreationDate>2008-09-08T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>100</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="LVC" startDate="2009-04-10T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), GEOFON (GE), and U of Chile</Description>
+      <Latitude unit="DEGREES">-22.6127</Latitude>
+      <Longitude unit="DEGREES">-68.9111</Longitude>
+      <Elevation>2960.0</Elevation>
+      <Site>
+        <Name>Limon Verde, Chile</Name>
+      </Site>
+      <CreationDate>2009-04-10T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>83</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="MA2" startDate="2010-07-20T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and GSRAS</Description>
+      <Latitude unit="DEGREES">59.5756</Latitude>
+      <Longitude unit="DEGREES">150.77</Longitude>
+      <Elevation>337.0</Elevation>
+      <Site>
+        <Name>Magadan, Russia</Name>
+      </Site>
+      <CreationDate>2010-07-20T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>34</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="MACI" startDate="2008-08-01T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and IGN</Description>
+      <Latitude unit="DEGREES">28.2502</Latitude>
+      <Longitude unit="DEGREES">-16.508199</Longitude>
+      <Elevation>1674.0</Elevation>
+      <Site>
+        <Name>Morro de la Arena, Canary Islands</Name>
+      </Site>
+      <CreationDate>2008-08-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>9</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="MAJO" startDate="2009-11-07T12:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and JMA</Description>
+      <Latitude unit="DEGREES">36.54567</Latitude>
+      <Longitude unit="DEGREES">138.20406</Longitude>
+      <Elevation>405.0</Elevation>
+      <Site>
+        <Name>Matsushiro, Japan</Name>
+      </Site>
+      <CreationDate>2009-11-07T12:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>107</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="MAKZ" startDate="2010-09-10T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and NNC Kazakhstan</Description>
+      <Latitude unit="DEGREES">46.808</Latitude>
+      <Longitude unit="DEGREES">81.977</Longitude>
+      <Elevation>600.0</Elevation>
+      <Site>
+        <Name>Makanchi, Kazakhstan</Name>
+      </Site>
+      <CreationDate>2010-09-10T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>51</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="MBWA" startDate="2011-05-09T07:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and Geoscience Australia</Description>
+      <Latitude unit="DEGREES">-21.159</Latitude>
+      <Longitude unit="DEGREES">119.7313</Longitude>
+      <Elevation>190.0</Elevation>
+      <Site>
+        <Name>Marble Bar, Western Australia</Name>
+      </Site>
+      <CreationDate>2011-05-09T07:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>119</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="MIDW" startDate="2013-07-28T03:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and NIED</Description>
+      <Latitude unit="DEGREES">28.2156</Latitude>
+      <Longitude unit="DEGREES">-177.3698</Longitude>
+      <Elevation>20.0</Elevation>
+      <Site>
+        <Name>Midway Island, USA</Name>
+      </Site>
+      <CreationDate>2013-07-28T03:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>17</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="NWAO" startDate="2011-04-30T02:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and Geoscience Australia</Description>
+      <Latitude unit="DEGREES">-32.9277</Latitude>
+      <Longitude unit="DEGREES">117.239</Longitude>
+      <Elevation>380.0</Elevation>
+      <Site>
+        <Name>Narrogin, Australia</Name>
+      </Site>
+      <CreationDate>2011-04-30T02:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>68</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="OTAV" startDate="2009-04-01T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and EPN</Description>
+      <Latitude unit="DEGREES">0.2376</Latitude>
+      <Longitude unit="DEGREES">-78.4508</Longitude>
+      <Elevation>3510.0</Elevation>
+      <Site>
+        <Name>Otavalo, Ecuador</Name>
+      </Site>
+      <CreationDate>2009-04-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>104</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="PAB" startDate="2009-08-14T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and IGN</Description>
+      <Latitude unit="DEGREES">39.5446</Latitude>
+      <Longitude unit="DEGREES">-4.3499</Longitude>
+      <Elevation>950.0</Elevation>
+      <Site>
+        <Name>San Pablo, Spain</Name>
+      </Site>
+      <CreationDate>2009-08-14T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>122</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="PAYG" startDate="2010-05-05T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), ECCD, and EPN</Description>
+      <Latitude unit="DEGREES">-0.6742</Latitude>
+      <Longitude unit="DEGREES">-90.2861</Longitude>
+      <Elevation>270.0</Elevation>
+      <Site>
+        <Name>Puerto Ayora, Galapagos Islands</Name>
+      </Site>
+      <CreationDate>2010-05-05T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>129</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="PET" startDate="2014-08-05T23:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) Global Seismograph Network (IRIS/USGS)</Description>
+      <Latitude unit="DEGREES">53.0233</Latitude>
+      <Longitude unit="DEGREES">158.6499</Longitude>
+      <Elevation>110.0</Elevation>
+      <Site>
+        <Name>Petropavlovsk, Russia</Name>
+      </Site>
+      <CreationDate>2014-08-05T23:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>21</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="PMG" startDate="2010-04-16T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU),GEOFON(GE)Poseidon,PM Geo Obs</Description>
+      <Latitude unit="DEGREES">-9.4047</Latitude>
+      <Longitude unit="DEGREES">147.1597</Longitude>
+      <Elevation>90.0</Elevation>
+      <Site>
+        <Name>Port Moresby, New Guinea</Name>
+      </Site>
+      <CreationDate>2010-04-16T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>73</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="PMSA" startDate="2012-02-19T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and NSF-OPP</Description>
+      <Latitude unit="DEGREES">-64.7744</Latitude>
+      <Longitude unit="DEGREES">-64.0489</Longitude>
+      <Elevation>40.0</Elevation>
+      <Site>
+        <Name>Palmer Station, Antarctica</Name>
+      </Site>
+      <CreationDate>2012-02-19T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>53</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="POHA" startDate="2011-01-20T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and NIED</Description>
+      <Latitude unit="DEGREES">19.7573</Latitude>
+      <Longitude unit="DEGREES">-155.5326</Longitude>
+      <Elevation>1990.0</Elevation>
+      <Site>
+        <Name>Pohakuloa, Hawaii, USA</Name>
+      </Site>
+      <CreationDate>2011-01-20T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>94</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="PTCN" startDate="2014-11-30T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), NIED, and British Geo. Surv.</Description>
+      <Latitude unit="DEGREES">-25.0713</Latitude>
+      <Longitude unit="DEGREES">-130.0953</Longitude>
+      <Elevation>220.0</Elevation>
+      <Site>
+        <Name>Pitcairn Island, South Pacific</Name>
+      </Site>
+      <CreationDate>2014-11-30T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>35</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="PTGA" startDate="2009-11-06T12:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and Univ. of Brasilia</Description>
+      <Latitude unit="DEGREES">-0.7308</Latitude>
+      <Longitude unit="DEGREES">-59.9666</Longitude>
+      <Elevation>237.0</Elevation>
+      <Site>
+        <Name>Pitinga, Brazil</Name>
+      </Site>
+      <CreationDate>2009-11-06T12:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>60</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="QSPA" startDate="2011-01-18T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and NSF-OPP</Description>
+      <Latitude unit="DEGREES">-89.9289</Latitude>
+      <Longitude unit="DEGREES">144.4382</Longitude>
+      <Elevation>2850.0</Elevation>
+      <Site>
+        <Name>South Pole Remote Earth Science Observatory (Quiet Zone)</Name>
+      </Site>
+      <CreationDate>2011-01-18T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>96</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="RAO" startDate="2013-05-17T21:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), NIED, and GNS Science</Description>
+      <Latitude unit="DEGREES">-29.245</Latitude>
+      <Longitude unit="DEGREES">-177.929</Longitude>
+      <Elevation>60.0</Elevation>
+      <Site>
+        <Name>Raoul, Kermadec Islands</Name>
+      </Site>
+      <CreationDate>2013-05-17T21:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>41</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="RAR" startDate="2010-03-02T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and GNS Science</Description>
+      <Latitude unit="DEGREES">-21.2125</Latitude>
+      <Longitude unit="DEGREES">-159.7733</Longitude>
+      <Elevation>28.0</Elevation>
+      <Site>
+        <Name>Rarotonga, Cook Islands</Name>
+      </Site>
+      <CreationDate>2010-03-02T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>67</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="RCBR" startDate="2009-07-29T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and UFRN</Description>
+      <Latitude unit="DEGREES">-5.8274</Latitude>
+      <Longitude unit="DEGREES">-35.9014</Longitude>
+      <Elevation>400.0</Elevation>
+      <Site>
+        <Name>Riachuelo, Brazil</Name>
+      </Site>
+      <CreationDate>2009-07-29T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>92</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="RSSD" startDate="2009-09-09T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and ANSS</Description>
+      <Latitude unit="DEGREES">44.1212</Latitude>
+      <Longitude unit="DEGREES">-104.0359</Longitude>
+      <Elevation>2090.0</Elevation>
+      <Site>
+        <Name>Black Hills, South Dakota, USA</Name>
+      </Site>
+      <CreationDate>2009-09-09T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>66</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SAML" startDate="2009-11-14T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and Univ. of Brasilia</Description>
+      <Latitude unit="DEGREES">-8.9489</Latitude>
+      <Longitude unit="DEGREES">-63.1831</Longitude>
+      <Elevation>120.0</Elevation>
+      <Site>
+        <Name>Samuel, Brazil</Name>
+      </Site>
+      <CreationDate>2009-11-14T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>116</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SBA" startDate="2014-12-04T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), NSF-OPP, and GNS Science</Description>
+      <Latitude unit="DEGREES">-77.8492</Latitude>
+      <Longitude unit="DEGREES">166.7572</Longitude>
+      <Elevation>50.0</Elevation>
+      <Site>
+        <Name>Scott Base, Antarctica</Name>
+      </Site>
+      <CreationDate>2014-12-04T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>38</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SDV" startDate="2010-01-17T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and FUNVISIS</Description>
+      <Latitude unit="DEGREES">8.8839</Latitude>
+      <Longitude unit="DEGREES">-70.634</Longitude>
+      <Elevation>1620.0</Elevation>
+      <Site>
+        <Name>Santo Domingo, Venezuela</Name>
+      </Site>
+      <CreationDate>2010-01-17T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>129</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SFJD" startDate="2008-09-20T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), GEOFON (GE), and GEUS</Description>
+      <Latitude unit="DEGREES">66.9961</Latitude>
+      <Longitude unit="DEGREES">-50.62076</Longitude>
+      <Elevation>330.0</Elevation>
+      <Site>
+        <Name>Sondre Stromfjord, Greenland</Name>
+      </Site>
+      <CreationDate>2008-09-20T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>106</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SJG" startDate="2010-04-16T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU)</Description>
+      <Latitude unit="DEGREES">18.1091</Latitude>
+      <Longitude unit="DEGREES">-66.15</Longitude>
+      <Elevation>420.0</Elevation>
+      <Site>
+        <Name>San Juan, Puerto Rico</Name>
+      </Site>
+      <CreationDate>2010-04-16T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>93</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SLBS" startDate="2008-12-15T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and CICESE</Description>
+      <Latitude unit="DEGREES">23.6858</Latitude>
+      <Longitude unit="DEGREES">-109.9443</Longitude>
+      <Elevation>825.0</Elevation>
+      <Site>
+        <Name>Sierra la Laguna Baja California Sur, Mexico</Name>
+      </Site>
+      <CreationDate>2008-12-15T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>96</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SNZO" startDate="2010-12-10T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and GNS Science</Description>
+      <Latitude unit="DEGREES">-41.3087</Latitude>
+      <Longitude unit="DEGREES">174.7043</Longitude>
+      <Elevation>120.0</Elevation>
+      <Site>
+        <Name>South Karori, New Zealand</Name>
+      </Site>
+      <CreationDate>2010-12-10T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>71</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SSPA" startDate="2010-09-27T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), Penn. State Univ., and ANSS</Description>
+      <Latitude unit="DEGREES">40.6358</Latitude>
+      <Longitude unit="DEGREES">-77.8876</Longitude>
+      <Elevation>270.0</Elevation>
+      <Site>
+        <Name>Standing Stone, Pennsylvania</Name>
+      </Site>
+      <CreationDate>2010-09-27T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>91</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="TARA" startDate="2009-11-13T00:10:27.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU),NIED, Kiribati Weather Serv</Description>
+      <Latitude unit="DEGREES">1.3549</Latitude>
+      <Longitude unit="DEGREES">172.9229</Longitude>
+      <Elevation>20.0</Elevation>
+      <Site>
+        <Name>Tarawa Island, Republic of Kiribati</Name>
+      </Site>
+      <CreationDate>2009-11-13T00:10:27.000000Z</CreationDate>
+      <TotalNumberChannels>139</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="TATO" startDate="2009-09-22T13:56:41.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and Academia Sinica</Description>
+      <Latitude unit="DEGREES">24.9735</Latitude>
+      <Longitude unit="DEGREES">121.4971</Longitude>
+      <Elevation>160.0</Elevation>
+      <Site>
+        <Name>Taipei, Taiwan</Name>
+      </Site>
+      <CreationDate>2009-09-22T13:56:41.000000Z</CreationDate>
+      <TotalNumberChannels>59</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="TEIG" startDate="2014-10-30T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and UNAM</Description>
+      <Latitude unit="DEGREES">20.2263</Latitude>
+      <Longitude unit="DEGREES">-88.2763</Longitude>
+      <Elevation>40.0</Elevation>
+      <Site>
+        <Name>Tepich, Yucatan, Mexico</Name>
+      </Site>
+      <CreationDate>2014-10-30T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>56</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="TIXI" startDate="2014-09-21T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and GSRAS</Description>
+      <Latitude unit="DEGREES">71.6341</Latitude>
+      <Longitude unit="DEGREES">128.8667</Longitude>
+      <Elevation>40.0</Elevation>
+      <Site>
+        <Name>Tiksi, Russia</Name>
+      </Site>
+      <CreationDate>2014-09-21T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>20</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="TRIS" startDate="2016-03-18T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), GEOSCOPE (G), and BGS</Description>
+      <Latitude unit="DEGREES">-37.0681</Latitude>
+      <Longitude unit="DEGREES">-12.3152</Longitude>
+      <Elevation>60.0</Elevation>
+      <Site>
+        <Name>Tristan da Cunha</Name>
+      </Site>
+      <CreationDate>2016-03-18T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>23</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="TRQA" startDate="2009-05-19T20:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), Univ. of La Plata, INPRES</Description>
+      <Latitude unit="DEGREES">-38.0568</Latitude>
+      <Longitude unit="DEGREES">-61.9787</Longitude>
+      <Elevation>540.0</Elevation>
+      <Site>
+        <Name>Tornquist, Argentina</Name>
+      </Site>
+      <CreationDate>2009-05-19T20:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>93</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="TSUM" startDate="2008-09-16T10:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and Geological Survey Namibia</Description>
+      <Latitude unit="DEGREES">-19.2022</Latitude>
+      <Longitude unit="DEGREES">17.5838</Longitude>
+      <Elevation>1260.0</Elevation>
+      <Site>
+        <Name>Tsumeb, Namibia</Name>
+      </Site>
+      <CreationDate>2008-09-16T10:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>100</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="TUC" startDate="2009-05-28T19:40:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), Univ. of Arizona, and ANSS</Description>
+      <Latitude unit="DEGREES">32.3098</Latitude>
+      <Longitude unit="DEGREES">-110.7847</Longitude>
+      <Elevation>910.0</Elevation>
+      <Site>
+        <Name>Tucson, Arizona</Name>
+      </Site>
+      <CreationDate>2009-05-28T19:40:00.000000Z</CreationDate>
+      <TotalNumberChannels>213</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="ULN" startDate="2013-09-29T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and Mongolia Acad. of Science</Description>
+      <Latitude unit="DEGREES">47.8651</Latitude>
+      <Longitude unit="DEGREES">107.0532</Longitude>
+      <Elevation>1610.0</Elevation>
+      <Site>
+        <Name>Ulaanbaatar, Mongolia</Name>
+      </Site>
+      <CreationDate>2013-09-29T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>45</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="WAKE" startDate="2009-05-11T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU)</Description>
+      <Latitude unit="DEGREES">19.2834</Latitude>
+      <Longitude unit="DEGREES">166.652</Longitude>
+      <Elevation>20.0</Elevation>
+      <Site>
+        <Name>Wake Island</Name>
+      </Site>
+      <CreationDate>2009-05-11T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>149</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="WCI" startDate="2010-08-23T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), St Louis Univ., and ANSS</Description>
+      <Latitude unit="DEGREES">38.2289</Latitude>
+      <Longitude unit="DEGREES">-86.2939</Longitude>
+      <Elevation>210.0</Elevation>
+      <Site>
+        <Name>Wyandotte Cave, Indiana, USA</Name>
+      </Site>
+      <CreationDate>2010-08-23T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>59</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="WVT" startDate="2011-01-23T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), St Louis Univ., and ANSS</Description>
+      <Latitude unit="DEGREES">36.1297</Latitude>
+      <Longitude unit="DEGREES">-87.83</Longitude>
+      <Elevation>170.0</Elevation>
+      <Site>
+        <Name>Waverly, Tennessee, USA</Name>
+      </Site>
+      <CreationDate>2011-01-23T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>144</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="XMAS" startDate="2014-03-14T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), NIED, Kiribati Weather Serv</Description>
+      <Latitude unit="DEGREES">2.0448</Latitude>
+      <Longitude unit="DEGREES">-157.4457</Longitude>
+      <Elevation>20.0</Elevation>
+      <Site>
+        <Name>Kiritimati Island, Republic of Kiribati</Name>
+      </Site>
+      <CreationDate>2014-03-14T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>65</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="YAK" startDate="2013-05-28T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and GSRAS</Description>
+      <Latitude unit="DEGREES">62.031</Latitude>
+      <Longitude unit="DEGREES">129.6805</Longitude>
+      <Elevation>110.0</Elevation>
+      <Site>
+        <Name>Yakutsk, Russia</Name>
+      </Site>
+      <CreationDate>2013-05-28T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>22</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="YSS" startDate="2013-10-22T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), Pacific 21, and GSRAS</Description>
+      <Latitude unit="DEGREES">46.9587</Latitude>
+      <Longitude unit="DEGREES">142.7604</Longitude>
+      <Elevation>150.0</Elevation>
+      <Site>
+        <Name>Yuzhno Sakhalinsk, Russia</Name>
+      </Site>
+      <CreationDate>2013-10-22T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>26</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+  </Network>
+</FDSNStationXML>

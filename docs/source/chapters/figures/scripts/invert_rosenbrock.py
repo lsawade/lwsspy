@@ -143,18 +143,25 @@ plt.plot(i6, f6, label="pnlcg")
 plt.legend(loc=4)
 
 ax2 = plt.subplot(1, 2, 2)
-x, y = np.meshgrid(np.linspace(-2.5, 2.5, 200), np.linspace(-0.5, 2.5, 200))
+x, y = np.meshgrid(np.linspace(-2.5, 2.5, 300), np.linspace(-0.5, 2.5, 200))
 plt.pcolormesh(x, y, np.log10(rosenbrock([x, y])), zorder=-11, cmap='gray')
-plt.plot(optim_bfgs.msave[0, :], optim_bfgs.msave[1, :], label="bfgs")
-plt.plot(optim_pbfgs.msave[0, :], optim_pbfgs.msave[1, :], label="pbfgs")
-plt.plot(optim_step.msave[0, :], optim_step.msave[1, :], label="steep")
-plt.plot(optim_pstep.msave[0, :], optim_pstep.msave[1, :], label="psteep")
-plt.plot(optim_nlcg.msave[0, :], optim_pstep.msave[1, :], label="steep")
-plt.plot(optim_pnlcg.msave[0, :], optim_pstep.msave[1, :], label="psteep")
+plt.plot(optim_bfgs.msave[0, :optim_bfgs.current_iter],
+         optim_bfgs.msave[1, :optim_bfgs.current_iter], label="bfgs")
+plt.plot(optim_pbfgs.msave[0, :optim_pbfgs.current_iter],
+         optim_pbfgs.msave[1, :optim_pbfgs.current_iter], label="pbfgs")
+plt.plot(optim_step.msave[0, :optim_step.current_iter],
+         optim_step.msave[1, :optim_step.current_iter], label="steep")
+plt.plot(optim_pstep.msave[0, :optim_pstep.current_iter],
+         optim_pstep.msave[1, :optim_pstep.current_iter], label="psteep")
+plt.plot(optim_nlcg.msave[0, :optim_nlcg.current_iter],
+         optim_nlcg.msave[1, :optim_nlcg.current_iter], label="steep")
+plt.plot(optim_pnlcg.msave[0, :optim_pnlcg.current_iter],
+         optim_pnlcg.msave[1, :optim_pnlcg.current_iter], label="psteep")
 ax2.set_rasterization_zorder(-10)
 ax2.set_aspect('equal', 'box')
 plt.legend(loc=3)
 plt.title('Model Movement')
 plt.savefig(os.path.join(DOCFIGURES, "optimization.svg"), dpi=300)
+plt.savefig(os.path.join(DOCFIGURES, "optimization.pdf"), dpi=300)
 plt.show()
 plt.show()

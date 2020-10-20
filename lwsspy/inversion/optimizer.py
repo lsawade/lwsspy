@@ -126,8 +126,7 @@ def Solve_Optimisation_Problem(optim, model):
     optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
     for _iter in range(optim.niter_max):
 
-        # print("\n\nModel: ", optim.model)
-        # print("Grad:  ", optim.grad, "\n\n")
+        print(f"\nModel: {optim.model} -- Grad: {optim.grad}\n")
 
         # Initialize
         optim.al = 0

@@ -1,0 +1,257 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<FDSNStationXML xmlns="http://www.fdsn.org/xml/station/1" schemaVersion="1.1">
+  <Source>IRIS-DMC</Source>
+  <Sender>IRIS-DMC</Sender>
+  <Module>IRIS WEB SERVICE: fdsnws-station | version: 1.1.46</Module>
+  <ModuleURI>http://service.iris.edu/fdsnws/station/1/query?starttime=2018-06-09T00%3A28%3A16.400000&amp;endtime=2018-06-09T00%3A53%3A16.400000&amp;network=IU%2CII%2CG</ModuleURI>
+  <Created>2020-10-19T03:03:01.000000Z</Created>
+  <Network code="G" startDate="1982-01-01T00:00:00.000000Z" restrictedStatus="open">
+    <Description>GEOSCOPE ()</Description>
+    <Identifier type="DOI">10.18715/GEOSCOPE.G
+   </Identifier>
+    <TotalNumberStations>55</TotalNumberStations>
+    <SelectedNumberStations>35</SelectedNumberStations>
+    <Station code="CLF" startDate="2008-07-10T00:00:00.000000Z" endDate="2020-09-10T14:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.02579</Latitude>
+      <Longitude unit="DEGREES">2.26</Longitude>
+      <Elevation>145.0</Elevation>
+      <Site>
+        <Name>Chambon la Foret Observatory, France</Name>
+      </Site>
+      <CreationDate>2008-07-10T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>10</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="ECH" startDate="1990-11-08T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.216312</Latitude>
+      <Longitude unit="DEGREES">7.158961</Longitude>
+      <Elevation>580.0</Elevation>
+      <Site>
+        <Name>Echery - Sainte Marie aux Mines, France</Name>
+      </Site>
+      <CreationDate>1990-11-08T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>64</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SSB" startDate="1982-05-02T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">45.279</Latitude>
+      <Longitude unit="DEGREES">4.542</Longitude>
+      <Elevation>700.0</Elevation>
+      <Site>
+        <Name>Tunnel de Badole - Saint Sauveur en Rue, France</Name>
+      </Site>
+      <CreationDate>1982-05-02T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>240</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="TAM" startDate="1983-11-16T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">22.791491</Latitude>
+      <Longitude unit="DEGREES">5.52838</Longitude>
+      <Elevation>1410.0</Elevation>
+      <Site>
+        <Name>Tamanrasset, Algeria</Name>
+      </Site>
+      <CreationDate>1983-11-16T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>40</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+  </Network>
+  <Network code="II" startDate="1986-01-01T00:00:00.000000Z" restrictedStatus="open">
+    <Description>Global Seismograph Network - IRIS/IDA (GSN)</Description>
+    <Identifier type="DOI">10.7914/SN/II
+   </Identifier>
+    <TotalNumberStations>57</TotalNumberStations>
+    <SelectedNumberStations>43</SelectedNumberStations>
+    <Station code="ARU" startDate="2009-09-28T00:00:00.000000Z" endDate="2018-09-08T23:59:59.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">56.4293</Latitude>
+      <Longitude unit="DEGREES">58.5615</Longitude>
+      <Elevation>260.0</Elevation>
+      <Site>
+        <Name>Arti, Russia</Name>
+      </Site>
+      <CreationDate>2009-09-28T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>51</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="BFO" startDate="1996-05-29T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.3301</Latitude>
+      <Longitude unit="DEGREES">8.3296</Longitude>
+      <Elevation>638.0</Elevation>
+      <Site>
+        <Name>Black Forest Observatory, Schiltach, Germany</Name>
+      </Site>
+      <CreationDate>1996-05-29T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>138</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="BORG" startDate="1994-07-30T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">64.7474</Latitude>
+      <Longitude unit="DEGREES">-21.3268</Longitude>
+      <Elevation>110.0</Elevation>
+      <Site>
+        <Name>Borgarfjordur, Asbjarnarstadir, Iceland</Name>
+      </Site>
+      <CreationDate>1994-07-30T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>228</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="ESK" startDate="1987-11-13T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">55.3167</Latitude>
+      <Longitude unit="DEGREES">-3.205</Longitude>
+      <Elevation>242.0</Elevation>
+      <Site>
+        <Name>Eskdalemuir, Scotland, UK</Name>
+      </Site>
+      <CreationDate>1987-11-13T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>125</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="IBFO" startDate="2011-04-10T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.331902</Latitude>
+      <Longitude unit="DEGREES">8.3311</Longitude>
+      <Elevation>589.0</Elevation>
+      <Site>
+        <Name>Black Forest Observatory, Schiltach, Germany</Name>
+      </Site>
+      <CreationDate>2011-04-10T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>2</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="KIV" startDate="1994-02-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">43.9553</Latitude>
+      <Longitude unit="DEGREES">42.6863</Longitude>
+      <Elevation>1054.0</Elevation>
+      <Site>
+        <Name>Kislovodsk, Russia</Name>
+      </Site>
+      <CreationDate>1994-02-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>170</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="LVZ" startDate="1992-12-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">67.8979</Latitude>
+      <Longitude unit="DEGREES">34.6514</Longitude>
+      <Elevation>630.0</Elevation>
+      <Site>
+        <Name>Lovozero, Russia</Name>
+      </Site>
+      <CreationDate>1992-12-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>145</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="OBN" startDate="1988-09-14T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">55.1146</Latitude>
+      <Longitude unit="DEGREES">36.5674</Longitude>
+      <Elevation>160.0</Elevation>
+      <Site>
+        <Name>Obninsk, Russia</Name>
+      </Site>
+      <CreationDate>1988-09-14T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>160</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+  </Network>
+  <Network code="IU" startDate="1988-01-01T00:00:00.000000Z" restrictedStatus="open">
+    <Description>Global Seismograph Network - IRIS/USGS (GSN)</Description>
+    <Identifier type="DOI">10.7914/SN/IU
+   </Identifier>
+    <TotalNumberStations>270</TotalNumberStations>
+    <SelectedNumberStations>80</SelectedNumberStations>
+    <Station code="ANTO" startDate="2010-07-23T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), DEPREM, and METU</Description>
+      <Latitude unit="DEGREES">39.868</Latitude>
+      <Longitude unit="DEGREES">32.7934</Longitude>
+      <Elevation>1090.0</Elevation>
+      <Site>
+        <Name>Ankara, Turkey</Name>
+      </Site>
+      <CreationDate>2010-07-23T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>76</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="GNI" startDate="2010-10-07T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and WSSP</Description>
+      <Latitude unit="DEGREES">40.148</Latitude>
+      <Longitude unit="DEGREES">44.741</Longitude>
+      <Elevation>1609.0</Elevation>
+      <Site>
+        <Name>Garni, Armenia</Name>
+      </Site>
+      <CreationDate>2010-10-07T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>69</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="GRFO" startDate="2015-01-19T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and GFZ</Description>
+      <Latitude unit="DEGREES">49.6909</Latitude>
+      <Longitude unit="DEGREES">11.2203</Longitude>
+      <Elevation>384.0</Elevation>
+      <Site>
+        <Name>Grafenberg, Germany</Name>
+      </Site>
+      <CreationDate>2015-01-19T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>27</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="KBS" startDate="2010-06-08T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU), GEOFON (GE), AWI, and UB</Description>
+      <Latitude unit="DEGREES">78.9154</Latitude>
+      <Longitude unit="DEGREES">11.9385</Longitude>
+      <Elevation>90.0</Elevation>
+      <Site>
+        <Name>Ny-Alesund, Spitzbergen, Norway</Name>
+      </Site>
+      <CreationDate>2010-06-08T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>68</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="KEV" startDate="2008-09-11T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and Univ. Helsinki</Description>
+      <Latitude unit="DEGREES">69.7565</Latitude>
+      <Longitude unit="DEGREES">27.0035</Longitude>
+      <Elevation>100.0</Elevation>
+      <Site>
+        <Name>Kevo, Finland</Name>
+      </Site>
+      <CreationDate>2008-09-11T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>105</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="KIEV" startDate="2017-11-07T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and Nat. Acad. Sci. Ukraine</Description>
+      <Latitude unit="DEGREES">50.7012</Latitude>
+      <Longitude unit="DEGREES">29.2242</Longitude>
+      <Elevation>180.0</Elevation>
+      <Site>
+        <Name>Kiev, Ukraine</Name>
+      </Site>
+      <CreationDate>2017-11-07T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>32</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="KONO" startDate="2009-09-12T15:02:42.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and Univ. Bergen</Description>
+      <Latitude unit="DEGREES">59.6491</Latitude>
+      <Longitude unit="DEGREES">9.5982</Longitude>
+      <Elevation>216.0</Elevation>
+      <Site>
+        <Name>Kongsberg, Norway</Name>
+      </Site>
+      <CreationDate>2009-09-12T15:02:42.000000Z</CreationDate>
+      <TotalNumberChannels>81</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="PAB" startDate="2009-08-14T00:00:00.000000Z" restrictedStatus="open">
+      <Description>(GSN) IRIS/USGS (IU) and IGN</Description>
+      <Latitude unit="DEGREES">39.5446</Latitude>
+      <Longitude unit="DEGREES">-4.3499</Longitude>
+      <Elevation>950.0</Elevation>
+      <Site>
+        <Name>San Pablo, Spain</Name>
+      </Site>
+      <CreationDate>2009-08-14T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>122</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+  </Network>
+</FDSNStationXML>
