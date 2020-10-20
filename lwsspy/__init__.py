@@ -17,6 +17,8 @@ if "-m" not in sys.argv:
 
     # Inversion
     from .inversion.optimizer import Optimization  # noqa
+    from .inversion.plot_optimization import plot_optimization  # noqa
+    from .inversion.plot_model_history import plot_model_history  # noqa
 
     # Math
     from .math.convm import convm  # noqa
@@ -34,9 +36,14 @@ if "-m" not in sys.argv:
     from .seismo.cmt2inv import cmt2inv  # noqa
     from .seismo.cmt2stationxml import cmt2stationxml  # noqa
     from .seismo.cmtdir2stationxmldir import cmtdir2stationxmldir  # noqa
+    from .seismo.download_waveforms_cmt2storage import download_waveforms_cmt2storage  # noqa
+    from .seismo.download_waveforms_to_storage import download_waveforms_to_storage  # noqa
+    from .seismo.filterstationxml import filterstationxml  # noqa
     from .seismo.inv2stationxml import inv2stationxml  # noqa
     from .seismo.perturb_cmt import perturb_cmt  # noqa
     from .seismo.perturb_cmt import perturb_cmt_dir  # noqa
+    from .seismo.plot_stationxml import plot_station_xml  # noqa
+    from .seismo.read_inventory import flex_read_inventory as read_inventory  # noqa
     from .seismo.source import CMTSource  # noqa
     from .seismo.validate_cmt import validate_cmt  # noqa
     from .seismo.specfem.cmt2rundir import cmt2rundir  # noqa
@@ -47,8 +54,10 @@ if "-m" not in sys.argv:
     from .seismo.specfem.createsimdir import createsimdir  # noqa
     from .seismo.specfem.getsimdirSTATIONS import getsimdirSTATIONS  # noqa
     from .seismo.specfem.inv2STATIONS import inv2STATIONS  # noqa
+    from .seismo.specfem.read_parfile import read_parfile  # noqa
     from .seismo.specfem.stationxml2STATIONS import stationxml2STATIONS  # noqa
     from .seismo.specfem.stationxmldir2STATIONSdir import stationxmldir2STATIONSdir  # noqa
+    from .seismo.specfem.write_parfile import write_parfile  # noqa
 
     # Shell
     from .shell.ln import ln  # noqa

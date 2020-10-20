@@ -6,20 +6,21 @@ import numpy as np
 from lwsspy import DOCFIGURES  # Location to store figure
 from lwsspy import updaterc    # Makes figure pretty in my opinion
 from lwsspy import Optimization
+from lwsspy import plot_optimization
 updaterc()
 
 
 def x4(r):
     """x4 values"""
     x = r[0]
-    f = x ** 4 - 4 * x ** 2 - 2*x + 7
+    f = (x - 0.0234) ** 4 - 2*x + 8.0
     return f
 
 
 def x4_prime(r):
     """x4 values"""
     x = r[0]
-    f = 4 * x ** 3 - 8 * x - 2
+    f = 4 * (x - 0.0234) ** 3 - 2
     return np.array([f])
 
 
@@ -144,7 +145,7 @@ plt.plot(i6, f6, label="pnlcg")
 plt.legend(loc=4)
 
 ax2 = plt.subplot(1, 2, 2)
-x = [np.linspace(-2.5, 2.75, 200)]
+x = [np.linspace(-3.0, 2.75, 200)]
 plt.plot(optim_bfgs.msave[0, :], x4([optim_bfgs.msave[0, :]]), label="bfgs")
 plt.plot(optim_pbfgs.msave[0, :], x4([optim_pbfgs.msave[0, :]]), label="pbfgs")
 plt.plot(optim_step.msave[0, :], x4([optim_step.msave[0, :]]), label="steep")
@@ -158,4 +159,5 @@ plt.plot(x[0], x4(x), label=r"$f(x) = x^4 - 4x^2 -2x$")
 plt.legend(loc=1)
 plt.title('Model Movement')
 plt.savefig(os.path.join(DOCFIGURES, "optimization_x4.svg"), dpi=300)
+plt.savefig(os.path.join(DOCFIGURES, "optimization_x4.pdf"), dpi=300)
 plt.show()

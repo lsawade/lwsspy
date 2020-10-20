@@ -1,6 +1,7 @@
 import os
 from obspy import Inventory
 
+
 def inv2STATIONS(inv: Inventory, outputfilename: str = "./STATIONS"):
     """
     Takes in an obspy inventory and creates a STATIONS file from
