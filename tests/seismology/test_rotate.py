@@ -3,7 +3,7 @@ import inspect
 import pytest
 import numpy as np
 import numpy.testing as npt
-import lwsspy.signal.rotate as rotate
+import lwsspy.seismo.process.rotate as rotate
 from obspy import read, read_inventory, Stream
 from copy import deepcopy
 

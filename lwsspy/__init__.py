@@ -43,6 +43,8 @@ if "-m" not in sys.argv:
     from .seismo.perturb_cmt import perturb_cmt  # noqa
     from .seismo.perturb_cmt import perturb_cmt_dir  # noqa
     from .seismo.plot_stationxml import plot_station_xml  # noqa
+    from .seismo.process.process import process_stream  # noqa
+    from .seismo.process.rotate import rotate_stream  # noqa
     from .seismo.read_inventory import flex_read_inventory as read_inventory  # noqa
     from .seismo.source import CMTSource  # noqa
     from .seismo.validate_cmt import validate_cmt  # noqa
