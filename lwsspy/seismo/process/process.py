@@ -10,8 +10,8 @@ Methods that handles signal data processing for stream(Obspy.Stream)
     (http://www.gnu.org/licenses/lgpl-3.0.en.html)
 
 """
-from typing import Union
 from __future__ import (division, print_function, absolute_import)
+from typing import Union
 from obspy.signal.invsim import cosine_sac_taper
 from obspy.signal.util import _npts2nfft
 from obspy import Stream, Trace, Inventory, UTCDateTime
@@ -171,7 +171,7 @@ def process_stream(st: Stream, inventory: Union[Inventory, None] = None,
                    rotate_flag: bool = False,
                    event_latitude: Union[float, None] = None,
                    event_longitude: Union[float, None] = None,
-                   geodata: bool = True,
+                   geodata: bool = False,
                    sanity_check: bool = False) -> Stream:
     """
     Stream processing function defined for general purpose of tomography.
@@ -325,6 +325,7 @@ def process_stream(st: Stream, inventory: Union[Inventory, None] = None,
 
             # Get station coordinates
             coord_dict = inventory.get_coordinates(tr.get_id())
+
             lat = coord_dict["latitude"]
             lon = coord_dict["longitude"]
 
