@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy.testing as npt
-import gcmt3d.signal.compare_trace as ct
+import lwsspy.signal.compare_trace as ct
 from obspy import read
 
 
