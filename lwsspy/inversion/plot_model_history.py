@@ -1,11 +1,12 @@
-
+from typing import Union, List
 import numpy as np
 import matplotlib.pyplot as plt
 from .optimizer import Optimization
 
 
-def plot_model_history(optim: Optimization, labellist: list or None = None,
-                       outfile: str or None = None):
+def plot_model_history(optim: Union[List[Optimization], Optimization],
+                       labellist: Union[list, None] = None,
+                       outfile: Union[str, None] = None):
     """Plotting Misfit Reduction
 
     Parameters
@@ -17,31 +18,31 @@ def plot_model_history(optim: Optimization, labellist: list or None = None,
         by default None
     """
 
-    # Get model parameter number
-    ncol = int(np.ceil(optim.n))
-    mrow = int(np.ceil(optim.n/ncol))
+    # Change type to list
+    if type(optim) is not list:
+        optim = [optim]
 
-    # Get values
-    c = optim.fcost_hist
-    it = np.arange(len(c))
+    # Get model parameter number
+    ncol = int(np.ceil(optim[0].n))
+    mrow = int(np.ceil(optim[0].n/ncol))
 
     # Plot values
     plt.figure(figsize=(5*ncol/mrow, 5))
 
-    for _i in range(optim.n):
+    for _i in range(optim[0].n):
 
         ax = plt.subplot(mrow, ncol, _i + 1)
 
         if labellist is not None:
-            label = labellist[_i]
+            title = labellist[_i]
         else:
-            label = f"Model Param: {_i:{len(str(optim.n))}}"
+            title = f"Model Param: {_i:{len(str(optim[0].n))}}"
 
-        plt.plot(np.arange(optim.current_iter + 1),
-                 optim.msave[_i, :optim.current_iter + 1],
-                 label=label)
+        for _opt in optim:
+            plt.plot(np.arange(_opt.current_iter + 1),
+                     _opt.msave[_i, :_opt.current_iter + 1],
+                     label=_opt.type.upper())
         plt.legend()
-        plt.title(f"{optim.type.upper()} - Misfit Reduction")
 
         if outfile is not None:
             plt.savefig(outfile, dpi=300)

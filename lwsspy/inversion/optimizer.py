@@ -76,11 +76,16 @@ def Solve_Optimisation_Problem(optim, model):
         optim.descent_direction = get_bfgs_descent_direction
         if (optim.is_preco is False):
             optim.apply_preconditioner = preconditioner_nocedal
-
         optim.ro = np.zeros(optim.niter_max)
         optim.ai = np.zeros(optim.niter_max)
+
     elif optim.type == "nlcg":
         optim.descent_direction = get_nonlinear_conjugate_gradient_direction
+        if optim.is_preco is False:
+            optim.apply_preconditioner = NOP
+
+    elif optim.type == "gn":
+        optim.descent_direction = get_gauss_newton_descent_direction
         if optim.is_preco is False:
             optim.apply_preconditioner = NOP
 
@@ -90,7 +95,11 @@ def Solve_Optimisation_Problem(optim, model):
     optim.model_ini = deepcopy(model)
     optim.model = model
 
-    if optim.compute_cost_and_gradient is not None:
+    if optim.compute_cost_and_grad_and_hess is not None:
+        optim.fcost_ini, optim.grad_ini, optim.hess_ini = \
+            optim.compute_cost_and_grad_and_hess(optim.model)
+        optim.hess = optim.hess_ini
+    elif optim.compute_cost_and_gradient is not None:
         optim.fcost_ini, optim.grad_ini = \
             optim.compute_cost_and_gradient(optim.model)
     else:
@@ -139,22 +148,28 @@ def Solve_Optimisation_Problem(optim, model):
         # Get descent direction
         optim.descent_direction(optim)
 
-        # Compute product of descent times gradient
-        optim.q = scalar_product(optim.descent, optim.grad)
-
         # Perform linesearch
-        perform_linesearch(optim)
-        if optim.flag == "fail":
-            break
+        if optim.type == "gn":
+            optim.model = optim.model + optim.descent
+            optim.fcost, optim.grad, optim.hess = \
+                optim.compute_cost_and_grad_and_hess(optim.model)
+        else:
 
-        # If linesearch successful update informations
-        optim.fcost = optim.fcost_new
-        optim.model = optim.model_new
-        if optim.type == "nlcg":
-            optim.grad_prev = optim.grad
+            # Compute product of descent times gradient
+            optim.q = scalar_product(optim.descent, optim.grad)
 
-        optim.grad = optim.grad_new
-        optim.q = optim.qnew
+            perform_linesearch(optim)
+            if optim.flag == "fail":
+                break
+
+            # If linesearch successful update informations
+            optim.fcost = optim.fcost_new
+            optim.model = optim.model_new
+            if optim.type == "nlcg":
+                optim.grad_prev = optim.grad
+
+            optim.grad = optim.grad_new
+            optim.q = optim.qnew
 
         optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
 
@@ -226,6 +241,20 @@ def get_bfgs_descent_direction(optim):
         optim.alpha = 1  # should always be tried first
 
 
+def get_gauss_newton_descent_direction(optim):
+    """Gets Gauss-Newton descent direction.
+
+    Parameters
+    ----------
+    optim : Optimization
+        optimization class
+    """
+
+    # Get the easiest descent direction with a Gauss Newton descent
+    optim.descent = - np.linalg.solve(
+        optim.hess + optim.damping * np.ones_like(optim.hess), optim.grad)
+
+
 def bfgs_formula(optim):
     """Runs BFGS formula to get descent direction
 
@@ -286,7 +315,7 @@ def perform_linesearch(optim):
     Raises
     ------
     ValueError
-        If linesearch fails (max number of linesearch itterations are reached).
+        If linesearch fails (max number of linesearch iterations are reached).
     """
 
     # Line search
@@ -296,7 +325,10 @@ def perform_linesearch(optim):
         optim.model_new = optim.model + optim.alpha * optim.descent
 
         # If simultaneous cost and grad computation is defined do that.
-        if optim.compute_cost_and_gradient is not None:
+        if optim.compute_cost_and_grad_and_hess is not None:
+            optim.fcost_new, optim.grad_new, optim.hess_new = \
+                optim.compute_cost_and_grad_and_hess(optim.model)
+        elif optim.compute_cost_and_gradient is not None:
             optim.fcost_new, optim.grad_new = \
                 optim.compute_cost_and_gradient(optim.model_new)
         else:
@@ -455,9 +487,11 @@ class Optimization:
         n: int = 0,  # number of parameters
         model: np.ndarray = np.array([]),
         grad: np.ndarray = np.array([]),
+        hess: np.ndarray = np.array([[]]),
         descent: np.ndarray = np.array([]),
         nsave: int = 0,
         perc: float = 0.025,
+        damping: float = 1.0,
         fcost_hist: list = [],
         flag: str = "suceed",
         # for linesearch
@@ -475,6 +509,7 @@ class Optimization:
         compute_cost: callable = NOP,
         compute_gradient: callable = NOP,
         compute_cost_and_gradient: callable or None = None,
+        compute_cost_and_grad_and_hess: callable or None = None,
         descent_direction: callable = NOP,
         apply_preconditioner: callable = NOP,
         save_model_to_disk: callable = NOP,
@@ -519,6 +554,8 @@ class Optimization:
             matrix to store model iterations, by default 0
         perc : float, optional
             precentage of step, by default 0.025
+        damping : float, optional
+            damping the Gauss-Newton step, 0.0 means no damping, by default 0.0
         fcost_hist : list, optional
             cost function history, by default []
         flag : str, optional
@@ -583,9 +620,11 @@ class Optimization:
         self.n = n      # number of parameters
         self.model = model
         self.grad = grad
+        self.hess = hess
         self.descent = descent
         self.nsave = nsave
         self.perc = perc
+        self.damping = damping
         self.fcost_hist = fcost_hist
         self.flag = flag
 
@@ -607,6 +646,7 @@ class Optimization:
         self.compute_cost = compute_cost
         self.compute_gradient = compute_gradient
         self.compute_cost_and_gradient = compute_cost_and_gradient
+        self.compute_cost_and_grad_and_hess = compute_cost_and_grad_and_hess
         self.descent_direction = descent_direction
         self.apply_preconditioner = apply_preconditioner
         self.save_model_to_disk = save_model_to_disk

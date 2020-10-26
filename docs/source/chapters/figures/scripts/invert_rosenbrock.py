@@ -31,7 +31,7 @@ def rosenbrock_pprime(r):
     """Rosenbrock gradient"""
     x = r[0]
     y = r[1]
-    h = np.zeros(2, 2)
+    h = np.zeros((2, 2))
     h[0, 0] = 2 - 400*y + 1200*x*x
     h[0, 1] = - 400*x
     h[1, 0] = h[0, 1]
@@ -138,6 +138,7 @@ optim.compute_cost_and_grad_and_hess = compute_cost_and_grad_and_hess
 optim.apply_preconditioner = rosenbrock_preco
 optim.is_preco = False
 optim.niter_max = 50
+optim.damping = 0.001
 optim.stopping_criterion = 1e-10
 optim.n = len(model)
 optim_gn = optim.solve(optim, model)
@@ -156,7 +157,7 @@ i5 = np.arange(len(f5))
 f6 = optim_pnlcg.fcost_hist
 i6 = np.arange(len(f6))
 f7 = optim_gn.fcost_hist
-i7 = np.arange(len(f6))
+i7 = np.arange(len(f7))
 
 # Plot
 plt.figure(figsize=(11, 5))
@@ -176,20 +177,20 @@ plt.legend(loc=4)
 ax2 = plt.subplot(1, 2, 2)
 x, y = np.meshgrid(np.linspace(-2.5, 2.5, 300), np.linspace(-0.5, 2.5, 200))
 plt.pcolormesh(x, y, np.log10(rosenbrock([x, y])), zorder=-11, cmap='gray')
-plt.plot(optim_bfgs.msave[0, :optim_bfgs.current_iter],
-         optim_bfgs.msave[1, :optim_bfgs.current_iter], label="bfgs")
-plt.plot(optim_pbfgs.msave[0, :optim_pbfgs.current_iter],
-         optim_pbfgs.msave[1, :optim_pbfgs.current_iter], label="pbfgs")
-plt.plot(optim_step.msave[0, :optim_step.current_iter],
-         optim_step.msave[1, :optim_step.current_iter], label="steep")
-plt.plot(optim_pstep.msave[0, :optim_pstep.current_iter],
-         optim_pstep.msave[1, :optim_pstep.current_iter], label="psteep")
-plt.plot(optim_nlcg.msave[0, :optim_nlcg.current_iter],
-         optim_nlcg.msave[1, :optim_nlcg.current_iter], label="steep")
-plt.plot(optim_pnlcg.msave[0, :optim_pnlcg.current_iter],
-         optim_pnlcg.msave[1, :optim_pnlcg.current_iter], label="psteep")
-plt.plot(optim_gn.msave[0, :optim_pnlcg.current_iter],
-         optim_gn.msave[1, :optim_pnlcg.current_iter], label="gn")
+plt.plot(optim_bfgs.msave[0, :optim_bfgs.current_iter+1],
+         optim_bfgs.msave[1, :optim_bfgs.current_iter+1], label="bfgs")
+plt.plot(optim_pbfgs.msave[0, :optim_pbfgs.current_iter+1],
+         optim_pbfgs.msave[1, :optim_pbfgs.current_iter+1], label="pbfgs")
+plt.plot(optim_step.msave[0, :optim_step.current_iter+1],
+         optim_step.msave[1, :optim_step.current_iter+1], label="steep")
+plt.plot(optim_pstep.msave[0, :optim_pstep.current_iter+1],
+         optim_pstep.msave[1, :optim_pstep.current_iter+1], label="psteep")
+plt.plot(optim_nlcg.msave[0, :optim_nlcg.current_iter+1],
+         optim_nlcg.msave[1, :optim_nlcg.current_iter+1], label="steep")
+plt.plot(optim_pnlcg.msave[0, :optim_pnlcg.current_iter+1],
+         optim_pnlcg.msave[1, :optim_pnlcg.current_iter+1], label="psteep")
+plt.plot(optim_gn.msave[0, :optim_gn.current_iter+1],
+         optim_gn.msave[1, :optim_gn.current_iter+1], label="gn")
 ax2.set_rasterization_zorder(-10)
 ax2.set_aspect('equal', 'box')
 plt.legend(loc=3)

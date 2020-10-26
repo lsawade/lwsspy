@@ -470,6 +470,38 @@ def compute_stream_grad_depth(data, synt, dsyn):
     return x
 
 
+def compute_stream_grad_and_hess(data, synt, dsyn):
+
+    g = 0.0
+    h = 0.0
+    for tr in data:
+        network, station, component = (
+            tr.stats.network, tr.stats.station, tr.stats.component)
+
+        # Get the trace sampling time
+        dt = tr.stats.delta
+        d = tr.data
+
+        try:
+            s = synt.select(network=network, station=station,
+                            component=component)[0].data
+            dsdz = dsyn.select(network=network, station=station,
+                               component=component)[0].data
+
+            for win, tap in zip(tr.stats.windows, tr.stats.tapers):
+                wsyn = s[win.left:win.right]
+                wobs = d[win.left:win.right]
+                wdsdz = dsdz[win.left:win.right]
+                g += np.sum((wsyn - wobs) * wdsdz * tap) * dt
+                h += np.sum(wdsdz ** 2 * tap) * dt
+
+        except Exception as e:
+            print(f"When accessing {network}.{station}.{component}")
+            print(e)
+
+    return g, h
+
+
 iterwindow = 0
 
 
@@ -518,6 +550,51 @@ def compute_cost_and_gradient(model):
     return cost, grad
 
 
+def compute_cost_and_gradient_hessian(model):
+    global iterwindow, data
+    # Populate the simulation directories
+    cmt = deepcopy(cmt_init)
+    cmt.depth_in_m = model[0]
+    cmt.write_CMTSOLUTION_file(synt_cmt)
+    cmt.write_CMTSOLUTION_file(dsyn_cmt)
+
+    # Run the simulations
+    cmd_list = 2 * [['mpiexec', '-n', '1', './bin/xspecfem3D']]
+    cwdlist = [syntsimdir, dsynsimdir]
+    print_action("Submitting simulations")
+    if compute_synt:
+        run_cmds_parallel(cmd_list, cwdlist=cwdlist)
+    print()
+
+    # Get streams
+    synt = read(os.path.join(syntsimdir, "OUTPUT_FILES", "*.sac"))
+    dsyn = read(os.path.join(dsynsimdir, "OUTPUT_FILES", "*.sac"))
+    print_action("Processing Synthetic")
+    # with nostdout():
+    synt = process_wrapper(synt, cmt_init, processparams,
+                           inv=inv, observed=False)
+
+    print_action("Processing Fréchet")
+    # with nostdout():
+    dsyn = process_wrapper(dsyn, cmt_init, processparams,
+                           inv=inv, observed=False)
+
+    # After the first forward modeling window the data
+    if iterwindow == 0:
+        print_action("Windowing")
+        window_config = read_yaml_file(
+            os.path.join(scriptdir, "window.body.yml"))
+        window_on_stream(data, synt, window_config,
+                         station=inv, event=xml_event)
+        taper_windows(data, taper_type="tukey", alpha=0.25)
+        iterwindow += 1
+
+    cost = compute_stream_cost(data, synt)
+    grad, hess = compute_stream_grad_and_hess(data, synt, dsyn)
+
+    return cost, np.array([grad]), np.array([[hess]])
+
+
 # Define initial model that is 10km off
 model = np.array([cmt_goal.depth_in_m + 10000.0])
 
@@ -531,10 +608,26 @@ optim.stopping_criterion = 1e-8
 optim.n = len(model)
 optim_bfgs = optim.solve(optim, model)
 
+# plot_optimization(
+#     optim_bfgs, outfile="depth_inversion_misfit_reduction.pdf")
+# plot_model_history(optim_bfgs, labellist=['depth'],
+#                    outfile="depth_inversion_model_history.pdf")
+
+
+print_section("GN")
+# Prepare optim steepest
+optim = Optimization("gn")
+optim.compute_cost_and_grad_and_hess = compute_cost_and_gradient_hessian
+optim.is_preco = False
+optim.niter_max = 7
+optim.stopping_criterion = 1e-8
+optim.n = len(model)
+optim_gn = optim.solve(optim, model)
+
 plot_optimization(
-    optim_bfgs, outfile="depth_inversion_misfit_reduction.pdf")
-plot_model_history(optim_bfgs, labellist=['depth'],
-                   outfile="depth_inversion_model_history.pdf")
+    [optim_bfgs, optim_gn], outfile="depth_inversion_misfit_reduction_comp.pdf")
+plot_model_history([optim_bfgs, optim_gn], labellist=['depth'],
+                   outfile="depth_inversion_model_history_comp.pdf")
 
 ax = plot_station_xml(station_xml)
 ax.add_collection(
@@ -542,7 +635,4 @@ ax.add_collection(
           size=100, linewidth=1.0))
 plt.savefig("depth_inversion_map.pdf")
 
-
 # %%
-
-tr = data[20]
