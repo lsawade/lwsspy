@@ -13,21 +13,21 @@ updaterc()
 def x4(r):
     """x4 values"""
     x = r[0]
-    f = (x - 0.0234) ** 4 - 2*x + 8.0
+    f = (x) ** 4 - 2*x + 8.0
     return f
 
 
 def x4_prime(r):
     """x4 values"""
     x = r[0]
-    f = 4 * (x - 0.0234) ** 3 - 2
+    f = 4 * (x) ** 3 - 2
     return np.array([f])
 
 
 def x4_pprime(r):
     """x4 values"""
     x = r[0]
-    f = 12 * (x - 0.0234) ** 2
+    f = 12 * (x) ** 2
     return np.array([[f]])
 
 
@@ -46,9 +46,9 @@ def cost_and_grad_and_hess(r):
 def x4_preco(q):
     """x4 Preconditioner
     """
-    x = 1
+    x = 0.79370053
     h = np.zeros(1)
-    h[0] = 12 * x ** 2 - 8
+    h[0] = 12 * (x) ** 2
     # h(3) = -400*x;
     q = q/h
     return q
@@ -137,7 +137,7 @@ optim.compute_cost_and_grad_and_hess = cost_and_grad_and_hess
 optim.apply_preconditioner = x4_preco
 optim.is_preco = False
 optim.niter_max = 50
-optim.stopping_criterion = 1e-24
+optim.stopping_criterion = 1e-10
 optim.n = len(model)
 optim_gn = optim.solve(optim, model)
 
@@ -187,16 +187,20 @@ plt.legend(loc=4)
 
 ax2 = plt.subplot(1, 2, 2)
 x = [np.linspace(-3.0, 2.75, 200)]
-plt.plot(optim_bfgs.msave[0, :], x4([optim_bfgs.msave[0, :]]), label="bfgs")
-plt.plot(optim_pbfgs.msave[0, :], x4([optim_pbfgs.msave[0, :]]), label="pbfgs")
-plt.plot(optim_step.msave[0, :], x4([optim_step.msave[0, :]]), label="steep")
-plt.plot(optim_pstep.msave[0, :], x4(
-    [optim_pstep.msave[0, :]]), label="psteep")
-plt.plot(optim_nlcg.msave[0, :], x4([optim_nlcg.msave[0, :]]), label="steep")
-plt.plot(optim_pnlcg.msave[0, :], x4(
-    [optim_pnlcg.msave[0, :]]), label="psteep")
-plt.plot(optim_gn.msave[0, :], x4(
-    [optim_gn.msave[0, :]]), label="gn")
+plt.plot(optim_bfgs.msave[0, :optim_bfgs.current_iter+1], x4(
+    [optim_bfgs.msave[0, :optim_bfgs.current_iter+1]]), label="bfgs")
+plt.plot(optim_pbfgs.msave[0, :optim_pbfgs.current_iter+1],
+         x4([optim_pbfgs.msave[0, :optim_pbfgs.current_iter+1]]), label="pbfgs")
+plt.plot(optim_step.msave[0, :optim_step.current_iter+1],
+         x4([optim_step.msave[0, :optim_step.current_iter+1]]), label="steep")
+plt.plot(optim_pstep.msave[0, :optim_pstep.current_iter+1], x4(
+    [optim_pstep.msave[0, :optim_pstep.current_iter+1]]), label="psteep")
+plt.plot(optim_nlcg.msave[0, :optim_nlcg.current_iter+1],
+         x4([optim_nlcg.msave[0, :optim_nlcg.current_iter+1]]), label="steep")
+plt.plot(optim_pnlcg.msave[0, :optim_pnlcg.current_iter+1], x4(
+    [optim_pnlcg.msave[0, :optim_pnlcg.current_iter+1]]), label="psteep")
+plt.plot(optim_gn.msave[0, :optim_gn.current_iter+1], x4(
+    [optim_gn.msave[0, :optim_gn.current_iter+1]]), label="gn")
 plt.plot(x[0], x4(x), label=r"$f(x) = x^4 - 4x^2 -2x$")
 # ax2.set_aspect('equal', 'box')
 plt.legend(loc=1)
