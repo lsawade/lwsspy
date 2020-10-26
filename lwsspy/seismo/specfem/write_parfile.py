@@ -42,5 +42,10 @@ def write_parfile(pars: dict, filename: str):
 
     with open(filename, 'w') as f:
         for line in lines:
-            f.write(line)
-            f.write('\n')
+            if "#" in line:
+                pass
+            elif line == "":
+                pass
+            else:
+                f.write(line)
+                f.write('\n')

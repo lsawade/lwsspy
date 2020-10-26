@@ -27,6 +27,18 @@ def rosenbrock_prime(r):
     return g
 
 
+def rosenbrock_pprime(r):
+    """Rosenbrock gradient"""
+    x = r[0]
+    y = r[1]
+    h = np.zeros(2, 2)
+    h[0, 0] = 2 - 400*y + 1200*x*x
+    h[0, 1] = - 400*x
+    h[1, 0] = h[0, 1]
+    h[1, 1] = 200
+    return h
+
+
 def rosenbrock_preco(q):
     """Rosenbrock Preconditioner
     """
@@ -38,6 +50,10 @@ def rosenbrock_preco(q):
     # h(3) = -400*x;
     q = q/h
     return q
+
+
+def compute_cost_and_grad_and_hess(r):
+    return rosenbrock(r), rosenbrock_prime(r), rosenbrock_pprime(r)
 
 
 # Define initial model
@@ -113,6 +129,19 @@ optim.stopping_criterion = 1e-10
 optim.n = len(model)
 optim_pnlcg = optim.solve(optim, model)
 
+# Steepest preco
+print(50 * "*", " Gauss-Newton ", 50 * "*")
+optim = Optimization("gn")
+# optim.compute_cost = rosenbrock
+# optim.compute_gradient = rosenbrock_prime
+optim.compute_cost_and_grad_and_hess = compute_cost_and_grad_and_hess
+optim.apply_preconditioner = rosenbrock_preco
+optim.is_preco = False
+optim.niter_max = 50
+optim.stopping_criterion = 1e-10
+optim.n = len(model)
+optim_gn = optim.solve(optim, model)
+
 # Get costs
 f1 = optim_bfgs.fcost_hist
 i1 = np.arange(len(f1))
@@ -126,7 +155,8 @@ f5 = optim_nlcg.fcost_hist
 i5 = np.arange(len(f5))
 f6 = optim_pnlcg.fcost_hist
 i6 = np.arange(len(f6))
-
+f7 = optim_gn.fcost_hist
+i7 = np.arange(len(f6))
 
 # Plot
 plt.figure(figsize=(11, 5))
@@ -140,6 +170,7 @@ plt.plot(i3, f3, label="steep")
 plt.plot(i4, f4, label="psteep")
 plt.plot(i5, f5, label="nlcg")
 plt.plot(i6, f6, label="pnlcg")
+plt.plot(i7, f7, label="gn")
 plt.legend(loc=4)
 
 ax2 = plt.subplot(1, 2, 2)
@@ -157,6 +188,8 @@ plt.plot(optim_nlcg.msave[0, :optim_nlcg.current_iter],
          optim_nlcg.msave[1, :optim_nlcg.current_iter], label="steep")
 plt.plot(optim_pnlcg.msave[0, :optim_pnlcg.current_iter],
          optim_pnlcg.msave[1, :optim_pnlcg.current_iter], label="psteep")
+plt.plot(optim_gn.msave[0, :optim_pnlcg.current_iter],
+         optim_gn.msave[1, :optim_pnlcg.current_iter], label="gn")
 ax2.set_rasterization_zorder(-10)
 ax2.set_aspect('equal', 'box')
 plt.legend(loc=3)
