@@ -23,11 +23,6 @@ from obspy import Stream, Inventory
 from obspy import read_inventory
 
 # Internal imports
-from ..source import CMTSource
-from ..log_util import modify_logger
-
-logger = logging.getLogger(__name__)
-modify_logger(logger)
 
 
 def load_json(filename):
@@ -119,38 +114,38 @@ def _get_mpi_comm():
     return MPI.COMM_WORLD
 
 
-def get_location_in_database(cmtfile, databasedir):
-    """ Takes in CMT solution and database directory and outputs path to the CMT
-    in the
+# def get_location_in_database(cmtfile, databasedir):
+#     """ Takes in CMT solution and database directory and outputs path to the CMT
+#     in the
 
-    :param cmtfile: cmtfilename
-    :param databasedir: database directory
-    :return:
-    """
+#     :param cmtfile: cmtfilename
+#     :param databasedir: database directory
+#     :return:
+#     """
 
-    # Load CMT solution
-    cmtsource = CMTSource.from_CMTSOLUTION_file(cmtfile)
+#     # Load CMT solution
+#     cmtsource = CMTSource.from_CMTSOLUTION_file(cmtfile)
 
-    # Get ID from source
-    cmtID = cmtsource.eventname
+#     # Get ID from source
+#     cmtID = cmtsource.eventname
 
-    return os.path.join(os.path.abspath(databasedir),
-                        "C" + cmtID,
-                        "C" + cmtID + ".cmt")
+#     return os.path.join(os.path.abspath(databasedir),
+#                         "C" + cmtID,
+#                         "C" + cmtID + ".cmt")
 
 
-def get_cmt_id(cmtfile):
-    """ Takes in CMTSOLUTION file and outputs the id
+# def get_cmt_id(cmtfile):
+#     """ Takes in CMTSOLUTION file and outputs the id
 
-    :param cmtfile: cmtfilename
-    :return: ids
-    """
+#     :param cmtfile: cmtfilename
+#     :return: ids
+#     """
 
-    # Load CMT solution
-    cmtsource = CMTSource.from_CMTSOLUTION_file(cmtfile)
+#     # Load CMT solution
+#     cmtsource = CMTSource.from_CMTSOLUTION_file(cmtfile)
 
-    # Get ID from source
-    return cmtsource.eventname
+#     # Get ID from source
+#     return cmtsource.eventname
 
 
 def load_asdf(filename: str, no_event=False):
@@ -179,7 +174,7 @@ def load_asdf(filename: str, no_event=False):
             st += getattr(ds.waveforms[station], tag)
             inv += ds.waveforms[station].StationXML
         except Exception as e:
-            logger.verbose(e)
+            print(e)
 
     # Choose not to load an event from the asdf file (pycmt3d's event doesn't
     # output an event...)
@@ -222,6 +217,6 @@ def flex_read_stations(filenames: str or list):
                     inv.networks.append(new_network)
 
         except Exception as e:
-            logger.warning("%s could not be read. Error: %s" % (_file, e))
+            print("%s could not be read. Error: %s" % (_file, e))
 
     return inv

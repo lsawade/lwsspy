@@ -1,5 +1,6 @@
-from obspy import read_inventory
+from ..read_inventory import flex_read_inventory as read_inventory
 from .inv2STATIONS import inv2STATIONS
+
 
 def stationxml2STATIONS(xmlfilename: str, stationsfilename: str):
     """
@@ -18,4 +19,3 @@ def stationxml2STATIONS(xmlfilename: str, stationsfilename: str):
 
     # Write STATIONS file
     inv2STATIONS(inv, outputfilename=stationsfilename)
-    

@@ -2,7 +2,7 @@
 # functions mainly for pypaw.
 """
 import numpy as np
-from gcmt3d.utils.io import dump_json
+from lwsspy.utils.io import dump_json
 
 
 def sort_windows_on_channel_and_location(sta_win):

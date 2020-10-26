@@ -3,7 +3,7 @@ from obspy import read_inventory
 from obspy import Inventory
 
 
-def flex_read_inventory(filenames: Union[str, list]):
+def flex_read_inventory(filenames: Union[str, list], **kwargs):
     """ Takes in a list of strings and tries to read them as inventories
     Creates a single inventory, not an aggregate of inventories
 
@@ -24,7 +24,7 @@ def flex_read_inventory(filenames: Union[str, list]):
     inv = Inventory()
     for _file in filenames:
         try:
-            add_inv = read_inventory(_file)
+            add_inv = read_inventory(_file, **kwargs)
             for network in add_inv:
                 if len(inv.select(network=network.code)) == 0:
                     inv.networks.append(network)

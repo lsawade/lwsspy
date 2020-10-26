@@ -11,7 +11,7 @@ from .read_inventory import flex_read_inventory
 
 def download_waveforms_cmt2storage(
         cmtfilename: str,
-        *args,
+        datastorage: str,
         duration: float = 11000.0,
         stationxml: Union[str, None] = None,
         starttimeoffset: float = - 300.0,
@@ -28,6 +28,6 @@ def download_waveforms_cmt2storage(
     else:
         inv = None
 
-    download_waveforms_to_storage(*args, starttime=starttime, endtime=endtime,
+    download_waveforms_to_storage(datastorage, starttime, endtime,
                                   limit_stations_to_inventory=inv,
                                   **kwargs)
