@@ -132,10 +132,9 @@ def Solve_Optimisation_Problem(optim, model):
     optim.store_grad_and_model = store_grad_and_model  # could be overwritten
 
     # Perform optimization
+    print(f"\nModel: {optim.model} -- Grad: {optim.grad}\n")
     optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
     for _iter in range(optim.niter_max):
-
-        print(f"\nModel: {optim.model} -- Grad: {optim.grad}\n")
 
         # Initialize
         optim.al = 0
@@ -172,6 +171,8 @@ def Solve_Optimisation_Problem(optim, model):
             optim.q = optim.qnew
 
         optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
+
+        print(f"\nModel: {optim.model} -- Grad: {optim.grad}\n")
 
         # Check stopping criteria
         if ((optim.fcost / optim.fcost_ini) < optim.stopping_criterion) \
@@ -249,10 +250,11 @@ def get_gauss_newton_descent_direction(optim):
     optim : Optimization
         optimization class
     """
+    # Delayed gratification
 
     # Get the easiest descent direction with a Gauss Newton descent
     optim.descent = - np.linalg.solve(
-        optim.hess + optim.damping * np.ones_like(optim.hess), optim.grad)
+        optim.hess + optim.damping * np.diag(optim.hess), optim.grad)
 
 
 def bfgs_formula(optim):
@@ -625,6 +627,7 @@ class Optimization:
         self.nsave = nsave
         self.perc = perc
         self.damping = damping
+        self.lam = damping
         self.fcost_hist = fcost_hist
         self.flag = flag
 

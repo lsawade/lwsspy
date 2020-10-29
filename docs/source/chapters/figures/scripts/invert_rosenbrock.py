@@ -6,6 +6,8 @@ import numpy as np
 from lwsspy import DOCFIGURES  # Location to store figure
 from lwsspy import updaterc    # Makes figure pretty in my opinion
 from lwsspy import Optimization
+from lwsspy import plot_model_history
+from lwsspy import plot_optimization
 updaterc()
 
 
@@ -138,7 +140,7 @@ optim.compute_cost_and_grad_and_hess = compute_cost_and_grad_and_hess
 optim.apply_preconditioner = rosenbrock_preco
 optim.is_preco = False
 optim.niter_max = 50
-optim.damping = 0.001
+optim.damping = 0.0
 optim.stopping_criterion = 1e-10
 optim.n = len(model)
 optim_gn = optim.solve(optim, model)
@@ -198,4 +200,6 @@ plt.title('Model Movement')
 plt.savefig(os.path.join(DOCFIGURES, "optimization.svg"), dpi=300)
 plt.savefig(os.path.join(DOCFIGURES, "optimization.pdf"), dpi=300)
 plt.show()
-plt.show()
+
+plot_model_history(optim_gn, outfile="./testhist.pdf")
+plot_optimization(optim_gn, outfile="./testoptim.pdf")
