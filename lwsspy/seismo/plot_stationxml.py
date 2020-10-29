@@ -63,7 +63,7 @@ def plot_station_xml(filename: str, outputfile: str or None = None):
     aspect = (extent[1] - extent[0])/(extent[3] - extent[2])
 
     # Plot things
-    plt.figure(figsize=(aspect*5, 5))
+    plt.figure(figsize=(aspect*4, 4))
     ax = plt.axes(projection=PlateCarree())
 
     plot_map()

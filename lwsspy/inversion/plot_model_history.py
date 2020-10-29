@@ -27,7 +27,7 @@ def plot_model_history(optim: Union[List[Optimization], Optimization],
     mrow = int(np.ceil(optim[0].n/ncol))
 
     # Plot values
-    plt.figure(figsize=(5*ncol/mrow, 5))
+    plt.figure(figsize=(4*ncol, 4*mrow))
 
     for _i in range(optim[0].n):
 

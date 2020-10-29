@@ -27,6 +27,9 @@ if "-m" not in sys.argv:
     from .utils.io import read_yaml_file  # noqa
     from .utils.io import write_yaml_file  # noqa
     from .utils.output import nostdout  # noqa
+    from .utils.output import print_action  # noqa
+    from .utils.output import print_bar  # noqa
+    from .utils.output import print_section  # noqa
 
     # Math
     from .math.convm import convm  # noqa
@@ -36,6 +39,7 @@ if "-m" not in sys.argv:
 
     # Plot
     from .plot_util.updaterc import updaterc  # noqa
+    from .plot_util.updaterc import updaterc_pres  # noqa
     from .plot_util.remove_ticklabels import remove_xticklabels  # noqa
     from .plot_util.remove_ticklabels import remove_yticklabels  # noqa
     from .plot_util.figcolorbar import figcolorbar  # noqa
@@ -52,6 +56,7 @@ if "-m" not in sys.argv:
     from .seismo.perturb_cmt import perturb_cmt_dir  # noqa
     from .seismo.plot_stationxml import plot_station_xml  # noqa
     from .seismo.process.process import process_stream  # noqa
+    from .seismo.process.process_wrapper import process_wrapper  # noqa
     from .seismo.process.rotate import rotate_stream  # noqa
     from .seismo.read_inventory import flex_read_inventory as read_inventory  # noqa
     from .seismo.source import CMTSource  # noqa
@@ -68,17 +73,23 @@ if "-m" not in sys.argv:
     from .seismo.specfem.stationxml2STATIONS import stationxml2STATIONS  # noqa
     from .seismo.specfem.stationxmldir2STATIONSdir import stationxmldir2STATIONSdir  # noqa
     from .seismo.specfem.write_parfile import write_parfile  # noqa
+    from .seismo.window.window import window_on_stream  # noqa
+    from .seismo.window.add_tapers import add_tapers  # noqa
+    from .seismo.window.stream_cost_win import stream_cost_win  # noqa
+    from .seismo.window.stream_grad_frechet_win import stream_grad_frechet_win  # noqa
+    from .seismo.window.stream_grad_hess_frechet_win import stream_grad_and_hess_win  # noqa
 
     # Shell
-    from .shell.ln import ln  # noqa
-    from .shell.cp import cp  # noqa
     from .shell.cat import cat  # noqa
-    from .shell.cpdir import cpdir  # noqa
-    from .shell.touch import touch  # noqa
-    from .shell.readfile import readfile  # noqa
-    from .shell.writefile import writefile  # noqa
     from .shell.copy_dirtree import copy_dirtree  # noqa
+    from .shell.cp import cp  # noqa
     from .shell.create_dirtree import create_dirtree  # noqa
+    from .shell.cpdir import cpdir  # noqa
+    from .shell.ln import ln  # noqa
+    from .shell.readfile import readfile  # noqa
+    from .shell.run_cmds_parallel import run_cmds_parallel  # noqa
+    from .shell.touch import touch  # noqa
+    from .shell.writefile import writefile  # noqa
 
     # Statistics
     from .statistics.clm import clm  # noqa

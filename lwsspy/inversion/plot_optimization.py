@@ -19,7 +19,7 @@ def plot_optimization(optim: Union[List[Optimization], Optimization],
     if type(optim) is not list:
         optim = [optim]
     # Plot values
-    plt.figure(figsize=(6, 5))
+    plt.figure(figsize=(4, 4))
     ax = plt.axes()
     ax.set_yscale("log")
     for _opt in optim:

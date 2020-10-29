@@ -4,124 +4,40 @@ CMTSOLUTTION depth.
 """
 # %% Create inversion directory
 
+# Internal
+from lwsspy import download_waveforms_cmt2storage
+from lwsspy import plot_station_xml
+from lwsspy import process_wrapper
+from lwsspy import read_inventory
+from lwsspy import CMTSource
+from lwsspy import add_tapers, window_on_stream
+from lwsspy import stream_cost_win
+from lwsspy import stream_grad_frechet_win
+from lwsspy import stream_grad_and_hess_win
+from lwsspy import createsimdir
+from lwsspy import read_parfile
+from lwsspy import stationxml2STATIONS
+from lwsspy import write_parfile
+from lwsspy import Optimization
+from lwsspy import plot_optimization
+from lwsspy import plot_model_history
+from lwsspy import updaterc
+from lwsspy import run_cmds_parallel
+from lwsspy import read_yaml_file
+from lwsspy import print_action, print_bar, print_section
+
 # External
-import contextlib
 import os
-import sys
-from typing import Union
 from copy import deepcopy
-from subprocess import Popen, PIPE
 import numpy as np
 import matplotlib.pyplot as plt
-from obspy import read, read_events, Stream, Trace, Inventory
-import pyflex
+from obspy import read, read_events
 
-# Internal
-from lwsspy import CMTSource
-from lwsspy import createsimdir
-from lwsspy import download_waveforms_cmt2storage
-from lwsspy import Optimization
-from lwsspy import process_stream
-from lwsspy import read_parfile
-from lwsspy import read_yaml_file
-from lwsspy import read_inventory
-from lwsspy import stationxml2STATIONS
-from lwsspy import updaterc
-from lwsspy import write_parfile
-from lwsspy import nostdout
 
-from lwsspy.inversion.plot_optimization import plot_optimization
 updaterc()
 
 
-# %% Function to launch specfem instances in parallel
-
-
-def run_cmds_parallel(cmd_list, cwdlist=None):
-    """Takes in a listt of shell commands:
-
-    Parameters
-    ----------
-    cmd_list : list
-        List of list of arguments
-
-    Last modified: Lucas Sawade, 2020.09.18 19.00 (lsawade@princeton.edu)
-    """
-
-    # Create list of processes that immediately start execution
-    if cwdlist is None:
-        cwdlist = len(cmd_list) * None
-    process_list = [Popen(cmd, stdout=PIPE, stderr=PIPE, cwd=cwd)
-                    for cmd, cwd in zip(cmd_list, cwdlist)]
-
-    # Wait for the processes to finish
-    for proc in process_list:
-        proc.wait()
-
-    # Print RETURNCODE, STDOUT and STDERR
-    for proc in process_list:
-        out, err = proc.communicate()
-        if proc.returncode != 0:
-            print(proc.returncode)
-        if (out != b''):
-            print(out.decode())
-        if (err != b''):
-            print(err.decode())
-        if proc.returncode != 0:
-            sys.exit()
-
-
-def print_bar(string):
-    # Running forward simulation
-    print("\n\n")
-    print(72 * "=")
-    print(f"{f' {string} ':=^72}")
-    print(72 * "=")
-    print("\n")
-
-
-def print_action(string):
-    print(f"---> {string} ...")
-
-
-def process_wrapper(st: Stream, event: CMTSource, paramdict: dict,
-                    inv: Union[Inventory, None] = None,
-                    observed: bool = True):
-    """Fixes start and endtime in the dictionary
-
-    Parameters
-    ----------
-    stream : Stream
-        stream to be processed
-    paramdict : dict
-        parameterdictionary
-    event : CMTSource
-        event
-
-    Returns
-    -------
-    dict
-        processparameter dict
-
-    """
-
-    newdict = deepcopy(paramdict)
-    rstart = newdict.pop("relative_starttime")
-    rend = newdict.pop("relative_endtime")
-    newdict.update({
-        "starttime": event.origin_time + rstart,
-        "endtime": event.origin_time + rend,
-    })
-    newdict.update({"remove_response_flag": observed})
-
-    return process_stream(st, event_latitude=event.latitude,
-                          event_longitude=event.longitude,
-                          inventory=inv, **newdict)
-
-
 # Main parameters
-# station_xml = '/home/lsawade/lwsspy/invdir_real/station2_filtered.xml'
-observed_data = ''
 window_dict = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), "body.window.yml")
 
@@ -144,13 +60,13 @@ CMTSOLUTION = os.path.join(invdir, "CMTSOLUTION")
 cmt_init = CMTSource.from_CMTSOLUTION_file(CMTSOLUTION)
 xml_event = read_events(CMTSOLUTION)[0]
 
-
 # %% Create inversion directory and simulation directories
 if os.path.exists(invdir) is False:
     os.mkdir(invdir)
 
+if os.path.exists(datadir) is False:
     download_waveforms_cmt2storage(
-        CMTSOLUTION, "invdir_real/Data",
+        CMTSOLUTION, datadir,
         duration=1200, stationxml="invdir_real/station2_filtered.xml")
 
 station_xml = os.path.join(datadir, "stations", "*.xml")
@@ -167,137 +83,307 @@ synt_parfile = os.path.join(syntsimdir, "DATA", "Par_file")
 dsyn_parfile = os.path.join(dsynsimdir, "DATA", "Par_file")
 synt_cmt = os.path.join(syntsimdir, "DATA", "CMTSOLUTION")
 dsyn_cmt = os.path.join(dsynsimdir, "DATA", "CMTSOLUTION")
-createsimdir(SPECFEM, syntsimdir, specfem_dict=specfem_dict)
-createsimdir(SPECFEM, dsynsimdir, specfem_dict=specfem_dict)
 
-#  Fix Stations!
-stationxml2STATIONS(station_xml, syntstations)
-stationxml2STATIONS(station_xml, dsynstations)
+compute_synt = True
+if compute_synt:
+    createsimdir(SPECFEM, syntsimdir, specfem_dict=specfem_dict)
+    createsimdir(SPECFEM, dsynsimdir, specfem_dict=specfem_dict)
 
-# Get Par_file Dictionaries
-synt_pars = read_parfile(synt_parfile)
-dsyn_pars = read_parfile(dsyn_parfile)
+    #  Fix Stations!
+    stationxml2STATIONS(station_xml, syntstations)
+    stationxml2STATIONS(station_xml, dsynstations)
 
-# Set data parameters and  write new parfiles
-synt_pars["USE_SOURCE_DERIVATIVE"] = False
-dsyn_pars["USE_SOURCE_DERIVATIVE"] = True
-dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"] = 1  # For depth
-write_parfile(synt_pars, synt_parfile)
-write_parfile(dsyn_pars, dsyn_parfile)
+    # Get Par_file Dictionaries
+    synt_pars = read_parfile(synt_parfile)
+    dsyn_pars = read_parfile(dsyn_parfile)
 
+    # Set data parameters and  write new parfiles
+    synt_pars["USE_SOURCE_DERIVATIVE"] = False
+    dsyn_pars["USE_SOURCE_DERIVATIVE"] = True
+    dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"] = 1  # For depth
+    write_parfile(synt_pars, synt_parfile)
+    write_parfile(dsyn_pars, dsyn_parfile)
+
+print_bar("Starting the inversion")
 
 # Create dictionary for processing
 rawdata = read(waveforms)
-print(rawdata)
 inv = read_inventory(station_xml)
-print(inv)
 print_action("Processing the observed data")
 processparams = read_yaml_file(os.path.join(scriptdir, "process.body.yml"))
-with nostdout():
-    data = process_wrapper(rawdata, cmt_init, processparams, inv=inv)
-print(data)
-sys.exit()
-# %% Fix Generate Data
-print_bar("Starting the inversion")
+data = process_wrapper(rawdata, cmt_init, processparams, inv=inv)
 
 # %% Loading and Processing the data
 
 
-def compute_stream_cost(synt, data):
+def compute_stream_cost(data, synt):
 
     x = 0.0
 
-    for tr in synt:
-        network, station, component = (
-            tr.stats.network, tr.stats.station, tr.stats.component)
+    for tr in data:
+        network, station, location, channel, component = (
+            tr.stats.network, tr.stats.station, tr.stats.location,
+            tr.stats.channel, tr.stats.component)
         # Get the trace sampling time
         dt = tr.stats.delta
-        s = tr.data
+        d = tr.data
 
         try:
-            d = data.select(network=network, station=station,
+            s = synt.select(network=network, station=station,
                             component=component)[0].data
-            x += 0.5 * np.sum((s - d) ** 2) * dt
+
+            for win, tap in zip(tr.stats.windows, tr.stats.tapers):
+                ws = s[win.left:win.right]
+                wo = d[win.left:win.right]
+                x += 0.5 * np.sum(tap * (ws - wo) ** 2) * dt
+
         except Exception as e:
-            print(f"When accessing {network}.{station}.{component}")
-            print(e)
+            print(
+                f"Error - gradient - "
+                f"{network}.{station}.{location}.{channel}: {e}")
 
     return x
 
 
-def compute_stream_grad_depth(synt, data, dsyn):
+def compute_stream_grad_depth(data, synt, dsyn):
 
     x = 0.0
 
-    for tr in synt:
-        network, station, component = (
-            tr.stats.network, tr.stats.station, tr.stats.component)
+    for tr in data:
+        network, station, location, channel, component = (
+            tr.stats.network, tr.stats.station, tr.stats.location,
+            tr.stats.channel, tr.stats.component)
 
         # Get the trace sampling time
         dt = tr.stats.delta
-        s = tr.data
+        d = tr.data
 
         try:
-            d = data.select(network=network, station=station,
+            s = synt.select(network=network, station=station,
                             component=component)[0].data
             dsdz = dsyn.select(network=network, station=station,
                                component=component)[0].data
-            x += np.sum((s - d) * dsdz) * dt
+
+            for win, tap in zip(tr.stats.windows, tr.stats.tapers):
+                wsyn = s[win.left:win.right]
+                wobs = d[win.left:win.right]
+                wdsdz = dsdz[win.left:win.right]
+                x += np.sum((wsyn - wobs) * wdsdz * tap) * dt
 
         except Exception as e:
-            print(f"When accessing {network}.{station}.{component}")
-            print(e)
+            print(
+                f"Error - gradient - "
+                f"{network}.{station}.{location}.{channel}: {e}")
 
     return x
 
 
-def compute_cost_and_gradient(model):
+def compute_stream_grad_and_hess(data, synt, dsyn):
 
+    g = 0.0
+    h = 0.0
+    for tr in data:
+        network, station, location, channel, component = (
+            tr.stats.network, tr.stats.station, tr.stats.location,
+            tr.stats.channel, tr.stats.component)
+
+        # Get the trace sampling time
+        dt = tr.stats.delta
+        d = tr.data
+
+        try:
+            s = synt.select(network=network, station=station,
+                            component=component)[0].data
+            dsdz = dsyn.select(network=network, station=station,
+                               component=component)[0].data
+
+            for win, tap in zip(tr.stats.windows, tr.stats.tapers):
+                wsyn = s[win.left:win.right]
+                wobs = d[win.left:win.right]
+                wdsdz = dsdz[win.left:win.right]
+                g += np.sum((wsyn - wobs) * wdsdz * tap) * dt
+                h += np.sum(wdsdz ** 2 * tap) * dt
+
+        except Exception as e:
+            print(
+                f"Error - gradient/hess - "
+                f"{network}.{station}.{location}.{channel}: {e}")
+
+    return g, h
+
+
+iterwindow = 0
+
+
+def compute_cost_and_gradient(model):
+    global iterwindow, data
     # Populate the simulation directories
-    cmt_init.depth_in_m = model[0]
-    cmt_init.write_CMTSOLUTION_file(synt_cmt)
-    cmt_init.write_CMTSOLUTION_file(dsyn_cmt)
+    cmt = deepcopy(cmt_init)
+    cmt.depth_in_m = model[0] * 1000  # Gradient is in km!
+    cmt.write_CMTSOLUTION_file(synt_cmt)
+    cmt.write_CMTSOLUTION_file(dsyn_cmt)
 
     # Run the simulations
     cmd_list = 2 * [['mpiexec', '-n', '1', './bin/xspecfem3D']]
     cwdlist = [syntsimdir, dsynsimdir]
     print_action("Submitting simulations")
-    run_cmds_parallel(cmd_list, cwdlist=cwdlist)
+    if compute_synt:
+        run_cmds_parallel(cmd_list, cwdlist=cwdlist)
     print()
 
     # Get streams
     synt = read(os.path.join(syntsimdir, "OUTPUT_FILES", "*.sac"))
     dsyn = read(os.path.join(dsynsimdir, "OUTPUT_FILES", "*.sac"))
-    print_action("Processing synthetic")
-    with nostdout():
-        synt = process_wrapper(synt, cmt_init, processparams,
-                               inv=inv, observed=False)
+    print_action("Processing Synthetic")
+    # with nostdout():
+    synt = process_wrapper(synt, cmt_init, processparams,
+                           inv=inv, observed=False)
 
     print_action("Processing Fréchet")
-    with nostdout():
-        dsyn = process_wrapper(dsyn, cmt_init, processparams,
-                               inv=inv, observed=False)
+    # with nostdout():
+    dsyn = process_wrapper(dsyn, cmt_init, processparams,
+                           inv=inv, observed=False)
 
-    # print(f"Check number of traces: S: {len(synt)}, dS: {len(dsyn)}")
+    # After the first forward modeling window the data
+    if iterwindow == 0:
+        print_action("Windowing")
+        window_config = read_yaml_file(
+            os.path.join(scriptdir, "window.body.yml"))
+        print("Data")
+        print(data)
+        print("Synt")
+        print(synt)
+        print("Inv")
+        print(inv)
+        window_on_stream(data, synt, window_config,
+                         station=inv, event=xml_event)
+        add_tapers(data, taper_type="tukey", alpha=0.25)
+        iterwindow += 1
 
-    cost = compute_stream_cost(synt, data)
-    grad = np.array([compute_stream_grad_depth(synt, data, dsyn)])
+    cost = stream_cost_win(data, synt)
+    grad = np.array([stream_grad_frechet_win(data, synt, dsyn)])
 
     return cost, grad
 
 
-# Define initial model that is 10km off
-model = np.array([cmt_goal.depth_in_m + 10000.0])
+def compute_cost_and_gradient_hessian(model):
+    global iterwindow, data
+    # Populate the simulation directories
+    cmt = deepcopy(cmt_init)
+    cmt.depth_in_m = model[0] * 1000.0  # Gradient is in km!
+    cmt.write_CMTSOLUTION_file(synt_cmt)
+    cmt.write_CMTSOLUTION_file(dsyn_cmt)
+
+    # Run the simulations
+    cmd_list = 2 * [['mpiexec', '-n', '1', './bin/xspecfem3D']]
+    cwdlist = [syntsimdir, dsynsimdir]
+    print_action("Submitting simulations")
+    if compute_synt:
+        run_cmds_parallel(cmd_list, cwdlist=cwdlist)
+    print()
+
+    # Get streams
+    synt = read(os.path.join(syntsimdir, "OUTPUT_FILES", "*.sac"))
+    dsyn = read(os.path.join(dsynsimdir, "OUTPUT_FILES", "*.sac"))
+    print_action("Processing Synthetic")
+    # with nostdout():
+    synt = process_wrapper(synt, cmt_init, processparams,
+                           inv=inv, observed=False)
+
+    print_action("Processing Fréchet")
+    # with nostdout():
+    dsyn = process_wrapper(dsyn, cmt_init, processparams,
+                           inv=inv, observed=False)
+
+    # After the first forward modeling window the data
+    if iterwindow == 0:
+        print_action("Windowing")
+        window_config = read_yaml_file(
+            os.path.join(scriptdir, "window.body.yml"))
+        window_on_stream(data, synt, window_config,
+                         station=inv, event=xml_event)
+        add_tapers(data, taper_type="tukey", alpha=0.25)
+        iterwindow += 1
+
+    cost = stream_cost_win(data, synt)
+    grad, hess = stream_grad_and_hess_win(data, synt, dsyn)
+
+    return cost, np.array([grad]), np.array([[hess]])
 
 
-print(f"{' BFGS ':*^72}")
-# Prepare optim steepest
-optim = Optimization("bfgs")
-optim.compute_cost_and_gradient = compute_cost_and_gradient
-optim.is_preco = False
-optim.niter_max = 50
-optim.stopping_criterion = 1e-8
-optim.n = len(model)
-optim_bfgs = optim.solve(optim, model)
+# %% Computing the depth range
+depths = np.arange(cmt_init.depth_in_m - 10000,
+                   cmt_init.depth_in_m + 10500, 500) / 1000
+cost = []
+grad = []
+hess = []
+for _dep in depths:
+    print_action(f"Computing depth: {_dep}")
+    c, g, h = compute_cost_and_gradient_hessian(np.array([_dep]))
+    cost.append(c)
+    grad.append(g[0])
+    hess.append(h[0, 0])
 
-plot_optimization(optim_bfgs, outfile="depth_inversion.pdf")
+plt.figure(figsize=(11, 4))
+ax1 = plt.subplot(1, 4, 1)
+plt.plot(cost, depths)
+plt.ylabel('z')
+plt.xlabel('Cost')
+plt.gca().invert_yaxis()
+ax2 = plt.subplot(1, 4, 2, sharey=ax1)
+plt.plot(grad, depths)
+plt.xlabel('Gradient')
+ax2.tick_params(labelleft=False)
+ax3 = plt.subplot(1, 4, 3, sharey=ax1)
+plt.plot(hess, depths)
+plt.xlabel('Hessian')
+ax3.tick_params(labelleft=False)
+ax4 = plt.subplot(1, 4, 4, sharey=ax1)
+plt.plot(np.array(grad)/np.array(hess), depths)
+plt.xlabel('Gradient/Hessian')
+ax4.tick_params(labelleft=False)
+
+plt.subplots_adjust(hspace=0.125, wspace=0.125)
+plt.savefig("DataCostGradHess.pdf")
+
+
+# ax = plot_station_xml(station_xml)
+# ax.add_collection(
+#     beach(cmt_init.tensor, xy=(cmt_init.longitude, cmt_init.latitude),
+#           width=5, size=100, linewidth=1.0))
+# plt.savefig("depth_inversion_map.pdf")
+
+# # Define initial model that is 10km off
+# model = np.array([cmt_init.depth_in_m]) / 1000.0
+
+# print_section("BFGS")
+# # Prepare optim steepest
+# optim = Optimization("bfgs")
+# optim.compute_cost_and_gradient = compute_cost_and_gradient
+# optim.is_preco = False
+# optim.niter_max = 7
+# optim.nls_max = 3
+# optim.stopping_criterion = 1e-8
+# optim.n = len(model)
+# optim_bfgs = optim.solve(optim, model)
+
+# plot_optimization(
+#     optim_bfgs, outfile="depth_inversion_misfit_reduction.pdf")
+# plot_model_history(optim_bfgs, labellist=['depth'],
+#                    outfile="depth_inversion_model_history.pdf")
+
+# print_section("GN")
+# # Prepare optim steepest
+# optim = Optimization("gn")
+# optim.compute_cost_and_grad_and_hess = compute_cost_and_gradient_hessian
+# optim.is_preco = False
+# optim.niter_max = 7
+# optim.damping = 0.0
+# optim.stopping_criterion = 1e-8
+# optim.n = len(model)
+# optim_gn = optim.solve(optim, model)
+
+# plot_optimization(
+#     [optim_bfgs, optim_gn], outfile="depth_inversion_misfit_reduction_comp.pdf")
+# plot_model_history([optim_bfgs, optim_gn], labellist=['depth'],
+#                    outfile="depth_inversion_model_history_comp.pdf")

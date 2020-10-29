@@ -137,6 +137,7 @@ optim.compute_cost_and_grad_and_hess = cost_and_grad_and_hess
 optim.apply_preconditioner = x4_preco
 optim.is_preco = False
 optim.niter_max = 50
+optim.damping = 0.0
 optim.stopping_criterion = 1e-10
 optim.n = len(model)
 optim_gn = optim.solve(optim, model)
