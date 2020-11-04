@@ -38,11 +38,12 @@ if "-m" not in sys.argv:
     from .math.SphericalNN import SphericalNN  # noqa
 
     # Plot
-    from .plot_util.updaterc import updaterc  # noqa
-    from .plot_util.updaterc import updaterc_pres  # noqa
+    from .plot_util.figcolorbar import figcolorbar  # noqa
     from .plot_util.remove_ticklabels import remove_xticklabels  # noqa
     from .plot_util.remove_ticklabels import remove_yticklabels  # noqa
-    from .plot_util.figcolorbar import figcolorbar  # noqa
+    from .plot_util.updaterc import updaterc  # noqa
+    from .plot_util.updaterc import updaterc_pres  # noqa
+    from .plot_util.nice_colorbar import nice_colorbar  # noqa
 
     # Seismology
     from .seismo.cmt2inv import cmt2inv  # noqa
@@ -60,6 +61,7 @@ if "-m" not in sys.argv:
     from .seismo.process.rotate import rotate_stream  # noqa
     from .seismo.read_inventory import flex_read_inventory as read_inventory  # noqa
     from .seismo.source import CMTSource  # noqa
+    from .seismo.stream_multiply import stream_multiply  # noqa
     from .seismo.validate_cmt import validate_cmt  # noqa
     from .seismo.specfem.cmt2rundir import cmt2rundir  # noqa
     from .seismo.specfem.cmt2simdir import cmt2simdir  # noqa
@@ -77,7 +79,7 @@ if "-m" not in sys.argv:
     from .seismo.window.add_tapers import add_tapers  # noqa
     from .seismo.window.stream_cost_win import stream_cost_win  # noqa
     from .seismo.window.stream_grad_frechet_win import stream_grad_frechet_win  # noqa
-    from .seismo.window.stream_grad_hess_frechet_win import stream_grad_and_hess_win  # noqa
+    from .seismo.window.stream_grad_hess_win import stream_grad_and_hess_win  # noqa
 
     # Shell
     from .shell.cat import cat  # noqa

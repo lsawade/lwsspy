@@ -1,3 +1,4 @@
+import sys
 from subprocess import Popen, PIPE
 
 
@@ -9,7 +10,7 @@ def run_cmds_parallel(cmd_list, cwdlist=None):
     cmd_list : list
         List of list of arguments
 
-    Last modified: Lucas Sawade, 2020.09.28 19.00 (lsawade@princeton.edu)
+    Last modified: Lucas Sawade, 2020.11.04 09.00 (lsawade@princeton.edu)
     """
 
     # Create list of processes that immediately start execution

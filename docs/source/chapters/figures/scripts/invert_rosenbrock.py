@@ -137,8 +137,8 @@ optim = Optimization("gn")
 # optim.compute_cost = rosenbrock
 # optim.compute_gradient = rosenbrock_prime
 optim.compute_cost_and_grad_and_hess = compute_cost_and_grad_and_hess
-optim.apply_preconditioner = rosenbrock_preco
-optim.is_preco = False
+# optim.apply_preconditioner = rosenbrock_preco
+optim.is_preco = True
 optim.niter_max = 50
 optim.damping = 0.0
 optim.stopping_criterion = 1e-10
@@ -203,3 +203,6 @@ plt.show()
 
 plot_model_history(optim_gn, outfile="./testhist.pdf")
 plot_optimization(optim_gn, outfile="./testoptim.pdf")
+
+
+print(optim_gn.msave)
