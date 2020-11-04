@@ -313,7 +313,7 @@ def compute_cost_and_gradient_hessian(model):
 
 # %% Computing the depth range
 depths = np.arange(cmt_init.depth_in_m - 10000,
-                   cmt_init.depth_in_m + 10500, 500) / 1000
+                   cmt_init.depth_in_m + 11000, 1000) / 1000
 cost = []
 grad = []
 hess = []

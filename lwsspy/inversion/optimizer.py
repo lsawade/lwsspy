@@ -86,8 +86,6 @@ def Solve_Optimisation_Problem(optim, model):
 
     elif optim.type == "gn":
         optim.descent_direction = get_gauss_newton_descent_direction
-        if optim.is_preco is False:
-            optim.apply_preconditioner = NOP
 
     else:
         raise ValueError("Optimization algorithm not recognized")

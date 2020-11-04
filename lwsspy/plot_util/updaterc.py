@@ -21,7 +21,7 @@ def updaterc(rebuild=False):
         'axes.labelsize': 12,
         'axes.titlesize': 13,
         'axes.linewidth': 1,
-        'axes.grid': True,
+        'axes.grid': False,
         'grid.color': "lightgrey",
         'xtick.labelsize': 10,
         'xtick.direction': 'inout',
@@ -58,10 +58,11 @@ def updaterc(rebuild=False):
         'legend.scatterpoints': 3,
         'legend.edgecolor': 'inherit',
         'legend.facecolor': 'w',
-        'mathtext.fontset': 'custom',
-        'mathtext.rm': 'Helvetica',
-        'mathtext.it': 'Helvetica:italic',
-        'mathtext.bf': 'Helvetica:bold'
+        'mathtext.fontset': 'stix'
+        # 'mathtext.fontset': 'custom',
+        # 'mathtext.rm': 'Bitstream Vera Sans',
+        # 'mathtext.it': 'Bitstream Vera Sans:italic',
+        # 'mathtext.bf':'Bitstream Vera Sans:bold'
     }
     matplotlib.rcParams.update(params)
 
@@ -126,10 +127,10 @@ def updaterc_pres(rebuild=False):
         'legend.scatterpoints': 3,
         'legend.edgecolor': 'inherit',
         'legend.facecolor': 'w',
-        'mathtext.fontset': 'custom',
-        'mathtext.rm': 'Helvetica',
-        'mathtext.it': 'Helvetica:italic',
-        'mathtext.bf': 'Helvetica:bold'
+        'mathtext.fontset': 'stix',
+        # 'mathtext.rm': 'Helvetica',
+        # 'mathtext.it': 'Helvetica:italic',
+        # 'mathtext.bf': 'Helvetica:bold'
     }
     matplotlib.rcParams.update(params)
 
