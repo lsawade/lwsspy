@@ -31,6 +31,12 @@ if "-m" not in sys.argv:
     from .utils.output import print_bar  # noqa
     from .utils.output import print_section  # noqa
 
+    # Maps
+    from .maps.fix_map_extent import fix_map_extent  # noqa
+    from .maps.plot_topo import plot_topo  # noqa
+    from .maps.read_etopo_bedrock import read_etopo_bedrock  # noqa
+    from .maps.read_etopo_ice import read_etopo_ice  # noqa
+
     # Math
     from .math.convm import convm  # noqa
     from .math.eigsort import eigsort  # noqa
@@ -39,6 +45,7 @@ if "-m" not in sys.argv:
 
     # Plot
     from .plot_util.figcolorbar import figcolorbar  # noqa
+    from .plot_util.plot_map import plot_map  # noqa
     from .plot_util.remove_ticklabels import remove_xticklabels  # noqa
     from .plot_util.remove_ticklabels import remove_yticklabels  # noqa
     from .plot_util.updaterc import updaterc  # noqa
@@ -53,6 +60,7 @@ if "-m" not in sys.argv:
     from .seismo.download_waveforms_to_storage import download_waveforms_to_storage  # noqa
     from .seismo.filterstationxml import filterstationxml  # noqa
     from .seismo.inv2stationxml import inv2stationxml  # noqa
+    from .seismo.inv2geoloc import inv2geoloc  # noqa
     from .seismo.perturb_cmt import perturb_cmt  # noqa
     from .seismo.perturb_cmt import perturb_cmt_dir  # noqa
     from .seismo.plot_stationxml import plot_station_xml  # noqa
