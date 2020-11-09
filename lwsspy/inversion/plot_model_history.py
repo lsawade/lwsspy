@@ -42,6 +42,7 @@ def plot_model_history(optim: Union[List[Optimization], Optimization],
             plt.plot(np.arange(_opt.current_iter + 1),
                      _opt.msave[_i, :_opt.current_iter + 1],
                      label=_opt.type.upper())
+        plt.title(title)
         plt.legend()
 
         if outfile is not None:

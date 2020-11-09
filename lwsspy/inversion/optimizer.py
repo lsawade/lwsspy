@@ -248,11 +248,17 @@ def get_gauss_newton_descent_direction(optim):
     optim : Optimization
         optimization class
     """
-    # Delayed gratification
+
+    # Determinant
+    print("Determinant: ", np.linalg.det(optim.hess))
+    print("Condition #: ", np.linalg.cond(optim.hess))
+    print("Hessian: ")
+    print(optim.hess)
 
     # Get the easiest descent direction with a Gauss Newton descent
-    optim.descent = - np.linalg.solve(
-        optim.hess + optim.damping * np.diag(optim.hess), optim.grad)
+    optim.descent = np.linalg.solve(np.diag(np.diag(optim.hess)), - optim.grad)
+    # optim.descent = - np.linalg.solve(
+    #     optim.hess + optim.damping * np.diag(np.diag(optim.hess)), optim.grad)
 
 
 def bfgs_formula(optim):

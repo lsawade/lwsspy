@@ -4,6 +4,13 @@ import numpy as np
 
 
 def nice_colorbar(**kwargs) -> matplotlib.colorbar.Colorbar:
+    """Creates nicely formatted colorbar. `**kwargs` are parsed to the 
+
+    Returns
+    -------
+    matplotlib.colorbar.Colorbar
+        colorbar handle returned
+    """
 
     # Get normal axes labelsize
     xticklabelsize = matplotlib.rcParams['xtick.labelsize']
