@@ -29,7 +29,7 @@ def plot_map():
                       alpha=0.5, linestyle='-', zorder=-1.5)
 
     # Add land
-    ax.add_feature(cartopy.feature.LAND, zorder=-10, edgecolor='black',
+    ax.add_feature(cartopy.feature.LAND, zorder=-20, edgecolor='black',
                    linewidth=0.5, facecolor=(0.9, 0.9, 0.9))
 
     return ax
