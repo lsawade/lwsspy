@@ -95,10 +95,12 @@ if "-m" not in sys.argv:
     from .shell.cp import cp  # noqa
     from .shell.create_dirtree import create_dirtree  # noqa
     from .shell.cpdir import cpdir  # noqa
+    from .shell.download_and_unzip import download_and_unzip  # noqa
     from .shell.ln import ln  # noqa
     from .shell.readfile import readfile  # noqa
     from .shell.run_cmds_parallel import run_cmds_parallel  # noqa
     from .shell.touch import touch  # noqa
+    from .shell.ungzip import ungzip  # noqa
     from .shell.writefile import writefile  # noqa
 
     # Statistics
