@@ -7,6 +7,10 @@ DOCFIGURES = os.path.join(
             os.path.abspath(__file__))),
     'docs', 'source', 'chapters', 'figures')
 
+DOWNLOAD_CACHE = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    'download_cache')
+
 # Global imports when running the modules for testing
 if "-m" not in sys.argv:
 
@@ -34,8 +38,7 @@ if "-m" not in sys.argv:
     # Maps
     from .maps.fix_map_extent import fix_map_extent  # noqa
     from .maps.plot_topo import plot_topo  # noqa
-    from .maps.read_etopo_bedrock import read_etopo_bedrock  # noqa
-    from .maps.read_etopo_ice import read_etopo_ice  # noqa
+    from .maps.read_etopo import read_etopo  # noqa
 
     # Math
     from .math.convm import convm  # noqa
@@ -95,7 +98,7 @@ if "-m" not in sys.argv:
     from .shell.cp import cp  # noqa
     from .shell.create_dirtree import create_dirtree  # noqa
     from .shell.cpdir import cpdir  # noqa
-    from .shell.download_and_unzip import download_and_unzip  # noqa
+    from .shell.downloadfile import downloadfile  # noqa
     from .shell.ln import ln  # noqa
     from .shell.readfile import readfile  # noqa
     from .shell.run_cmds_parallel import run_cmds_parallel  # noqa

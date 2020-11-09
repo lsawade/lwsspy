@@ -1,10 +1,11 @@
+import os
 from os.path import join, dirname, abspath, exists
 import xarray as xr
 import pooch
 import lwsspy as lpy
 
 
-def read_etopo_bedrock(version='bedrock', **kwargs):
+def read_etopo(version='bedrock', **kwargs):
     """All topography
 
     Returns
@@ -15,6 +16,7 @@ def read_etopo_bedrock(version='bedrock', **kwargs):
     """
 
     version = version.lower()
+    names = {"ice": "Ice Surface", "bedrock": "Bedrock"}
     urlmod = {'ice': 'ice_surface',
               'bedrock': 'bedrock'}
     available = {
@@ -25,23 +27,33 @@ def read_etopo_bedrock(version='bedrock', **kwargs):
            f'{urlmod[version]}/grid_registered/netcdf/{available[version]}')
 
     # Get filename
-    datadir = join(dirname(dirname(__file__)), 'data')
-    fname = join(datadir, available[version][:-3])
+    zipname = join(lpy.DOWNLOAD_CACHE, available[version])
+    fname = zipname[:-3]
 
+    # Downloading if not in download cache
     if exists(fname) is False:
-        lpy.download_and_unzip(url, fname)
+        if exists(zipname) is False:
+            lpy.print_action(f"Downloading ETOPO1 - {names[version]}")
+            lpy.downloadfile(url, zipname)
+        lpy.print_action("Unzipping...")
+        lpy.ungzip(zipname, fname)
+
+    # If only zip left remove zip
+    if exists(zipname):
+        lpy.print_action("Removing zipfile...")
+        os.remove(zipname)
 
     # Get data data
     grid = xr.open_dataset(fname, **kwargs)
 
     # Add more metadata and fix some names
-    names = {"ice": "Ice Surface", "bedrock": "Bedrock"}
     grid = grid.rename(z=version, x="longitude", y="latitude")
-    grid[version].attrs["long_name"] = "{} relief".format(names[version])
+    grid[version].attrs["long_name"] = f"{names[version]} relief".format()
     grid[version].attrs["units"] = "meters"
     grid[version].attrs["vertical_datum"] = "sea level"
     grid[version].attrs["datum"] = "WGS84"
-    grid.attrs["title"] = "ETOPO1 {} Relief".format(names[version])
+    grid.attrs["title"] = f"ETOPO1 {names[version]} Relief"
     grid.attrs["doi"] = "10.7289/V5C8276M"
 
-    return grid[version].longitude, grid[version].latitude, grid[version].version
+    return (grid[version].longitude, grid[version].latitude,
+            grid[version].data)
