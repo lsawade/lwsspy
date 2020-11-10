@@ -156,6 +156,7 @@
 <span class="kn">from</span> <span class="nn">..source</span> <span class="kn">import</span> <span class="n">CMTSource</span>
 <span class="kn">from</span> <span class="nn">...math.magnitude</span> <span class="kn">import</span> <span class="n">magnitude</span>
 
+
 <div class="viewcode-block" id="cmtdir2simdirs"><a class="viewcode-back" href="../../../../chapters/functions.html#lwsspy.seismo.specfem.cmtdir2simdirs.cmtdir2simdirs">[docs]</a><span class="k">def</span> <span class="nf">cmtdir2simdirs</span><span class="p">(</span><span class="n">cmtdir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">specfemdir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">outputdir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;./&quot;</span><span class="p">,</span>
                    <span class="n">specfem_dict</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                    <span class="n">stationsdir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
@@ -194,7 +195,7 @@
 
     <span class="c1"># Get list of cmt files</span>
     <span class="n">cmtfiles</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmtdir</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">))</span>
-
+    <span class="n">cmtfiles</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of CMT files: </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">cmtfiles</span><span class="p">))</span>
 
     <span class="n">Nev</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cmtfiles</span><span class="p">)</span>
@@ -204,12 +205,16 @@
 
         <span class="c1"># Create Simdir</span>
         <span class="k">if</span> <span class="n">stationsdir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">cmtid</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">_file</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">cmtid_pert</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">_file</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">cmtid</span> <span class="o">=</span> <span class="n">cmtid_pert</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">stationsfile</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stationsdir</span><span class="p">,</span> <span class="n">cmtid</span> <span class="o">+</span> <span class="s2">&quot;.stations&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CMT: </span><span class="si">{</span><span class="n">cmtid_pert</span><span class="si">}</span><span class="s2"> -- STATIONS: </span><span class="si">{</span><span class="n">stationsfile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">stationsfile</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
                 <span class="n">stationsfile</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stationsdir</span><span class="p">,</span> <span class="n">cmtid</span><span class="p">)</span>
+
             <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">stationsfile</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-----&gt; No STATIONS file found.&quot;</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stationsfile</span><span class="si">}</span><span class="s2"> does not exist.&quot;</span><span class="p">)</span>
 
         <span class="c1"># Print progress</span>

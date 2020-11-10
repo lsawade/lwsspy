@@ -148,8 +148,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for lwsspy.seismo.specfem.stationxml2STATIONS</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read_inventory</span>
+<span></span><span class="kn">from</span> <span class="nn">..read_inventory</span> <span class="kn">import</span> <span class="n">flex_read_inventory</span> <span class="k">as</span> <span class="n">read_inventory</span>
 <span class="kn">from</span> <span class="nn">.inv2STATIONS</span> <span class="kn">import</span> <span class="n">inv2STATIONS</span>
+
 
 <div class="viewcode-block" id="stationxml2STATIONS"><a class="viewcode-back" href="../../../../chapters/functions.html#lwsspy.seismo.specfem.stationxml2STATIONS.stationxml2STATIONS">[docs]</a><span class="k">def</span> <span class="nf">stationxml2STATIONS</span><span class="p">(</span><span class="n">xmlfilename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">stationsfilename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -168,7 +169,6 @@
 
     <span class="c1"># Write STATIONS file</span>
     <span class="n">inv2STATIONS</span><span class="p">(</span><span class="n">inv</span><span class="p">,</span> <span class="n">outputfilename</span><span class="o">=</span><span class="n">stationsfilename</span><span class="p">)</span></div>
-    
 </pre></div>
 
            </div>

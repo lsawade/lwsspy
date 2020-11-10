@@ -1,0 +1,6 @@
+{
+    "python.pythonPath": "/Users/lucassawade/anaconda3/envs/lwsspy/bin/python",
+    "python.linting.flake8Enabled": true,
+    "python.linting.mypyEnabled": false,
+    "python.linting.enabled": true
+}

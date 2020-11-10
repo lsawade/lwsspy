@@ -22,28 +22,8 @@ That however doesn't make your plots exactly publishable.
 A workaround is partially rasterizing your plots. That can be done with the
 following command:
 
-.. code-block:: python
-
-    import matplotlib.pyplot as plt
-    import numpy as np
-
-    # Create data
-    x = linspace(-1,1, 100)
-    y = linspace(-1,1, 100)
-    xx, yy = meshgrid(x,y)
-
-    # Plot figure
-    plt.figure()
-    ax = plt.gca()
-    ax.set_rasterization_zorder(-10)  # Important line!
-    plt.plot(x,y**2, 'w')  # Zorder default is 0
-    plt.pcolormesh(xx,yy, xx ** 2 + yy ** 2, edgecolor=None, zorder=-15)
-
-
-    # Save figure with rasterization with 300dpi
-    plt.savefig("test_rasterize.svg", dpi=300)
-    plt.savefig("test_rasterize.pdf", dpi=300)
-    plt.show()
+.. literalinclude:: figures/scripts/rasterize.py
+  :language: python
 
 
 It works for both `.svg` and `.pdf`. Probably others too, but I haven't tried.
