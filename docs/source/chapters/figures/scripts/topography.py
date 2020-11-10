@@ -19,7 +19,7 @@ plt.savefig(os.path.join(DOCFIGURES, "topography_europe.svg"), dpi=150)
 
 
 mapextent = [-180, 180, -90, 90]
-plt.figure(figsize=(15, 7.5))
+plt.figure(figsize=(7.5, 3.75))
 ax = plt.axes(projection=PlateCarree())
 plot_map(fill=False)
 ax.set_extent(mapextent)
