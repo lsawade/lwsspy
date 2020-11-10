@@ -1,10 +1,10 @@
-def fix_map_extent(extent):
+def fix_map_extent(extent, fraction=0.05):
 
     # Get extent values and fix them
     minlon, maxlon, minlat, maxlat = extent
 
-    latb = (maxlat - minlat) * 0.05
-    lonb = (maxlon - minlon) * 0.05
+    latb = (maxlat - minlat) * fraction
+    lonb = (maxlon - minlon) * fraction
 
     # Max lat
     if maxlat + latb > 90.0:

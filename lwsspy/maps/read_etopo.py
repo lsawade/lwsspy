@@ -6,13 +6,19 @@ import lwsspy as lpy
 
 
 def read_etopo(version='bedrock', **kwargs):
-    """All topography
+    """Reads/Downloads etopo1 into the download_cache folder for use.
+
+    Parameters
+    ----------
+    version : str, optional
+        version of the etopo1 map, by default 'bedrock'
 
     Returns
     -------
-    Tuple
-        lon, lat, topography values
+    xarray.DataArray
+        Etopo xarray
 
+    Last modified: Lucas Sawade, 2020.09.15 15.30 (lsawade@princeton.edu)
     """
 
     version = version.lower()
@@ -55,5 +61,4 @@ def read_etopo(version='bedrock', **kwargs):
     grid.attrs["title"] = f"ETOPO1 {names[version]} Relief"
     grid.attrs["doi"] = "10.7289/V5C8276M"
 
-    return (grid[version].longitude, grid[version].latitude,
-            grid[version].data)
+    return grid
