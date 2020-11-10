@@ -37,8 +37,10 @@ if "-m" not in sys.argv:
 
     # Maps
     from .maps.fix_map_extent import fix_map_extent  # noqa
-    from .maps.plot_topo import plot_topo  # noqa
+    from .maps.plot_map import plot_map  # noqa
+    from .maps.plot_topography import plot_topography  # noqa
     from .maps.read_etopo import read_etopo  # noqa
+    from .maps.topocolormap import topocolormap  # noqa
 
     # Math
     from .math.convm import convm  # noqa
@@ -48,12 +50,13 @@ if "-m" not in sys.argv:
 
     # Plot
     from .plot_util.figcolorbar import figcolorbar  # noqa
-    from .plot_util.plot_map import plot_map  # noqa
+    from .plot_util.fixedpointcolornorm import FixedPointColorNorm  # noqa
+    from .plot_util.nice_colorbar import nice_colorbar  # noqa
     from .plot_util.remove_ticklabels import remove_xticklabels  # noqa
     from .plot_util.remove_ticklabels import remove_yticklabels  # noqa
     from .plot_util.updaterc import updaterc  # noqa
     from .plot_util.updaterc import updaterc_pres  # noqa
-    from .plot_util.nice_colorbar import nice_colorbar  # noqa
+    from .plot_util.view_colormap import view_colormap  # noqa
 
     # Seismology
     from .seismo.cmt2inv import cmt2inv  # noqa
