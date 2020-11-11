@@ -14,8 +14,7 @@ def plot_map(fill=True):
     # Set xticks Should be automated, but I just don't know how rn
     ax.set_xticks([-180, -150, -120, -90, -60, -30, 0, 30,
                    60, 90, 120, 150, 180], crs=PlateCarree())
-    ax.set_yticks([-90, -75, -60, -45, -30, -15, 0, 15,
-                   30, 45, 60, 75, 90], crs=PlateCarree())
+    ax.set_yticks([-90, -60, -30, 0, 30, 60, 90], crs=PlateCarree())
 
     # Put lables all around
     ax.tick_params(labeltop=True, labelright=True)
@@ -26,7 +25,7 @@ def plot_map(fill=True):
 
     # Set gridlines
     # gl = ax.gridlines(draw_labels=False, linewidth=1, color='lightgray',
-    #               
+    #
     #     alpha=0.5, linestyle='-', zorder=-1.5)
 
     # Add land

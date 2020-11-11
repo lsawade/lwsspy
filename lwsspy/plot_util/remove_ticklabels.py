@@ -7,7 +7,7 @@ def remove_xticklabels(ax: Axes):
     Args:
         ax (Axes): Axes handles
     """
-    ax.tick_params(labelbottom=False)
+    ax.tick_params(labelbottom=False, labeltop=False)
 
 
 def remove_yticklabels(ax: Axes):
@@ -16,4 +16,14 @@ def remove_yticklabels(ax: Axes):
     Args:
         ax (Axes): Axes handles
     """
-    ax.tick_params(labelleft=False)
+    ax.tick_params(labelleft=False, labelright=False)
+
+
+def remove_ticklabels(ax: Axes):
+    """Removes xticklabels of an axes
+
+    Args:
+        ax (Axes): Axes handles
+    """
+    ax.tick_params(labelbottom=False, labeltop=False,
+                   labelleft=False, labelright=False)
