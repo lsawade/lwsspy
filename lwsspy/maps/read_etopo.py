@@ -5,7 +5,7 @@ import pooch
 import lwsspy as lpy
 
 
-def read_etopo(version='bedrock', **kwargs):
+def read_etopo(version='bedrock', **kwargs) -> xr.Dataset:
     """Reads/Downloads etopo1 into the download_cache folder for use.
 
     Parameters
@@ -15,10 +15,10 @@ def read_etopo(version='bedrock', **kwargs):
 
     Returns
     -------
-    xarray.DataArray
+    xarray.Dataset
         Etopo xarray
 
-    Last modified: Lucas Sawade, 2020.09.15 15.30 (lsawade@princeton.edu)
+    Last modified: Lucas Sawade, 2020.11.09 23.00 (lsawade@princeton.edu)
     """
 
     version = version.lower()

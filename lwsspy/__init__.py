@@ -16,6 +16,7 @@ if "-m" not in sys.argv:
 
     # -------- CONSTANTS ------------------------------------------------------
     from .constants import EARTH_RADIUS  # noqa
+    from .constants import EMC_DATABASE  # noqa
 
     # -------- FUNCTIONS & CLASSES --------------------------------------------
 
@@ -39,7 +40,9 @@ if "-m" not in sys.argv:
     from .maps.fix_map_extent import fix_map_extent  # noqa
     from .maps.plot_map import plot_map  # noqa
     from .maps.plot_topography import plot_topography  # noqa
+    from .maps.plot_litho import plot_litho  # noqa
     from .maps.read_etopo import read_etopo  # noqa
+    from .maps.read_litho import read_litho  # noqa
     from .maps.topocolormap import topocolormap  # noqa
 
     # Math
@@ -52,8 +55,10 @@ if "-m" not in sys.argv:
     from .plot_util.figcolorbar import figcolorbar  # noqa
     from .plot_util.fixedpointcolornorm import FixedPointColorNorm  # noqa
     from .plot_util.nice_colorbar import nice_colorbar  # noqa
+    from .plot_util.plot_label import plot_label  # noqa
     from .plot_util.remove_ticklabels import remove_xticklabels  # noqa
     from .plot_util.remove_ticklabels import remove_yticklabels  # noqa
+    from .plot_util.remove_ticklabels import remove_ticklabels  # noqa
     from .plot_util.updaterc import updaterc  # noqa
     from .plot_util.updaterc import updaterc_pres  # noqa
     from .plot_util.view_colormap import view_colormap  # noqa
@@ -102,10 +107,13 @@ if "-m" not in sys.argv:
     from .shell.create_dirtree import create_dirtree  # noqa
     from .shell.cpdir import cpdir  # noqa
     from .shell.downloadfile import downloadfile  # noqa
+    from .shell.downloadfile import download_threaded  # noqa
+    from .shell.get_url_paths import get_url_paths  # noqa
     from .shell.ln import ln  # noqa
     from .shell.readfile import readfile  # noqa
     from .shell.run_cmds_parallel import run_cmds_parallel  # noqa
     from .shell.touch import touch  # noqa
+    from .shell.unzip import unzip  # noqa
     from .shell.ungzip import ungzip  # noqa
     from .shell.writefile import writefile  # noqa
 
@@ -117,6 +125,11 @@ if "-m" not in sys.argv:
     from .statistics.fitgaussian2d import fitgaussian2d  # noqa
     from .statistics.gaussian2d import gaussian2d  # noqa
     from .statistics.normalstdheight import normalstdheight  # noqa
+
+    # Utilities
+    from .utils.cpu_count import cpu_count  # noqa
+    from .utils.chunks import chunks  # noqa
+    from .utils.threadwork import threadwork  # noqa
 
     # Weather
     from .weather.requestweather import requestweather  # noqa
