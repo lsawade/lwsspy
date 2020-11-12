@@ -1,7 +1,6 @@
 import os
 from os.path import join, dirname, abspath, exists
 import xarray as xr
-import pooch
 import lwsspy as lpy
 
 
