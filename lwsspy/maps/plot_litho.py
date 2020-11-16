@@ -38,7 +38,7 @@ def plot_litho(which="all", parameter="depth", print_keys: bool = False,
         'ice': "Ice",
         'water': "Water",
     }
-
+    
     # Give keys if asked for them
     if print_keys:
         print(f"Possible keys: {boundaries.keys()}")
