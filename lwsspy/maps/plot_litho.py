@@ -7,7 +7,7 @@ import lwsspy as lpy
 
 def plot_litho(which="all", parameter="depth", print_keys: bool = False,
                cmap: str = 'Spectral'):
-
+    # These are the parameters in the model Litho
     parameters = {
         'depth': r"z [km]",
         'density': r"kg/m^3",
@@ -20,9 +20,11 @@ def plot_litho(which="all", parameter="depth", print_keys: bool = False,
         'eta': r"\eta"
     }
 
+    # CHeck whether correct parameters are given
     if parameter not in parameters.keys():
         raise KeyError(f"{parameter} not in {parameters}")
 
+    # Available boundaries for plotting
     boundaries = {
         'all': 'All',
         'asthenospheric_mantle': "Asthenosphere",
@@ -36,12 +38,17 @@ def plot_litho(which="all", parameter="depth", print_keys: bool = False,
         'ice': "Ice",
         'water': "Water",
     }
+
+    # Give keys if asked for them
     if print_keys:
         print(f"Possible keys: {boundaries.keys()}")
         return
+    
+    # Check whether requested parameter is in the crustal model
     if which not in boundaries.keys():
         raise KeyError(f"{which} not in {boundaries.keys()}")
 
+    # Create modifiers
     _parameter = "_" + parameter
     mods = {"_top": "Top", "_bottom": "Bottom"}
 
@@ -53,6 +60,7 @@ def plot_litho(which="all", parameter="depth", print_keys: bool = False,
     minlon, maxlon = np.min(litho.longitude), np.max(litho.longitude)
     extent = [minlon, maxlon, minlat, maxlat]
 
+    # Figures size
     size = 2
 
     if which == 'all':
@@ -95,17 +103,21 @@ def plot_litho(which="all", parameter="depth", print_keys: bool = False,
                     axs[_i, _j].axis('off')
                     continue
 
+                # Plot the map
                 plt.sca(axs[_i, _j])
+                # Plot coastlines
                 lpy.plot_map(fill=False)
+                # Plot surface
                 axs[_i, _j].imshow(
                     getattr(litho, _key + _v + _parameter)[::-1, :],
                     extent=extent, cmap=cmap, norm=norm)
+                # Make rasterizeable
                 axs[_i, _j].set_rasterization_zorder(-10)  # Important line!
                 lpy.plot_label(
                     axs[_i, _j],
                     f"{boundaries[_key]} {mods[_v]} {parameter.capitalize()}",
                     aspect=2.0, location=1, dist=-0.05)
-
+                # Remove ticklabels
                 lpy.remove_ticklabels(axs[_i, _j])
 
             # Add colorbar for the row
@@ -116,7 +128,10 @@ def plot_litho(which="all", parameter="depth", print_keys: bool = False,
             cbar.set_label(parameters[parameter])
 
     else:
+        # Separate function for the asthenospheric mantle since it's got no 
+        # bottom
         if which == 'asthenospheric_mantle':
+            # Create subplots
             fig, axs = plt.subplots(
                 1, 1, figsize=[2*1.3*size, size],
                 subplot_kw={'projection': PlateCarree()})
@@ -142,6 +157,7 @@ def plot_litho(which="all", parameter="depth", print_keys: bool = False,
                 subplot_kw={'projection': PlateCarree()})
             plt.subplots_adjust(wspace=0.05, left=0.1,
                                 right=1.05, bottom=0.15, top=0.85)
+                                
             # Getting the right color norm
             vmin, vmax = [], []
             for _j, _v in enumerate(mods.keys()):
