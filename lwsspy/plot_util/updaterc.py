@@ -12,9 +12,11 @@ def updaterc(rebuild=False):
 
     Last modified: Lucas Sawade, 2020.09.15 01.00 (lsawade@princeton.edu)
     """
+    # Add Helvetica from own font dir if not available
+    _add_Helvetica()
 
     params = {
-        'font.family': 'Helvetica Neue',
+        'font.family': 'HelveticaNeue',
         'pdf.fonttype': 42,
         'font.weight': 'normal',
         'axes.labelweight': 'normal',
@@ -69,6 +71,14 @@ def updaterc(rebuild=False):
     if rebuild:
         matplotlib.font_manager._rebuild()
 
+
+def _add_Helvetica():
+    
+    # Check if Helvetica in system fonts
+    import matplotlib.font_manager 
+    fonts = [os.path.basename(x).split(".")[0] 
+             for x in matplotlib.font_manager.findSystemFonts(
+                      fontpaths=None)]    
 
 def updaterc_pres(rebuild=False):
     """Updates the rcParams to something generic that looks ok good out of
