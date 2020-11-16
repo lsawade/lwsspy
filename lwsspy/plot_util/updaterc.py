@@ -1,7 +1,8 @@
 import matplotlib
+import os
 
 
-def updaterc(rebuild=False):
+def updaterc(rebuild=True):
     """Updates the rcParams to something generic that looks ok good out of
     the box.
 
@@ -13,10 +14,13 @@ def updaterc(rebuild=False):
     Last modified: Lucas Sawade, 2020.09.15 01.00 (lsawade@princeton.edu)
     """
     # Add Helvetica from own font dir if not available
-    _add_Helvetica()
+    helvetica = _add_Helvetica()
+
+    if rebuild:
+        matplotlib.font_manager._rebuild()
 
     params = {
-        'font.family': 'HelveticaNeue',
+        'font.family': helvetica,
         'pdf.fonttype': 42,
         'font.weight': 'normal',
         'axes.labelweight': 'normal',
@@ -68,17 +72,26 @@ def updaterc(rebuild=False):
     }
     matplotlib.rcParams.update(params)
 
-    if rebuild:
-        matplotlib.font_manager._rebuild()
-
 
 def _add_Helvetica():
-    
+
     # Check if Helvetica in system fonts
-    import matplotlib.font_manager 
-    fonts = [os.path.basename(x).split(".")[0] 
-             for x in matplotlib.font_manager.findSystemFonts(
-                      fontpaths=None)]    
+    from matplotlib import font_manager
+    fonts = [os.path.basename(x).split(".")[0]
+             for x in font_manager.findSystemFonts(
+        fontpaths=None)]
+    fonts.sort()
+    print(fonts)
+    if "HelveticaNeue" in fonts:
+        return "Helvetica Neue"
+    elif "Helvetica Neue" in fonts:
+        return "Helvetica Neue"
+    else:
+        font_file = os.path.join(
+            os.path.dirname(__file__), 'fonts', 'HelveticaNeue.ttc')
+        font_manager.fontManager.addfont(font_file)
+        return "Helvetica Neue"
+
 
 def updaterc_pres(rebuild=False):
     """Updates the rcParams to something generic that looks ok good out of
