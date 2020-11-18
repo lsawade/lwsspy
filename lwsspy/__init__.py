@@ -56,6 +56,8 @@ if "-m" not in sys.argv:
     from .plot_util.fixedpointcolornorm import FixedPointColorNorm  # noqa
     from .plot_util.nice_colorbar import nice_colorbar  # noqa
     from .plot_util.plot_label import plot_label  # noqa
+    from .plot_util.plot_mesh import plot_mesh  # noqa
+    from .plot_util.read_mesh import read_mesh  # noqa
     from .plot_util.remove_ticklabels import remove_xticklabels  # noqa
     from .plot_util.remove_ticklabels import remove_yticklabels  # noqa
     from .plot_util.remove_ticklabels import remove_ticklabels  # noqa

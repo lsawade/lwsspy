@@ -2,7 +2,7 @@ import matplotlib
 import os
 
 
-def updaterc(rebuild=True):
+def updaterc(rebuild=False):
     """Updates the rcParams to something generic that looks ok good out of
     the box.
 
@@ -81,16 +81,16 @@ def _add_Helvetica():
              for x in font_manager.findSystemFonts(
         fontpaths=None)]
     fonts.sort()
-    print(fonts)
+    # print(fonts)
     if "HelveticaNeue" in fonts:
-        return "Helvetica Neue"
+        pass
     elif "Helvetica Neue" in fonts:
-        return "Helvetica Neue"
+        pass
     else:
         font_file = os.path.join(
             os.path.dirname(__file__), 'fonts', 'HelveticaNeue.ttc')
         font_manager.fontManager.addfont(font_file)
-        return "Helvetica Neue"
+    return "Helvetica Neue"
 
 
 def updaterc_pres(rebuild=False):
