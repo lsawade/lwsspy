@@ -46,9 +46,16 @@ if "-m" not in sys.argv:
     from .maps.topocolormap import topocolormap  # noqa
 
     # Math
+    from .math.cart2sph import cart2sph  # noqa
     from .math.convm import convm  # noqa
     from .math.eigsort import eigsort  # noqa
+    from .math.geo2cart import geo2cart  # noqa
+    from .math.cart2geo import cart2geo  # noqa
+    from .math.cart2sph import cart2sph  # noqa
     from .math.magnitude import magnitude  # noqa
+    from .math.project2D import project2D  # noqa
+    from .math.rodrigues import rodrigues  # noqa
+    from .math.sph2cart import sph2cart  # noqa
     from .math.SphericalNN import SphericalNN  # noqa
 
     # Plot
@@ -57,6 +64,7 @@ if "-m" not in sys.argv:
     from .plot_util.nice_colorbar import nice_colorbar  # noqa
     from .plot_util.plot_label import plot_label  # noqa
     from .plot_util.plot_mesh import plot_mesh  # noqa
+    from .plot_util.plot_mesh import MeshPlot  # noqa
     from .plot_util.read_mesh import read_mesh  # noqa
     from .plot_util.remove_ticklabels import remove_xticklabels  # noqa
     from .plot_util.remove_ticklabels import remove_yticklabels  # noqa
