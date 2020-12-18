@@ -10,13 +10,15 @@ from scipy.spatial import cKDTree
 from obspy.core.inventory import Station
 
 # Internal
-from ..constants import EARTH_RADIUS
+from ..constants import EARTH_RADIUS_M
+
 
 class SphericalNN(object):
     """
     Spherical nearest neighbour queries using scipy's fast kd-tree
     implementation.
     """
+
     def __init__(self, data: List[Station]):
         cart_data = self.spherical2cartesian(data)
         self.data = data

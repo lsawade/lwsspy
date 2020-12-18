@@ -4,9 +4,28 @@ from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
 from cartopy.crs import PlateCarree
 
 
-def plot_map(fill=True):
+def plot_map(fill=True, zorder=-10):
     """Plots map into existing axes.
 
+    Parameters
+    ----------
+    fill : bool, optional
+        fills the continents in light gray, by default True
+    zorder : int, optional
+        zorder of the map, by default -10
+
+    Returns
+    -------
+    matplotlib.pyplot.Axes
+        Axes in which the map was plotted
+
+    :Author:
+        Lucas Sawade (lsawade@princeton.edu)
+
+    :Last Modified:
+        2020.09.17 16.30
+
+    
     """
 
     ax = plt.gca()
@@ -30,10 +49,10 @@ def plot_map(fill=True):
 
     # Add land
     if fill:
-        ax.add_feature(cartopy.feature.LAND, zorder=-10, edgecolor='black',
+        ax.add_feature(cartopy.feature.LAND, zorder=zorder, edgecolor='black',
                        linewidth=0.5, facecolor=(0.9, 0.9, 0.9))
     else:
-        ax.add_feature(cartopy.feature.LAND, zorder=-10, edgecolor='black',
+        ax.add_feature(cartopy.feature.LAND, zorder=zorder, edgecolor='black',
                        linewidth=0.5, facecolor=(0, 0, 0, 0))
 
     return ax

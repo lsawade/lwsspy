@@ -30,8 +30,8 @@ def geo2cart(r: float or np.ndarray or list,
         phi = np.array(phi)
 
     # Convert to Radians
-    theta *= np.pi/180.0
-    phi *= np.pi/180.0
+    theta = theta * np.pi/180.0
+    phi = phi * np.pi/180.0
 
     # Compute Transformation
     x = r * np.cos(theta) * np.cos(phi)

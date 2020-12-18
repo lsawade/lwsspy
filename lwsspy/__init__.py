@@ -15,8 +15,15 @@ DOWNLOAD_CACHE = os.path.join(
 if "-m" not in sys.argv:
 
     # -------- CONSTANTS ------------------------------------------------------
-    from .constants import EARTH_RADIUS  # noqa
+    from .constants import EARTH_RADIUS_M  # noqa
+    from .constants import EARTH_RADIUS_KM  # noqa
+    from .constants import EARTH_CIRCUM_M  # noqa
+    from .constants import EARTH_CIRCUM_KM  # noqa
     from .constants import EMC_DATABASE  # noqa
+    from .constants import DEG2KM  # noqa
+    from .constants import KM2DEG  # noqa
+    from .constants import DEG2M  # noqa
+    from .constants import M2DEG  # noqa
 
     # -------- FUNCTIONS & CLASSES --------------------------------------------
 
@@ -52,7 +59,9 @@ if "-m" not in sys.argv:
     from .math.geo2cart import geo2cart  # noqa
     from .math.cart2geo import cart2geo  # noqa
     from .math.cart2sph import cart2sph  # noqa
+    from .math.cart2pol import cart2pol  # noqa
     from .math.magnitude import magnitude  # noqa
+    from .math.pol2cart import pol2cart  # noqa
     from .math.project2D import project2D  # noqa
     from .math.rodrigues import rodrigues  # noqa
     from .math.sph2cart import sph2cart  # noqa
@@ -69,6 +78,7 @@ if "-m" not in sys.argv:
     from .plot_util.remove_ticklabels import remove_xticklabels  # noqa
     from .plot_util.remove_ticklabels import remove_yticklabels  # noqa
     from .plot_util.remove_ticklabels import remove_ticklabels  # noqa
+    from .plot_util.remove_ticklabels import remove_ticks  # noqa
     from .plot_util.updaterc import updaterc  # noqa
     from .plot_util.updaterc import updaterc_pres  # noqa
     from .plot_util.view_colormap import view_colormap  # noqa

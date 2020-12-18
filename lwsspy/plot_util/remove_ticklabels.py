@@ -27,3 +27,13 @@ def remove_ticklabels(ax: Axes):
     """
     ax.tick_params(labelbottom=False, labeltop=False,
                    labelleft=False, labelright=False)
+
+
+def remove_ticks(ax: Axes):
+    """Removes xticklabels of an axes
+
+    Args:
+        ax (Axes): Axes handles
+    """
+    ax.tick_params(bottom=False, top=False,
+                   left=False, right=False)
