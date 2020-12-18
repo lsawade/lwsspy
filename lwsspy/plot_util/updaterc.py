@@ -30,30 +30,30 @@ def updaterc(rebuild=False):
         'axes.grid': False,
         'grid.color': "lightgrey",
         'xtick.labelsize': 10,
-        'xtick.direction': 'inout',
+        'xtick.direction': 'out',
         'xtick.top': True,  # draw label on the top
         'xtick.bottom': True,  # draw label on the bottom
         'xtick.minor.visible': True,
         'xtick.major.top': True,  # draw x axis top major ticks
         'xtick.major.bottom': True,  # draw x axis bottom major ticks
-        'xtick.major.size': 8,  # draw x axis top major ticks
+        'xtick.major.size': 4,  # draw x axis top major ticks
         'xtick.major.width': 1,  # draw x axis top major ticks
         'xtick.minor.top': True,  # draw x axis top minor ticks
         'xtick.minor.bottom': True,  # draw x axis bottom minor ticks
         'xtick.minor.width': 1,  # draw x axis top major ticks
-        'xtick.minor.size': 4,  # draw x axis top major ticks
+        'xtick.minor.size': 2,  # draw x axis top major ticks
         'ytick.labelsize': 10,
-        'ytick.direction': 'inout',
+        'ytick.direction': 'out',
         'ytick.left': True,  # draw label on the top
         'ytick.right': True,  # draw label on the bottom
         'ytick.minor.visible': True,
         'ytick.major.left': True,  # draw x axis top major ticks
         'ytick.major.right': True,  # draw x axis bottom major ticks
-        'ytick.major.size': 8,  # draw x axis top major ticks
+        'ytick.major.size': 4,  # draw x axis top major ticks
         'ytick.major.width': 1,  # draw x axis top major ticks
         'ytick.minor.left': True,  # draw x axis top minor ticks
         'ytick.minor.right': True,  # draw x axis bottom minor ticks
-        'ytick.minor.size': 4,  # draw x axis top major ticks
+        'ytick.minor.size': 2,  # draw x axis top major ticks
         'ytick.minor.width': 1,  # draw x axis top major ticks
         'legend.fancybox': False,
         'legend.frameon': True,
