@@ -110,7 +110,10 @@ if "-m" not in sys.argv:
     from .seismo.specfem.createsimdir import createsimdir  # noqa
     from .seismo.specfem.getsimdirSTATIONS import getsimdirSTATIONS  # noqa
     from .seismo.specfem.inv2STATIONS import inv2STATIONS  # noqa
+    from .seismo.specfem.plot_csv_depth_slice import plot_csv_depth_slice  # noqa
+    from .seismo.specfem.plot_specfem_xsec_depth import plot_specfem_xsec_depth  # noqa
     from .seismo.specfem.read_parfile import read_parfile  # noqa
+    from .seismo.specfem.read_specfem_xsec_depth import read_specfem_xsec_depth  # noqa
     from .seismo.specfem.stationxml2STATIONS import stationxml2STATIONS  # noqa
     from .seismo.specfem.stationxmldir2STATIONSdir import stationxmldir2STATIONSdir  # noqa
     from .seismo.specfem.write_parfile import write_parfile  # noqa

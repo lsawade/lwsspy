@@ -5,6 +5,7 @@ import cartopy
 import numpy as np
 import lwsspy as lpy
 import matplotlib.pyplot as plt
+import matplotlib.tri as tri
 from scipy.interpolate import griddata
 
 
@@ -47,26 +48,27 @@ def plot_csv_depth_slice(infile, outfile, label):
     rho, lat, lon = lpy.cart2geo(data[:, 1], data[:, 2], data[:, 3])
 
     # Create interpolation Grid
-    llon, llat = np.meshgrid(np.linspace(-180.0, 181.0, 721),
-                             np.linspace(-90.0, 91.0, 361))
-
+    llon, llat = np.meshgrid(np.linspace(-180.0, 180.1, 1441),
+                             np.linspace(-90.0, 90.1, 721))
     # Interpoalte data
-    datainterp = griddata(np.vstack((lon, lat)).T,
-                          data[:, -1], (llon, llat), method='linear')
+    SNN = lpy.SphericalNN(lat, lon)
+    datainterp = SNN.interp(data[:, -1], llat, llon, no_weighting=True)
 
     # Create Figure
     lpy.updaterc()
     plt.figure(figsize=(9, 4))
     ax = plt.axes(projection=cartopy.crs.PlateCarree())
+    ax.set_rasterization_zorder(-10)
     lpy.plot_map(fill=False, zorder=1)
-    pmesh = plt.pcolormesh(llon, llat, datainterp, rasterized=True)
 
+    pmesh = plt.pcolormesh(llon, llat, datainterp,
+                           transform=cartopy.crs.PlateCarree(), zorder=-11)
     lpy.plot_label(ax, f"{depth:.1f} km", aspect=2.0,
                    location=1, dist=0.025, box=True)
 
     c = plt.colorbar(pmesh, fraction=0.05, pad=0.075)
     c.set_label(cbartitle, rotation=0, labelpad=10)
-
+    # plt.show()
     plt.savefig(f"{outfile}_{int(depth):d}km.pdf", dpi=300)
 
 
