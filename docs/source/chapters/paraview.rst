@@ -18,4 +18,9 @@ Create a separate conda environment for Paraview
 Paraview itself has specific dependencies, so I suggest creating its own
 environment in which you install paraview.
 
+.. code:: bash
 
+    conda create -n pv  # follow instructions
+    conda activate pv
+    conda install paraview
+    <run your paraview python script>
