@@ -153,6 +153,7 @@ if "-m" not in sys.argv:
     from .utils.cpu_count import cpu_count  # noqa
     from .utils.chunks import chunks  # noqa
     from .utils.threadwork import threadwork  # noqa
+    from .utils.pixels2data import pixels2data  # noqa
 
     # Weather
     from .weather.requestweather import requestweather  # noqa
