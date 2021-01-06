@@ -25,6 +25,10 @@ class PlotZoom:
         winy : float
             y window size in +/-
 
+
+        Notes
+        -----
+
         .. note::
 
             You have to plot everything into the destination axes to see
@@ -68,7 +72,8 @@ class PlotZoom:
 def pick_data_from_image(infile: str, outfile: Union[str, None] = None,
                          extent=[0, 1, 0, 1], logx: bool = False,
                          logy: bool = False) -> Tuple[np.ndarray, np.ndarray]:
-    """This function's purpose is the replication of previously published data.
+    """
+    This function's purpose is the replication of previously published data.
     The function ttakes in an image filename containing a graph that is
     cropped to axes boundaries and the data extent. One can then pick the data
     from the graph in the image and it will automatically rescale the picked
@@ -104,15 +109,46 @@ def pick_data_from_image(infile: str, outfile: Union[str, None] = None,
         Flag to say whether the y axis in the image is in logarithmic scale,
         by default False
 
+
     Returns
     -------
     Tuple[np.ndarray, np.ndarray]
         x, y vectors of the picked data.
 
+    Raises
+    ------
+    ValueError
+        if file ending is not ``.csv`` or ``.npy``
+
+
+    See Also
+    --------
+    lwsspy.utils.pixels2data.pixels2data : Scaling from pixels to dataunits
+
+
+    Examples
+    --------
+
+    For an image with data in linearscale and axes data axis limits of 
+    ``[0, 1, 0, 1]`` ``x`` and ``y`` can be picked and saved as follows.
+
+    >>> import lwsspy as lpy
+    >>> x,y = lpy.pick_data_from_image('test.png', 'testdata.csv')
+
+    Change ``.csv`` to  ``.npy`` to save numpy binary file.
+
+
+    Notes
+    -----
+
     .. note::
+
         Picking Controls
+
         - Click to add points
+
         - Press Delete or Backspace to delete points
+
         - Press Enter to finish
 
     .. warning::
@@ -120,20 +156,38 @@ def pick_data_from_image(infile: str, outfile: Union[str, None] = None,
         For semilog conversions, the extent of the axis cannot be  0 !!
         (log(0) issue)
 
+
     .. note::
+
         Note for further development: A better way of doing this would be to 
         actually integrate the picker and the zoom window. Meaning, a while loop
         for ginput until an enter is recorded.
         Connect callbacks for backspace, enter, and mouseclicks
+
         Backspace - pops the last item and removes the last scatter point as long
-                    as the point list is not empty
+        as the point list is not empty
+
         Enter - Finishes the selection
+
         Mouse - Click adds points
 
         This way one can plot the selected points in both the zoom window AND
         and the main window.
 
+    :Authors:
+        Lucas Sawade (lsawade@princeton.edu)
+
+    :Last Modified:
+        2020.01.06 11.00
+
     """
+
+    if outfile is not None:
+        fileending = outfile[-3:]
+        if fileending not in ["npy", "csv"]:
+            raise ValueError(
+                f"Wrong file format. Expected 'npy' or 'csv'. "
+                f"Gotten: '{fileending}'")
 
     # Load image
     im = mpimg.imread(infile)
@@ -188,7 +242,15 @@ def pick_data_from_image(infile: str, outfile: Union[str, None] = None,
 
     # Output data to file of outfile is not Nonne
     if outfile is not None:
-        pass
+
+        points = np.vstack((x, y)).T
+        if fileending == 'npy':
+            np.save(outfile, points)
+        else:
+            # Header
+            header = f"Data picked from file: {infile}"
+            np.savetxt(outfile, points, delimiter=',', header=header)
+
     else:
         plt.figure()
         plt.plot(x, y)

@@ -47,7 +47,11 @@ def rodrigues(r):
     Theory:
     https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula
 
-    Last modified: Lucas Sawade, 2020.11.16 16.30.00 (lsawade@princeton.edu)
+    :Author:
+        Lucas Sawade (lsawade@princeton.edu)
+
+    :Last Modified:
+        2020.01.06 11.00
 
     """
     def S(n):

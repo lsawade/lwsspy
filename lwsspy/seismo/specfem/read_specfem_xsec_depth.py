@@ -18,12 +18,12 @@ def read_specfem_xsec_depth(filename: str, res: float = 0.25) -> Tuple[np.ndarra
     res : float, optional
         Resolution for the output grid to plot, by default 0.25
 
+
     Returns
     -------
-    Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, 
-          np.ndarray, np.ndarray, np.ndarray]
-        Output Tuple 
-            --> llon, llat, radius, value, perturb, difference, distance
+    Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray,
+        np.ndarray, np.ndarray, np.ndarray]
+        Output Tuple - llon, llat, radius, value, perturb, difference, distance
 
     """
 

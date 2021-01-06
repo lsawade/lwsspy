@@ -32,7 +32,13 @@ def process_wrapper(st: Stream, event: CMTSource, paramdict: dict,
     dict
         processparameter dict
 
-    Last modified: Lucas Sawade, 2020.09.28 19.00 (lsawade@princeton.edu)
+    
+
+    :Author:
+        Lucas Sawade (lsawade@princeton.edu)
+
+    :Last Modified:
+        2020.01.06 11.00
     """
 
     newdict = deepcopy(paramdict)

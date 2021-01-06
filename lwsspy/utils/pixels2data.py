@@ -24,7 +24,30 @@ def pixels2data(px, pxi: float, pxf: float, di: float, df: float, log: bool = Fa
     Returns
     -------
     numpy.ndarray
-        data values corresponding to picked data values
+            data values corresponding to picked data values
+
+    See Also
+    --------
+    lwsspy.plot_util.pick_data_from_image.pick_data_from_image : For usage of the function
+
+    Notes
+    -----
+
+    .. note::
+
+        For the log scale the idea is fairly simple. Each axis can be viewed
+        as a linear semilog plot of pixel-axis vs. data-axis. From there it is
+        simple to invert for the scaling by computing slope and intercept.
+
+
+    :Author:
+        Lucas Sawade (lsawade@princeton.edu)
+
+    :Last Modified:
+        2020.01.06 11.00
+
+
+
     """
 
     # Convert from pixel space to data space

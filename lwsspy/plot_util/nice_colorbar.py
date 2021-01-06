@@ -4,12 +4,24 @@ import numpy as np
 
 
 def nice_colorbar(*args, **kwargs) -> matplotlib.colorbar.Colorbar:
-    """Creates nicely formatted colorbar. `**kwargs` are parsed to the 
+    """Creates nicely formatted colorbar. ``*args`` and ``**kwargs`` are parsed 
+    to ``plt.colorbar(*args, **kwargs)``
 
     Returns
     -------
     matplotlib.colorbar.Colorbar
         colorbar handle returned
+
+
+    Notes
+    -----
+
+    :Author:
+        Lucas Sawade (lsawade@princeton.edu)
+
+    :Last Modified:
+        2020.01.06 11.00
+
     """
 
     # Get normal axes labelsize
