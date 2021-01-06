@@ -24,3 +24,7 @@ environment in which you install paraview.
     conda activate pv
     conda install paraview
     <run your paraview python script>
+
+
+**Use scripts and functions located in directory `paraview_tools`**
+

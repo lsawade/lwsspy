@@ -155,6 +155,14 @@ if "-m" not in sys.argv:
     from .utils.threadwork import threadwork  # noqa
     from .utils.pixels2data import pixels2data  # noqa
 
+    # IO
+    from .utils.io import loadxy_csv  # noqa
+    from .utils.io import load_asdf  # noqa
+    from .utils.io import load_json  # noqa
+    from .utils.io import dump_json  # noqa
+    from .utils.io import read_yaml_file  # noqa
+    from .utils.io import write_yaml_file  # noqa
+
     # Weather
     from .weather.requestweather import requestweather  # noqa
     from .weather.weather import weather  # noqa

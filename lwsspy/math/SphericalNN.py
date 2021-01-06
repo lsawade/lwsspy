@@ -13,17 +13,69 @@ import lwsspy as lpy
 
 
 class SphericalNN(object):
-    """
-    Spherical nearest neighbour queries using scipy's fast kd-tree
+    """Spherical nearest neighbour queries using scipy's fast kd-tree
     implementation.
+
+    Attributes
+    ----------
+    data : numpy.ndarray
+        cartesian point data array [x,y,z]
+    kd_tree : scipy.spatial.cKDTree
+        a KDTree used to query data
+
+
+    Methods
+    -------
+    query(qlat, qlon)
+        Query a set of latitudes and longitudes
+    query_pairs(maximum_distance)
+        Find pairs of points that are within a certain distance of each other
+    interp(data, qlat, qlon)
+        Use the kdtree to interpolate data corresponding 
+        to the points of the Kdtree onto a new set of points using nearest 
+        neighbor interpolation or weighted nearest neighbor 
+        interpolation (default).
+
+    Notes
+    -----
+
+    :Authors:
+        Lucas Sawade (lsawade@princeton.edu)
+
+    :Last Modified:
+        2020.01.06 14.00
+
     """
 
     def __init__(self, lat, lon):
+        """Initialize class
+
+        Parameters
+        ----------
+        lat : numpy.ndarray
+            latitudes
+        lon : numpy.ndarray
+            longitudes
+        """
         cart_data = self.spherical2cartesian(lat, lon)
         self.data = cart_data
         self.kd_tree = cKDTree(data=cart_data, leafsize=10)
 
     def query(self, qlat, qlon):
+        """Query latitude and longitude values from kdtree
+
+        Parameters
+        ----------
+        qlat : np.ndarray or float
+            query latitude
+        qlon : np.ndarray or float
+            query longitude
+
+        Returns
+        -------
+        tuple
+            (distance, indeces) to closest point in kdtree
+        """
         points = self.spherical2cartesian(qlat, qlon)
         d, i = self.kd_tree.query(points)
 
@@ -32,10 +84,22 @@ class SphericalNN(object):
         return d[m], i[m]
 
     def query_pairs(self, maximum_distance):
+        """Query pairs within the kdtree
+
+        Parameters
+        ----------
+        maximum_distance : [type]
+            [description]
+
+        Returns
+        -------
+        set or ndarray
+            Set of pairs (i, j) where i < j
+        """
         return self.kd_tree.query_pairs(maximum_distance)
 
     def interp(self, data, qlat, qlon, maximum_distance=None, no_weighting=False):
-        """spherical interpolation function using the ``SphericalNN`` object.
+        """Spherical interpolation function using the ``SphericalNN`` object.
 
         Parameters
         ----------
@@ -52,6 +116,12 @@ class SphericalNN(object):
         no_weighting : bool, optional
             Whether or not the function uses a weightied nearest neighbor
             interpolation
+
+        Notes
+        -----
+
+        In the future, I may add a variable weighting function for the 
+        weighted interpolation.
         """
 
         # Get query points in cartesian

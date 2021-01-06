@@ -18,11 +18,18 @@ import os
 import json
 import yaml
 import logging
+import numpy as np
 from pyasdf import ASDFDataSet
 from obspy import Stream, Inventory
 from obspy import read_inventory
 
 # Internal imports
+
+
+def loadxy_csv(filename):
+
+    x, y = np.loadtxt(filename)
+    return x, y
 
 
 def load_json(filename):
