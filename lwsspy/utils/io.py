@@ -28,8 +28,8 @@ from obspy import read_inventory
 
 def loadxy_csv(filename):
 
-    x, y = np.loadtxt(filename)
-    return x, y
+    xy = np.loadtxt(filename, delimiter=',')
+    return xy[:, 0], xy[:, 1]
 
 
 def load_json(filename):
