@@ -11,6 +11,12 @@ DOWNLOAD_CACHE = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
     'download_cache')
 
+CONSTANT_DATA = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    'constant_data')
+
+GCMT_DATA = os.path.join(CONSTANT_DATA, 'gcmt')
+
 # Global imports when running the modules for testing
 if "-m" not in sys.argv:
 
@@ -122,6 +128,10 @@ if "-m" not in sys.argv:
     from .seismo.window.stream_cost_win import stream_cost_win  # noqa
     from .seismo.window.stream_grad_frechet_win import stream_grad_frechet_win  # noqa
     from .seismo.window.stream_grad_hess_win import stream_grad_and_hess_win  # noqa
+    from .seismo.read_gcmt_data import load_1976_2004_mag  # noqa
+    from .seismo.read_gcmt_data import load_2004_2010_mag  # noqa
+    from .seismo.read_gcmt_data import load_num_events  # noqa
+    from .seismo.read_gcmt_data import load_cum_mag  # noqa
 
     # Shell
     from .shell.cat import cat  # noqa
