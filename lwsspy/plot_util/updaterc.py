@@ -64,8 +64,7 @@ def updaterc(rebuild=False):
         'legend.framealpha': 1,
         'legend.scatterpoints': 3,
         'legend.edgecolor': 'inherit',
-        'legend.facecolor': 'w',
-        'mathtext.fontset': 'stix'
+        'legend.facecolor': 'w'
         # 'mathtext.fontset': 'custom',
         # 'mathtext.rm': 'Bitstream Vera Sans',
         # 'mathtext.it': 'Bitstream Vera Sans:italic',
