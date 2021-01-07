@@ -21,15 +21,16 @@ def updaterc(rebuild=False):
 
     params = {
         'font.family': helvetica,
+        'font.size': 12,
         'pdf.fonttype': 42,
         'font.weight': 'normal',
         'axes.labelweight': 'normal',
-        'axes.labelsize': 12,
-        'axes.titlesize': 13,
+        'axes.labelsize': 'small',
+        'axes.titlesize': 'medium',
         'axes.linewidth': 1,
         'axes.grid': False,
         'grid.color': "lightgrey",
-        'xtick.labelsize': 10,
+        'xtick.labelsize': 'small',
         'xtick.direction': 'out',
         'xtick.top': True,  # draw label on the top
         'xtick.bottom': True,  # draw label on the bottom
@@ -42,7 +43,7 @@ def updaterc(rebuild=False):
         'xtick.minor.bottom': True,  # draw x axis bottom minor ticks
         'xtick.minor.width': 1,  # draw x axis top major ticks
         'xtick.minor.size': 2,  # draw x axis top major ticks
-        'ytick.labelsize': 10,
+        'ytick.labelsize': 'small',
         'ytick.direction': 'out',
         'ytick.left': True,  # draw label on the top
         'ytick.right': True,  # draw label on the bottom
@@ -59,7 +60,7 @@ def updaterc(rebuild=False):
         'legend.frameon': True,
         'legend.loc': 'best',
         'legend.numpoints': 1,
-        'legend.fontsize': 10,
+        'legend.fontsize': 'small',
         'legend.framealpha': 1,
         'legend.scatterpoints': 3,
         'legend.edgecolor': 'inherit',
