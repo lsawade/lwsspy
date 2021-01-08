@@ -169,6 +169,9 @@ class SphericalNN(object):
             # Check nan rows
             nanrows = np.sum(np.logical_not(np.isnan(d)), axis=1) == 0
 
+            for nanrow in nanrows:
+                print(nanrow)
+
             # Get the max of each row that has a at least one non-nan
             rowmax = np.where(nanrows != 0, np.nanmax(d, axis=1), np.nan)
 
