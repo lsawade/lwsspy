@@ -140,26 +140,33 @@ class SphericalNN(object):
             # Assign the interpolation data.
             qdata = data[inds]
 
+            # Double check distance
+            mind = np.min(d, axis=1)
+
+            # Filter out distances too far out.
+            if maximum_distance is not None:
+                qdata = np.where(
+                    mind <= 2 * np.sin(maximum_distance/2.0/180.0*np.pi)
+                    * lpy.EARTH_RADIUS_KM,
+                    qdata, np.nan)
+
         else:
 
             # Get multiple distances and indeces
             d, inds = self.kd_tree.query(points, k=k)
 
-            # Actual weighted interpolation.
-            w = (1-d / np.max(d, axis=1)[:, np.newaxis]) ** 2
+            # Filter out distances too far out.
+            if maximum_distance is not None:
+                d = np.where(
+                    d > 2 * np.sin(maximum_distance/2.0/180.0*np.pi)
+                    * lpy.EARTH_RADIUS_KM,
+                    d, np.nan)
 
-            # Double check distance
-            mind = np.min(d, axis=1)
+            # Actual weighted interpolation.
+            w = (1-d / np.nanmax(d, axis=1)[:, np.newaxis]) ** 2
 
             # Take things that are further than a certain distance
-            qdata = np.sum(w * data[inds], axis=1) / np.sum(w, axis=1)
-
-        # Filter out distances too far out.
-        if maximum_distance is not None:
-            qdata = np.where(
-                mind <= 2 * np.sin(maximum_distance/2.0/180.0*np.pi)
-                * lpy.EARTH_RADIUS_KM,
-                qdata, np.nan)
+            qdata = np.nansum(w * data[inds], axis=1) / np.nansum(w, axis=1)
 
         return qdata.reshape(shp)
 
