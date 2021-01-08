@@ -99,7 +99,7 @@ class SphericalNN(object):
         return self.kd_tree.query_pairs(maximum_distance)
 
     def interp(self, data, qlat, qlon, maximum_distance=None, no_weighting=False,
-               k: int 10):
+               k: int = 10):
         """Spherical interpolation function using the ``SphericalNN`` object.
 
         Parameters
