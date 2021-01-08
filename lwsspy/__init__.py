@@ -89,6 +89,7 @@ if "-m" not in sys.argv:
     from .plot_util.remove_ticklabels import remove_yticklabels  # noqa
     from .plot_util.remove_ticklabels import remove_ticklabels  # noqa
     from .plot_util.remove_ticklabels import remove_ticks  # noqa
+    from .plot_util.smooth_nan_image import smooth_nan_image  # noqa
     from .plot_util.updaterc import updaterc  # noqa
     from .plot_util.updaterc import updaterc_pres  # noqa
     from .plot_util.view_colormap import view_colormap  # noqa
