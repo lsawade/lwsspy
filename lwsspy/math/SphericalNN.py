@@ -168,7 +168,7 @@ class SphericalNN(object):
 
             # Check nan rows
             nanrows = np.sum(np.logical_not(np.isnan(d)), axis=1) == 0
-            nanrowpos = np.where(nanrows != 0)
+            rowpos = np.where(nanrows == 0)
             for nanrow, _d in zip(nanrows, d):
                 if nanrow == 0:
                     print(nanrow, _d)
@@ -176,20 +176,20 @@ class SphericalNN(object):
             # Get the max of each non-nan row
             dmax = np.empty_like(nanrows, dtype=float)
             dmax[:] = np.nan
-            dmax[nanrowpos] = np.nanmax(d[nanrowpos, :], axis=1)
+            dmax[rowpos] = np.nanmax(d[rowpos, :], axis=1)
 
             # Compute weights
             w = np.empty_like(d, dtype=float)
             w[:] = np.nan
-            w[nanrowpos, :] = (1-d[nanrowpos, :] /
-                               dmax[nanrowpos, np.newaxis]) ** 2
+            w[rowpos, :] = (1-d[rowpos, :] /
+                            dmax[rowpos, np.newaxis]) ** 2
 
             # Take things that are further than a certain distance
             qdata = np.empty_like(nanrows, dtype=float)
             qdata[:] = np.nan
-            qdata[nanrowpos] = np.nansum(
-                w[nanrowpos, :] * data[inds[nanrowpos, :]], axis=1) \
-                / np.nansum(w[nanrowpos, :], axis=1)
+            qdata[rowpos] = np.nansum(
+                w[rowpos, :] * data[inds[rowpos, :]], axis=1) \
+                / np.nansum(w[rowpos, :], axis=1)
 
         return qdata.reshape(shp)
 
