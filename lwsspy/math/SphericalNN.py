@@ -162,6 +162,7 @@ class SphericalNN(object):
                     * lpy.EARTH_RADIUS_KM,
                     d, np.nan)
 
+            print("Hello i'm updated 0")
             # Actual weighted interpolation.
             w = (1-d / np.nanmax(d, axis=1)[:, np.newaxis]) ** 2
 
