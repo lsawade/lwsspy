@@ -103,6 +103,7 @@ if "-m" not in sys.argv:
     from .seismo.filterstationxml import filterstationxml  # noqa
     from .seismo.inv2stationxml import inv2stationxml  # noqa
     from .seismo.inv2geoloc import inv2geoloc  # noqa
+    from .seismo.m0_2_mw import m0_2_mw  # noqa
     from .seismo.perturb_cmt import perturb_cmt  # noqa
     from .seismo.perturb_cmt import perturb_cmt_dir  # noqa
     from .seismo.plot_stationxml import plot_station_xml  # noqa
