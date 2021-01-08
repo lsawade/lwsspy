@@ -168,23 +168,28 @@ class SphericalNN(object):
 
             # Check nan rows
             nanrows = np.sum(np.logical_not(np.isnan(d)), axis=1) == 0
-
+            nanrowpos = np.where(nanrows != 0)
             for nanrow, _d in zip(nanrows, d):
                 if nanrow == 0:
                     print(nanrow, _d)
 
-            # Get the max of each row that has a at least one non-nan
-            rowmax = np.where(nanrows > 0, np.nanmax(d, axis=1), np.nan)
+            # Get the max of each non-nan row
+            dmax = np.empty_like(nanrows, dtype=float)
+            dmax[:] = np.nan
+            dmax[nanrowpos] = np.nanmax(d[nanrowpos, :], axis=1)
 
             # Compute weights
-            w = np.where(nanrows[:, np.newaxis] != 0,
-                         (1-d / rowmax[:, np.newaxis]) ** 2,
-                         np.nan)
+            w = np.empty_like(d, dtype=float)
+            w[:] = np.nan
+            w[nanrowpos, :] = (1-d[nanrowpos, :] /
+                               dmax[nanrowpos, np.newaxis]) ** 2
 
             # Take things that are further than a certain distance
-            qdata = np.where(nanrows == 0, np.nan,
-                             np.nansum(w * data[inds], axis=1)
-                             / np.nansum(w, axis=1))
+            qdata = np.empty_like(nanrows, dtype=float)
+            qdata[:] = np.nan
+            qdata[nanrowpos] = np.nansum(
+                w[nanrowpos, :] * data[inds[nanrowpos, :]], axis=1) \
+                / np.nansum(w[nanrowpos, :], axis=1)
 
         return qdata.reshape(shp)
 
