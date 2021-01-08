@@ -168,10 +168,14 @@ class SphericalNN(object):
 
             # Check nan rows
             nanrows = np.sum(np.logical_not(np.isnan(d)), axis=1)
+            rowmax = np.nanmax(d, axis=1)
 
-            # Actual weighted interpolation.
-            w = np.where(nanrows == 0, np.nan,
-                         (1-d / np.nanmax(d, axis=1)[:, np.newaxis]) ** 2)
+            # Get the max of each row that has a at least one non-nan
+            rowmax = np.where(nanrows == 0, np.nan, np.nanmax(d, axis=1))
+
+            w = np.where(nanrows[:, np.newaxis] != 0,
+                         (1-d / rowmax[:, np.newaxis]) ** 2,
+                         np.nan)
 
             # Take things that are further than a certain distance
             qdata = np.where(nanrows == 0, np.nan,
