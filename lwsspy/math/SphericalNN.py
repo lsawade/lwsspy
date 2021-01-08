@@ -178,15 +178,16 @@ class SphericalNN(object):
             # Compute weights
             w = np.empty_like(d, dtype=float)
             w[:] = np.nan
-            w[rowpos, :] = (1-d[rowpos, :] /
+            w[rowpos, :] = (dmax[rowpos, np.newaxis]-d[rowpos, :] /
                             dmax[rowpos, np.newaxis]) ** 2
 
+            np.nansum(w[rowpos, :], axis=1)
             # Take things that are further than a certain distance
             qdata = np.empty_like(nanrows, dtype=float)
             qdata[:] = np.nan
             qdata[rowpos] = np.nansum(
                 w[rowpos, :] * data[inds[rowpos, :]], axis=1) \
-                / np.nansum(w[rowpos, :], axis=1)
+                /
 
         return qdata.reshape(shp)
 
