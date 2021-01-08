@@ -161,6 +161,9 @@ class SphericalNN(object):
                     d > 2 * np.sin(maximum_distance/2.0/180.0*np.pi)
                     * lpy.EARTH_RADIUS_KM,
                     d, np.nan)
+                print(np.where(
+                    d > 2 * np.sin(maximum_distance/2.0/180.0*np.pi)
+                    * lpy.EARTH_RADIUS_KM))
 
             print("Hello i'm updated 0")
             # Actual weighted interpolation.
