@@ -165,6 +165,8 @@ if "-m" not in sys.argv:
     from .utils.threadwork import threadwork  # noqa
     from .utils.pixels2data import pixels2data  # noqa
     from .utils.add_years import add_years  # noqa
+    from .utils.year2date import year2date  # noqa
+    from .utils.date2year import date2year  # noqa
 
     # IO
     from .utils.io import loadxy_csv  # noqa
