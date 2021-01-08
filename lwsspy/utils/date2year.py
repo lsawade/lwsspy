@@ -2,7 +2,7 @@ import datetime as dt
 import time
 
 
-def toYearFraction(date) -> float:
+def date2year(date) -> float:
     """Converts date to year fraction
 
     Parameters
