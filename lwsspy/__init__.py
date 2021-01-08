@@ -168,8 +168,10 @@ if "-m" not in sys.argv:
     # Utilities
     from .utils.cpu_count import cpu_count  # noqa
     from .utils.chunks import chunks  # noqa
+    from .utils.increase_fontsize import increase_fontsize  # noqa
     from .utils.threadwork import threadwork  # noqa
     from .utils.pixels2data import pixels2data  # noqa
+    from .utils.reduce_fontsize import reduce_fontsize  # noqa
     from .utils.add_years import add_years  # noqa
     from .utils.year2date import year2date  # noqa
     from .utils.date2year import date2year  # noqa
