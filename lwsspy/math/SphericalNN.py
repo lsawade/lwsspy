@@ -175,7 +175,8 @@ class SphericalNN(object):
 
             # Take things that are further than a certain distance
             qdata = np.where(nanrows == 0, np.nan,
-                np.nansum(w * data[inds], axis=1) / np.nansum(w, axis=1)
+                             np.nansum(w * data[inds], axis=1)
+                             / np.nansum(w, axis=1))
 
         return qdata.reshape(shp)
 
@@ -186,9 +187,9 @@ class SphericalNN(object):
         objects to an array of shape(len(list), 3) containing x/y/z in meters.
         """
         # Create three arrays containing lat/lng/radius.
-        r=np.ones_like(lat) * lpy.EARTH_RADIUS_KM
+        r = np.ones_like(lat) * lpy.EARTH_RADIUS_KM
 
         # Convert data from lat/lng to x/y/z.
-        x, y, z=lpy.geo2cart(r, lat, lon)
+        x, y, z = lpy.geo2cart(r, lat, lon)
 
         return np.vstack((x, y, z)).T
