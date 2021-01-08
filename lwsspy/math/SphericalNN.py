@@ -184,7 +184,7 @@ class SphericalNN(object):
                 qdata[:] = np.nan
                 qdata[datarows] = np.nansum(
                     w[datarows, :] * data[inds[datarows, :]], axis=1) \
-                    / wsum[datarows, :]
+                    / wsum[datarows]
 
             # Shepard's method
             else:
