@@ -98,8 +98,8 @@ class SphericalNN(object):
         """
         return self.kd_tree.query_pairs(maximum_distance)
 
-    def interp(self, data, qlat, qlon, maximum_distance=None, no_weighting=False,
-               k: int = 10):
+    def interp(self, data, qlat, qlon, maximum_distance=None,
+               no_weighting=False, k: int = 10, p: float = 2.0):
         """Spherical interpolation function using the ``SphericalNN`` object.
 
         Parameters
@@ -111,7 +111,7 @@ class SphericalNN(object):
         qlon : numpy.ndarray
             query longitude
         maximum_distance : float, optional
-            max distace for the interpolation in degree angle. Default Infinity.
+            max distace for the interpolation in degree angle. Default None.
             If the mindistance to any points is larger than maximum_distance the
             interpolated value is set to ``np.nan``.
         no_weighting : bool, optional
@@ -120,12 +120,20 @@ class SphericalNN(object):
         k : int, optional
             Define maximum number of neighbors to be used for the weighted
             interpolation. Not used if ``no_weighting = True``. Default 10
+        p : float, optional
+            only used if maximum_distance is None. Default is 2
+
 
         Notes
         -----
 
         In the future, I may add a variable weighting function for the
         weighted interpolation.
+
+        Please refer to https://en.wikipedia.org/wiki/Inverse_distance_weighting
+        for the interpolation weighting.
+
+
         """
 
         # Get query points in cartesian
@@ -160,33 +168,34 @@ class SphericalNN(object):
             d, inds = self.kd_tree.query(points, k=k)
 
             # Filter out distances too far out.
+            # Modified Shepard's method
             if maximum_distance is not None:
-                d = np.where(
-                    d < 2 * np.sin(maximum_distance/2.0/180.0*np.pi)
-                    * lpy.EARTH_RADIUS_KM,
-                    d, np.nan)
+                # Get cartesian distance
+                cartd = 2 * np.sin(maximum_distance/2.0/180.0*np.pi) \
+                    * lpy.EARTH_RADIUS_KM
 
-            # Check nan rows
-            nanrows = np.sum(np.logical_not(np.isnan(d)), axis=1) == 0
-            rowpos = np.where(nanrows == 0)[0]
+                # Compute the weights using modified shepard
+                w = (np.fmax(0, cartd - d) / d) ** 2
+                wsum = np.sum(w, axis=1)
+                datarows = (wsum != 0)
 
-            # Get the max of each non-nan row
-            dmax = np.empty_like(nanrows, dtype=float)
-            dmax[:] = np.nan
-            dmax[rowpos] = np.nanmax(d[rowpos, :], axis=1)
+                # interpolation using the weights
+                qdata = np.empty_like(wsum)
+                qdata[:] = np.nan
+                qdata[datarows] = np.nansum(
+                    w[datarows, :] * data[inds[datarows, :]], axis=1) \
+                    / wsum[datarows, :]
 
-            # Compute weights
-            w = np.empty_like(d, dtype=float)
-            w[:] = np.nan
-            w[rowpos, :] = (dmax[rowpos, np.newaxis]-d[rowpos, :] /
-                            dmax[rowpos, np.newaxis]) ** 2
+            # Shepard's method
+            else:
 
-            # Take things that are further than a certain distance
-            qdata = np.empty_like(nanrows, dtype=float)
-            qdata[:] = np.nan
-            qdata[rowpos] = np.nansum(
-                w[rowpos, :] * data[inds[rowpos, :]], axis=1) \
-                / np.nansum(w[rowpos, :], axis=1)
+                # Compute the weights using modified shepard
+                w = (1 / d) ** p
+                wsum = np.sum(w, axis=1)
+                datarows = (wsum != 0)
+
+                # interpolation using the weights
+                qdata[datarows] = np.sum(w * data[inds], axis=1) / wsum
 
         return qdata.reshape(shp)
 
