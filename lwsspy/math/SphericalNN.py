@@ -31,9 +31,9 @@ class SphericalNN(object):
     query_pairs(maximum_distance)
         Find pairs of points that are within a certain distance of each other
     interp(data, qlat, qlon)
-        Use the kdtree to interpolate data corresponding 
-        to the points of the Kdtree onto a new set of points using nearest 
-        neighbor interpolation or weighted nearest neighbor 
+        Use the kdtree to interpolate data corresponding
+        to the points of the Kdtree onto a new set of points using nearest
+        neighbor interpolation or weighted nearest neighbor
         interpolation (default).
 
     Notes
@@ -124,7 +124,7 @@ class SphericalNN(object):
         Notes
         -----
 
-        In the future, I may add a variable weighting function for the 
+        In the future, I may add a variable weighting function for the
         weighted interpolation.
         """
 
@@ -152,6 +152,10 @@ class SphericalNN(object):
 
         else:
 
+            # Set K to the max number of poitns if not given
+            if k is None:
+                k = points.shape[0]
+
             # Get multiple distances and indeces
             d, inds = self.kd_tree.query(points, k=k)
 
@@ -161,29 +165,30 @@ class SphericalNN(object):
                     d < 2 * np.sin(maximum_distance/2.0/180.0*np.pi)
                     * lpy.EARTH_RADIUS_KM,
                     d, np.nan)
-                print(np.where(
-                    d < 2 * np.sin(maximum_distance/2.0/180.0*np.pi)
-                    * lpy.EARTH_RADIUS_KM))
 
-            print("Hello i'm updated 2")
+            # Check nan rows
+            nanrows = np.sum(logical_not(np.isnan(x)), axis=1)
+
             # Actual weighted interpolation.
-            w = (1-d / np.nanmax(d, axis=1)[:, np.newaxis]) ** 2
+            w = np.where(nanrows == 0, np.nan,
+                         (1-d / np.nanmax(d, axis=1)[:, np.newaxis]) ** 2)
 
             # Take things that are further than a certain distance
-            qdata = np.nansum(w * data[inds], axis=1) / np.nansum(w, axis=1)
+            qdata = np.where(nanrows == 0, np.nan,
+                np.nansum(w * data[inds], axis=1) / np.nansum(w, axis=1)
 
         return qdata.reshape(shp)
 
-    @staticmethod
+    @ staticmethod
     def spherical2cartesian(lat, lon):
         """
         Converts a list of :class:`~obspy.fdsn.download_status.Station`
         objects to an array of shape(len(list), 3) containing x/y/z in meters.
         """
         # Create three arrays containing lat/lng/radius.
-        r = np.ones_like(lat) * lpy.EARTH_RADIUS_KM
+        r=np.ones_like(lat) * lpy.EARTH_RADIUS_KM
 
         # Convert data from lat/lng to x/y/z.
-        x, y, z = lpy.geo2cart(r, lat, lon)
+        x, y, z=lpy.geo2cart(r, lat, lon)
 
         return np.vstack((x, y, z)).T
