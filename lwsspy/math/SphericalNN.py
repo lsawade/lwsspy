@@ -170,11 +170,12 @@ class SphericalNN(object):
             nanrows = np.sum(np.logical_not(np.isnan(d)), axis=1) == 0
 
             for nanrow, _d in zip(nanrows, d):
+                print(type(nanrow))
                 if nanrow is False:
                     print(nanrow, _d)
 
             # Get the max of each row that has a at least one non-nan
-            rowmax = np.where(nanrows is False, np.nanmax(d, axis=1), np.nan)
+            rowmax = np.where(nanrows == False, np.nanmax(d, axis=1), np.nan)
 
             # Compute weights
             w = np.where(nanrows[:, np.newaxis] != 0,
