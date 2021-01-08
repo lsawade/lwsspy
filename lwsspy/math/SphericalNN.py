@@ -43,7 +43,7 @@ class SphericalNN(object):
         Lucas Sawade (lsawade@princeton.edu)
 
     :Last Modified:
-        2020.01.06 14.00
+        2020.01.07 19.00
 
     """
 
@@ -98,7 +98,8 @@ class SphericalNN(object):
         """
         return self.kd_tree.query_pairs(maximum_distance)
 
-    def interp(self, data, qlat, qlon, maximum_distance=None, no_weighting=False):
+    def interp(self, data, qlat, qlon, maximum_distance=None, no_weighting=False,
+               k: int 10):
         """Spherical interpolation function using the ``SphericalNN`` object.
 
         Parameters
@@ -116,6 +117,9 @@ class SphericalNN(object):
         no_weighting : bool, optional
             Whether or not the function uses a weightied nearest neighbor
             interpolation
+        k : int, optional
+            Define maximum number of neighbors to be used for the weighted
+            interpolation. Not used if ``no_weighting = True``. Default 10
 
         Notes
         -----
@@ -139,7 +143,7 @@ class SphericalNN(object):
         else:
 
             # Get multiple distances and indeces
-            d, inds = self.kd_tree.query(points, k=10)
+            d, inds = self.kd_tree.query(points, k=k)
 
             # Actual weighted interpolation.
             w = (1-d / np.max(d, axis=1)[:, np.newaxis]) ** 2
