@@ -158,11 +158,11 @@ class SphericalNN(object):
             # Filter out distances too far out.
             if maximum_distance is not None:
                 d = np.where(
-                    d > 2 * np.sin(maximum_distance/2.0/180.0*np.pi)
+                    d < 2 * np.sin(maximum_distance/2.0/180.0*np.pi)
                     * lpy.EARTH_RADIUS_KM,
                     d, np.nan)
                 print(np.where(
-                    d > 2 * np.sin(maximum_distance/2.0/180.0*np.pi)
+                    d < 2 * np.sin(maximum_distance/2.0/180.0*np.pi)
                     * lpy.EARTH_RADIUS_KM))
 
             print("Hello i'm updated 1")
