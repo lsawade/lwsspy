@@ -167,7 +167,7 @@ class SphericalNN(object):
                     d, np.nan)
 
             # Check nan rows
-            nanrows = np.sum(logical_not(np.isnan(x)), axis=1)
+            nanrows = np.sum(np.logical_not(np.isnan(d)), axis=1)
 
             # Actual weighted interpolation.
             w = np.where(nanrows == 0, np.nan,
