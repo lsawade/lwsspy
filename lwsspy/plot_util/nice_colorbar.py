@@ -26,6 +26,7 @@ def nice_colorbar(*args, **kwargs) -> matplotlib.colorbar.Colorbar:
 
     # Get normal axes labelsize
     xticklabelsize = matplotlib.rcParams['xtick.labelsize']
+    print(xticklabelsize)
     newlabelsize = int(np.round(0.7*xticklabelsize))
 
     # Change label size to a good size: 70 % of axes label size
