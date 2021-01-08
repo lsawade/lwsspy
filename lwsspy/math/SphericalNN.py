@@ -175,7 +175,7 @@ class SphericalNN(object):
                     * lpy.EARTH_RADIUS_KM
 
                 # Compute the weights using modified shepard
-                w = (np.fmax(0, cartd - d) / cartd) ** 2
+                w = (np.fmax(0, cartd - d) / cartd * d) ** 2
                 wsum = np.sum(w, axis=1)
                 datarows = (wsum != 0)
 
