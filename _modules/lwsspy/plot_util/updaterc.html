@@ -83,6 +83,8 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/matplotlibtips.html">Tips And Tricks for Matplotlib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/numpydoctips.html">NumpyDoc Tips</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/paraview.html">Paraview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/functions.html">Aaaalll the functions!</a></li>
 </ul>
 
@@ -149,6 +151,7 @@
             
   <h1>Source code for lwsspy.plot_util.updaterc</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
 
 <div class="viewcode-block" id="updaterc"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.plot_util.updaterc.updaterc">[docs]</a><span class="k">def</span> <span class="nf">updaterc</span><span class="p">(</span><span class="n">rebuild</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -162,62 +165,84 @@
 
 <span class="sd">    Last modified: Lucas Sawade, 2020.09.15 01.00 (lsawade@princeton.edu)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Add Helvetica from own font dir if not available</span>
+    <span class="n">helvetica</span> <span class="o">=</span> <span class="n">_add_Helvetica</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">rebuild</span><span class="p">:</span>
+        <span class="n">matplotlib</span><span class="o">.</span><span class="n">font_manager</span><span class="o">.</span><span class="n">_rebuild</span><span class="p">()</span>
 
     <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;font.family&#39;</span><span class="p">:</span> <span class="s1">&#39;Helvetica Neue&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;font.family&#39;</span><span class="p">:</span> <span class="n">helvetica</span><span class="p">,</span>
+        <span class="s1">&#39;font.size&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
         <span class="s1">&#39;pdf.fonttype&#39;</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
         <span class="s1">&#39;font.weight&#39;</span><span class="p">:</span> <span class="s1">&#39;normal&#39;</span><span class="p">,</span>
         <span class="s1">&#39;axes.labelweight&#39;</span><span class="p">:</span> <span class="s1">&#39;normal&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;axes.labelsize&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
-        <span class="s1">&#39;axes.titlesize&#39;</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span>
+        <span class="s1">&#39;axes.labelsize&#39;</span><span class="p">:</span> <span class="s1">&#39;small&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;axes.titlesize&#39;</span><span class="p">:</span> <span class="s1">&#39;medium&#39;</span><span class="p">,</span>
         <span class="s1">&#39;axes.linewidth&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
         <span class="s1">&#39;axes.grid&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
         <span class="s1">&#39;grid.color&#39;</span><span class="p">:</span> <span class="s2">&quot;lightgrey&quot;</span><span class="p">,</span>
-        <span class="s1">&#39;xtick.labelsize&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-        <span class="s1">&#39;xtick.direction&#39;</span><span class="p">:</span> <span class="s1">&#39;inout&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;xtick.labelsize&#39;</span><span class="p">:</span> <span class="s1">&#39;small&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;xtick.direction&#39;</span><span class="p">:</span> <span class="s1">&#39;out&#39;</span><span class="p">,</span>
         <span class="s1">&#39;xtick.top&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw label on the top</span>
         <span class="s1">&#39;xtick.bottom&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw label on the bottom</span>
         <span class="s1">&#39;xtick.minor.visible&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
         <span class="s1">&#39;xtick.major.top&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
         <span class="s1">&#39;xtick.major.bottom&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis bottom major ticks</span>
-        <span class="s1">&#39;xtick.major.size&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;xtick.major.size&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
         <span class="s1">&#39;xtick.major.width&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
         <span class="s1">&#39;xtick.minor.top&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis top minor ticks</span>
         <span class="s1">&#39;xtick.minor.bottom&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis bottom minor ticks</span>
         <span class="s1">&#39;xtick.minor.width&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
-        <span class="s1">&#39;xtick.minor.size&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
-        <span class="s1">&#39;ytick.labelsize&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-        <span class="s1">&#39;ytick.direction&#39;</span><span class="p">:</span> <span class="s1">&#39;inout&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;xtick.minor.size&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;ytick.labelsize&#39;</span><span class="p">:</span> <span class="s1">&#39;small&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ytick.direction&#39;</span><span class="p">:</span> <span class="s1">&#39;out&#39;</span><span class="p">,</span>
         <span class="s1">&#39;ytick.left&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw label on the top</span>
         <span class="s1">&#39;ytick.right&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw label on the bottom</span>
         <span class="s1">&#39;ytick.minor.visible&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
         <span class="s1">&#39;ytick.major.left&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
         <span class="s1">&#39;ytick.major.right&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis bottom major ticks</span>
-        <span class="s1">&#39;ytick.major.size&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;ytick.major.size&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
         <span class="s1">&#39;ytick.major.width&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
         <span class="s1">&#39;ytick.minor.left&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis top minor ticks</span>
         <span class="s1">&#39;ytick.minor.right&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis bottom minor ticks</span>
-        <span class="s1">&#39;ytick.minor.size&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;ytick.minor.size&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
         <span class="s1">&#39;ytick.minor.width&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
         <span class="s1">&#39;legend.fancybox&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
         <span class="s1">&#39;legend.frameon&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
         <span class="s1">&#39;legend.loc&#39;</span><span class="p">:</span> <span class="s1">&#39;best&#39;</span><span class="p">,</span>
         <span class="s1">&#39;legend.numpoints&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="s1">&#39;legend.fontsize&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="s1">&#39;legend.fontsize&#39;</span><span class="p">:</span> <span class="s1">&#39;small&#39;</span><span class="p">,</span>
         <span class="s1">&#39;legend.framealpha&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
         <span class="s1">&#39;legend.scatterpoints&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
         <span class="s1">&#39;legend.edgecolor&#39;</span><span class="p">:</span> <span class="s1">&#39;inherit&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;legend.facecolor&#39;</span><span class="p">:</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;mathtext.fontset&#39;</span><span class="p">:</span> <span class="s1">&#39;stix&#39;</span>
+        <span class="s1">&#39;legend.facecolor&#39;</span><span class="p">:</span> <span class="s1">&#39;w&#39;</span>
         <span class="c1"># &#39;mathtext.fontset&#39;: &#39;custom&#39;,</span>
         <span class="c1"># &#39;mathtext.rm&#39;: &#39;Bitstream Vera Sans&#39;,</span>
         <span class="c1"># &#39;mathtext.it&#39;: &#39;Bitstream Vera Sans:italic&#39;,</span>
         <span class="c1"># &#39;mathtext.bf&#39;:&#39;Bitstream Vera Sans:bold&#39;</span>
     <span class="p">}</span>
-    <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">params</span><span class="p">)</span></div>
 
-    <span class="k">if</span> <span class="n">rebuild</span><span class="p">:</span>
-        <span class="n">matplotlib</span><span class="o">.</span><span class="n">font_manager</span><span class="o">.</span><span class="n">_rebuild</span><span class="p">()</span></div>
+
+<span class="k">def</span> <span class="nf">_add_Helvetica</span><span class="p">():</span>
+
+    <span class="c1"># Check if Helvetica in system fonts</span>
+    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">font_manager</span>
+    <span class="n">fonts</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">font_manager</span><span class="o">.</span><span class="n">findSystemFonts</span><span class="p">(</span>
+        <span class="n">fontpaths</span><span class="o">=</span><span class="kc">None</span><span class="p">)]</span>
+    <span class="n">fonts</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="c1"># print(fonts)</span>
+    <span class="k">if</span> <span class="s2">&quot;HelveticaNeue&quot;</span> <span class="ow">in</span> <span class="n">fonts</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="s2">&quot;Helvetica Neue&quot;</span> <span class="ow">in</span> <span class="n">fonts</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">font_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;fonts&#39;</span><span class="p">,</span> <span class="s1">&#39;HelveticaNeue.ttc&#39;</span><span class="p">)</span>
+        <span class="n">font_manager</span><span class="o">.</span><span class="n">fontManager</span><span class="o">.</span><span class="n">addfont</span><span class="p">(</span><span class="n">font_file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">&quot;Helvetica Neue&quot;</span>
 
 
 <span class="k">def</span> <span class="nf">updaterc_pres</span><span class="p">(</span><span class="n">rebuild</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>

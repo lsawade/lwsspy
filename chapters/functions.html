@@ -36,7 +36,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="Tips And Tricks for Matplotlib" href="matplotlibtips.html" /> 
+    <link rel="prev" title="Paraview" href="paraview.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -84,16 +84,29 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="matplotlibtips.html">Tips And Tricks for Matplotlib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numpydoctips.html">NumpyDoc Tips</a></li>
+<li class="toctree-l1"><a class="reference internal" href="paraview.html">Paraview</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Aaaalll the functions!</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#inversion">Inversion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#maps">Maps</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#math">Math</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#math">Math</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#coordinate-transformations">Coordinate Transformations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#miscellaneous">Miscellaneous</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#plotting-utilities">Plotting Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#seismology">Seismology</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#signal-processing">Signal Processing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#specfem-handling">SPECFEM handling</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#statistics">Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#utilities">Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-lwsspy.utils.io">I/O</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lwsspy.utils.output">Print Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Miscellaneous</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#weather">Weather</a></li>
 </ul>
 </li>
@@ -174,139 +187,442 @@
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">otype: str = 'bfgs'</em>, <em class="sig-param">fcost_init: float = 0.0</em>, <em class="sig-param">fcost: float = 0.0</em>, <em class="sig-param">norm_grad_init: float = 0.0</em>, <em class="sig-param">norm_grad: float = 0.0</em>, <em class="sig-param">stopping_criterion: float = 1e-10</em>, <em class="sig-param">niter_max: int = 50</em>, <em class="sig-param">qk: float = 0.0</em>, <em class="sig-param">q: float = 0.0</em>, <em class="sig-param">is_preco: bool = True</em>, <em class="sig-param">alpha: float = 0.0</em>, <em class="sig-param">n: int = 0</em>, <em class="sig-param">model: numpy.ndarray = array([]</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">grad: numpy.ndarray = array([]</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">hess: numpy.ndarray = array([]</em>, <em class="sig-param">shape=(1</em>, <em class="sig-param">0)</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">descent: numpy.ndarray = array([]</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">nsave: int = 0</em>, <em class="sig-param">perc: float = 0.025</em>, <em class="sig-param">damping: float = 1.0</em>, <em class="sig-param">fcost_hist: list = []</em>, <em class="sig-param">flag: str = 'suceed'</em>, <em class="sig-param">nls_max: int = 20</em>, <em class="sig-param">c1: float = 0.0001</em>, <em class="sig-param">c2: float = 0.9</em>, <em class="sig-param">al: float = 0.0</em>, <em class="sig-param">ar: float = 0.0</em>, <em class="sig-param">strong: bool = False</em>, <em class="sig-param">factor: float = 10.0</em>, <em class="sig-param">gsave: list = []</em>, <em class="sig-param">msave: list = []</em>, <em class="sig-param">compute_cost: callable = &lt;function NOP&gt;</em>, <em class="sig-param">compute_gradient: callable = &lt;function NOP&gt;</em>, <em class="sig-param">compute_cost_and_gradient: callable = None</em>, <em class="sig-param">compute_cost_and_grad_and_hess: callable = None</em>, <em class="sig-param">descent_direction: callable = &lt;function NOP&gt;</em>, <em class="sig-param">apply_preconditioner: callable = &lt;function NOP&gt;</em>, <em class="sig-param">save_model_to_disk: callable = &lt;function NOP&gt;</em>, <em class="sig-param">save_model_and_gradient: callable = &lt;function store_grad_and_model&gt;</em>, <em class="sig-param">solve: callable = &lt;function Solve_Optimisation_Problem&gt;</em>, <em class="sig-param">get_optim_si_yi: callable = &lt;function get_optim_si_yi&gt;</em>, <em class="sig-param">compute_beta: callable = &lt;function fletcher_reeves&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/inversion/optimizer.html#Optimization.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.inversion.optimizer.Optimization.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Optimization class to run optimize a problem with given cost function
 and cost function gradient.</p>
-<dl class="simple">
-<dt>otype<span class="classifier">str, optional</span></dt><dd><p>Optimization algorithm, by default ‘bfgs’</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>otype</strong><span class="classifier">str, optional</span></dt><dd><p>Optimization algorithm, by default ‘bfgs’</p>
 </dd>
-<dt>fcost_init<span class="classifier">float, optional</span></dt><dd><p>initial cost, by default 0.0</p>
+<dt><strong>fcost_init</strong><span class="classifier">float, optional</span></dt><dd><p>initial cost, by default 0.0</p>
 </dd>
-<dt>fcost<span class="classifier">float, optional</span></dt><dd><p>cost function value, by default 0.0</p>
+<dt><strong>fcost</strong><span class="classifier">float, optional</span></dt><dd><p>cost function value, by default 0.0</p>
 </dd>
-<dt>norm_grad_init<span class="classifier">float, optional</span></dt><dd><p>initial norm of the gradient, by default 0.0</p>
+<dt><strong>norm_grad_init</strong><span class="classifier">float, optional</span></dt><dd><p>initial norm of the gradient, by default 0.0</p>
 </dd>
-<dt>norm_grad<span class="classifier">float, optional</span></dt><dd><p>current norm of the gradient, by default 0.0</p>
+<dt><strong>norm_grad</strong><span class="classifier">float, optional</span></dt><dd><p>current norm of the gradient, by default 0.0</p>
 </dd>
-<dt>stopping_criterion<span class="classifier">float, optional</span></dt><dd><p>value to cost function has to reach, by default 1e-10</p>
+<dt><strong>stopping_criterion</strong><span class="classifier">float, optional</span></dt><dd><p>value to cost function has to reach, by default 1e-10</p>
 </dd>
-<dt>niter_max<span class="classifier">int, optional</span></dt><dd><p>max iteration (excluding the linesearch), by default 50</p>
+<dt><strong>niter_max</strong><span class="classifier">int, optional</span></dt><dd><p>max iteration (excluding the linesearch), by default 50</p>
 </dd>
-<dt>qk<span class="classifier">float, optional</span></dt><dd><p>qk, for linesearch, by default 0.0</p>
+<dt><strong>qk</strong><span class="classifier">float, optional</span></dt><dd><p>qk, for linesearch, by default 0.0</p>
 </dd>
-<dt>q<span class="classifier">float, optional</span></dt><dd><p>q, for linesearch, by default 0.0</p>
+<dt><strong>q</strong><span class="classifier">float, optional</span></dt><dd><p>q, for linesearch, by default 0.0</p>
 </dd>
-<dt>is_preco<span class="classifier">bool, optional</span></dt><dd><p>proconditioning flag, by default True</p>
+<dt><strong>is_preco</strong><span class="classifier">bool, optional</span></dt><dd><p>proconditioning flag, by default True</p>
 </dd>
-<dt>alpha<span class="classifier">float, optional</span></dt><dd><p>alpha sttep length to be found by by linesearch, by default 0.0</p>
+<dt><strong>alpha</strong><span class="classifier">float, optional</span></dt><dd><p>alpha sttep length to be found by by linesearch, by default 0.0</p>
 </dd>
-<dt>n<span class="classifier">int, optional</span></dt><dd><p>number of model parameters, by default 0</p>
+<dt><strong>n</strong><span class="classifier">int, optional</span></dt><dd><p>number of model parameters, by default 0</p>
 </dd>
-<dt>grad<span class="classifier">np.ndarray, optional</span></dt><dd><p>current gradient, by default np.array([])</p>
+<dt><strong>grad</strong><span class="classifier">np.ndarray, optional</span></dt><dd><p>current gradient, by default np.array([])</p>
 </dd>
-<dt>descent<span class="classifier">np.ndarray, optional</span></dt><dd><p>current descent direction, by default np.array([])</p>
+<dt><strong>descent</strong><span class="classifier">np.ndarray, optional</span></dt><dd><p>current descent direction, by default np.array([])</p>
 </dd>
-<dt>nsave<span class="classifier">int, optional</span></dt><dd><p>matrix to store model iterations, by default 0</p>
+<dt><strong>nsave</strong><span class="classifier">int, optional</span></dt><dd><p>matrix to store model iterations, by default 0</p>
 </dd>
-<dt>perc<span class="classifier">float, optional</span></dt><dd><p>precentage of step, by default 0.025</p>
+<dt><strong>perc</strong><span class="classifier">float, optional</span></dt><dd><p>precentage of step, by default 0.025</p>
 </dd>
-<dt>damping<span class="classifier">float, optional</span></dt><dd><p>damping the Gauss-Newton step, 0.0 means no damping, by default 0.0</p>
+<dt><strong>damping</strong><span class="classifier">float, optional</span></dt><dd><p>damping the Gauss-Newton step, 0.0 means no damping, by default 0.0</p>
 </dd>
-<dt>fcost_hist<span class="classifier">list, optional</span></dt><dd><p>cost function history, by default []</p>
+<dt><strong>fcost_hist</strong><span class="classifier">list, optional</span></dt><dd><p>cost function history, by default []</p>
 </dd>
-<dt>flag<span class="classifier">str, optional</span></dt><dd><p>success flag, by default “suceed”</p>
+<dt><strong>flag</strong><span class="classifier">str, optional</span></dt><dd><p>success flag, by default “suceed”</p>
 </dd>
-<dt>nls_max<span class="classifier">int, optional</span></dt><dd><p>maximum linesearch itterations, by default 20</p>
+<dt><strong>nls_max</strong><span class="classifier">int, optional</span></dt><dd><p>maximum linesearch itterations, by default 20</p>
 </dd>
-<dt>c1<span class="classifier">float, optional</span></dt><dd><p>linesearch parameter c1, by default 1e-4</p>
+<dt><strong>c1</strong><span class="classifier">float, optional</span></dt><dd><p>linesearch parameter c1, by default 1e-4</p>
 </dd>
-<dt>c2<span class="classifier">float, optional</span></dt><dd><p>linesearch parameter c1, by default 0.9</p>
+<dt><strong>c2</strong><span class="classifier">float, optional</span></dt><dd><p>linesearch parameter c1, by default 0.9</p>
 </dd>
-<dt>al<span class="classifier">float, optional</span></dt><dd><p>left alpha boundary, by default 0.</p>
+<dt><strong>al</strong><span class="classifier">float, optional</span></dt><dd><p>left alpha boundary, by default 0.</p>
 </dd>
-<dt>ar<span class="classifier">float, optional</span></dt><dd><p>right alpha boundary, by default 0.</p>
+<dt><strong>ar</strong><span class="classifier">float, optional</span></dt><dd><p>right alpha boundary, by default 0.</p>
 </dd>
-<dt>strong<span class="classifier">bool, optional</span></dt><dd><p>strong wolfe condition are abided if True, by default False</p>
+<dt><strong>strong</strong><span class="classifier">bool, optional</span></dt><dd><p>strong wolfe condition are abided if True, by default False</p>
 </dd>
-<dt>factor<span class="classifier">float, optional</span></dt><dd><p>Factor to multiply alpha by, by default 10.0</p>
+<dt><strong>factor</strong><span class="classifier">float, optional</span></dt><dd><p>Factor to multiply alpha by, by default 10.0</p>
 </dd>
-<dt>gsave<span class="classifier">list, optional</span></dt><dd><p>array to save the past gradients, by default []</p>
+<dt><strong>gsave</strong><span class="classifier">list, optional</span></dt><dd><p>array to save the past gradients, by default []</p>
 </dd>
-<dt>msave<span class="classifier">list, optional</span></dt><dd><p>array to save past models, by default []</p>
+<dt><strong>msave</strong><span class="classifier">list, optional</span></dt><dd><p>array to save past models, by default []</p>
 </dd>
-<dt>compute_cost<span class="classifier">callable, optional</span></dt><dd><p>function that computes the cost, by default NOP</p>
+<dt><strong>compute_cost</strong><span class="classifier">callable, optional</span></dt><dd><p>function that computes the cost, by default NOP</p>
 </dd>
-<dt>compute_gradient<span class="classifier">callable, optional</span></dt><dd><p>function that computes the gradient, by default NOP</p>
+<dt><strong>compute_gradient</strong><span class="classifier">callable, optional</span></dt><dd><p>function that computes the gradient, by default NOP</p>
 </dd>
-<dt>compute_cost_and_gradient<span class="classifier">callable or None, optional</span></dt><dd><p>function that computes the cost and the gradient at the same time,
+<dt><strong>compute_cost_and_gradient</strong><span class="classifier">callable or None, optional</span></dt><dd><p>function that computes the cost and the gradient at the same time,
 by default None</p>
 </dd>
-<dt>descent_direction<span class="classifier">callable, optional</span></dt><dd><p>function that computes the descent direction, by default NOP</p>
+<dt><strong>descent_direction</strong><span class="classifier">callable, optional</span></dt><dd><p>function that computes the descent direction, by default NOP</p>
 </dd>
-<dt>apply_preconditioner<span class="classifier">callable, optional</span></dt><dd><p>function that applies a preconditioner, by default NOP</p>
+<dt><strong>apply_preconditioner</strong><span class="classifier">callable, optional</span></dt><dd><p>function that applies a preconditioner, by default NOP</p>
 </dd>
-<dt>save_model_to_disk<span class="classifier">callable, optional</span></dt><dd><p>function that writes the model to disk, not implemented,
+<dt><strong>save_model_to_disk</strong><span class="classifier">callable, optional</span></dt><dd><p>function that writes the model to disk, not implemented,
 by default NOP</p>
 </dd>
-<dt>save_model_and_gradient<span class="classifier">callable, optional</span></dt><dd><p>funciton that stores model and gradient within the optimization
+<dt><strong>save_model_and_gradient</strong><span class="classifier">callable, optional</span></dt><dd><p>funciton that stores model and gradient within the optimization
 class, by default store_grad_and_model</p>
 </dd>
-<dt>solve<span class="classifier">callable, optional</span></dt><dd><p>solves the optimization problem,
+<dt><strong>solve</strong><span class="classifier">callable, optional</span></dt><dd><p>solves the optimization problem,
 by default Solve_Optimisation_Problem</p>
 </dd>
-<dt>get_optim_si_yi<span class="classifier">callable, optional</span></dt><dd><p>function that gets the optimal si and yi,
+<dt><strong>get_optim_si_yi</strong><span class="classifier">callable, optional</span></dt><dd><p>function that gets the optimal si and yi,
 by default get_optim_si_yi</p>
 </dd>
-<dt>compute_beta<span class="classifier">callable, optional</span></dt><dd><p>function that computes beta, by default fletcher_reeves</p>
+<dt><strong>compute_beta</strong><span class="classifier">callable, optional</span></dt><dd><p>function that computes beta, by default fletcher_reeves</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
 
 </dd></dl>
 
-<div class="figure align-default" id="id1">
-<img alt="../_images/optimization.svg" src="../_images/optimization.svg" /><p class="caption"><span class="caption-text">Simple test of optimizing the Rosenbrock function.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
-</div>
 <div class="figure align-default" id="id2">
+<img alt="../_images/optimization.svg" src="../_images/optimization.svg" /><p class="caption"><span class="caption-text">Simple test of optimizing the Rosenbrock function.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
+<div class="figure align-default" id="id3">
 <img alt="../_images/optimization_x4.svg" src="../_images/optimization_x4.svg" /><p class="caption"><span class="caption-text">Simple test of optimizing a 1D function. Note that we have 2 local
-minima which of course is a problem for local minimization schemes.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+minima which of course is a problem for local minimization schemes.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="maps">
 <h2>Maps<a class="headerlink" href="#maps" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
+<dt id="lwsspy.maps.fix_map_extent.fix_map_extent">
+<code class="sig-prename descclassname">lwsspy.maps.fix_map_extent.</code><code class="sig-name descname">fix_map_extent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extent</span></em>, <em class="sig-param"><span class="n">fraction</span><span class="o">=</span><span class="default_value">0.05</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/maps/fix_map_extent.html#fix_map_extent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.maps.fix_map_extent.fix_map_extent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.maps.plot_litho.plot_litho">
+<code class="sig-prename descclassname">lwsspy.maps.plot_litho.</code><code class="sig-name descname">plot_litho</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">which</span><span class="o">=</span><span class="default_value">'all'</span></em>, <em class="sig-param"><span class="n">parameter</span><span class="o">=</span><span class="default_value">'depth'</span></em>, <em class="sig-param"><span class="n">print_keys</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">cmap</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'Spectral'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/maps/plot_litho.html#plot_litho"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.maps.plot_litho.plot_litho" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt id="lwsspy.maps.plot_map.plot_map">
-<code class="sig-prename descclassname">lwsspy.maps.plot_map.</code><code class="sig-name descname">plot_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fill</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/maps/plot_map.html#plot_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.maps.plot_map.plot_map" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">lwsspy.maps.plot_map.</code><code class="sig-name descname">plot_map</code><span class="sig-paren">(</span><em class="sig-param">fill=True</em>, <em class="sig-param">zorder=-10</em>, <em class="sig-param">projection=&lt;cartopy.crs.PlateCarree object&gt;</em>, <em class="sig-param">labelstopright: bool = True</em>, <em class="sig-param">labelsbottomleft: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/maps/plot_map.html#plot_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.maps.plot_map.plot_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots map into existing axes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>fill</strong><span class="classifier">bool, optional</span></dt><dd><p>fills the continents in light gray, by default True</p>
+</dd>
+<dt><strong>zorder</strong><span class="classifier">int, optional</span></dt><dd><p>zorder of the map, by default -10</p>
+</dd>
+<dt><strong>projection</strong><span class="classifier">cartopy.crs.projection, optional</span></dt><dd><p>projection to be used for the map.</p>
+</dd>
+<dt><strong>labelstopright</strong><span class="classifier">bool, optional</span></dt><dd><p>flag to turn on or off the ticks</p>
+</dd>
+<dt><strong>labelsbottomleft</strong><span class="classifier">bool, optional</span></dt><dd><p>flag to turn on or off the ticks</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>matplotlib.pyplot.Axes</dt><dd><p>Axes in which the map was plotted</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd>
+<dt class="field-even">Last Modified</dt>
+<dd class="field-even"><p>2020.01.07 16.30</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="lwsspy.maps.plot_topography.plot_topography">
 <code class="sig-prename descclassname">lwsspy.maps.plot_topography.</code><code class="sig-name descname">plot_topography</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extent</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">[- 180.0, 180.0, - 90.0, 90.0]</span></em>, <em class="sig-param"><span class="n">dataset</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'etopo1'</span></em>, <em class="sig-param"><span class="n">subsampling</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">8</span></em>, <em class="sig-param"><span class="n">sigma</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">colorbar</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/maps/plot_topography.html#plot_topography"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.maps.plot_topography.plot_topography" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots topography into existing axes. Much faster if extent is set.</p>
-<dl class="simple">
-<dt>extent<span class="classifier">List[float], optional</span></dt><dd><p>Map extent, by default [-180.0, 180.0, -90.0, 90.0]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>extent</strong><span class="classifier">List[float], optional</span></dt><dd><p>Map extent, by default [-180.0, 180.0, -90.0, 90.0]</p>
 </dd>
-<dt>dataset<span class="classifier">str, optional</span></dt><dd><p>which topography map is used, by default ‘etopo1’ and only supported
+<dt><strong>dataset</strong><span class="classifier">str, optional</span></dt><dd><p>which topography map is used, by default ‘etopo1’ and only supported
 one right now.</p>
 </dd>
-<dt>subsampling<span class="classifier">int, optional</span></dt><dd><p>number by which to decimate the topographic map, default 8</p>
+<dt><strong>subsampling</strong><span class="classifier">int, optional</span></dt><dd><p>number by which to decimate the topographic map, default 8</p>
 </dd>
-<dt>sigma<span class="classifier">float, optional</span></dt><dd><p>standard devation for the gaussian image filter, default 0.0
+<dt><strong>sigma</strong><span class="classifier">float, optional</span></dt><dd><p>standard devation for the gaussian image filter, default 0.0
 5.0-10.0 for a cartoonish look</p>
 </dd>
-<dt>colorbar: bool, optional</dt><dd><p>whether to draw the elevation colrbar or not.</p>
+<dt><strong>colorbar: bool, optional</strong></dt><dd><p>whether to draw the elevation colrbar or not.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
 
-<div class="figure align-default" id="id3">
-<img alt="../_images/topography_europe.svg" src="../_images/topography_europe.svg" /><p class="caption"><span class="caption-text">Shows the topography of Europe using Etopo1.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
-</div>
 <div class="figure align-default" id="id4">
-<img alt="../_images/topography_earth.svg" src="../_images/topography_earth.svg" /><p class="caption"><span class="caption-text">Shows the topography of the Earth using Etopo1. Note: Ice Sheets
-have not been implemented yet.</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+<img alt="../_images/topography_europe.svg" src="../_images/topography_europe.svg" /><p class="caption"><span class="caption-text">Shows the topography of Europe using Etopo1.</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </div>
+<div class="figure align-default" id="id5">
+<img alt="../_images/topography_earth.svg" src="../_images/topography_earth.svg" /><p class="caption"><span class="caption-text">Shows the topography of the Earth using Etopo1. Note: Ice Sheets
+have not been implemented yet.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+</div>
+<dl class="py function">
+<dt id="lwsspy.maps.read_etopo.read_etopo">
+<code class="sig-prename descclassname">lwsspy.maps.read_etopo.</code><code class="sig-name descname">read_etopo</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">version</span><span class="o">=</span><span class="default_value">'bedrock'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; xarray.core.dataset.Dataset<a class="reference internal" href="../_modules/lwsspy/maps/read_etopo.html#read_etopo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.maps.read_etopo.read_etopo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads/Downloads etopo1 into the download_cache folder for use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>version</strong><span class="classifier">str, optional</span></dt><dd><p>version of the etopo1 map, by default ‘bedrock’</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>xarray.Dataset</dt><dd><p>Etopo xarray</p>
+</dd>
+<dt>Last modified: Lucas Sawade, 2020.11.09 23.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.maps.read_litho.read_litho">
+<code class="sig-prename descclassname">lwsspy.maps.read_litho.</code><code class="sig-name descname">read_litho</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; xarray.core.dataset.Dataset<a class="reference internal" href="../_modules/lwsspy/maps/read_litho.html#read_litho"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.maps.read_litho.read_litho" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads in the Litho model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>xr.Dataset</dt><dd><p>Litho Grid</p>
+</dd>
+<dt>Last modified: Lucas Sawade, 2020.11.10 9.30.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.maps.topocolormap.topocolormap">
+<code class="sig-prename descclassname">lwsspy.maps.topocolormap.</code><code class="sig-name descname">topocolormap</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/maps/topocolormap.html#topocolormap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.maps.topocolormap.topocolormap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns cut version of matplotlibs terrain colormap.</p>
+<p>Taken from: <a class="reference external" href="https://stackoverflow.com/questions/40895021/python-equivalent-for-matlabs-demcmap-elevation-appropriate-colormap">https://stackoverflow.com/questions/40895021/python-equivalent-for-matlabs-demcmap-elevation-appropriate-colormap</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>matplotlib.colormap</dt><dd><p>colormap</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="math">
 <h2>Math<a class="headerlink" href="#math" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="coordinate-transformations">
+<h3>Coordinate Transformations<a class="headerlink" href="#coordinate-transformations" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="lwsspy.math.cart2geo.cart2geo">
+<code class="sig-prename descclassname">lwsspy.math.cart2geo.</code><code class="sig-name descname">cart2geo</code><span class="sig-paren">(</span><em class="sig-param">x: float</em>, <em class="sig-param">y: float</em>, <em class="sig-param">z: float) -&gt; (&lt;class 'float'&gt;</em>, <em class="sig-param">&lt;class 'float'&gt;</em>, <em class="sig-param">&lt;class 'float'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/cart2geo.html#cart2geo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.cart2geo.cart2geo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes Cartesian coordinates from geographical coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">float or numpy.ndarray or list</span></dt><dd><p>Radius</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">float or numpy.ndarray or list</span></dt><dd><p>Latitude (-90, 90)</p>
+</dd>
+<dt><strong>z</strong><span class="classifier">float or numpy.ndarray or list</span></dt><dd><p>Longitude (-180, 180)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>float or np.ndarray or list, float or np.ndarray or list, float or np.ndarray or list</dt><dd><p>(x, y, z)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.math.cart2pol.cart2pol">
+<code class="sig-prename descclassname">lwsspy.math.cart2pol.</code><code class="sig-name descname">cart2pol</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/cart2pol.html#cart2pol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.cart2pol.cart2pol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.math.cart2sph.cart2sph">
+<code class="sig-prename descclassname">lwsspy.math.cart2sph.</code><code class="sig-name descname">cart2sph</code><span class="sig-paren">(</span><em class="sig-param">x: float</em>, <em class="sig-param">y: float</em>, <em class="sig-param">z: float) -&gt; (&lt;class 'float'&gt;</em>, <em class="sig-param">&lt;class 'float'&gt;</em>, <em class="sig-param">&lt;class 'float'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/cart2sph.html#cart2sph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.cart2sph.cart2sph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes Cartesian coordinates from geographical coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">float or numpy.ndarray or list</span></dt><dd><p>Radius</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">float or numpy.ndarray or list</span></dt><dd><p>Latitude (-90, 90)</p>
+</dd>
+<dt><strong>z</strong><span class="classifier">float or numpy.ndarray or list</span></dt><dd><p>Longitude (-180, 180)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>float or np.ndarray or list, float or np.ndarray or list, float or np.ndarray or list</dt><dd><p>(x, y, z)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.math.geo2cart.geo2cart">
+<code class="sig-prename descclassname">lwsspy.math.geo2cart.</code><code class="sig-name descname">geo2cart</code><span class="sig-paren">(</span><em class="sig-param">r: float</em>, <em class="sig-param">theta: float</em>, <em class="sig-param">phi: float) -&gt; (&lt;class 'float'&gt;</em>, <em class="sig-param">&lt;class 'float'&gt;</em>, <em class="sig-param">&lt;class 'float'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/geo2cart.html#geo2cart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.geo2cart.geo2cart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes Cartesian coordinates from geographical coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>r</strong><span class="classifier">float or numpy.ndarray or list</span></dt><dd><p>Radius</p>
+</dd>
+<dt><strong>theta</strong><span class="classifier">float or numpy.ndarray or list</span></dt><dd><p>Latitude (-90, 90)</p>
+</dd>
+<dt><strong>phi</strong><span class="classifier">float or numpy.ndarray or list</span></dt><dd><p>Longitude (-180, 180)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>float or np.ndarray or list, float or np.ndarray or list, float or np.ndarray or list</dt><dd><p>(x, y, z)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.math.pol2cart.pol2cart">
+<code class="sig-prename descclassname">lwsspy.math.pol2cart.</code><code class="sig-name descname">pol2cart</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rho</span></em>, <em class="sig-param"><span class="n">phi</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/pol2cart.html#pol2cart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.pol2cart.pol2cart" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.math.project2D.project2D">
+<code class="sig-prename descclassname">lwsspy.math.project2D.</code><code class="sig-name descname">project2D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x0</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">y0</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">xn</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">yn</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">x0q</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">y0q</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/project2D.html#project2D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.project2D.project2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in corresponding locations in 2 different coordinate systems
+and projects a set of query locations in the 0-coordinate system to
+the location in the n-coordinate system. Default griddata interpolation 
+method is ‘linear’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x0</strong><span class="classifier">np.ndarray</span></dt><dd><p>x-coordinate in the 0-coordinate system</p>
+</dd>
+<dt><strong>y0</strong><span class="classifier">np.ndarray</span></dt><dd><p>y-coordinate in the 0-coordinate system</p>
+</dd>
+<dt><strong>xn</strong><span class="classifier">np.ndarray</span></dt><dd><p>x-coordinate in the n-coordinate system</p>
+</dd>
+<dt><strong>yn</strong><span class="classifier">np.ndarray</span></dt><dd><p>y-coordinate in the n-coordinate system</p>
+</dd>
+<dt><strong>x0q</strong><span class="classifier">np.ndarray</span></dt><dd><p>Queried x coordinate in the in 0 coordinate system to be
+transformed to n coordinate system</p>
+</dd>
+<dt><strong>y0q</strong><span class="classifier">np.ndarray</span></dt><dd><p>Queried y coordinate in the in 0 coordinate system to be
+transformed to n coordinate system</p>
+</dd>
+<dt><strong>**kwargs :</strong></dt><dd><p>Sent to <code class="docutils literal notranslate"><span class="pre">scipy.interpolate.griddata</span></code></p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>tuple</dt><dd><p>xqn, yqn - the queried coordinates corresponding to the original</p>
+</dd>
+<dt>Last modified: Lucas Sawade 2020.11.18 16:31 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.math.rotation_matrix.rotation_matrix">
+<code class="sig-prename descclassname">lwsspy.math.rotation_matrix.</code><code class="sig-name descname">rotation_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">theta</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/rotation_matrix.html#rotation_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.rotation_matrix.rotation_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the rotation matrix associated with counterclockwise rotation about
+the given axis by theta radians.</p>
+<p>Axis is a vector</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>axis</strong><span class="classifier">list or tuple or numpy.ndarray</span></dt><dd><p>3 component vector</p>
+</dd>
+<dt><strong>theta</strong><span class="classifier">float</span></dt><dd><p>rotation angle</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>numpy.ndarray</dt><dd><p>3x3 Matrix that rotates a 3 component vector in space.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd>
+<dt class="field-even">Last Modified</dt>
+<dd class="field-even"><p>2020.01.06 11.00</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.math.sph2cart.sph2cart">
+<code class="sig-prename descclassname">lwsspy.math.sph2cart.</code><code class="sig-name descname">sph2cart</code><span class="sig-paren">(</span><em class="sig-param">r: float</em>, <em class="sig-param">theta: float</em>, <em class="sig-param">phi: float) -&gt; (&lt;class 'float'&gt;</em>, <em class="sig-param">&lt;class 'float'&gt;</em>, <em class="sig-param">&lt;class 'float'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/sph2cart.html#sph2cart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.sph2cart.sph2cart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes Cartesian coordinates from geographical coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>r</strong><span class="classifier">float or numpy.ndarray or list</span></dt><dd><p>Radius</p>
+</dd>
+<dt><strong>theta</strong><span class="classifier">float or numpy.ndarray or list</span></dt><dd><p>Theta (0, pi)</p>
+</dd>
+<dt><strong>phi</strong><span class="classifier">float or numpy.ndarray or list</span></dt><dd><p>phi (0, 2*pi)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>float or np.ndarray or list, float or np.ndarray or list, float or np.ndarray or list</dt><dd><p>(x, y, z)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.math.rodrigues.rodrigues">
+<code class="sig-prename descclassname">lwsspy.math.rodrigues.</code><code class="sig-name descname">rodrigues</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/rodrigues.html#rodrigues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.rodrigues.rodrigues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Matrix that rotates points so that points have new orientation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>r</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>new normal vector</p>
+</dd>
+<dt><strong>Edited from:</strong></dt><dd></dd>
+<dt><strong>https://github.com/robEllenberg/comps-plugins/blob/master/python/rodrigues.py</strong></dt><dd></dd>
+<dt><strong>Theory:</strong></dt><dd></dd>
+<dt><strong>https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula</strong></dt><dd></dd>
+<dt><strong>:Author:</strong></dt><dd><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd>
+<dt><strong>:Last Modified:</strong></dt><dd><p>2020.01.06 11.00</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="miscellaneous">
+<h3>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
 <dt id="lwsspy.math.convm.convm">
 <code class="sig-prename descclassname">lwsspy.math.convm.</code><code class="sig-name descname">convm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">y</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="../_modules/lwsspy/math/convm.html#convm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.convm.convm" title="Permalink to this definition">¶</a></dt>
@@ -356,12 +672,133 @@ have not been implemented yet.</span><a class="headerlink" href="#id4" title="Pe
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt id="lwsspy.math.SphericalNN">
-<code class="sig-prename descclassname">lwsspy.math.</code><code class="sig-name descname">SphericalNN</code><a class="headerlink" href="#lwsspy.math.SphericalNN" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#lwsspy.math.SphericalNN" title="lwsspy.math.SphericalNN"><code class="xref py py-class docutils literal notranslate"><span class="pre">lwsspy.math.SphericalNN</span></code></a></p>
+<dl class="py class">
+<dt id="lwsspy.math.SphericalNN.SphericalNN">
+<em class="property">class </em><code class="sig-prename descclassname">lwsspy.math.SphericalNN.</code><code class="sig-name descname">SphericalNN</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lat</span></em>, <em class="sig-param"><span class="n">lon</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/SphericalNN.html#SphericalNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.SphericalNN.SphericalNN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Spherical nearest neighbour queries using scipy’s fast kd-tree
+implementation.</p>
+<p class="rubric">Notes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Authors</dt>
+<dd class="field-odd"><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd>
+<dt class="field-even">Last Modified</dt>
+<dd class="field-even"><p>2020.01.07 19.00</p>
+</dd>
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>cartesian point data array [x,y,z]</p>
+</dd>
+<dt><strong>kd_tree</strong><span class="classifier">scipy.spatial.cKDTree</span></dt><dd><p>a KDTree used to query data</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 85%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>query(qlat, qlon)</strong></p></td>
+<td><p>Query a set of latitudes and longitudes</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>query_pairs(maximum_distance)</strong></p></td>
+<td><p>Find pairs of points that are within a certain distance of each other</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>interp(data, qlat, qlon)</strong></p></td>
+<td><p>Use the kdtree to interpolate data corresponding to the points of the Kdtree onto a new set of points using nearest neighbor interpolation or weighted nearest neighbor interpolation (default).</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="lwsspy.math.SphericalNN.SphericalNN.interp">
+<code class="sig-name descname">interp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">qlat</span></em>, <em class="sig-param"><span class="n">qlon</span></em>, <em class="sig-param"><span class="n">maximum_distance</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">no_weighting</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">k</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">10</span></em>, <em class="sig-param"><span class="n">p</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">2.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/SphericalNN.html#SphericalNN.interp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.SphericalNN.SphericalNN.interp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Spherical interpolation function using the <code class="docutils literal notranslate"><span class="pre">SphericalNN</span></code> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>data</p>
+</dd>
+<dt><strong>qlat</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>query latitudes</p>
+</dd>
+<dt><strong>qlon</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>query longitude</p>
+</dd>
+<dt><strong>maximum_distance</strong><span class="classifier">float, optional</span></dt><dd><p>max distace for the interpolation in degree angle. Default None.
+If the mindistance to any points is larger than maximum_distance the
+interpolated value is set to <code class="docutils literal notranslate"><span class="pre">np.nan</span></code>.</p>
+</dd>
+<dt><strong>no_weighting</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether or not the function uses a weightied nearest neighbor
+interpolation</p>
+</dd>
+<dt><strong>k</strong><span class="classifier">int, optional</span></dt><dd><p>Define maximum number of neighbors to be used for the weighted
+interpolation. Not used if <code class="docutils literal notranslate"><span class="pre">no_weighting</span> <span class="pre">=</span> <span class="pre">True</span></code>. Default 10</p>
+</dd>
+<dt><strong>p</strong><span class="classifier">float, optional</span></dt><dd><p>only used if maximum_distance is None. Default is 2</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>In the future, I may add a variable weighting function for the
+weighted interpolation.</p>
+<p>Please refer to <a class="reference external" href="https://en.wikipedia.org/wiki/Inverse_distance_weighting">https://en.wikipedia.org/wiki/Inverse_distance_weighting</a>
+for the interpolation weighting.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt id="lwsspy.math.SphericalNN.SphericalNN.query">
+<code class="sig-name descname">query</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">qlat</span></em>, <em class="sig-param"><span class="n">qlon</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/SphericalNN.html#SphericalNN.query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.SphericalNN.SphericalNN.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query latitude and longitude values from kdtree</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>qlat</strong><span class="classifier">np.ndarray or float</span></dt><dd><p>query latitude</p>
+</dd>
+<dt><strong>qlon</strong><span class="classifier">np.ndarray or float</span></dt><dd><p>query longitude</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>tuple</dt><dd><p>(distance, indeces) to closest point in kdtree</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="lwsspy.math.SphericalNN.SphericalNN.query_pairs">
+<code class="sig-name descname">query_pairs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">maximum_distance</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/SphericalNN.html#SphericalNN.query_pairs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.SphericalNN.SphericalNN.query_pairs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query pairs within the kdtree</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>maximum_distance</strong><span class="classifier">[type]</span></dt><dd><p>[description]</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>set or ndarray</dt><dd><p>Set of pairs (i, j) where i &lt; j</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="lwsspy.math.SphericalNN.SphericalNN.spherical2cartesian">
+<em class="property">static </em><code class="sig-name descname">spherical2cartesian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lat</span></em>, <em class="sig-param"><span class="n">lon</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/SphericalNN.html#SphericalNN.spherical2cartesian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.SphericalNN.SphericalNN.spherical2cartesian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Station</span></code>
+objects to an array of shape(len(list), 3) containing x/y/z in meters.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 </div>
 <div class="section" id="plotting-utilities">
 <h2>Plotting Utilities<a class="headerlink" href="#plotting-utilities" title="Permalink to this headline">¶</a></h2>
@@ -381,6 +818,180 @@ vmax (Union[float, None], optional): Largest values . Defaults to None.
 </dd>
 </dl>
 <p>Last modified: Lucas Sawade, 2020.09.15 15.30 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="lwsspy.plot_util.fixedpointcolornorm.FixedPointColorNorm">
+<em class="property">class </em><code class="sig-prename descclassname">lwsspy.plot_util.fixedpointcolornorm.</code><code class="sig-name descname">FixedPointColorNorm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vmin</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">vmax</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sealevel</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">col_val</span><span class="o">=</span><span class="default_value">0.21875</span></em>, <em class="sig-param"><span class="n">clip</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/plot_util/fixedpointcolornorm.html#FixedPointColorNorm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.plot_util.fixedpointcolornorm.FixedPointColorNorm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Taken from: <a class="reference external" href="https://stackoverflow.com/questions/40895021/python-equivalent-for-matlabs-demcmap-elevation-appropriate-colormap">https://stackoverflow.com/questions/40895021/python-equivalent-for-matlabs-demcmap-elevation-appropriate-colormap</a>
+Inspired by: <a class="reference external" href="https://stackoverflow.com/questions/20144529/shifted-colorbar-matplotlib">https://stackoverflow.com/questions/20144529/shifted-colorbar-matplotlib</a>
+Subclassing Normalize to obtain a colormap with a fixpoint
+somewhere in the middle of the colormap.</p>
+<p>This may be useful for a <cite>terrain</cite> map, to set the ‘sea level’
+to a color in the blue/turquise range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd>
+<dt class="field-even">Last Modified</dt>
+<dd class="field-even"><p>2020.01.06 11.00</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.plot_util.nice_colorbar.nice_colorbar">
+<code class="sig-prename descclassname">lwsspy.plot_util.nice_colorbar.</code><code class="sig-name descname">nice_colorbar</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; matplotlib.colorbar.Colorbar<a class="reference internal" href="../_modules/lwsspy/plot_util/nice_colorbar.html#nice_colorbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.plot_util.nice_colorbar.nice_colorbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates nicely formatted colorbar. <code class="docutils literal notranslate"><span class="pre">*args</span></code> and <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> are parsed 
+to <code class="docutils literal notranslate"><span class="pre">plt.colorbar(*args,</span> <span class="pre">**kwargs)</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>matplotlib.colorbar.Colorbar</dt><dd><p>colorbar handle returned</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd>
+<dt class="field-even">Last Modified</dt>
+<dd class="field-even"><p>2020.01.06 11.00</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.plot_util.pick_data_from_image.pick_data_from_image">
+<code class="sig-prename descclassname">lwsspy.plot_util.pick_data_from_image.</code><code class="sig-name descname">pick_data_from_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">infile</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">outfile</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">extent</span><span class="o">=</span><span class="default_value">[0, 1, 0, 1]</span></em>, <em class="sig-param"><span class="n">logx</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">logy</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">]</span><a class="reference internal" href="../_modules/lwsspy/plot_util/pick_data_from_image.html#pick_data_from_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.plot_util.pick_data_from_image.pick_data_from_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function’s purpose is the replication of previously published data.
+The function ttakes in an image filename containing a graph that is
+cropped to axes boundaries and the data extent. One can then pick the data
+from the graph in the image and it will automatically rescale the picked
+pixel values to data domain.</p>
+<p>Optionally the data can be save to either npy or csv depending on
+extension. If the oufile’s extension is <code class="docutils literal notranslate"><span class="pre">.npy</span></code>, the data will be saved
+as a single <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> with two columns for the(x, y) vectors.
+If the file ending is <code class="docutils literal notranslate"><span class="pre">.csv</span></code>, the <code class="docutils literal notranslate"><span class="pre">csv</span></code> file would be have the format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span>
+<span class="n">x1</span><span class="p">,</span> <span class="n">y1</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>infile: str</strong></dt><dd><p>Image file name to be loaded by the function. The image should be
+cropped to the axes edges.</p>
+</dd>
+<dt><strong>outfile: Union[str, None], optional</strong></dt><dd><p>Optional output file name depending on filename ending either a
+npy array with two columns(x, y) will be stored or a csv file,
+by default None</p>
+</dd>
+<dt><strong>extent: list, optional</strong></dt><dd><p>extent of the cropped axes in data units. Format: [xi, xf, yi, yf],
+by default[0, 1, 0, 1]</p>
+</dd>
+<dt><strong>logx: bool, optional</strong></dt><dd><p>Flag to say whether the x axis in the image is in logarithmic scale,
+by default False</p>
+</dd>
+<dt><strong>logy: bool, optional</strong></dt><dd><p>Flag to say whether the y axis in the image is in logarithmic scale,
+by default False</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tuple[np.ndarray, np.ndarray]</dt><dd><p>x, y vectors of the picked data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>if file ending is not <code class="docutils literal notranslate"><span class="pre">.csv</span></code> or <code class="docutils literal notranslate"><span class="pre">.npy</span></code></p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#lwsspy.utils.pixels2data.pixels2data" title="lwsspy.utils.pixels2data.pixels2data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lwsspy.utils.pixels2data.pixels2data</span></code></a></dt><dd><p>Scaling from pixels to dataunits</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Picking Controls</p>
+<ul class="simple">
+<li><p>Click to add points</p></li>
+<li><p>Press Delete or Backspace to delete points</p></li>
+<li><p>Press Enter to finish</p></li>
+</ul>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>For semilog conversions, the extent of the axis cannot be  0 !!
+(log(0) issue)</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note for further development: A better way of doing this would be to 
+actually integrate the picker and the zoom window. Meaning, a while loop
+for ginput until an enter is recorded.
+Connect callbacks for backspace, enter, and mouseclicks</p>
+<p>Backspace - pops the last item and removes the last scatter point as long
+as the point list is not empty</p>
+<p>Enter - Finishes the selection</p>
+<p>Mouse - Click adds points</p>
+<p>This way one can plot the selected points in both the zoom window AND
+and the main window.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Authors</dt>
+<dd class="field-odd"><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd>
+<dt class="field-even">Last Modified</dt>
+<dd class="field-even"><p>2020.01.06 11.00</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>For an image with data in linearscale and axes data axis limits of 
+<code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0,</span> <span class="pre">1]</span></code> <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> can be picked and saved as follows.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">lwsspy</span> <span class="k">as</span> <span class="nn">lpy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">lpy</span><span class="o">.</span><span class="n">pick_data_from_image</span><span class="p">(</span><span class="s1">&#39;test.png&#39;</span><span class="p">,</span> <span class="s1">&#39;testdata.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Change <code class="docutils literal notranslate"><span class="pre">.csv</span></code> to  <code class="docutils literal notranslate"><span class="pre">.npy</span></code> to save numpy binary file.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.plot_util.plot_label.plot_label">
+<code class="sig-prename descclassname">lwsspy.plot_util.plot_label.</code><code class="sig-name descname">plot_label</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib.axes._axes.Axes</span></em>, <em class="sig-param"><span class="n">label</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">aspect</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">location</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">dist</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.025</span></em>, <em class="sig-param"><span class="n">box</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">fontdict</span><span class="p">:</span> <span class="n">dict</span> <span class="o">=</span> <span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/plot_util/plot_label.html#plot_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.plot_util.plot_label.plot_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots label one of the corners of the plot.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span><span class="o">-----</span><span class="mi">2</span>
+<span class="o">|</span>     <span class="o">|</span>
+<span class="mi">3</span><span class="o">-----</span><span class="mi">4</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>label</strong><span class="classifier">str</span></dt><dd><p>label</p>
+</dd>
+<dt><strong>aspect</strong><span class="classifier">float, optional</span></dt><dd><p>aspect ratio length/height, by default 1.0</p>
+</dd>
+<dt><strong>location</strong><span class="classifier">int, optional</span></dt><dd><p>corner as described by above code figure, by default 1</p>
+</dd>
+<dt><strong>aspect</strong><span class="classifier">float, optional</span></dt><dd><p>aspect ratio length/height, by default 0.025</p>
+</dd>
+<dt><strong>box</strong><span class="classifier">bool</span></dt><dd><p>plots bounding box st. the label is on a background, default true</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -416,6 +1027,12 @@ the box.</p>
 </dl>
 </div></blockquote>
 <p>Last modified: Lucas Sawade, 2020.09.15 01.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.plot_util.view_colormap.view_colormap">
+<code class="sig-prename descclassname">lwsspy.plot_util.view_colormap.</code><code class="sig-name descname">view_colormap</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmap</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/plot_util/view_colormap.html#view_colormap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.plot_util.view_colormap.view_colormap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a colormap with its grayscale equivalent</p>
 </dd></dl>
 
 </div>
@@ -570,6 +1187,565 @@ ValueError: if latitude is outside [-90, 90]</p>
 <p>Last modified: Lucas Sawade, 2020.09.22 11.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
 </dd></dl>
 
+<div class="section" id="signal-processing">
+<h3>Signal Processing<a class="headerlink" href="#signal-processing" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="lwsspy.seismo.process.compare_trace.least_square_error">
+<code class="sig-prename descclassname">lwsspy.seismo.process.compare_trace.</code><code class="sig-name descname">least_square_error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data1</span></em>, <em class="sig-param"><span class="n">data2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/compare_trace.html#least_square_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.compare_trace.least_square_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>waveform difference between data1 and data2
+:param data1:
+:param data2:
+:return:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.compare_trace.cross_correlation">
+<code class="sig-prename descclassname">lwsspy.seismo.process.compare_trace.</code><code class="sig-name descname">cross_correlation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data1</span></em>, <em class="sig-param"><span class="n">data2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/compare_trace.html#cross_correlation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.compare_trace.cross_correlation" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data1</strong> – </p></li>
+<li><p><strong>data2</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.compare_trace.trace_length">
+<code class="sig-prename descclassname">lwsspy.seismo.process.compare_trace.</code><code class="sig-name descname">trace_length</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tr</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/compare_trace.html#trace_length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.compare_trace.trace_length" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<span class="target" id="module-lwsspy.seismo.process.process"></span><p>Methods that handles signal data processing for stream(Obspy.Stream)</p>
+<dl class="field-list simple">
+<dt class="field-odd">copyright</dt>
+<dd class="field-odd"><p>Wenjie Lei (<a class="reference external" href="mailto:lei&#37;&#52;&#48;princeton&#46;edu">lei<span>&#64;</span>princeton<span>&#46;</span>edu</a>), 2016</p>
+</dd>
+<dt class="field-even">license</dt>
+<dd class="field-even"><p>GNU Lesser General Public License, version 3 (LGPLv3)
+(<a class="reference external" href="http://www.gnu.org/licenses/lgpl-3.0.en.html">http://www.gnu.org/licenses/lgpl-3.0.en.html</a>)</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt id="lwsspy.seismo.process.process.check_array_order">
+<code class="sig-prename descclassname">lwsspy.seismo.process.process.</code><code class="sig-name descname">check_array_order</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">array</span></em>, <em class="sig-param"><span class="n">order</span><span class="o">=</span><span class="default_value">'ascending'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/process.html#check_array_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.process.check_array_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a array is in ascending order or descending order
+:param array: the input array
+:param order: “ascending” or “descending”
+:return:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.process.filter_stream">
+<code class="sig-prename descclassname">lwsspy.seismo.process.process.</code><code class="sig-name descname">filter_stream</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">st</span></em>, <em class="sig-param"><span class="n">pre_filt</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/process.html#filter_stream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.process.filter_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter a stream</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>st</strong> – </p></li>
+<li><p><strong>per_filt</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.process.filter_trace">
+<code class="sig-prename descclassname">lwsspy.seismo.process.process.</code><code class="sig-name descname">filter_trace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tr</span></em>, <em class="sig-param"><span class="n">pre_filt</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/process.html#filter_trace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.process.filter_trace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a frequency domain taper mimicing the behavior during the
+response removal, without a actual response removal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tr</strong> – input trace</p></li>
+<li><p><strong>pre_filt</strong> (<em>Numpy.array</em><em> or </em><em>list</em>) – frequency array(Hz) in ascending order, to define
+the four corners of filter, for example, [0.01, 0.1, 0.2, 0.5].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>filtered trace</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.process.flex_cut_stream">
+<code class="sig-prename descclassname">lwsspy.seismo.process.process.</code><code class="sig-name descname">flex_cut_stream</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">st</span></em>, <em class="sig-param"><span class="n">cut_start</span></em>, <em class="sig-param"><span class="n">cut_end</span></em>, <em class="sig-param"><span class="n">dynamic_npts</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/process.html#flex_cut_stream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.process.flex_cut_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flexible cut stream. But checks for the time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>st</strong> – input stream</p></li>
+<li><p><strong>cut_start</strong> – cut starttime</p></li>
+<li><p><strong>cut_end</strong> – cut endtime</p></li>
+<li><p><strong>dynamic_npts</strong> – the dynamic number of points before cut_start
+and after
+cut_end</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the cutted stream</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.process.flex_cut_trace">
+<code class="sig-prename descclassname">lwsspy.seismo.process.process.</code><code class="sig-name descname">flex_cut_trace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">trace</span></em>, <em class="sig-param"><span class="n">cut_starttime</span></em>, <em class="sig-param"><span class="n">cut_endtime</span></em>, <em class="sig-param"><span class="n">dynamic_npts</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/process.html#flex_cut_trace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.process.flex_cut_trace" title="Permalink to this definition">¶</a></dt>
+<dd><p>not cut strictly(but also based on the original trace length)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trace</strong> (<em>obspy.Trace</em>) – input trace</p></li>
+<li><p><strong>cut_starttime</strong> (<em>obspy.UTCDateTime</em>) – starttime of cutting</p></li>
+<li><p><strong>cut_endtime</strong> (<em>obspy.UTCDateTime</em>) – endtime of cutting</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.process.interpolate_stream">
+<code class="sig-prename descclassname">lwsspy.seismo.process.process.</code><code class="sig-name descname">interpolate_stream</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stream</span></em>, <em class="sig-param"><span class="n">sampling_rate</span></em>, <em class="sig-param"><span class="n">starttime</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">npts</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/process.html#interpolate_stream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.process.interpolate_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>For a fairly large stream, use stream.interpolate() is not a wise
+choice since if there is one trace fails, then the whole interpolation
+will stop. So it is better to operate interpolation on the trace
+level</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.process.process_stream">
+<code class="sig-prename descclassname">lwsspy.seismo.process.process.</code><code class="sig-name descname">process_stream</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">st</span><span class="p">:</span> <span class="n">obspy.core.stream.Stream</span></em>, <em class="sig-param"><span class="n">inventory</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>obspy.core.inventory.inventory.Inventory<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">remove_response_flag</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">water_level</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">60.0</span></em>, <em class="sig-param"><span class="n">filter_flag</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">pre_filt</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>list<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">starttime</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>obspy.core.utcdatetime.UTCDateTime<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">endtime</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>obspy.core.utcdatetime.UTCDateTime<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">resample_flag</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">sampling_rate</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">taper_type</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'hann'</span></em>, <em class="sig-param"><span class="n">taper_percentage</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">rotate_flag</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">event_latitude</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">event_longitude</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">geodata</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">sanity_check</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; obspy.core.stream.Stream<a class="reference internal" href="../_modules/lwsspy/seismo/process/process.html#process_stream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.process.process_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stream processing function defined for general purpose of tomography.
+The advantage of using Stream, rather than than Trace, is that rotation
+could be operated if the Stream contains multiple channels. But this
+function also deals with Trace, but you need to set rotate_flag to
+False</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>st</strong><span class="classifier">Stream</span></dt><dd><p>Obspy Stream object</p>
+</dd>
+<dt><strong>inventory</strong><span class="classifier">Union[Inventory, None], optional</span></dt><dd><p>inventory, by default None</p>
+</dd>
+<dt><strong>remove_response_flag</strong><span class="classifier">bool, optional</span></dt><dd><p>if True and inventory is given response is removed, by default False</p>
+</dd>
+<dt><strong>water_level</strong><span class="classifier">float, optional</span></dt><dd><p>water level parameter for the response remoal, by default 60.0</p>
+</dd>
+<dt><strong>filter_flag</strong><span class="classifier">bool, optional</span></dt><dd><p>filter flag, if True stream is filtered, by default False</p>
+</dd>
+<dt><strong>pre_filt</strong><span class="classifier">Union[list, None], optional</span></dt><dd><p>filter corners, by default None</p>
+</dd>
+<dt><strong>starttime</strong><span class="classifier">Union[UTCDateTime, None], optional</span></dt><dd><p>starttime, by default None</p>
+</dd>
+<dt><strong>endtime</strong><span class="classifier">Union[UTCDateTime, None], optional</span></dt><dd><p>endtime, by default None</p>
+</dd>
+<dt><strong>resample_flag</strong><span class="classifier">bool, optional</span></dt><dd><p>resampling flag, by default False</p>
+</dd>
+<dt><strong>sampling_rate</strong><span class="classifier">float, optional</span></dt><dd><p>sampling rate at whihc thte traces are resampled, by default 1.0</p>
+</dd>
+<dt><strong>taper_type</strong><span class="classifier">str, optional</span></dt><dd><p>taper for for filter, by default “hann”</p>
+</dd>
+<dt><strong>taper_percentage</strong><span class="classifier">float, optional</span></dt><dd><p>percentage on either side of the trace to be tapered, only used for
+cosine type taper, by default 0.05</p>
+</dd>
+<dt><strong>rotate_flag</strong><span class="classifier">bool, optional</span></dt><dd><p>if True traces are rotated into RTZ, by default False</p>
+</dd>
+<dt><strong>event_latitude</strong><span class="classifier">Union[float, None], optional</span></dt><dd><p>event_latitude must be give for rotation, by default None</p>
+</dd>
+<dt><strong>event_longitude</strong><span class="classifier">Union[float, None], optional</span></dt><dd><p>event_longitude must be give for rotation, by default None</p>
+</dd>
+<dt><strong>geodata</strong><span class="classifier">bool,</span></dt><dd><dl class="simple">
+<dt>decide whether epicentral distance and back-azimutth</dt><dd><p>should be attached to Traces or not, by default False</p>
+</dd>
+</dl>
+</dd>
+<dt><strong>sanity_check</strong><span class="classifier">bool, optional</span></dt><dd><p>sanity check the inventory information when rotating, by default False</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>Stream</dt><dd><p>[description]</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>TypeError</dt><dd><p>Input is not and obspy.Stream</p>
+</dd>
+<dt>ValueError</dt><dd><p>Filters values not 4</p>
+</dd>
+<dt>ValueError</dt><dd><p>Filter values not ascending</p>
+</dd>
+<dt>ValueError</dt><dd><p>Inventory mustt be given to remove response</p>
+</dd>
+<dt>ValueError</dt><dd><p>sampling rate mustt be provided if you want to resample.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.process_wrapper.process_wrapper">
+<code class="sig-prename descclassname">lwsspy.seismo.process.process_wrapper.</code><code class="sig-name descname">process_wrapper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">st</span><span class="p">:</span> <span class="n">obspy.core.stream.Stream</span></em>, <em class="sig-param"><span class="n">event</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#lwsspy.seismo.source.CMTSource" title="lwsspy.seismo.source.CMTSource">lwsspy.seismo.source.CMTSource</a></span></em>, <em class="sig-param"><span class="n">paramdict</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">inv</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>obspy.core.inventory.inventory.Inventory<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">observed</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/process_wrapper.html#process_wrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.process_wrapper.process_wrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fixes start and endtime in the dictionary</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>stream</strong><span class="classifier">Stream</span></dt><dd><p>stream to be processed</p>
+</dd>
+<dt><strong>event</strong><span class="classifier">CMTSource</span></dt><dd><p>event</p>
+</dd>
+<dt><strong>paramdict</strong><span class="classifier">dict</span></dt><dd><p>parameterdictionary</p>
+</dd>
+<dt><strong>inv</strong><span class="classifier">Inventory, optional</span></dt><dd><p>Station data, if you want to remove the station response, default None</p>
+</dd>
+<dt><strong>observed: bool, optional</strong></dt><dd><p>if you want to remove the station response and only use a single 
+process parameter file, default True</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>processparameter dict</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd>
+<dt class="field-even">Last Modified</dt>
+<dd class="field-even"><p>2020.01.06 11.00</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-lwsspy.seismo.process.rotate"></span><p>Methods that handles rotation of seismograms as extension to Obspy.
+It can rotate <cite>12</cite>, <cite>EN</cite> and <cite>RT</cite>, forward and backward.</p>
+<dl class="field-list simple">
+<dt class="field-odd">copyright</dt>
+<dd class="field-odd"><p>Wenjie Lei (<a class="reference external" href="mailto:lei&#37;&#52;&#48;princeton&#46;edu">lei<span>&#64;</span>princeton<span>&#46;</span>edu</a>), 2016</p>
+</dd>
+<dt class="field-even">license</dt>
+<dd class="field-even"><p>GNU Lesser General Public License, version 3 (LGPLv3)
+(<a class="reference external" href="http://www.gnu.org/licenses/lgpl-3.0.en.html">http://www.gnu.org/licenses/lgpl-3.0.en.html</a>)</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt id="lwsspy.seismo.process.rotate.check_horizontal_inventory_sanity">
+<code class="sig-prename descclassname">lwsspy.seismo.process.rotate.</code><code class="sig-name descname">check_horizontal_inventory_sanity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tr1</span></em>, <em class="sig-param"><span class="n">tr2</span></em>, <em class="sig-param"><span class="n">inventory</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/rotate.html#check_horizontal_inventory_sanity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.rotate.check_horizontal_inventory_sanity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check two horizontal components and see if their dip is 0
+and azimuth is orthogonal to each other.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tr1</strong> – </p></li>
+<li><p><strong>tr2</strong> – </p></li>
+<li><p><strong>inventory</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.rotate.check_vertical_inventory_sanity">
+<code class="sig-prename descclassname">lwsspy.seismo.process.rotate.</code><code class="sig-name descname">check_vertical_inventory_sanity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tr</span></em>, <em class="sig-param"><span class="n">inventory</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/rotate.html#check_vertical_inventory_sanity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.rotate.check_vertical_inventory_sanity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the inventory of vertical(Z) component, check
+if the abs(dip) is 90 and azimuth is 0.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.rotate.ensemble_synthetic_channel_orientation">
+<code class="sig-prename descclassname">lwsspy.seismo.process.rotate.</code><code class="sig-name descname">ensemble_synthetic_channel_orientation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chan</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/rotate.html#ensemble_synthetic_channel_orientation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.rotate.ensemble_synthetic_channel_orientation" title="Permalink to this definition">¶</a></dt>
+<dd><p>For synthetic data from SPECFEM, just ensemble the orientation
+information.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.rotate.extract_channel_orientation">
+<code class="sig-prename descclassname">lwsspy.seismo.process.rotate.</code><code class="sig-name descname">extract_channel_orientation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tr</span></em>, <em class="sig-param"><span class="n">inv</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/rotate.html#extract_channel_orientation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.rotate.extract_channel_orientation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the dip and azimuth from inventory, given the trace</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.rotate.extract_station_location">
+<code class="sig-prename descclassname">lwsspy.seismo.process.rotate.</code><code class="sig-name descname">extract_station_location</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">st</span></em>, <em class="sig-param"><span class="n">inventory</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/rotate.html#extract_station_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.rotate.extract_station_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the station latitude and longitude from inventory, given
+stream.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.rotate.remove_bad_z_component">
+<code class="sig-prename descclassname">lwsspy.seismo.process.rotate.</code><code class="sig-name descname">remove_bad_z_component</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">st</span></em>, <em class="sig-param"><span class="n">inventory</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/rotate.html#remove_bad_z_component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.rotate.remove_bad_z_component" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove Z component if its inventory does not meet requirements</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.rotate.rotate_12_rt_func">
+<code class="sig-prename descclassname">lwsspy.seismo.process.rotate.</code><code class="sig-name descname">rotate_12_rt_func</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">st</span></em>, <em class="sig-param"><span class="n">inv</span></em>, <em class="sig-param"><span class="n">back_azimuth</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'12-&gt;RT'</span></em>, <em class="sig-param"><span class="n">sanity_check</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/rotate.html#rotate_12_rt_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.rotate.rotate_12_rt_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate horizontal component to RT. This function works generally
+for two horizontal and orthogonal components. This function
+supports two method:</p>
+<ol class="arabic simple">
+<li><p>“12-&gt;RT”: which rotates “12” component to “RT”, for example,
+“BH1” and “BH2” to “BHR” and “BHT”</p></li>
+<li><p>“NE-&gt;RT”: which rotates “NE” component to “RT”, for example,
+“BHN” and “BHE” to “BHR” and “BHT”</p></li>
+</ol>
+<p>The reason why we use our own rotation function is because in obspy
+the inventory information is not checked.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>st</strong> – input stream</p></li>
+<li><p><strong>inv</strong> – station inventory information</p></li>
+<li><p><strong>method</strong> – rotation method</p></li>
+<li><p><strong>back_azimuth</strong> – back azimuth(station to event azimuth)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>rotated stream</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.rotate.rotate_one_station_stream">
+<code class="sig-prename descclassname">lwsspy.seismo.process.rotate.</code><code class="sig-name descname">rotate_one_station_stream</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">st</span></em>, <em class="sig-param"><span class="n">event_latitude</span></em>, <em class="sig-param"><span class="n">event_longitude</span></em>, <em class="sig-param"><span class="n">station_latitude</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">station_longitude</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">inventory</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'NE-&gt;RT'</span></em>, <em class="sig-param"><span class="n">sanity_check</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/rotate.html#rotate_one_station_stream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.rotate.rotate_one_station_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate the stream from the same network, station, location and channel
+code, for example the stream should only contains traces whose ids are
+“II.AAK.00.BH*”</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.rotate.rotate_rt_to_ne">
+<code class="sig-prename descclassname">lwsspy.seismo.process.rotate.</code><code class="sig-name descname">rotate_rt_to_ne</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">st</span></em>, <em class="sig-param"><span class="n">baz</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/rotate.html#rotate_rt_to_ne"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.rotate.rotate_rt_to_ne" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use obspy rotate function to rotate from RT to NE</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.rotate.rotate_stream">
+<code class="sig-prename descclassname">lwsspy.seismo.process.rotate.</code><code class="sig-name descname">rotate_stream</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">st</span></em>, <em class="sig-param"><span class="n">event_latitude</span></em>, <em class="sig-param"><span class="n">event_longitude</span></em>, <em class="sig-param"><span class="n">inventory</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'ALL-&gt;RT'</span></em>, <em class="sig-param"><span class="n">sanity_check</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/rotate.html#rotate_stream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.rotate.rotate_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate a stream to radial and transverse components based on the
+station information and event information</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>st</strong> (<em>obspy.Stream</em>) – input stream</p></li>
+<li><p><strong>event_latitude</strong> (<em>float</em>) – event latitude</p></li>
+<li><p><strong>event_longitude</strong> (<em>float</em>) – event longitude</p></li>
+<li><p><strong>inventory</strong> (<em>obspy.Inventory</em>) – station inventory information. If you want to rotate
+“12” components, you need to provide inventory since only station
+and station_longitude is not enough.</p></li>
+<li><p><strong>mode</strong> – <p>rotation mode, could be one of:</p>
+<ol class="arabic simple">
+<li><p>”NE-&gt;RT”: rotate only North and East channel to RT</p></li>
+<li><p>”12-&gt;RT”: rotate only 1 and 2 channel, like “BH1” and “BH2” to RT</p></li>
+<li><p>”ALL-&gt;RT”: rotate all components to RT</p></li>
+<li><p>”RT-&gt;NE”: rotate RT to NE</p></li>
+</ol>
+</p></li>
+<li><p><strong>sanity_check</strong> – <p>check the sanity of inventory, mianly of the
+orientation of ZNE components.</p>
+<ol class="arabic simple">
+<li><p>If rotating observed data from NE(12)to RT, it is recommended
+to set to True; if rotating from RT to NE, then you could set
+it to False;
+ATTENTION: please turn it to True when processing observed
+data since the instrument alignment of observed data might
+be messy.</p></li>
+<li><p>If rotating synthetic data, you could set it to False since
+I assume for synthetic data, there should not be problem
+associated with orientation.</p></li>
+</ol>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>rotated stream(obspy.Stream)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.rotate.rotate_to_rt">
+<code class="sig-prename descclassname">lwsspy.seismo.process.rotate.</code><code class="sig-name descname">rotate_to_rt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">st</span></em>, <em class="sig-param"><span class="n">baz</span></em>, <em class="sig-param"><span class="n">inventory</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">sanity_check</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/rotate.html#rotate_to_rt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.rotate.rotate_to_rt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate horizontal components(12 or NE) to RT directions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>st</strong> – </p></li>
+<li><p><strong>baz</strong> – </p></li>
+<li><p><strong>inventory</strong> – </p></li>
+<li><p><strong>mode</strong> – </p></li>
+<li><p><strong>sanity_check</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.rotate.sort_stream_by_station">
+<code class="sig-prename descclassname">lwsspy.seismo.process.rotate.</code><code class="sig-name descname">sort_stream_by_station</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">st</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/rotate.html#sort_stream_by_station"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.rotate.sort_stream_by_station" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort the traces in stream. Group the traces from same network,
+station, location, and channel code together</p>
+</dd></dl>
+
+<span class="target" id="module-lwsspy.seismo.process.rotate_utils"></span><p>Basic Methods that handles rotation of seismograms as
+extension to Obspy. It can rotate <cite>12</cite>, <cite>EN</cite> and <cite>RT</cite>,
+forward and backward.</p>
+<dl class="field-list simple">
+<dt class="field-odd">copyright</dt>
+<dd class="field-odd"><p>Wenjie Lei (<a class="reference external" href="mailto:lei&#37;&#52;&#48;princeton&#46;edu">lei<span>&#64;</span>princeton<span>&#46;</span>edu</a>), 2016</p>
+</dd>
+<dt class="field-even">license</dt>
+<dd class="field-even"><p>GNU Lesser General Public License, version 3 (LGPLv3)
+(<a class="reference external" href="http://www.gnu.org/licenses/lgpl-3.0.en.html">http://www.gnu.org/licenses/lgpl-3.0.en.html</a>)</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt id="lwsspy.seismo.process.rotate_utils.check_orthogonality">
+<code class="sig-prename descclassname">lwsspy.seismo.process.rotate_utils.</code><code class="sig-name descname">check_orthogonality</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">azim1</span></em>, <em class="sig-param"><span class="n">azim2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/rotate_utils.html#check_orthogonality"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.rotate_utils.check_orthogonality" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if two azimuth are orthogonal, check whether
+(azim1, azim2, vertical) forms a left-hand or right-hand
+coordinate system.
+Remember the defination of azimuth is angle between north
+direction.
+Unit is degree, not radian.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.rotate_utils.rotate_12_ne">
+<code class="sig-prename descclassname">lwsspy.seismo.process.rotate_utils.</code><code class="sig-name descname">rotate_12_ne</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d1</span></em>, <em class="sig-param"><span class="n">d2</span></em>, <em class="sig-param"><span class="n">azim1</span></em>, <em class="sig-param"><span class="n">azim2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/rotate_utils.html#rotate_12_ne"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.rotate_utils.rotate_12_ne" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate from any two orthogonal horizontal components to EN components.
+The azimuth of the two horizontal components are specified by azim1
+and azim2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Data of one of the two horizontal components</p></li>
+<li><p><strong>d2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Data of the other horizontal components</p></li>
+<li><p><strong>azim1</strong> (<em>float</em>) – component azimuth of data1</p></li>
+<li><p><strong>azim2</strong> (<em>float</em>) – component azimuth of data2</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>East and North component of seismogram.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.rotate_utils.rotate_12_rt">
+<code class="sig-prename descclassname">lwsspy.seismo.process.rotate_utils.</code><code class="sig-name descname">rotate_12_rt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d1</span></em>, <em class="sig-param"><span class="n">d2</span></em>, <em class="sig-param"><span class="n">baz</span></em>, <em class="sig-param"><span class="n">azim1</span></em>, <em class="sig-param"><span class="n">azim2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/rotate_utils.html#rotate_12_rt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.rotate_utils.rotate_12_rt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate from any two orthogonal horizontal components to RT components</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Data of one of the two horizontal components</p></li>
+<li><p><strong>d2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Data of the other horizontal components</p></li>
+<li><p><strong>baz</strong> (<em>float</em>) – the back azimuth from station to source in degrees</p></li>
+<li><p><strong>azim1</strong> (<em>float</em>) – component azimuth of data1</p></li>
+<li><p><strong>azim2</strong> (<em>float</em>) – component azimuth of data2</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Radial and Transeversal component of seismogram. (None, None)
+returned if input two components are not orthogonal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.rotate_utils.rotate_certain_angle">
+<code class="sig-prename descclassname">lwsspy.seismo.process.rotate_utils.</code><code class="sig-name descname">rotate_certain_angle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d1</span></em>, <em class="sig-param"><span class="n">d2</span></em>, <em class="sig-param"><span class="n">angle</span></em>, <em class="sig-param"><span class="n">unit</span><span class="o">=</span><span class="default_value">'degree'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/rotate_utils.html#rotate_certain_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.rotate_utils.rotate_certain_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Basic rotating function which rotate d1 and d2 by angle.
+d1 and d2 should be orthogonal to each other and form a
+‘left-handed’ coordinate system together with vertical
+component.</p>
+<p>(d1, d2, Vertical) should form a left-handed coordinate system, i.e.,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Azimuth_</span><span class="p">{</span><span class="n">d2</span><span class="p">}</span> <span class="o">=</span> <span class="n">Azimuth_</span><span class="p">{</span><span class="n">d1</span><span class="p">}</span> <span class="o">+</span> <span class="mf">90.0</span> <span class="o">.</span>
+</pre></div>
+</div>
+<p>For example, (North, East, Vertical) &amp; (Radial, Transverse, Vertical)
+are both left-handed coordinate systems. The return value (dnew1,
+dnew2, vertic) should also form a left-handed coordinate system.
+The angle is azimuth differnce between d1 and dnew1, i.e.,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">angle</span> <span class="o">=</span> <span class="n">Azimuth_</span><span class="p">{</span><span class="n">dnew1</span><span class="p">}</span> <span class="o">-</span> <span class="n">Azimuth_</span><span class="p">{</span><span class="n">d1</span><span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Data of one of the two horizontal components</p></li>
+<li><p><strong>d2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Data of one of the two horizontal components</p></li>
+<li><p><strong>angle</strong> (<em>float</em>) – component azimuth of data2</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>two new components after rotation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.rotate_utils.rotate_ne_12">
+<code class="sig-prename descclassname">lwsspy.seismo.process.rotate_utils.</code><code class="sig-name descname">rotate_ne_12</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">e</span></em>, <em class="sig-param"><span class="n">azim1</span></em>, <em class="sig-param"><span class="n">azim2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/rotate_utils.html#rotate_ne_12"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.rotate_utils.rotate_ne_12" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate from East and North components to give two orghogonal horizontal
+components. Returned values are (d1, d2) and (d1, d2, Vertical) will
+form a left-handed coordinate system.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Data of one of the two horizontal components</p></li>
+<li><p><strong>data2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Data of the other horizontal components</p></li>
+<li><p><strong>azim1</strong> (<em>float</em>) – component azimuth of data1</p></li>
+<li><p><strong>azim2</strong> (<em>float</em>) – component azimuth of data2</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>two horizontal orthogonal seismogram after rotation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.process.rotate_utils.rotate_rt_12">
+<code class="sig-prename descclassname">lwsspy.seismo.process.rotate_utils.</code><code class="sig-name descname">rotate_rt_12</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">t</span></em>, <em class="sig-param"><span class="n">baz</span></em>, <em class="sig-param"><span class="n">azim1</span></em>, <em class="sig-param"><span class="n">azim2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/process/rotate_utils.html#rotate_rt_12"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.process.rotate_utils.rotate_rt_12" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate from any two orthogonal horizontal components to RT components</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Data of one of the two horizontal components</p></li>
+<li><p><strong>data2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Data of the other horizontal components</p></li>
+<li><p><strong>baz</strong> (<em>float</em>) – the back azimuth from station to source in degrees</p></li>
+<li><p><strong>azim1</strong> (<em>float</em>) – component azimuth of data1</p></li>
+<li><p><strong>azim2</strong> (<em>float</em>) – component azimuth of data2</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Radial and Transeversal component of seismogram.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="specfem-handling">
 <h3>SPECFEM handling<a class="headerlink" href="#specfem-handling" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
@@ -826,6 +2002,52 @@ a corresponding stations file from it.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="lwsspy.seismo.specfem.plot_csv_depth_slice.plot_csv_depth_slice">
+<code class="sig-prename descclassname">lwsspy.seismo.specfem.plot_csv_depth_slice.</code><code class="sig-name descname">plot_csv_depth_slice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">infile</span></em>, <em class="sig-param"><span class="n">outfile</span></em>, <em class="sig-param"><span class="n">label</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/specfem/plot_csv_depth_slice.html#plot_csv_depth_slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.specfem.plot_csv_depth_slice.plot_csv_depth_slice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in a depthslice CSV file and creates a map from it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>infile</strong><span class="classifier">str</span></dt><dd><p>CSV file that contains the depth slice</p>
+</dd>
+<dt><strong>outfile</strong><span class="classifier">str</span></dt><dd><p>name to save the figure to. Exports PDFs only and export a name 
+depending on depth of the slice.</p>
+</dd>
+<dt><strong>label</strong><span class="classifier">str</span></dt><dd><p>label of the colorbar</p>
+</dd>
+<dt><strong>:Author:</strong></dt><dd><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd>
+<dt><strong>:Last Modified:</strong></dt><dd><p>2020.09.17 19.00</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.specfem.plot_specfem_xsec_depth.plot_specfem_xsec_depth">
+<code class="sig-prename descclassname">lwsspy.seismo.specfem.plot_specfem_xsec_depth.</code><code class="sig-name descname">plot_specfem_xsec_depth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">infile</span></em>, <em class="sig-param"><span class="n">outfile</span></em>, <em class="sig-param"><span class="n">label</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/specfem/plot_specfem_xsec_depth.html#plot_specfem_xsec_depth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.specfem.plot_specfem_xsec_depth.plot_specfem_xsec_depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in a Specfem depthslice and creates a map from it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>infile</strong><span class="classifier">str</span></dt><dd><p>CSV file that contains the depth slice</p>
+</dd>
+<dt><strong>outfile</strong><span class="classifier">str</span></dt><dd><p>name to save the figure to. Exports PDFs only and export a name 
+depending on depth of the slice.</p>
+</dd>
+<dt><strong>label</strong><span class="classifier">str</span></dt><dd><p>label of the colorbar</p>
+</dd>
+<dt><strong>:Author:</strong></dt><dd><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd>
+<dt><strong>:Last Modified:</strong></dt><dd><p>2020.12.23 16.30</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="lwsspy.seismo.specfem.read_parfile.read_parfile">
 <code class="sig-prename descclassname">lwsspy.seismo.specfem.read_parfile.</code><code class="sig-name descname">read_parfile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/lwsspy/seismo/specfem/read_parfile.html#read_parfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.specfem.read_parfile.read_parfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads in a <code class="docutils literal notranslate"><span class="pre">Par_file</span></code> and returns a dictionary containing the
@@ -837,6 +2059,30 @@ parameters.</p>
 </dd>
 </dl>
 <p>Last modified: Lucas Sawade, 2020.09.18 19.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.specfem.read_specfem_xsec_depth.read_specfem_xsec_depth">
+<code class="sig-prename descclassname">lwsspy.seismo.specfem.read_specfem_xsec_depth.</code><code class="sig-name descname">read_specfem_xsec_depth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">res</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.25</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">]</span><a class="reference internal" href="../_modules/lwsspy/seismo/specfem/read_specfem_xsec_depth.html#read_specfem_xsec_depth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.specfem.read_specfem_xsec_depth.read_specfem_xsec_depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads in a specfem generated cross section and outputs a gridded version
+of it to map it out.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>Filename</p>
+</dd>
+<dt><strong>res</strong><span class="classifier">float, optional</span></dt><dd><p>Resolution for the output grid to plot, by default 0.25</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray,</dt><dd><p>np.ndarray, np.ndarray, np.ndarray]
+Output Tuple - llon, llat, radius, value, perturb, difference, distance</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -862,6 +2108,23 @@ station files in the stationsdir.</p>
 </dd>
 <dt>stationsdir (str):</dt><dd><p>Path to STATIONS directory</p>
 </dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.specfem.write_parfile.write_parfile">
+<code class="sig-prename descclassname">lwsspy.seismo.specfem.write_parfile.</code><code class="sig-name descname">write_parfile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pars</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/specfem/write_parfile.html#write_parfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.specfem.write_parfile.write_parfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes parameter dictionary to file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>pars</strong><span class="classifier">dict</span></dt><dd><p>Dictionary with Specfem Parameters</p>
+</dd>
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>Filename to write the Parameters to.</p>
+</dd>
+<dt><strong>Last modified: Lucas Sawade, 2020.10.18 19.00 (lsawade&#64;princeton.edu)</strong></dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -898,8 +2161,8 @@ matrices.</p>
 <p>Last modified: Lucas Sawade, 2020.09.14 23.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
 </dd></dl>
 
-<div class="figure align-default" id="id5">
-<img alt="../_images/modelled_covarying_dataset.svg" src="../_images/modelled_covarying_dataset.svg" /><p class="caption"><span class="caption-text">Modeled covarying data sets.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+<div class="figure align-default" id="id6">
+<img alt="../_images/modelled_covarying_dataset.svg" src="../_images/modelled_covarying_dataset.svg" /><p class="caption"><span class="caption-text">Modeled covarying data sets.</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
 </div>
 <dl class="py function">
 <dt id="lwsspy.statistics.errorellipse.errorellipse">
@@ -921,8 +2184,8 @@ matrices.</p>
 <p>Last modified: Lucas Sawade, 2020.09.15 15.30 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
 </dd></dl>
 
-<div class="figure align-default" id="id6">
-<img alt="../_images/error_ellipse.svg" src="../_images/error_ellipse.svg" /><p class="caption"><span class="caption-text">Generating the error ellipse for a covarying dataset.</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+<div class="figure align-default" id="id7">
+<img alt="../_images/error_ellipse.svg" src="../_images/error_ellipse.svg" /><p class="caption"><span class="caption-text">Generating the error ellipse for a covarying dataset.</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
 </div>
 <dl class="py function">
 <dt id="lwsspy.statistics.gaussian2d.gaussian2d">
@@ -959,8 +2222,8 @@ and offset distributions model parameters theta and offset are included.</p>
 <p>Last modified: Lucas Sawade, 2020.09.15 19.44 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
 </dd></dl>
 
-<div class="figure align-default" id="id7">
-<img alt="../_images/gaussian2d.svg" src="../_images/gaussian2d.svg" /><p class="caption"><span class="caption-text">Forward modelling a 2D Gaussian distribution.</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+<div class="figure align-default" id="id8">
+<img alt="../_images/gaussian2d.svg" src="../_images/gaussian2d.svg" /><p class="caption"><span class="caption-text">Forward modelling a 2D Gaussian distribution.</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
 </div>
 <dl class="py function">
 <dt id="lwsspy.statistics.fitgaussian2d.fitgaussian2d">
@@ -1011,8 +2274,8 @@ guess of the Gaussian parameters and invertes for optttimized parameters.</p>
 <p>Last modified: Lucas Sawade, 2020.09.30 11.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
 </dd></dl>
 
-<div class="figure align-default" id="id8">
-<img alt="../_images/distlist.svg" src="../_images/distlist.svg" /><p class="caption"><span class="caption-text">Creating a list of distributions.</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
+<div class="figure align-default" id="id9">
+<img alt="../_images/distlist.svg" src="../_images/distlist.svg" /><p class="caption"><span class="caption-text">Creating a list of distributions.</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
 </div>
 <dl class="py function">
 <dt id="lwsspy.statistics.clm.clm">
@@ -1050,9 +2313,243 @@ implementation of the convolution operation is commented.</p>
 <p>Last modified: Lucas Sawade, 2020.09.30 11.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
 </dd></dl>
 
-<div class="figure align-default" id="id9">
+<div class="figure align-default" id="id10">
 <img alt="../_images/clm.svg" src="../_images/clm.svg" /><p class="caption"><span class="caption-text">Showing that the central limit theorem holds. Note that the convolution
-limits are not actually correct, and this plot is solely for illustration.</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
+limits are not actually correct, and this plot is solely for illustration.</span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="utilities">
+<h2>Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-lwsspy.utils.io">
+<span id="i-o"></span><h3>I/O<a class="headerlink" href="#module-lwsspy.utils.io" title="Permalink to this headline">¶</a></h3>
+<p>Some important and simple IO help functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">copyright</dt>
+<dd class="field-odd"><p>Wenjie Lei (<a class="reference external" href="mailto:lei&#37;&#52;&#48;princeton&#46;edu">lei<span>&#64;</span>princeton<span>&#46;</span>edu</a>) Year? pyasdf
+Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>) 2019</p>
+</dd>
+<dt class="field-even">license</dt>
+<dd class="field-even"><p>GNU General Public License, Version 3
+(<a class="reference external" href="http://www.gnu.org/copyleft/gpl.html">http://www.gnu.org/copyleft/gpl.html</a>)</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt id="lwsspy.utils.io.flex_read_stations">
+<code class="sig-prename descclassname">lwsspy.utils.io.</code><code class="sig-name descname">flex_read_stations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filenames</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/io.html#flex_read_stations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.utils.io.flex_read_stations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in a list of strings and tries to read them as inventories
+Creates a single inventory, not an aggregate of inventories</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – station file(s). wildcards permitted.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>obspy.Inventory</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.utils.io.is_mpi_env">
+<code class="sig-prename descclassname">lwsspy.utils.io.</code><code class="sig-name descname">is_mpi_env</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/io.html#is_mpi_env"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.utils.io.is_mpi_env" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if current environment is MPI or not</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.utils.io.load_asdf">
+<code class="sig-prename descclassname">lwsspy.utils.io.</code><code class="sig-name descname">load_asdf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">no_event</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/io.html#load_asdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.utils.io.load_asdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in a filename of an asdf file and outputs event, inventory,
+and stream with the traces. Note that this is only good for asdffiles
+with one set of traces event and stations since the function will get the
+first/only waveform tag from the dataset</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>filename: ASDF filename. “somethingsomething.h5”</p>
+</dd>
+<dt>Returns:</dt><dd><p>Event, Inventory, Stream</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.utils.io.smart_read_yaml">
+<code class="sig-prename descclassname">lwsspy.utils.io.</code><code class="sig-name descname">smart_read_yaml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">yaml_file</span></em>, <em class="sig-param"><span class="n">mpi_mode</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">comm</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/io.html#smart_read_yaml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.utils.io.smart_read_yaml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read yaml file into python dict, in mpi_mode or not</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.utils.io.write_yaml_file">
+<code class="sig-prename descclassname">lwsspy.utils.io.</code><code class="sig-name descname">write_yaml_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d</span></em>, <em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/io.html#write_yaml_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.utils.io.write_yaml_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes dictionary to given yaml file.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>d: Dictionary to be written into the yaml file
+filename: string with filename of the file to be written.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lwsspy.utils.output">
+<span id="print-utilities"></span><h3>Print Utilities<a class="headerlink" href="#module-lwsspy.utils.output" title="Permalink to this headline">¶</a></h3>
+<p>STDOUT/STERR helpers</p>
+<dl class="py function">
+<dt id="lwsspy.utils.output.nostdout">
+<code class="sig-prename descclassname">lwsspy.utils.output.</code><code class="sig-name descname">nostdout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/output.html#nostdout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.utils.output.nostdout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Context manager that suppresses stdout of a function.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.utils.output.print_action">
+<code class="sig-prename descclassname">lwsspy.utils.output.</code><code class="sig-name descname">print_action</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">string</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/output.html#print_action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.utils.output.print_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints action statement</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>string</strong><span class="classifier">str</span></dt><dd><p>string to be output</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---&gt;</span> <span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.utils.output.print_bar">
+<code class="sig-prename descclassname">lwsspy.utils.output.</code><code class="sig-name descname">print_bar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">string</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/output.html#print_bar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.utils.output.print_bar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints Bar divider for code output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>string</strong><span class="classifier">str</span></dt><dd><p>string to be output</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">========================================================================</span>
+<span class="o">=============================</span> <span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">=================================</span>
+<span class="o">========================================================================</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.utils.output.print_section">
+<code class="sig-prename descclassname">lwsspy.utils.output.</code><code class="sig-name descname">print_section</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">string</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/output.html#print_section"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.utils.output.print_section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints section divider for code output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>string</strong><span class="classifier">str</span></dt><dd><p>string to be output</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Print statement format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">=============================</span> <span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">=================================</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="id1">
+<h3>Miscellaneous<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="lwsspy.utils.chunks.chunks">
+<code class="sig-prename descclassname">lwsspy.utils.chunks.</code><code class="sig-name descname">chunks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lst</span></em>, <em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/chunks.html#chunks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.utils.chunks.chunks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yield successive n-sized chunks from lst. Useful for multi-threading</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.utils.cpu_count.cpu_count">
+<code class="sig-prename descclassname">lwsspy.utils.cpu_count.</code><code class="sig-name descname">cpu_count</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/cpu_count.html#cpu_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.utils.cpu_count.cpu_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of CPUs in the system</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.utils.pixels2data.pixels2data">
+<code class="sig-prename descclassname">lwsspy.utils.pixels2data.</code><code class="sig-name descname">pixels2data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">px</span></em>, <em class="sig-param"><span class="n">pxi</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">pxf</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">di</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">df</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">log</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/pixels2data.html#pixels2data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.utils.pixels2data.pixels2data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rescales linearly or with logscale in the data pixel values to data 
+values from a graph by using the image extent and graph extent on one axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>px</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Pixel values to be converted</p>
+</dd>
+<dt><strong>pxi</strong><span class="classifier">float</span></dt><dd><p>pixel starting value</p>
+</dd>
+<dt><strong>pxf</strong><span class="classifier">float</span></dt><dd><p>pixel end value</p>
+</dd>
+<dt><strong>di</strong><span class="classifier">float</span></dt><dd><p>data starting limit</p>
+</dd>
+<dt><strong>df</strong><span class="classifier">float</span></dt><dd><p>data ending limit</p>
+</dd>
+<dt><strong>log</strong><span class="classifier">bool, optional</span></dt><dd><p>log scale flag, define whether the data axis is in logarithmic scale, 
+by default False</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>numpy.ndarray</dt><dd><p>data values corresponding to picked data values</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#lwsspy.plot_util.pick_data_from_image.pick_data_from_image" title="lwsspy.plot_util.pick_data_from_image.pick_data_from_image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lwsspy.plot_util.pick_data_from_image.pick_data_from_image</span></code></a></dt><dd><p>For usage of the function</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For the log scale the idea is fairly simple. Each axis can be viewed
+as a linear semilog plot of pixel-axis vs. data-axis. From there it is
+simple to invert for the scaling by computing slope and intercept.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd>
+<dt class="field-even">Last Modified</dt>
+<dd class="field-even"><p>2020.01.06 11.00</p>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-lwsspy.utils.threadwork"></span><dl class="py function">
+<dt id="lwsspy.utils.threadwork.function">
+<code class="sig-prename descclassname">lwsspy.utils.threadwork.</code><code class="sig-name descname">function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">k</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/threadwork.html#function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.utils.threadwork.function" title="Permalink to this definition">¶</a></dt>
+<dd><p>function to increment global variable x</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.utils.threadwork.threadfunc">
+<code class="sig-prename descclassname">lwsspy.utils.threadwork.</code><code class="sig-name descname">threadfunc</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">results</span></em>, <em class="sig-param"><span class="n">it</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/threadwork.html#threadfunc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.utils.threadwork.threadfunc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thread function wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>function</strong><span class="classifier">[type]</span></dt><dd><p>[description]</p>
+</dd>
+<dt><strong>results</strong><span class="classifier">[type]</span></dt><dd><p>[description]</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.utils.threadwork.threadwork">
+<code class="sig-prename descclassname">lwsspy.utils.threadwork.</code><code class="sig-name descname">threadwork</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">args</span><span class="p">:</span> <span class="n">list</span></em>, <em class="sig-param"><span class="n">kwargs</span><span class="p">:</span> <span class="n">dict</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">nargout</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/threadwork.html#threadwork"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.utils.threadwork.threadwork" title="Permalink to this definition">¶</a></dt>
+<dd><p>Embarassingly Parallel multithreading</p>
+</dd></dl>
+
 </div>
 </div>
 <div class="section" id="weather">
@@ -1118,7 +2615,7 @@ lon (it will provide you the closets station) and get the forecast.</p></li>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="matplotlibtips.html" class="btn btn-neutral float-left" title="Tips And Tricks for Matplotlib" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="paraview.html" class="btn btn-neutral float-left" title="Paraview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
