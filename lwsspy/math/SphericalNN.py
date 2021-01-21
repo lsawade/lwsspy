@@ -148,13 +148,10 @@ class SphericalNN(object):
             # Assign the interpolation data.
             qdata = data[inds]
 
-            # Double check distance
-            mind = np.min(d, axis=1)
-
             # Filter out distances too far out.
             if maximum_distance is not None:
                 qdata = np.where(
-                    mind <= 2 * np.sin(maximum_distance/2.0/180.0*np.pi)
+                    d <= 2 * np.sin(maximum_distance/2.0/180.0*np.pi)
                     * lpy.EARTH_RADIUS_KM,
                     qdata, np.nan)
 

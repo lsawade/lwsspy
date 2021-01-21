@@ -4,8 +4,8 @@ from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
 from cartopy.crs import PlateCarree, Mollweide
 
 
-def plot_map(fill=True, zorder=-10, projection=PlateCarree(),
-             labelstopright: bool = True, labelsbottomleft: bool = True):
+def plot_map(fill=True, zorder=None, labelstopright: bool = True,
+             labelsbottomleft: bool = True):
     """Plots map into existing axes.
 
     Parameters
@@ -40,13 +40,13 @@ def plot_map(fill=True, zorder=-10, projection=PlateCarree(),
 
     ax = plt.gca()
 
-    # Set xticks Should be automated, but I just don't know how rn
-    ax.set_xticks([-180, -150, -120, -90, -60, -30, 0, 30,
-                   60, 90, 120, 150, 180], crs=projection)
-    ax.set_yticks([-90, -60, -30, 0, 30, 60, 90], crs=projection)
-
     # Put lables all around
-    if projection is not Mollweide():
+    if type(ax.projection) != cartopy.crs.Mollweide:
+
+        # Set xticks Should be automated, but I just don't know how rn
+        ax.set_xticks([-180, -150, -120, -90, -60, -30, 0, 30,
+                       60, 90, 120, 150, 180], crs=ax.projection)
+        ax.set_yticks([-90, -60, -30, 0, 30, 60, 90], crs=ax.projection)
 
         # Set label formatter
         ax.xaxis.set_major_formatter(cartopy.mpl.ticker.LongitudeFormatter())
