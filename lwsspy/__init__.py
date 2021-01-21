@@ -7,6 +7,7 @@ DOCFIGURES = os.path.join(
         os.path.dirname(
             os.path.abspath(__file__))),
     'docs', 'source', 'chapters', 'figures')
+DOCFIGURESCRIPTDATA = os.path.join(DOCFIGURES, 'scripts', 'data')
 
 DOWNLOAD_CACHE = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
@@ -52,6 +53,7 @@ if "-m" not in sys.argv:
 
     # Maps
     from .maps.fix_map_extent import fix_map_extent  # noqa
+    from .maps.map_axes import map_axes  # noqa
     from .maps.plot_map import plot_map  # noqa
     from .maps.plot_topography import plot_topography  # noqa
     from .maps.plot_litho import plot_litho  # noqa
@@ -77,7 +79,9 @@ if "-m" not in sys.argv:
     # Plot
     from .plot_util.figcolorbar import figcolorbar  # noqa
     from .plot_util.fixedpointcolornorm import FixedPointColorNorm  # noqa
+    from .plot_util.get_aspect import get_aspect  # noqa
     from .plot_util.nice_colorbar import nice_colorbar  # noqa
+    from .plot_util.pick_colors_from_cmap import pick_colors_from_cmap  # noqa
     from .plot_util.plot_label import plot_label  # noqa
     # Pyvista is not easily installed automatically.
     # Using this to avoid import
@@ -89,24 +93,30 @@ if "-m" not in sys.argv:
     from .plot_util.remove_ticklabels import remove_yticklabels  # noqa
     from .plot_util.remove_ticklabels import remove_ticklabels  # noqa
     from .plot_util.remove_ticklabels import remove_ticks  # noqa
+    from .plot_util.remove_ticklabels import remove_ticklabels_bottomleft  # noqa
+    from .plot_util.remove_ticklabels import remove_ticklabels_topright  # noqa
     from .plot_util.smooth_nan_image import smooth_nan_image  # noqa
     from .plot_util.updaterc import updaterc  # noqa
     from .plot_util.updaterc import updaterc_pres  # noqa
+    from .plot_util.update_colorcycler import update_colorcycler  # noqa
     from .plot_util.view_colormap import view_colormap  # noqa
 
     # Seismology
     from .seismo.cmt2inv import cmt2inv  # noqa
     from .seismo.cmt2stationxml import cmt2stationxml  # noqa
     from .seismo.cmtdir2stationxmldir import cmtdir2stationxmldir  # noqa
+    from .seismo.download_data import download_data  # noqa
     from .seismo.download_waveforms_cmt2storage import download_waveforms_cmt2storage  # noqa
     from .seismo.download_waveforms_to_storage import download_waveforms_to_storage  # noqa
     from .seismo.filterstationxml import filterstationxml  # noqa
+    from .seismo.get_inv_aspect_extent import get_inv_aspect_extent  # noqa
     from .seismo.inv2stationxml import inv2stationxml  # noqa
     from .seismo.inv2geoloc import inv2geoloc  # noqa
     from .seismo.m0_2_mw import m0_2_mw  # noqa
     from .seismo.perturb_cmt import perturb_cmt  # noqa
     from .seismo.perturb_cmt import perturb_cmt_dir  # noqa
     from .seismo.plot_stationxml import plot_station_xml  # noqa
+    from .seismo.plot_inventory import plot_inventory  # noqa
     from .seismo.process.process import process_stream  # noqa
     from .seismo.process.process_wrapper import process_wrapper  # noqa
     from .seismo.process.rotate import rotate_stream  # noqa
@@ -168,6 +178,7 @@ if "-m" not in sys.argv:
     # Utilities
     from .utils.cpu_count import cpu_count  # noqa
     from .utils.chunks import chunks  # noqa
+    from .utils.get_unique_lists import get_unique_lists  # noqa
     from .utils.increase_fontsize import increase_fontsize  # noqa
     from .utils.threadwork import threadwork  # noqa
     from .utils.pixels2data import pixels2data  # noqa

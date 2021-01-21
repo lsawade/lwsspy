@@ -3,7 +3,7 @@ from obspy import read_inventory
 from obspy import Inventory
 
 
-def flex_read_inventory(filenames: Union[str, list], **kwargs):
+def flex_read_inventory(filenames: Union[str, list], **kwargs) -> Inventory:
     """ Takes in a list of strings and tries to read them as inventories
     Creates a single inventory, not an aggregate of inventories
 

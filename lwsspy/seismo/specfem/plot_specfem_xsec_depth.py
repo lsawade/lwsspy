@@ -28,10 +28,12 @@ def plot_specfem_xsec_depth(infile, outfile, label):
     # Define title:
     if label == 'rho':
         cbartitle = r"$\rho$"
-    if label == 'vpv':
+    elif label == 'vpv':
         cbartitle = r"$v_{P_v}$"
-    if label == 'vsv':
+    elif label == 'vsv':
         cbartitle = r"$v_{S_v}$"
+    else:
+        raise ValueError(f"Label {label} is not implemented.")
 
     # Load data from file
     llon, llat, rad, val, _, _, _ = lpy.read_specfem_xsec_depth(infile)

@@ -4,7 +4,7 @@ import numpy as np
 import lwsspy as lpy
 
 
-def nice_colorbar(*args, **kwargs) -> matplotlib.colorbar.Colorbar:
+def nice_colorbar(*args, fig: bool = False, **kwargs) -> matplotlib.colorbar.Colorbar:
     """Creates nicely formatted colorbar. ``*args`` and ``**kwargs`` are parsed 
     to ``plt.colorbar(*args, **kwargs)``
 
@@ -21,7 +21,7 @@ def nice_colorbar(*args, **kwargs) -> matplotlib.colorbar.Colorbar:
         Lucas Sawade (lsawade@princeton.edu)
 
     :Last Modified:
-        2020.01.06 11.00
+        2021.01.06 11.00
 
     """
 
