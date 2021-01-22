@@ -21,8 +21,7 @@ def nice_colorbar(*args, fig: bool = False, **kwargs) -> matplotlib.colorbar.Col
         Lucas Sawade (lsawade@princeton.edu)
 
     :Last Modified:
-        2021.01.06 11.00
-
+        2021.01.06 11.00d
     """
 
     # Get normal axes labelsize
