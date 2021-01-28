@@ -8,15 +8,16 @@ def plot_label(ax: matplotlib.axes.Axes, label: str, aspect: float = 1,
                fontdict: dict = {}):
     """Plots label one of the corners of the plot.
 
-    .. code::
+    Plot locations are set as follows::
 
-            6      7
+           6        7 
             --------
          5 |1      2|  8
            |        |
         12 |3      4|  9
             --------
-           11     10
+          11       10
+
 
     Parameters
     ----------
@@ -30,6 +31,16 @@ def plot_label(ax: matplotlib.axes.Axes, label: str, aspect: float = 1,
         aspect ratio length/height, by default 0.025
     box : bool
         plots bounding box st. the label is on a background, default true
+
+    Notes
+    -----
+
+    :Author:
+        Lucas Sawade (lsawade@princeton.edu)
+
+    :Last Modified:
+        2021.01.26 18.30
+
     """
     if box:
         boxdict = {'facecolor': 'w', 'edgecolor': 'k'}
@@ -37,7 +48,7 @@ def plot_label(ax: matplotlib.axes.Axes, label: str, aspect: float = 1,
         boxdict = {'facecolor': 'none', 'edgecolor': 'none'}
 
     # Get aspect of the axes
-    aspect = 1./lpy.get_aspect(ax)
+    aspect = 1.0/lpy.get_aspect(ax)
 
     # Inside
     if location == 1:
