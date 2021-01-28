@@ -4,7 +4,8 @@ from matplotlib.axes import Axes
 
 def get_aspect(ax: Axes) -> float:
     """Returns the aspect ratio of an axes in a figure. This works around the 
-    problem of matplotlib's ``ax.get_aspect`` returning 
+    problem of matplotlib's ``ax.get_aspect`` returning strings if set to 
+    'equal' for example
 
     Parameters
     ----------
@@ -29,12 +30,11 @@ def get_aspect(ax: Axes) -> float:
 
     # Total figure size
     figW, figH = ax.get_figure().get_size_inches()
+
     # Axis size on figure
     _, _, w, h = ax.get_position().bounds
+
     # Ratio of display units
     disp_ratio = (figH * h) / (figW * w)
-    # Ratio of data units
-    # Negative over negative because of the order of subtraction
-    data_ratio = np.diff(ax.get_ylim())[0] / np.diff(ax.get_xlim())[0]
 
-    return disp_ratio / data_ratio
+    return disp_ratio

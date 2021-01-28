@@ -80,6 +80,8 @@ if "-m" not in sys.argv:
     from .plot_util.figcolorbar import figcolorbar  # noqa
     from .plot_util.fixedpointcolornorm import FixedPointColorNorm  # noqa
     from .plot_util.get_aspect import get_aspect  # noqa
+    from .plot_util.get_stats_label_length import get_stats_label_length  # noqa
+    from .plot_util.midpointcolornorm import MidpointNormalize  # noqa
     from .plot_util.nice_colorbar import nice_colorbar  # noqa
     from .plot_util.pick_colors_from_cmap import pick_colors_from_cmap  # noqa
     from .plot_util.plot_label import plot_label  # noqa
@@ -116,6 +118,7 @@ if "-m" not in sys.argv:
     from .seismo.perturb_cmt import perturb_cmt  # noqa
     from .seismo.perturb_cmt import perturb_cmt_dir  # noqa
     from .seismo.plot_stationxml import plot_station_xml  # noqa
+    from .seismo.plot_traveltimes_ak135 import plot_traveltimes_ak135  # noqa
     from .seismo.plot_inventory import plot_inventory  # noqa
     from .seismo.process.process import process_stream  # noqa
     from .seismo.process.process_wrapper import process_wrapper  # noqa
@@ -194,6 +197,7 @@ if "-m" not in sys.argv:
     from .utils.io import dump_json  # noqa
     from .utils.io import read_yaml_file  # noqa
     from .utils.io import write_yaml_file  # noqa
+    from .utils.io import loadmat  # noqa
 
     # Weather
     from .weather.requestweather import requestweather  # noqa
