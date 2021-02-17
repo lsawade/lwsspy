@@ -97,6 +97,7 @@ if "-m" not in sys.argv:
     from .plot_util.remove_ticklabels import remove_ticks  # noqa
     from .plot_util.remove_ticklabels import remove_ticklabels_bottomleft  # noqa
     from .plot_util.remove_ticklabels import remove_ticklabels_topright  # noqa
+    from .plot_util.right_align_legend import right_align_legend  # noqa
     from .plot_util.smooth_nan_image import smooth_nan_image  # noqa
     from .plot_util.updaterc import updaterc  # noqa
     from .plot_util.updaterc import updaterc_pres  # noqa
@@ -108,6 +109,7 @@ if "-m" not in sys.argv:
     from .seismo.cmt2stationxml import cmt2stationxml  # noqa
     from .seismo.cmtdir2stationxmldir import cmtdir2stationxmldir  # noqa
     from .seismo.download_data import download_data  # noqa
+    from .seismo.download_gcmt_catalog import download_gcmt_catalog  # noqa
     from .seismo.download_waveforms_cmt2storage import download_waveforms_cmt2storage  # noqa
     from .seismo.download_waveforms_to_storage import download_waveforms_to_storage  # noqa
     from .seismo.filterstationxml import filterstationxml  # noqa
@@ -120,9 +122,11 @@ if "-m" not in sys.argv:
     from .seismo.plot_stationxml import plot_station_xml  # noqa
     from .seismo.plot_traveltimes_ak135 import plot_traveltimes_ak135  # noqa
     from .seismo.plot_inventory import plot_inventory  # noqa
+    from .seismo.plot_quakes import plot_quakes  # noqa
     from .seismo.process.process import process_stream  # noqa
     from .seismo.process.process_wrapper import process_wrapper  # noqa
     from .seismo.process.rotate import rotate_stream  # noqa
+    from .seismo.read_gcmt_catalog import read_gcmt_catalog  # noqa
     from .seismo.read_inventory import flex_read_inventory as read_inventory  # noqa
     from .seismo.source import CMTSource  # noqa
     from .seismo.stream_multiply import stream_multiply  # noqa
@@ -142,6 +146,7 @@ if "-m" not in sys.argv:
     from .seismo.specfem.stationxml2STATIONS import stationxml2STATIONS  # noqa
     from .seismo.specfem.stationxmldir2STATIONSdir import stationxmldir2STATIONSdir  # noqa
     from .seismo.specfem.write_parfile import write_parfile  # noqa
+    from .seismo.invertcmt.GCMT3DInversion import GCMT3DInversion  # noqa
     from .seismo.window.window import window_on_stream  # noqa
     from .seismo.window.add_tapers import add_tapers  # noqa
     from .seismo.window.stream_cost_win import stream_cost_win  # noqa
@@ -184,6 +189,7 @@ if "-m" not in sys.argv:
     from .utils.get_unique_lists import get_unique_lists  # noqa
     from .utils.increase_fontsize import increase_fontsize  # noqa
     from .utils.threadwork import threadwork  # noqa
+    from .utils.timer import Timer  # noqa
     from .utils.pixels2data import pixels2data  # noqa
     from .utils.reduce_fontsize import reduce_fontsize  # noqa
     from .utils.add_years import add_years  # noqa

@@ -19,6 +19,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 import numpy as np
 from obspy import UTCDateTime, read_events
+from obspy.core.event import Event
 import warnings
 
 
@@ -27,6 +28,7 @@ class CMTSource(object):
     Class to handle a seismic moment tensor source including a source time
     function.
     """
+
     def __init__(self, origin_time=UTCDateTime(0),
                  pde_latitude=0.0, pde_longitude=0.0, mb=0.0, ms=0.0,
                  pde_depth_in_m=None, region_tag=None, eventname=None,
@@ -123,13 +125,19 @@ class CMTSource(object):
                    m_rp=m_rp, m_tp=m_tp)
 
     @classmethod
-    def from_quakeml_file(cls, filename):
+    def from_quakeml_file(cls, filename: str):
         """
         Initialiaze a source object from a quakeml file
         :param filename: path to a quakeml file
         """
         cat = read_events(filename)
         event = cat[0]
+
+        return cls.from_event(event)
+
+    @classmethod
+    def from_event(cls, event: Event):
+
         for origin in event.origins:
             if origin.origin_type == 'centroid':
                 cmtsolution = origin
@@ -276,7 +284,7 @@ class CMTSource(object):
         """
         Moment magnitude M_w
         """
-        return 2.0 / 3.0 * (np.log10(self.M0) - 7.0) - 6.0
+        return 2/3 * np.log10(7 + self.M0) - 10.73  # =  (log Mo - 9.1) / 1.5 = (2/3) * (log Mo - 9.1)
 
     @property
     def time_shift(self):
@@ -284,6 +292,10 @@ class CMTSource(object):
         Time shift between cmtsolution and pdesolution
         """
         return self.cmt_time - self.origin_time
+
+    @time_shift.setter
+    def time_shift(self, time_shift):
+        self.cmt_time = self.origin_time + time_shift
 
     @property
     def tensor(self):

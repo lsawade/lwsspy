@@ -5,7 +5,8 @@ from cartopy.crs import PlateCarree, Mollweide
 
 
 def plot_map(fill=True, zorder=None, labelstopright: bool = True,
-             labelsbottomleft: bool = True):
+             labelsbottomleft: bool = True, borders: bool = True,
+             rivers: bool = False, lakes: bool = False):
     """Plots map into existing axes.
 
     Parameters
@@ -20,6 +21,12 @@ def plot_map(fill=True, zorder=None, labelstopright: bool = True,
         flag to turn on or off the ticks
     labelsbottomleft : bool, optional
         flag to turn on or off the ticks
+    borders : bool
+        plot borders. Default True
+    rivers : bool
+        plot rivers. Default False
+    lakes : bool 
+        plot lakes. Default True
 
     Returns
     -------
@@ -69,4 +76,20 @@ def plot_map(fill=True, zorder=None, labelstopright: bool = True,
         ax.add_feature(cartopy.feature.LAND, zorder=zorder, edgecolor='black',
                        linewidth=0.5, facecolor=(0, 0, 0, 0))
 
+    if borders:
+        ax.add_feature(cartopy.feature.BORDERS,
+                       zorder=None if zorder is None else zorder + 1,
+                       facecolor='none', edgecolor=(0.5, 0.5, 0.5),
+                       linewidth=0.25)
+
+    if rivers:
+        ax.add_feature(cartopy.feature.RIVERS, zorder=zorder,
+                       edgecolor=(0.3, 0.3, 0.7),)
+        #    edgecolor=(0.5, 0.5, 0.7) )
+
+    if lakes:
+        ax.add_feature(cartopy.feature.LAKES,
+                       zorder=None if zorder is None else zorder + 1,
+                       edgecolor='black', linewidth=0.5,
+                       facecolor=(1.0, 1.0, 1.0))
     return ax

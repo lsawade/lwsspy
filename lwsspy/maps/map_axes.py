@@ -2,7 +2,7 @@ from cartopy.crs import PlateCarree, Mollweide
 import matplotlib.pyplot as plt
 
 
-def map_axes(proj: str = "moll") -> plt.Axes:
+def map_axes(proj: str = "moll", central_longitude=0.0) -> plt.Axes:
     """Creates matplotlib axes with map projection taken from cartopy.
 
     Parameters
@@ -39,9 +39,9 @@ def map_axes(proj: str = "moll") -> plt.Axes:
                          f"is not supported.")
 
     if proj == 'moll':
-        projection = Mollweide()
+        projection = Mollweide(central_longitude=central_longitude)
     elif proj == 'carr':
-        projection = PlateCarree()
+        projection = PlateCarree(central_longitude=central_longitude)
 
     ax = plt.axes(projection=projection)
 

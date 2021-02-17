@@ -21,15 +21,15 @@ def get_stats_label_length(mu: float, sig: float, ndec: int = 2):
     """
 
     # Get mu length
-    muint = np.floor(np.log10(np.abs(mu)))
-    if muint <= 0:
+    muint = np.ceil(np.log10(np.abs(mu)))
+    if muint <= 1:
         muint = 1
     if mu < 0:
         muint += 1
 
     # Get sigma lenf
-    sigint = np.floor(np.log10(sig))
-    if sigint <= 0:
+    sigint = np.ceil(np.log10(sig))
+    if sigint <= 1:
         sigint = 1
 
     # create combined and decimal

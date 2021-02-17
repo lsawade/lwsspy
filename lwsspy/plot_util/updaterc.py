@@ -29,7 +29,9 @@ def updaterc(rebuild=False):
         'axes.titlesize': 'medium',
         'axes.linewidth': 1,
         'axes.grid': False,
-        'grid.color': "lightgrey",
+        'grid.color': "k",
+        'grid.linestyle': ":",
+        'grid.alpha': 0.7,
         'xtick.labelsize': 'small',
         'xtick.direction': 'out',
         'xtick.top': True,  # draw label on the top

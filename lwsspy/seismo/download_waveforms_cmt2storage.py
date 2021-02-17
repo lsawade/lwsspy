@@ -7,10 +7,11 @@ from .download_waveforms_to_storage import download_waveforms_to_storage
 from .source import CMTSource
 from .inv2net_sta import inv2net_sta
 from .read_inventory import flex_read_inventory
+from .source import CMTSource
 
 
 def download_waveforms_cmt2storage(
-        cmtfilename: str,
+        cmt: str or CMTSource,
         datastorage: str,
         duration: float = 11000.0,
         stationxml: Union[str, None] = None,
@@ -19,7 +20,10 @@ def download_waveforms_cmt2storage(
         **kwargs):
 
     # get startime and endtime from cmtsolution
-    cmtsource = CMTSource.from_CMTSOLUTION_file(cmtfilename)
+    if type(cmt) == str:
+        cmtsource = CMTSource.from_CMTSOLUTION_file(cmt)
+    else:
+        cmtsource = cmt
     starttime = cmtsource.origin_time + starttimeoffset
     endtime = cmtsource.origin_time + endtimeoffset + duration
 

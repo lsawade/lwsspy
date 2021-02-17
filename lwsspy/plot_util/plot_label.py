@@ -1,11 +1,13 @@
+from typing import Union
 import matplotlib
 import matplotlib.pyplot as plt
 import lwsspy as lpy
 
 
 def plot_label(ax: matplotlib.axes.Axes, label: str, aspect: float = 1,
-               location: int = 1, dist: float = 0.025, box: bool = True,
-               fontdict: dict = {}):
+               location: int = 1, dist: float = 0.025,
+               box: Union[bool, dict] = True, fontdict: dict = {},
+               **kwargs):
     """Plots label one of the corners of the plot.
 
     Plot locations are set as follows::
@@ -42,10 +44,13 @@ def plot_label(ax: matplotlib.axes.Axes, label: str, aspect: float = 1,
         2021.01.26 18.30
 
     """
-    if box:
-        boxdict = {'facecolor': 'w', 'edgecolor': 'k'}
+    if type(box) is bool:
+        if box:
+            boxdict = {'facecolor': 'w', 'edgecolor': 'k'}
+        else:
+            boxdict = {'facecolor': 'none', 'edgecolor': 'none'}
     else:
-        boxdict = {'facecolor': 'none', 'edgecolor': 'none'}
+        boxdict = box
 
     # Get aspect of the axes
     aspect = 1.0/lpy.get_aspect(ax)
@@ -54,57 +59,57 @@ def plot_label(ax: matplotlib.axes.Axes, label: str, aspect: float = 1,
     if location == 1:
         plt.text(dist, 1.0 - dist * aspect, label, horizontalalignment='left',
                  verticalalignment='top', transform=ax.transAxes, bbox=boxdict,
-                 fontdict=fontdict)
+                 fontdict=fontdict, **kwargs)
     elif location == 2:
         plt.text(1.0 - dist, 1.0 - dist * aspect, label,
                  horizontalalignment='right', verticalalignment='top',
                  transform=ax.transAxes, bbox=boxdict,
-                 fontdict=fontdict)
+                 fontdict=fontdict, **kwargs)
     elif location == 3:
         plt.text(dist, dist * aspect, label, horizontalalignment='left',
                  verticalalignment='bottom', transform=ax.transAxes,
-                 bbox=boxdict, fontdict=fontdict)
+                 bbox=boxdict, fontdict=fontdict, **kwargs)
     elif location == 4:
         plt.text(1.0 - dist, dist * aspect, label,
                  horizontalalignment='right', verticalalignment='bottom',
                  transform=ax.transAxes, bbox=boxdict,
-                 fontdict=fontdict)
+                 fontdict=fontdict, **kwargs)
     # Outside
     elif location == 5:
         plt.text(dist, 1.0, label, horizontalalignment='right',
                  verticalalignment='top', transform=ax.transAxes, bbox=boxdict,
-                 fontdict=fontdict)
+                 fontdict=fontdict, **kwargs)
     elif location == 6:
         plt.text(0, 1.0 + dist * aspect, label, horizontalalignment='left',
                  verticalalignment='bottom', transform=ax.transAxes, bbox=boxdict,
-                 fontdict=fontdict)
+                 fontdict=fontdict, **kwargs)
     elif location == 7:
         plt.text(1.0, 1.0 + dist * aspect, label,
                  horizontalalignment='right', verticalalignment='bottom',
                  transform=ax.transAxes, bbox=boxdict,
-                 fontdict=fontdict)
+                 fontdict=fontdict, **kwargs)
     elif location == 8:
         plt.text(1.0 + dist, 1.0, label,
                  horizontalalignment='left', verticalalignment='top',
                  transform=ax.transAxes, bbox=boxdict,
-                 fontdict=fontdict)
+                 fontdict=fontdict, **kwargs)
     elif location == 9:
         plt.text(1.0 + dist, 0.0, label,
                  horizontalalignment='left', verticalalignment='bottom',
                  transform=ax.transAxes, bbox=boxdict,
-                 fontdict=fontdict)
+                 fontdict=fontdict, **kwargs)
     elif location == 10:
         plt.text(1.0, - dist * aspect, label,
                  horizontalalignment='right', verticalalignment='top',
                  transform=ax.transAxes, bbox=boxdict,
-                 fontdict=fontdict)
+                 fontdict=fontdict, **kwargs)
     elif location == 11:
         plt.text(0.0, -dist * aspect, label, horizontalalignment='left',
                  verticalalignment='top', transform=ax.transAxes,
-                 bbox=boxdict, fontdict=fontdict)
+                 bbox=boxdict, fontdict=fontdict, **kwargs)
     elif location == 12:
         plt.text(-dist, 0.0, label, horizontalalignment='right',
                  verticalalignment='bottom', transform=ax.transAxes,
-                 bbox=boxdict, fontdict=fontdict)
+                 bbox=boxdict, fontdict=fontdict, **kwargs)
     else:
         raise ValueError("Other corners not defined.")
