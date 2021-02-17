@@ -1,0 +1,58 @@
+body:
+  process:
+    water_level: 100.0
+    filter_flag: True
+    pre_filt: [0.0030, 0.0040, 0.0111, 0.0139]
+    relative_starttime: 0
+    relative_endtime: 3600
+    resample_flag: True
+    sampling_rate: 0.5
+    taper_type: "cosine"
+    taper_percentage: 0.05
+    rotate_flag: True
+    sanity_check: True
+  window:
+    config:
+      "min_period":  90.0
+      "max_period": 250.0
+      "stalta_waterlevel": 0.085
+      "tshift_acceptance_level": 18.0
+      "tshift_reference": 0.0
+      "dlna_acceptance_level": 0.8
+      "dlna_reference": 0.0
+      "cc_acceptance_level": 0.85
+      "s2n_limit": 3.0
+      "s2n_limit_energy": 3.0
+      "window_signal_to_noise_type": "amplitude"
+      "selection_mode": "body_waves"
+      "min_surface_wave_velocity": 3.20
+      "max_surface_wave_velocity": 4.10
+      "earth_model": "ak135"
+      "max_time_before_first_arrival": 100.0
+      "max_time_after_last_arrival": 200.0
+      "check_global_data_quality": True
+      "snr_integrate_base": 3.5
+      "snr_max_base": 3.0
+      "c_0": 0.7
+      "c_1": 3.0
+      "c_2": 0.0
+      "c_3a": 1.0
+      "c_3b": 2.0
+      "c_4a": 3.0
+      "c_4b": 10.0
+      "resolution_strategy": "interval_scheduling"
+    components:
+      Z:
+
+      R:
+        "s2n_limit": 3.5
+        "s2n_limit_energy": 3.5
+        "snr_max_base": 3.5
+      T:
+        "s2n_limit": 3.5
+        "s2n_limit_energy": 3.5
+        "snr_max_base": 3.5
+    instrument: 
+      instrument_merge_flag": True
+
+

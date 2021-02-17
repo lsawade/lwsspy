@@ -19,6 +19,8 @@ def read_parfile(filename: str) -> dict:
         for line in f.readlines():
             if line[0] == "#":
                 pass
+            elif line in ['\n', '\r\n']:
+                pass
             elif '=' in line:
                 keysec, valsec = line.split('=')[:2]
                 key = keysec.split()[0]
@@ -40,5 +42,6 @@ def read_parfile(filename: str) -> dict:
 
                     except Exception:
                         pars[key] = val
-
+            else:
+                pass
     return pars
