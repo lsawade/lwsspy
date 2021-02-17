@@ -8,6 +8,7 @@ CMTSOLUTTION depth.
 import lwsspy as lpy
 
 # External
+from typing import Callable
 import os
 import shutil
 from copy import deepcopy
@@ -64,7 +65,9 @@ class GCMT3DInversion:
             download_data: bool = False,
             download_dict: dict = download_dict,
             overwrite: bool = False,
-            launch_method: str = "",):
+            launch_method: str = "",
+            process_func: Callable = lpy.process_stream,
+            window_func: Callable = lpy.window_on_stream):
 
         # CMTSource
         self.cmtsource = lpy.CMTSource.from_CMTSOLUTION_file(cmtsolutionfile)
@@ -80,6 +83,7 @@ class GCMT3DInversion:
         self.specfem_dict = specfem_dict
 
         # Processing parameters
+        self.process_func = process_func
         self.processdict = processdict
         self.duration = duration
 
@@ -255,7 +259,7 @@ class GCMT3DInversion:
             processdict["starttime"] = starttime
             processdict["endtime"] = endtime
 
-            self.data_dict[_wtype] = lpy.process_stream(
+            self.data_dict[_wtype] = self.process_func(
                 _stream, self.stations, remove_response_flag=True,
                 event_latitude=self.cmtsource.latitude,
                 event_longitude=self.cmtsource.longitude,
@@ -306,7 +310,7 @@ class GCMT3DInversion:
             processdict["starttime"] = starttime
             processdict["endtime"] = endtime
 
-            self.synt_dict["synt"][_wtype] = lpy.process_stream(
+            self.synt_dict["synt"][_wtype] = self.process_func(
                 _stream, self.stations, remove_response_flag=False,
                 **processdict)
 
@@ -329,7 +333,7 @@ class GCMT3DInversion:
                 processdict["endtime"] = endtime
 
                 # Call processing function and processing dictionary
-                self.synt_dict[_par][_wtype] = lpy.process_stream(
+                self.synt_dict[_par][_wtype] = self.process_func(
                     _stream, self.stations, remove_response_flag=False,
                     **processdict)
 
@@ -349,10 +353,10 @@ class GCMT3DInversion:
 
         for _wtype in self.processdict.keys():
             lpy.print_action("Windowing {_wtype}")
-            lpy.window_on_stream(self.data_dict[_wtype],
-                                 self.synt_dict["synt"][_wtype],
-                                 self.processdict[_wtype]["window"],
-                                 station=self.stations, event=self.xml_event)
+            self.window_func(self.data_dict[_wtype],
+                             self.synt_dict["synt"][_wtype],
+                             self.processdict[_wtype]["window"],
+                             station=self.stations, event=self.xml_event)
             lpy.add_tapers(self.data_dict[_wtype],
                            taper_type="tukey", alpha=0.25)
 
