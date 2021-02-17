@@ -8,18 +8,11 @@ class TimerError(Exception):
 
 
 class Timer:
-    def __init__(
-            self,
-            timers: ClassVar[Dict[str, float]] = dict(),
-            name: Optional[str] = None,
-            text: str = "     Elapsed time: {:0.4f} seconds",
-            logger: Optional[Callable[[str], None]] = print,
-            _start_time=None):
-        self.timers = timers
-        self.name = name
-        self.text = text
-        self.logger = logger
-        self._start_time = _start_time
+    timers: ClassVar[Dict[str, float]] = dict()
+    name: Optional[str] = None
+    text: str = "     Elapsed time: {:0.4f} seconds"
+    logger: Optional[Callable[[str], None]] = print
+    _start_time = None
 
     def __post_init__(self) -> None:
         """Add timer to dict of timers after initialization"""
