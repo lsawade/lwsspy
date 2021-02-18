@@ -258,7 +258,6 @@ class GCMT3DInversion:
 
             login_cmd = ["ssh", "-T", self.node_login]
             comcmd = f"""
-            {self.bash_escape}
             {self.conda_activation}
             {download_cmd}
             """
