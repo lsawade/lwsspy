@@ -142,6 +142,7 @@ class GCMT3DInversion:
         if self.download_data:
             self.__download_data__()
 
+    def process_data(self):
         with lpy.Timer():
             self.__load_data__()
         with lpy.Timer():
@@ -243,6 +244,7 @@ class GCMT3DInversion:
                 self.datadir, starttime=starttime, endtime=endtime,
                 **self.download_dict)
         else:
+            print("Hello i'm download")
             from subprocess import Popen, PIPE
             download_cmd = (
                 f"download-data "
@@ -254,21 +256,23 @@ class GCMT3DInversion:
                 f"-L {self.download_dict['location']}"
             )
 
-            cmd = "'"
-            cmd += self.bash_escape + " "
-            cmd += self.conda_activation + " && "
-            cmd += download_cmd
-            cmd += "'"
+            login_cmd = ["ssh", "-T", self.node_login]
+            comcmd = f"""
+            {self.bash_escape}
+            {self.conda_activation}
+            {download_cmd}
+            """
 
-            lpy.print_action(f"Running {cmd}")
+            lpy.print_action(f"Logging into {' '.join(login_cmd)}")
+            lpy.print_action(f"--> and running {comcmd}")
+
             with Popen(["ssh", "-T", self.node_login],
                        stdin=PIPE, stdout=PIPE, stderr=PIPE,
                        universal_newlines=True) as p:
-                output, error = p.communicate(f"""
-                    {self.bash_escape}
-                    {self.conda_activation}
-                    {download_cmd}
-                    """)
+                output, error = p.communicate(comcmd)
+                print(output)
+                print(error)
+                print(p.returncode)
 
     def __load_data__(self):
         lpy.print_action("Loading the data")
