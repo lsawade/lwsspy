@@ -243,6 +243,7 @@ class GCMT3DInversion:
             lpy.download_waveforms_to_storage(
                 self.datadir, starttime=starttime, endtime=endtime,
                 **self.download_dict)
+
         else:
             print("Hello i'm download")
             from subprocess import Popen, PIPE
@@ -269,9 +270,12 @@ class GCMT3DInversion:
                        stdin=PIPE, stdout=PIPE, stderr=PIPE,
                        universal_newlines=True) as p:
                 output, error = p.communicate(comcmd)
+                print(p.returncode)
+
+            if p.returncode != 0:
                 print(output)
                 print(error)
-                print(p.returncode)
+                raise ValueError("Download not successful.")
 
     def __load_data__(self):
         lpy.print_action("Loading the data")
