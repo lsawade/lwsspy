@@ -146,7 +146,6 @@ if "-m" not in sys.argv:
     from .seismo.specfem.stationxml2STATIONS import stationxml2STATIONS  # noqa
     from .seismo.specfem.stationxmldir2STATIONSdir import stationxmldir2STATIONSdir  # noqa
     from .seismo.specfem.write_parfile import write_parfile  # noqa
-    from .seismo.invertcmt.GCMT3DInversion import GCMT3DInversion  # noqa
     from .seismo.window.window import window_on_stream  # noqa
     from .seismo.window.add_tapers import add_tapers  # noqa
     from .seismo.window.stream_cost_win import stream_cost_win  # noqa
@@ -156,6 +155,9 @@ if "-m" not in sys.argv:
     from .seismo.read_gcmt_data import load_2004_2010_mag  # noqa
     from .seismo.read_gcmt_data import load_num_events  # noqa
     from .seismo.read_gcmt_data import load_cum_mag  # noqa
+
+    # CMT3D
+    from .seismo.invertcmt.GCMT3DInversion import GCMT3DInversion  # noqa
 
     # Shell
     from .shell.cat import cat  # noqa
