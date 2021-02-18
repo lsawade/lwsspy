@@ -48,7 +48,7 @@ download_dict = dict(
 )
 
 conda_activation = "module load anaconda3 && conda activate lwsspy"
-compute_node_login = "ssh lsawade@traverse.princeton.edu"
+compute_node_login = "lsawade@traverse.princeton.edu"
 bash_escape = "source ~/.bash_profile"
 
 
@@ -67,7 +67,7 @@ class GCMT3DInversion:
             starttime_offset: float = -300.0,
             endtime_offset: float = 0.0,
             download_data: bool = False,
-            download_from_compute_node: Union[str, None] = None,
+            node_login: Union[str, None] = None,
             conda_activation: str = conda_activation,
             bash_escape: str = bash_escape,
             download_dict: dict = download_dict,
@@ -119,7 +119,7 @@ class GCMT3DInversion:
 
         # Compute Node does not have internet
         self.conda_activation = conda_activation
-        self.download_from_compute_node = download_from_compute_node
+        self.node_login = node_login
         self.bash_escape = bash_escape
 
         # Inversion parameters:
@@ -238,7 +238,7 @@ class GCMT3DInversion:
 
         lpy.print_section("Data Download")
 
-        if self.download_from_compute_node is None:
+        if self.node_login is None:
             lpy.download_waveforms_to_storage(
                 self.datadir, starttime=starttime, endtime=endtime,
                 **self.download_dict)
@@ -254,16 +254,21 @@ class GCMT3DInversion:
                 f"-L {self.download_dict['location']}"
             )
 
-            cmdstring = self.download_from_compute_node
-            cmdstring += " '"
-            cmdstring += self.bash_escape + " "
-            cmdstring += self.conda_activation + " && "
-            cmdstring += download_cmd
-            cmdstring += "'"
+            cmd = "'"
+            cmd += self.bash_escape + " "
+            cmd += self.conda_activation + " && "
+            cmd += download_cmd
+            cmd += "'"
 
-            lpy.print_action(f"Running {cmdstring}")
-            proc = Popen(cmdstring.split(), stdout=PIPE, stderr=PIPE)
-            proc.wait()
+            lpy.print_action(f"Running {cmd}")
+            with Popen(["ssh", "-T", self.node_login],
+                       stdin=PIPE, stdout=PIPE, stderr=PIPE,
+                       universal_newlines=True) as p:
+                output, error = p.communicate(f"""
+                    {self.bash_escape}
+                    {self.conda_activation}
+                    {download_cmd}
+                    """)
 
     def __load_data__(self):
         lpy.print_action("Loading the data")
