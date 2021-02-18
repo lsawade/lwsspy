@@ -8,7 +8,7 @@ CMTSOLUTTION depth.
 import lwsspy as lpy
 
 # External
-from typing import Callable
+from typing import Callable, Union
 import os
 import shutil
 from copy import deepcopy
@@ -47,6 +47,10 @@ download_dict = dict(
     location="00",
 )
 
+conda_activation = "module load anaconda3 && conda activate lwsspy"
+compute_node_login = "ssh lsawade@traverse.princeton.edu"
+bash_escape = "source ~/.bash_profile"
+
 
 class GCMT3DInversion:
 
@@ -63,6 +67,9 @@ class GCMT3DInversion:
             starttime_offset: float = -300.0,
             endtime_offset: float = 0.0,
             download_data: bool = False,
+            download_from_compute_node: Union[str, None] = None,
+            conda_activation: str = conda_activation,
+            bash_escape: str = bash_escape,
             download_dict: dict = download_dict,
             overwrite: bool = False,
             launch_method: str = "mpirun -n 6",
@@ -74,7 +81,7 @@ class GCMT3DInversion:
         self.xml_event = read_events(cmtsolutionfile)[0]
 
         # File locations
-        self.databasedir = databasedir
+        self.databasedir = os.path.abspath(databasedir)
         self.cmtdir = os.path.join(self.databasedir, self.cmtsource.eventname)
         self.cmt_in_db = os.path.join(self.cmtdir, self.cmtsource.eventname)
         self.overwrite: bool = overwrite
@@ -109,6 +116,11 @@ class GCMT3DInversion:
         self.starttime_offset = starttime_offset
         self.endtime_offset = endtime_offset
         self.download_dict = download_dict
+
+        # Compute Node does not have internet
+        self.conda_activation = conda_activation
+        self.download_from_compute_node = download_from_compute_node
+        self.bash_escape = bash_escape
 
         # Inversion parameters:
         self.nsim = 1
@@ -221,10 +233,37 @@ class GCMT3DInversion:
         # Setup download times depending on input...
         # Maybe get from process dict?
         starttime = self.cmtsource.origin_time + self.starttime_offset
-        endtime = self.cmtsource.origin_time + self.duration + self.endtime_offset
-        lpy.download_waveforms_to_storage(
-            self.datadir, starttime=starttime, endtime=endtime,
-            **self.download_dict)
+        endtime = self.cmtsource.origin_time + self.duration \
+            + self.endtime_offset
+
+        lpy.print_section("Data Download")
+
+        if self.download_from_compute_node is None:
+            lpy.download_waveforms_to_storage(
+                self.datadir, starttime=starttime, endtime=endtime,
+                **self.download_dict)
+        else:
+            from subprocess import Popen, PIPE
+            download_cmd = (
+                f"download-data "
+                f"-d {self.datadir} "
+                f"-s {starttime} "
+                f"-e {endtime} "
+                f"-N {self.download_dict['network']} "
+                f"-C {self.download_dict['channel']} "
+                f"-L {self.download_dict['location']}"
+            )
+
+            cmdstring = self.download_from_compute_node
+            cmdstring += " '"
+            cmdstring += self.bash_escape + " "
+            cmdstring += self.conda_activation + " && "
+            cmdstring += download_cmd
+            cmdstring += "'"
+
+            lpy.print_action(f"Running {cmdstring}")
+            proc = Popen(cmdstring, stdout=PIPE, stderr=PIPE)
+            proc.wait()
 
     def __load_data__(self):
         lpy.print_action("Loading the data")
