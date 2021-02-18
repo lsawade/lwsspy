@@ -262,7 +262,7 @@ class GCMT3DInversion:
             cmdstring += "'"
 
             lpy.print_action(f"Running {cmdstring}")
-            proc = Popen(cmdstring.split("0"), stdout=PIPE, stderr=PIPE)
+            proc = Popen(cmdstring.split(), stdout=PIPE, stderr=PIPE)
             proc.wait()
 
     def __load_data__(self):
