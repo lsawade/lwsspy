@@ -47,7 +47,7 @@ download_dict = dict(
     location="00",
 )
 
-conda_activation = "module load anaconda3 && conda activate lwsspy"
+conda_activation = "/usr/licensed/anaconda3/2020.7/etc/profile.d/conda.sh && conda activate lwsspy"
 compute_node_login = "lsawade@traverse.princeton.edu"
 bash_escape = "source ~/.bash_profile"
 
