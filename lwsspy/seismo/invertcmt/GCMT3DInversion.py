@@ -65,7 +65,7 @@ class GCMT3DInversion:
             download_data: bool = False,
             download_dict: dict = download_dict,
             overwrite: bool = False,
-            launch_method: str = "",
+            launch_method: str = "mpirun -n 6",
             process_func: Callable = lpy.process_stream,
             window_func: Callable = lpy.window_on_stream):
 
