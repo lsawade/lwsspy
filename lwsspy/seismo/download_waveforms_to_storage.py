@@ -1,3 +1,4 @@
+import argparse
 import os
 from typing import Union, List
 from obspy import Inventory
@@ -55,3 +56,45 @@ def download_waveforms_to_storage(
     print("\n")
     print(72 * "*")
     print("\n")
+
+
+def bin():
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-d', dest='datastorage',
+                        help='Where to save the waveforms and station files',
+                        required=True, type=str)
+    parser.add_argument('-s', '--starttime', dest='starttime',
+                        help='s',
+                        required=True, type=str)
+    parser.add_argument('-e', '--endtime', dest='endtime',
+                        help='endtime',
+                        required=True, type=str)
+    parser.add_argument('-N', '--networks', dest='networks',
+                        help='list of networks, e.g. "IU,II,G" ',
+                        default="IU,II,G", required=False, type=str or None)
+    parser.add_argument('-S', '--stations', dest='stations',
+                        help='list of stations, e.g. "BFO,IBFO" ',
+                        default=None, required=False, type=str or None)
+    parser.add_argument('-L', '--locations', dest='locations',
+                        help='list of locations, e.g. "00,01" ', default="00",
+                        required=False, type=str or None)
+    parser.add_argument('-C', '--channels', dest='channels',
+                        help='list of locations, e.g. "BH*,HHZ,HHN" ',
+                        default="BH*", required=False, type=str or None)
+    parser.add_argument('-P', '--providers', dest='providers',
+                        help='list of providers, e.g. "IRIS,ORFEUS" ',
+                        default=["IRIS"], required=False, type=list or None)
+
+    args = parser.parse_args()
+
+    download_waveforms_to_storage(
+        args.datastorage,
+        UTCDateTime(args.starttime),
+        UTCDateTime(args.endtime),
+        network=args.networks,
+        station=args.stations,
+        location=args.locations,
+        channel=args.channels,
+        providers=args.providers)
