@@ -150,10 +150,8 @@ class GCMT3DInversion:
         lpy.print_bar("PREPPING DATA")
 
         with lpy.Timer():
-            lpy.print_action("Loading the data")
             self.__load_data__()
         with lpy.Timer():
-            lpy.print_action("Processing the data")
             self.__process_data__()
 
     def __get_number_of_forward_simulations__(self):
@@ -326,13 +324,12 @@ class GCMT3DInversion:
             if self.multiprocesses < 1:
                 self.data_dict[_wtype] = self.process_func(
                     _stream, self.stations, **processdict)
-
             else:
                 def processfunc(st): return self.process_func(
                     st, self.stations, **processdict)
                 with lpy.poolcontext(processes=self.multiprocesses) as p:
                     self.data_dict[_wtype] = self.sumfunc(
-                        p.map(self.process_func, _stream))
+                        p.map(processfunc, _stream))
 
     def __load_synt__(self):
 
@@ -378,10 +375,21 @@ class GCMT3DInversion:
             processdict.pop("relative_endtime")
             processdict["starttime"] = starttime
             processdict["endtime"] = endtime
+            processdict.update(dict(
+                remove_response_flag=False,
+                event_latitude=self.cmtsource.latitude,
+                event_longitude=self.cmtsource.longitude)
+            )
 
-            self.synt_dict["synt"][_wtype] = self.process_func(
-                _stream, self.stations, remove_response_flag=False,
-                **processdict)
+            if self.multiprocesses < 1:
+                self.synt_dict["synt"][_wtype] = self.process_func(
+                    _stream, **processdict)
+            else:
+                def processfunc(st): return self.process_func(
+                    st, self.stations, **processdict)
+                with lpy.poolcontext(processes=self.multiprocesses) as p:
+                    self.synt_dict["synt"][_wtype] = self.sumfunc(
+                        p.map(processfunc, _stream))
 
         # Process each wavetype.
         for _par, _parsubdict in self.pardict.items():
@@ -400,11 +408,21 @@ class GCMT3DInversion:
                 processdict.pop("relative_endtime")
                 processdict["starttime"] = starttime
                 processdict["endtime"] = endtime
+                processdict.update(dict(
+                    remove_response_flag=False,
+                    event_latitude=self.cmtsource.latitude,
+                    event_longitude=self.cmtsource.longitude)
+                )
 
-                # Call processing function and processing dictionary
-                self.synt_dict[_par][_wtype] = self.process_func(
-                    _stream, self.stations, remove_response_flag=False,
-                    **processdict)
+                if self.multiprocesses < 1:
+                    self.synt_dict[_par][_wtype] = self.process_func(
+                        _stream, self.stations, **processdict)
+                else:
+                    def processfunc(st): return self.process_func(
+                        st, self.stations, **processdict)
+                    with lpy.poolcontext(processes=self.multiprocesses) as p:
+                        self.synt_dict[_par][_wtype] = self.sumfunc(
+                            p.map(processfunc, _stream))
 
                 # divide by perturbation value and scale by scale length
                 if _parsubdict["pert"] is not None:
