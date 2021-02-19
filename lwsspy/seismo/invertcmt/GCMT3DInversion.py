@@ -571,7 +571,7 @@ class GCMT3DInversion:
         cwdlist = [self.synt_syntdir]
         cwdlist.extend(
             [_pardir for _pardir in self.synt_pardirs.values()])
-
+        print(cwdlist)
         lpy.print_action("Submitting simulations")
         lpy.run_cmds_parallel(cmd_list, cwdlist=cwdlist)
 
