@@ -573,7 +573,7 @@ class GCMT3DInversion:
     def __run_simulations__(self):
 
         # Initialize necessary commands
-        cmd_list = self.nsim * [self.launch_method, './bin/xspecfem3D']
+        cmd_list = self.nsim * [*self.launch_method, './bin/xspecfem3D']
         print(cmd_list)
         cwdlist = [self.synt_syntdir]
         cwdlist.extend(
