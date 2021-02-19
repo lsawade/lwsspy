@@ -14,6 +14,7 @@ import shutil
 from copy import deepcopy
 import numpy as np
 import matplotlib.pyplot as plt
+from itertools import repeat
 from obspy import read, read_events, Stream
 
 
@@ -329,7 +330,7 @@ class GCMT3DInversion:
                     st, self.stations, **processdict)
                 with lpy.poolcontext(processes=self.multiprocesses) as p:
                     self.data_dict[_wtype] = self.sumfunc(
-                        p.map(processfunc, _stream))
+                        p.starmap(self.process_func, zip(_stream, ))
 
     def __load_synt__(self):
 
