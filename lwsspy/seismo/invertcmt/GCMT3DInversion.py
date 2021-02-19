@@ -356,7 +356,7 @@ class GCMT3DInversion:
             self.synt_syntdir, "OUTPUT_FILES", "*.sac"))
 
         for _wtype, _ in self.data_dict.items():
-            self.synt_dict["synt"][_wtype] += deepcopy(temp_synt)
+            self.synt_dict[_wtype]["synt"] += deepcopy(temp_synt)
 
         # Populate the data dictionary.
         for _par, _pardirs in self.synt_pardirs.items():
@@ -371,7 +371,7 @@ class GCMT3DInversion:
 
             # Populate the wavetype Streams.
             for _wtype, _ in self.data_dict.items():
-                self.synt_dict[_par][_wtype] += deepcopy(temp_synt)
+                self.synt_dict[_wtype][_par] += deepcopy(temp_synt)
 
         del temp_synt
 
