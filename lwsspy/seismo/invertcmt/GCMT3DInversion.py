@@ -16,6 +16,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from itertools import repeat
 from obspy import read, read_events, Stream
+from joblib import Parallel, delayed
 
 
 lpy.updaterc()
@@ -326,13 +327,20 @@ class GCMT3DInversion:
                 self.data_dict[_wtype] = self.process_func(
                     _stream, self.stations, **processdict)
             else:
-                with lpy.poolcontext(processes=self.multiprocesses) as p:
-                    self.data_dict[_wtype] = self.sumfunc(
-                        lpy.starmap_with_kwargs(
-                            p, self.process_func,
-                            zip(_stream, repeat(self.stations)),
-                            repeat(processdict))
-                    )
+                self.data_dict[_wtype] = self.sumfunc(
+                    Parallel(n_jobs=self.multiprocesses)(
+                        delayed(self.process_func)(*args, **kwargs)
+                        for *args, kwargs in zip(
+                            _stream,
+                            repeat(self.stations),
+                            repeat(processdict))))
+                # with lpy.poolcontext(processes=self.multiprocesses) as p:
+                #     self.data_dict[_wtype] = self.sumfunc(
+                #         lpy.starmap_with_kwargs(
+                #             p, self.process_func,
+                #             zip(_stream, repeat(self.stations)),
+                #             repeat(processdict))
+                #     )
 
     def __load_synt__(self):
 
