@@ -64,7 +64,8 @@ def starmap_with_kwargs(
         fn: Callable,
         args_iter: Iterable,
         kwargs_iter: Iterable,
-        N: int, nproc: int = 1):
+        N: int):
     args_for_starmap = zip(repeat(fn), args_iter, kwargs_iter)
 
-    return pool.starmap(apply_args_and_kwargs, args_for_starmap)
+    return pool.starmap(
+        apply_args_and_kwargs, args_for_starmap, N//pool._processes)
