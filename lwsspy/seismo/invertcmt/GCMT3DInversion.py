@@ -326,11 +326,13 @@ class GCMT3DInversion:
                 self.data_dict[_wtype] = self.process_func(
                     _stream, self.stations, **processdict)
             else:
-                def processfunc(st): return self.process_func(
-                    st, self.stations, **processdict)
                 with lpy.poolcontext(processes=self.multiprocesses) as p:
                     self.data_dict[_wtype] = self.sumfunc(
-                        p.starmap(self.process_func, zip(_stream, ))
+                        lpy.starmap_with_kwargs(
+                            p, self.process_func,
+                            zip(_stream, repeat(self.stations)),
+                            repeat(processdict))
+                    )
 
     def __load_synt__(self):
 
