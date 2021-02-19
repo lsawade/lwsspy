@@ -332,7 +332,7 @@ class GCMT3DInversion:
                 self.data_dict[_wtype] = self.sumfunc(
                     Parallel(
                         n_jobs=self.multiprocesses, verbose=5,
-                        prefer='processes')(
+                        prefer='processes', backend='multiprocessing')(
                         delayed(self.process_func)(*args, **kwargs)
                         for *args, kwargs in zip(
                             _stream,
