@@ -399,13 +399,13 @@ class GCMT3DInversion:
             )
 
             if self.multiprocesses < 1:
-                self.synt_dict["synt"][_wtype] = self.process_func(
+                self.synt_dict[_wtype]["synt"] = self.process_func(
                     _stream, **processdict)
             else:
                 lpy.print_action(
                     f"Processing in parallel using {self.multiprocesses} cores")
                 with mpp.Pool(processes=self.multiprocesses) as p:
-                    self.synt_dict["synt"][_wtype] = lpy.starmap_with_kwargs(
+                    self.synt_dict[_wtype]["synt"] = lpy.starmap_with_kwargs(
                         p, self.process_func,
                         zip(_stream, repeat(self.stations)),
                         repeat(processdict), len(_stream)
@@ -435,11 +435,11 @@ class GCMT3DInversion:
                 )
 
                 if self.multiprocesses < 1:
-                    self.synt_dict[_par][_wtype] = self.process_func(
+                    self.synt_dict[_wtype][_par] = self.process_func(
                         _stream, self.stations, **processdict)
                 else:
                     with mpp.Pool(processes=self.multiprocesses) as p:
-                        self.synt_dict[_par][_wtype] = lpy.starmap_with_kwargs(
+                        self.synt_dict[_wtype][_par] = lpy.starmap_with_kwargs(
                             p, self.process_func,
                             zip(_stream, repeat(self.stations)),
                             repeat(processdict), len(_stream))
@@ -574,14 +574,35 @@ class GCMT3DInversion:
 
     def __run_simulations__(self):
 
+        lpy.print_action("Submitting all simulations")
         # Initialize necessary commands
         cmd_list = self.nsim * [[*self.launch_method, './bin/xspecfem3D']]
-        print(cmd_list)
+
         cwdlist = [self.synt_syntdir]
         cwdlist.extend(
             [_pardir for _par, _pardir in self.synt_pardirs.items()
              if _par not in self.nosimpars])
-        lpy.print_action("Submitting simulations")
+        lpy.run_cmds_parallel(cmd_list, cwdlist=cwdlist)
+
+    def __run_forward_only__(self):
+
+        # Initialize necessary commands
+        lpy.print_action("Submitting forward simulation")
+        cmd_list = [[*self.launch_method, './bin/xspecfem3D']]
+        cwdlist = [self.synt_syntdir]
+        lpy.run_cmds_parallel(cmd_list, cwdlist=cwdlist)
+
+    def __run_parameters_only__(self):
+
+        # Initialize necessary commands
+        lpy.print_action("Submitting parameter simulations")
+        cmd_list = (self.nsim - 1) * \
+            [[*self.launch_method, './bin/xspecfem3D']]
+
+        cwdlist = []
+        cwdlist.extend(
+            [_pardir for _par, _pardir in self.synt_pardirs.items()
+             if _par not in self.nosimpars])
         lpy.run_cmds_parallel(cmd_list, cwdlist=cwdlist)
 
     def compute_cost_and_gradient(self, model):
