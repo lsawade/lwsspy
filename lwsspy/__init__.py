@@ -186,17 +186,19 @@ if "-m" not in sys.argv:
     from .statistics.normalstdheight import normalstdheight  # noqa
 
     # Utilities
+    from .utils.add_years import add_years  # noqa
     from .utils.cpu_count import cpu_count  # noqa
     from .utils.chunks import chunks  # noqa
+    from .utils.date2year import date2year  # noqa
     from .utils.get_unique_lists import get_unique_lists  # noqa
     from .utils.increase_fontsize import increase_fontsize  # noqa
-    from .utils.threadwork import threadwork  # noqa
-    from .utils.timer import Timer  # noqa
+    from .utils.multiwrapper import multiwrapper  # noqa
+    from .utils.multiwrapper import poolcontext  # noqa
     from .utils.pixels2data import pixels2data  # noqa
     from .utils.reduce_fontsize import reduce_fontsize  # noqa
-    from .utils.add_years import add_years  # noqa
+    from .utils.threadwork import threadwork  # noqa
+    from .utils.timer import Timer  # noqa
     from .utils.year2date import year2date  # noqa
-    from .utils.date2year import date2year  # noqa
 
     # IO
     from .utils.io import loadxy_csv  # noqa

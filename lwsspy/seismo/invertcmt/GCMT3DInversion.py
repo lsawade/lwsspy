@@ -74,7 +74,8 @@ class GCMT3DInversion:
             overwrite: bool = False,
             launch_method: str = "mpirun -n 6",
             process_func: Callable = lpy.process_stream,
-            window_func: Callable = lpy.window_on_stream):
+            window_func: Callable = lpy.window_on_stream,
+            multiprocesses: int = 0):
 
         # CMTSource
         self.cmtsource = lpy.CMTSource.from_CMTSOLUTION_file(cmtsolutionfile)
@@ -93,6 +94,8 @@ class GCMT3DInversion:
         self.process_func = process_func
         self.processdict = processdict
         self.duration = duration
+        self.multiprocesses = multiprocesses
+        self.sumfunc = lambda results: Stream(results)
 
         # Inversion dictionary
         self.pardict = pardict
@@ -140,12 +143,17 @@ class GCMT3DInversion:
 
         # Get observed data and process data
         if self.download_data:
-            self.__download_data__()
+            with lpy.Timer():
+                self.__download_data__()
 
     def process_data(self):
+        lpy.print_bar("PREPPING DATA")
+
         with lpy.Timer():
+            lpy.print_action("Loading the data")
             self.__load_data__()
         with lpy.Timer():
+            lpy.print_action("Processing the data")
             self.__process_data__()
 
     def __get_number_of_forward_simulations__(self):
@@ -237,7 +245,7 @@ class GCMT3DInversion:
         endtime = self.cmtsource.origin_time + self.duration \
             + self.endtime_offset
 
-        lpy.print_section("Data Download")
+        lpy.print_bar("Data Download")
 
         if self.node_login is None:
             lpy.download_waveforms_to_storage(
@@ -245,7 +253,6 @@ class GCMT3DInversion:
                 **self.download_dict)
 
         else:
-            print("Hello i'm download")
             from subprocess import Popen, PIPE
             download_cmd = (
                 f"download-data "
@@ -263,18 +270,19 @@ class GCMT3DInversion:
             {download_cmd}
             """
 
-            lpy.print_action(f"Logging into {' '.join(login_cmd)}")
-            lpy.print_action(f"--> and running {comcmd}")
+            lpy.print_action(
+                f"Logging into {' '.join(login_cmd)} and downloading")
+            print(f"Command: \n{comcmd}\n")
 
             with Popen(["ssh", "-T", self.node_login],
                        stdin=PIPE, stdout=PIPE, stderr=PIPE,
                        universal_newlines=True) as p:
                 output, error = p.communicate(comcmd)
-                print(p.returncode)
 
             if p.returncode != 0:
                 print(output)
                 print(error)
+                print(p.returncode)
                 raise ValueError("Download not successful.")
 
     def __load_data__(self):
@@ -309,12 +317,22 @@ class GCMT3DInversion:
             processdict.pop("relative_endtime")
             processdict["starttime"] = starttime
             processdict["endtime"] = endtime
-
-            self.data_dict[_wtype] = self.process_func(
-                _stream, self.stations, remove_response_flag=True,
+            processdict.update(dict(
+                remove_response_flag=True,
                 event_latitude=self.cmtsource.latitude,
-                event_longitude=self.cmtsource.longitude,
-                **processdict)
+                event_longitude=self.cmtsource.longitude)
+            )
+
+            if self.multiprocesses < 1:
+                self.data_dict[_wtype] = self.process_func(
+                    _stream, self.stations, **processdict)
+
+            else:
+                def processfunc(st): return self.process_func(
+                    st, self.stations, **processdict)
+                with lpy.poolcontext(processes=self.multiprocesses) as p:
+                    self.data_dict[_wtype] = self.sumfunc(
+                        p.map(self.process_func, _stream))
 
     def __load_synt__(self):
 
