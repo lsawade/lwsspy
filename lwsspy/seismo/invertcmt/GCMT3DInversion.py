@@ -568,6 +568,7 @@ class GCMT3DInversion:
 
         # Initialize necessary commands
         cmd_list = self.nsim * [self.launch_method, './bin/xspecfem3D']
+        print(cmd_list)
         cwdlist = [self.synt_syntdir]
         cwdlist.extend(
             [_pardir for _par, _pardir in self.synt_pardirs.items()
