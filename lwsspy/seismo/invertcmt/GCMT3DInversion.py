@@ -483,7 +483,9 @@ class GCMT3DInversion:
         syn_parfile = os.path.join(self.synt_syntdir, "DATA", "Par_file")
         syn_pars = lpy.read_parfile(syn_parfile)
         syn_pars["USE_SOURCE_DERIVATIVE"] = False
-        syn_pars["USE_SOURCE_DERIVATIVE"] = False
+
+        # Adapt duration
+        syn_pars["RECORD_LENGTH_IN_MINUTES"] = self.duration + 10
 
         # Write Stuff to Par_file
         lpy.write_parfile(syn_pars, syn_parfile)
@@ -517,6 +519,9 @@ class GCMT3DInversion:
                         dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"] = 3
                 else:
                     dsyn_pars["USE_SOURCE_DERIVATIVE"] = False
+
+                # Adapt duration
+                dsyn_pars["RECORD_LENGTH_IN_MINUTES"] = self.duration + 10
 
                 # Write Stuff to Par_file
                 lpy.write_parfile(dsyn_pars, dsyn_parfile)
