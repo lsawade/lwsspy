@@ -63,8 +63,8 @@ def starmap_with_kwargs(
         pool: multiprocessing.pool.Pool,
         fn: Callable,
         args_iter: Iterable,
-        kwargs_iter: Iterable):
+        kwargs_iter: Iterable,
+        N: int):
     args_for_starmap = zip(repeat(fn), args_iter, kwargs_iter)
     return pool.starmap(
-        apply_args_and_kwargs,
-        tqdm.tqdm(args_for_starmap, len(args_iter)))
+        apply_args_and_kwargs, tqdm.tqdm(args_for_starmap, N))

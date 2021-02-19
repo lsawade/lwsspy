@@ -333,7 +333,7 @@ class GCMT3DInversion:
                         lpy.starmap_with_kwargs(
                             p, self.process_func,
                             zip(_stream, repeat(self.stations)),
-                            repeat(processdict))
+                            repeat(processdict), len(_stream))
                     )
 
     def __load_synt__(self):
