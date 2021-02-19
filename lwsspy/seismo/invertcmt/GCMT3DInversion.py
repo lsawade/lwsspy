@@ -98,8 +98,11 @@ class GCMT3DInversion:
         self.cmt_in_db = os.path.join(self.cmtdir, self.cmtsource.eventname)
         self.overwrite: bool = overwrite
         self.download_data = download_data
+
+        # Simulation stuff
         self.specfemdir = specfemdir
         self.specfem_dict = specfem_dict
+        self.launch_method = launch_method.split()
 
         # Processing parameters
         self.process_func = process_func
