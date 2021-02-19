@@ -55,6 +55,16 @@ bash_escape = "source ~/.bash_profile"
 
 class GCMT3DInversion:
 
+    # parameter_check_list: list = [
+    #     'm_rr', 'm_tt', 'm_pp', 'm_rt', 'm_rp', 'm_tp',
+    #     'latitude', 'longitude', 'depth_in_m', 'time_shift', 'hdur'
+    # ]
+    parameter_check_list: list = [
+        'depth_in_m', 'time_shift'
+    ]
+
+    nosimpars: list = ["time_shift", "half_duration"]
+
     def __init__(
             self,
             cmtsolutionfile: str,
@@ -100,14 +110,6 @@ class GCMT3DInversion:
 
         # Inversion dictionary
         self.pardict = pardict
-        # Parameter checking
-        # self.parameter_check_list = [
-        #     'm_rr', 'm_tt', 'm_pp', 'm_rt', 'm_rp', 'm_tp',
-        #     'latitude', 'longitude', 'depth_in_m', 'cmt_time', 'hdur'
-        # ]
-        self.parameter_check_list = [
-            'depth_in_m', 'time_shift'
-        ]
 
         # Check Parameter dict for wrong parameters
         for _par in self.pardict.keys():
@@ -147,6 +149,9 @@ class GCMT3DInversion:
             with lpy.Timer():
                 self.__download_data__()
 
+        # Initialize model vector
+        self.__init_model_and_scale__()
+
     def process_data(self):
         lpy.print_bar("PREPPING DATA")
 
@@ -162,7 +167,7 @@ class GCMT3DInversion:
 
         # Add one for each parameters that requires a forward simulation
         for _par in self.pardict.keys():
-            if _par not in ["time_shift", "half_duration"]:
+            if _par not in self.nosimpars:
                 self.nsim += 1
 
     def __initialize_dir__(self):
@@ -207,11 +212,12 @@ class GCMT3DInversion:
 
         # Create one directory synthetics and each parameter
         for _pardir in self.synt_pardirs.values():
-            if self.specfemdir is not None:
-                lpy.createsimdir(self.specfemdir, _pardir,
-                                 specfem_dict=self.specfem_dict)
-            else:
-                self.__create_dir__(_pardir)
+            if _par not in self.nosimpars:
+                if self.specfemdir is not None:
+                    lpy.createsimdir(self.specfemdir, _pardir,
+                                     specfem_dict=self.specfem_dict)
+                else:
+                    self.__create_dir__(_pardir)
 
     def __init_model_and_scale__(self):
 
@@ -234,7 +240,8 @@ class GCMT3DInversion:
             self.synt_dict[_wtype]["synt"] = Stream()
 
             for _par in self.pardict.keys():
-                self.synt_dict[_wtype][_par] = Stream()
+                if _par not in self.nosimpars:
+                    self.synt_dict[_wtype][_par] = Stream()
 
     def __download_data__(self):
 
@@ -463,6 +470,53 @@ class GCMT3DInversion:
     def optimize(self, optim: lpy.Optimization):
         pass
 
+    def __prep_simulations__(self):
+
+        # Write stations file
+        lpy.inv2STATIONS(
+            self.stations, os.path.join(self.synt_syntdir, "DATA", "STATIONS"))
+
+        # Update Par_file depending on the parameter.
+        syn_parfile = os.path.join(self.synt_syntdir, "DATA", "Par_file")
+        syn_pars = lpy.read_parfile(syn_parfile)
+        syn_pars["USE_SOURCE_DERIVATIVE"] = False
+
+        # Write Stuff to Par_file
+        lpy.write_parfile(syn_pars, syn_parfile)
+
+        # Do the same for the parameters to invert for.
+        for _par, _pardir in self.synt_pardirs.items():
+
+            # Half duration an time-shift don't need extra simulations
+            if _par not in self.nosimpars:
+
+                # Write stations file
+                lpy.inv2STATIONS(
+                    self.stations, os.path.join(_pardir, "DATA", "STATIONS"))
+
+                # Update Par_file depending on the parameter.
+                dsyn_parfile = os.path.join(_pardir, "DATA", "Par_file")
+                dsyn_pars = lpy.read_parfile(dsyn_parfile)
+
+                # Set data parameters and  write new parfiles
+                locations = ["latitude", "longitude", "depth_in_m"]
+                if _par in locations:
+                    dsyn_pars["USE_SOURCE_DERIVATIVE"] = True
+                    if _par == "depth_in_m":
+                        # 1 for depth
+                        dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"] = 1
+                    elif _par == "latitude":
+                        # 2 for latitude
+                        dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"] = 2
+                    else:
+                        # 3 for longitude
+                        dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"] = 3
+                else:
+                    dsyn_pars["USE_SOURCE_DERIVATIVE"] = False
+
+                # Write Stuff to Par_file
+                lpy.write_parfile(dsyn_pars, dsyn_parfile)
+
     def __write_sources__(self):
 
         # Update cmt solution with new model values
@@ -506,61 +560,6 @@ class GCMT3DInversion:
                 lpy.print_action(f"Writing Frechet CMTSOLUTION for {_par}")
                 cmt.write_CMTSOLUTION_file(os.path.join(
                     _pardir, "DATA", "CMTSOLUTION"))
-
-    def __prep_simulations__(self):
-
-        # Create  synthetics simulation
-        lpy.createsimdir(self.specfemdir, self.synt_syntdir,
-                         specfem_dict=self.specfem_dict)
-
-        # Write stations file
-        lpy.inv2STATIONS(
-            self.stations, os.path.join(self.synt_syntdir, "DATA", "STATIONS"))
-
-        # Update Par_file depending on the parameter.
-        syn_parfile = os.path.join(self.synt_syntdir, "DATA", "Par_file")
-        syn_pars = lpy.read_parfile(syn_parfile)
-        syn_pars["USE_SOURCE_DERIVATIVE"] = False
-
-        # Write Stuff to Par_file
-        lpy.write_parfile(syn_pars, syn_parfile)
-
-        # Do the same for the parameters to invert for.
-        for _par, _pardir in self.synt_pardirs.items():
-
-            # Half duration an time-shift don't need extra simulations
-            if _par not in ["time_shift", "half_duration"]:
-
-                # Create base simulation dir
-                lpy.createsimdir(self.specfemdir, _pardir,
-                                 specfem_dict=self.specfem_dict)
-
-                # Write stations file
-                lpy.inv2STATIONS(
-                    self.stations, os.path.join(_pardir, "DATA", "STATIONS"))
-
-                # Update Par_file depending on the parameter.
-                dsyn_parfile = os.path.join(_pardir, "DATA", "Par_file")
-                dsyn_pars = lpy.read_parfile(dsyn_parfile)
-
-                # Set data parameters and  write new parfiles
-                locations = ["latitude", "longitude", "depth_in_m"]
-                if _par in locations:
-                    dsyn_pars["USE_SOURCE_DERIVATIVE"] = True
-                    if _par == "depth_in_m":
-                        # 1 for depth
-                        dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"] = 1
-                    elif _par == "latitude":
-                        # 2 for latitude
-                        dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"] = 2
-                    else:
-                        # 3 for longitude
-                        dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"] = 3
-                else:
-                    dsyn_pars["USE_SOURCE_DERIVATIVE"] = False
-
-                # Write Stuff to Par_file
-                lpy.write_parfile(dsyn_pars, dsyn_parfile)
 
     def __run_simulations__(self):
 
