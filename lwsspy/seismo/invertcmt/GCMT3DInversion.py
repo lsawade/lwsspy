@@ -390,11 +390,14 @@ class GCMT3DInversion:
                 self.synt_dict["synt"][_wtype] = self.process_func(
                     _stream, **processdict)
             else:
-                def processfunc(st): return self.process_func(
-                    st, self.stations, **processdict)
-                with lpy.poolcontext(processes=self.multiprocesses) as p:
-                    self.synt_dict["synt"][_wtype] = self.sumfunc(
-                        p.map(processfunc, _stream))
+                lpy.print_action(
+                    f"Processing in parallel using {self.multiprocesses} cores")
+                with mpp.Pool(processes=self.multiprocesses) as p:
+                    self.synt_dict["synt"][_wtype] = lpy.starmap_with_kwargs(
+                        p, self.process_func,
+                        zip(_stream, repeat(self.stations)),
+                        repeat(processdict), len(_stream)
+                    )
 
         # Process each wavetype.
         for _par, _parsubdict in self.pardict.items():
@@ -423,11 +426,11 @@ class GCMT3DInversion:
                     self.synt_dict[_par][_wtype] = self.process_func(
                         _stream, self.stations, **processdict)
                 else:
-                    def processfunc(st): return self.process_func(
-                        st, self.stations, **processdict)
-                    with lpy.poolcontext(processes=self.multiprocesses) as p:
-                        self.synt_dict[_par][_wtype] = self.sumfunc(
-                            p.map(processfunc, _stream))
+                    with mpp.Pool(processes=self.multiprocesses) as p:
+                        self.synt_dict[_par][_wtype] = lpy.starmap_with_kwargs(
+                            p, self.process_func,
+                            zip(_stream, repeat(self.stations)),
+                            repeat(processdict), len(_stream))
 
                 # divide by perturbation value and scale by scale length
                 if _parsubdict["pert"] is not None:
@@ -473,7 +476,7 @@ class GCMT3DInversion:
             self.synt_syntdir, "DATA", "CMTSOLUTION"))
 
         # For the perturbations it's slightly more complicated.
-        for _par, _pardir in self.pardirs.items():
+        for _par, _pardir in self.synt_pardirs.items():
 
             if _par not in ["time_shift", "half_duration"]:
 
