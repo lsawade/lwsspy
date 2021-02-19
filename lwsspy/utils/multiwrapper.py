@@ -1,3 +1,4 @@
+from . import istarmap
 from itertools import repeat
 from contextlib import contextmanager
 import multiprocessing
@@ -66,5 +67,7 @@ def starmap_with_kwargs(
         kwargs_iter: Iterable,
         N: int):
     args_for_starmap = zip(repeat(fn), args_iter, kwargs_iter)
-    return pool.starmap(
-        apply_args_and_kwargs, tqdm.tqdm(args_for_starmap, total=N))
+
+    return tqdm.tqdm(
+        pool.istarmap(apply_args_and_kwargs, args_for_starmap),
+        total=N)
