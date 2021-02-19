@@ -83,7 +83,7 @@ class GCMT3DInversion:
             bash_escape: str = bash_escape,
             download_dict: dict = download_dict,
             overwrite: bool = False,
-            launch_method: str = "mpirun -n 6",
+            launch_method: str = "srun -n6 --gpus-per-task=1",
             process_func: Callable = lpy.process_stream,
             window_func: Callable = lpy.window_on_stream,
             multiprocesses: int = 0):
@@ -482,6 +482,7 @@ class GCMT3DInversion:
         # Update Par_file depending on the parameter.
         syn_parfile = os.path.join(self.synt_syntdir, "DATA", "Par_file")
         syn_pars = lpy.read_parfile(syn_parfile)
+        syn_pars["USE_SOURCE_DERIVATIVE"] = False
         syn_pars["USE_SOURCE_DERIVATIVE"] = False
 
         # Write Stuff to Par_file
