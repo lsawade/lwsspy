@@ -192,8 +192,8 @@ if "-m" not in sys.argv:
     from .utils.date2year import date2year  # noqa
     from .utils.get_unique_lists import get_unique_lists  # noqa
     from .utils.increase_fontsize import increase_fontsize  # noqa
-    from .utils.multiwrapper import multiwrapper  # noqa
     from .utils.multiwrapper import poolcontext  # noqa
+    from .utils.multiwrapper import starmap_with_kwargs  # noqa
     from .utils.pixels2data import pixels2data  # noqa
     from .utils.reduce_fontsize import reduce_fontsize  # noqa
     from .utils.threadwork import threadwork  # noqa
