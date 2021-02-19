@@ -10,12 +10,13 @@ def istarmap(self, func, iterable, chunksize=1):
             "Chunksize must be 1+, not {0:n}".format(
                 chunksize))
 
-    task_batches = mpp.Pool._get_tasks(func, iterable, chunksize)
-    result = mpp.IMapIterator(self)
+    task_batches = multiprocessing.pool.Pool._get_tasks(
+        func, iterable, chunksize)
+    result = multiprocessing.pool.IMapIterator(self)
     self._taskqueue.put(
         (
             self._guarded_task_generation(result._job,
-                                          mpp.starmapstar,
+                                          multiprocessing.pool.starmapstar,
                                           task_batches),
             result._set_length
         ))
