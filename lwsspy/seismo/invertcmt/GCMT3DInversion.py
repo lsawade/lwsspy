@@ -363,7 +363,7 @@ class GCMT3DInversion:
         for _par, _pardirs in self.synt_pardirs.items():
             lpy.print_action(f"    {_par}")
 
-            if _par not in self.nosimpars:
+            if _par in self.nosimpars:
                 temp_synt = read(os.path.join(
                     self.synt_syntdir, "OUTPUT_FILES", "*.sac"))
             else:
