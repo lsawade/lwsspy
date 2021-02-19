@@ -58,6 +58,8 @@ def apply_args_and_kwargs(fn, args, kwargs):
     return fn(*args, **kwargs)
 
 
-def starmap_with_kwargs(pool, fn, args_iter, kwargs_iter):
+def starmap_with_kwargs(
+    pool: multiprocessing.Pool, 
+    fn: , args_iter, kwargs_iter):
     args_for_starmap = zip(repeat(fn), args_iter, kwargs_iter)
     return pool.starmap(apply_args_and_kwargs, args_for_starmap)
