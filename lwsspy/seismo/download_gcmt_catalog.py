@@ -1,14 +1,14 @@
 """
 Python script retrieving the full Global CMT catalog from 1976 to 2020
   - first  download full catalog from 1976 to 2017
-  - second download monthly x talo from 2018 to 2020
+  - second download monthly catalogs from 2018 to 2020
 The reason for doing this instead of using obspy fdsn clien and IRIS
 is because we not only want to retrieve the location but also focal
 mechanisms.
 ----------------------------------------------------------------------
 Result is a big ndk file named full_catalog.ndk
 ----------------------------------------------------------------------
-Adapted from S. Beller
+Adapted to Python from S. Beller's Bash implementation
 Written by S. Beller, 2020-12-19
 """
 

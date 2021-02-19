@@ -2,7 +2,7 @@ import matplotlib
 import os
 
 
-def updaterc(rebuild=False):
+def updaterc(rebuild=True):
     """Updates the rcParams to something generic that looks ok good out of
     the box.
 
@@ -22,8 +22,10 @@ def updaterc(rebuild=False):
     params = {
         'font.family': helvetica,
         'font.size': 12,
-        'pdf.fonttype': 42,
+        'pdf.fonttype': 3,
         'font.weight': 'normal',
+        'ps.useafm': True,
+        'pdf.use14corefonts': True,
         'axes.labelweight': 'normal',
         'axes.labelsize': 'small',
         'axes.titlesize': 'medium',
@@ -88,6 +90,8 @@ def _add_Helvetica():
         pass
     elif "Helvetica Neue" in fonts:
         pass
+    elif "Helvetica" in fonts:
+        return "Helvetica"
     else:
         font_file = os.path.join(
             os.path.dirname(__file__), 'fonts', 'HelveticaNeue.ttc')
