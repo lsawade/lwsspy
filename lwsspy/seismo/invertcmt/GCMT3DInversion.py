@@ -16,7 +16,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from itertools import repeat
 from obspy import read, read_events, Stream
-
+import multiprocessing.pool as mpp
 
 lpy.updaterc()
 
@@ -328,7 +328,7 @@ class GCMT3DInversion:
             else:
                 lpy.print_action(
                     f"Processing in parallel using {self.multiprocesses} cores")
-                with lpy.poolcontext(processes=self.multiprocesses) as p:
+                with mpp.Pool(processes=self.multiprocesses) as p:
                     self.data_dict[_wtype] = self.sumfunc(
                         lpy.starmap_with_kwargs(
                             p, self.process_func,
