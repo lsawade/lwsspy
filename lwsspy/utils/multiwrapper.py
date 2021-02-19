@@ -68,4 +68,4 @@ def starmap_with_kwargs(
     args_for_starmap = zip(repeat(fn), args_iter, kwargs_iter)
 
     return list(tqdm.tqdm(pool.starmap(
-        apply_args_and_kwargs, args_for_starmap, N//pool._processes)), total=N)
+        apply_args_and_kwargs, args_for_starmap, N//pool._processes), total=N))
