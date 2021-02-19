@@ -1,7 +1,7 @@
 from itertools import repeat
 from contextlib import contextmanager
 import multiprocessing
-from typing import List, Union
+from typing import List, Union, Callable, Iterable
 
 
 def split(container, count):
@@ -59,7 +59,9 @@ def apply_args_and_kwargs(fn, args, kwargs):
 
 
 def starmap_with_kwargs(
-    pool: multiprocessing.Pool, 
-    fn: , args_iter, kwargs_iter):
+        pool: multiprocessing.pool.Pool,
+        fn: Callable,
+        args_iter: Iterable,
+        kwargs_iter: Iterable):
     args_for_starmap = zip(repeat(fn), args_iter, kwargs_iter)
     return pool.starmap(apply_args_and_kwargs, args_for_starmap)
