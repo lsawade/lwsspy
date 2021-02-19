@@ -569,7 +569,8 @@ class GCMT3DInversion:
         # Initialize necessary commands
         cmd_list = [[self.launch_method, './bin/xspecfem3D']]
         cwdlist = [self.synt_syntdir]
-        cwdlist.extend([_pardir for _pardir in self.pardirs.values()])
+        cwdlist.extend(
+            [_pardir for _pardir in self.synt_pardirs.values()])
 
         lpy.print_action("Submitting simulations")
         lpy.run_cmds_parallel(cmd_list, cwdlist=cwdlist)
