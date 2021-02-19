@@ -74,7 +74,7 @@ class GCMT3DInversion:
             pardict: dict = dict(depth_in_m=dict(scale=1000.0, pert=None),
                                  time_shift=dict(scale=1.0, pert=None)),
             zero_trace: bool = False,
-            duration: float = 7200.0,
+            duration: float = 3600.0,
             starttime_offset: float = -300.0,
             endtime_offset: float = 0.0,
             download_data: bool = False,
@@ -108,6 +108,7 @@ class GCMT3DInversion:
         self.process_func = process_func
         self.processdict = processdict
         self.duration = duration
+        self.duration_in_m = np.ceil(duration/60.0)
         self.multiprocesses = multiprocesses
         self.sumfunc = lambda results: Stream(results)
 
@@ -485,7 +486,7 @@ class GCMT3DInversion:
         syn_pars["USE_SOURCE_DERIVATIVE"] = False
 
         # Adapt duration
-        syn_pars["RECORD_LENGTH_IN_MINUTES"] = self.duration + 10
+        syn_pars["RECORD_LENGTH_IN_MINUTES"] = self.duration_in_m + 10
 
         # Write Stuff to Par_file
         lpy.write_parfile(syn_pars, syn_parfile)
@@ -521,7 +522,7 @@ class GCMT3DInversion:
                     dsyn_pars["USE_SOURCE_DERIVATIVE"] = False
 
                 # Adapt duration
-                dsyn_pars["RECORD_LENGTH_IN_MINUTES"] = self.duration + 10
+                dsyn_pars["RECORD_LENGTH_IN_MINUTES"] = self.duration_in_m + 10
 
                 # Write Stuff to Par_file
                 lpy.write_parfile(dsyn_pars, dsyn_parfile)
