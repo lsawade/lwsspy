@@ -351,7 +351,7 @@ class GCMT3DInversion:
     def __load_synt__(self):
 
         # Load forward data
-        lpy.print_action("Processing synthetics")
+        lpy.print_action("Loading forward synthetics")
         temp_synt = read(os.path.join(
             self.synt_syntdir, "OUTPUT_FILES", "*.sac"))
 
@@ -359,15 +359,17 @@ class GCMT3DInversion:
             self.synt_dict[_wtype]["synt"] += deepcopy(temp_synt)
 
         # Populate the data dictionary.
+        lpy.print_action("Loading parameter synthetics")
         for _par, _pardirs in self.synt_pardirs.items():
+            lpy.print_action(f"    {_par}")
 
-            # Load foward/perturbed data
-            lpy.print_action("Processing synthetics")
-            temp_synt = read(os.path.join(
-                _pardirs, "OUTPUT_FILES", "*.sac"))
-
-            # Create empty wavetype dict for each parameter
-            self.synt_dict[_par] = dict()
+            if _par not in self.nosimpars:
+                temp_synt = read(os.path.join(
+                    self.synt_syntdir, "OUTPUT_FILES", "*.sac"))
+            else:
+                # Load foward/perturbed data
+                temp_synt = read(os.path.join(
+                    _pardirs, "OUTPUT_FILES", "*.sac"))
 
             # Populate the wavetype Streams.
             for _wtype, _ in self.data_dict.items():
