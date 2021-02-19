@@ -327,8 +327,12 @@ class GCMT3DInversion:
                 self.data_dict[_wtype] = self.process_func(
                     _stream, self.stations, **processdict)
             else:
+                lpy.print_action(
+                    f"Processing in parallel using {self.multiprocesses} cores")
                 self.data_dict[_wtype] = self.sumfunc(
-                    Parallel(n_jobs=self.multiprocesses)(
+                    Parallel(
+                        n_jobs=self.multiprocesses, verbose=50,
+                        prefer='processes')(
                         delayed(self.process_func)(*args, **kwargs)
                         for *args, kwargs in zip(
                             _stream,
