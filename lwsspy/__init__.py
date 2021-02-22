@@ -129,7 +129,7 @@ if "-m" not in sys.argv:
     from .seismo.read_gcmt_catalog import read_gcmt_catalog  # noqa
     from .seismo.read_inventory import flex_read_inventory as read_inventory  # noqa
     from .seismo.source import CMTSource  # noqa
-    from .seismo.cmt_catalog import CMTCatalog  # noqa
+    # from .seismo.cmt_catalog import CMTCatalog  # noqa
     from .seismo.stream_multiply import stream_multiply  # noqa
     from .seismo.validate_cmt import validate_cmt  # noqa
     from .seismo.specfem.cmt2rundir import cmt2rundir  # noqa
