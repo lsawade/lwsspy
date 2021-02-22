@@ -245,8 +245,7 @@ class GCMT3DInversion:
             self.synt_dict[_wtype]["synt"] = Stream()
 
             for _par in self.pardict.keys():
-                if _par not in self.nosimpars:
-                    self.synt_dict[_wtype][_par] = Stream()
+                self.synt_dict[_wtype][_par] = Stream()
 
     def __download_data__(self):
 
@@ -379,7 +378,7 @@ class GCMT3DInversion:
 
     def __process_synt__(self):
 
-        for _wtype, _stream in self.synt_dict['synt'].items():
+        for _wtype, _ in self.processdict.values():
             lpy.print_action("Processing synt for {_wtype}")
 
             # Call processing function and processing dictionary
@@ -402,15 +401,17 @@ class GCMT3DInversion:
 
             if self.multiprocesses < 1:
                 self.synt_dict[_wtype]["synt"] = self.process_func(
-                    _stream, **processdict)
+                    self.synt_dict[_wtype]["synt"], **processdict)
             else:
                 lpy.print_action(
                     f"Processing in parallel using {self.multiprocesses} cores")
                 with mpp.Pool(processes=self.multiprocesses) as p:
                     self.synt_dict[_wtype]["synt"] = lpy.starmap_with_kwargs(
                         p, self.process_func,
-                        zip(_stream, repeat(self.stations)),
-                        repeat(processdict), len(_stream)
+                        zip(self.synt_dict[_wtype]["synt"],
+                            repeat(self.stations)),
+                        repeat(processdict), len(
+                            self.synt_dict[_wtype]["synt"])
                     )
 
         # Process each wavetype.
