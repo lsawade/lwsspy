@@ -378,7 +378,7 @@ class GCMT3DInversion:
 
     def __process_synt__(self):
 
-        for _wtype, _ in self.processdict.values():
+        for _wtype in self.processdict.keys():
             lpy.print_action("Processing synt for {_wtype}")
 
             # Call processing function and processing dictionary
