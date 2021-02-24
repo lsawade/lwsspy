@@ -406,7 +406,8 @@ class GCMT3DInversion:
                 event_latitude=self.cmtsource.latitude,
                 event_longitude=self.cmtsource.longitude)
             )
-            print(f"Stream {_wtype}/{"synt"}: ", len(self.synt_dict[_wtype]["synt"]))
+            print(f"Stream {_wtype}/synt: ",
+                  len(self.synt_dict[_wtype]["synt"]))
             if self.multiprocesses < 1:
                 self.synt_dict[_wtype]["synt"] = self.process_func(
                     self.synt_dict[_wtype]["synt"], **processdict)
