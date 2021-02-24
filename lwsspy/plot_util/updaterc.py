@@ -1,5 +1,6 @@
 import matplotlib
 import os
+import platform
 
 
 def updaterc(rebuild=True):
@@ -13,14 +14,17 @@ def updaterc(rebuild=True):
 
     Last modified: Lucas Sawade, 2020.09.15 01.00 (lsawade@princeton.edu)
     """
-    # Add Helvetica from own font dir if not available
-    helvetica = _add_Helvetica()
+    if platform.system() == "Darwin":
+        # Add Helvetica from own font dir if not available
+        font = _add_Helvetica()
+    else:
+        font = "Arial"
 
     if rebuild:
         matplotlib.font_manager._rebuild()
 
     params = {
-        'font.family': helvetica,
+        'font.family': font,
         'font.size': 12,
         'pdf.fonttype': 3,
         'font.weight': 'normal',
