@@ -31,6 +31,7 @@ def updaterc(rebuild=False):
         'font.weight': 'normal',
         'ps.useafm': True,
         'pdf.use14corefonts': True,
+        'axes.unicode_minus': False,
         'axes.labelweight': 'normal',
         'axes.labelsize': 'small',
         'axes.titlesize': 'medium',
