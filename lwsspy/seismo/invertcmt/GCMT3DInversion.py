@@ -683,7 +683,11 @@ class GCMT3DInversion:
         # Window Data
         self.__window__()
 
-        return self.__compute_cost__(), *self.__compute_gradient_and_hessian__()
+        # Evaluate
+        cost = self.__compute_cost__()
+        g, h = self.__compute_gradient_and_hessian__()
+
+        return cost, g, h
 
     def __compute_cost__(self):
 
