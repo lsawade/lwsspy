@@ -689,7 +689,9 @@ class GCMT3DInversion:
     def misfit_walk(self, pardict: dict):
         """Pardict containing an array of the walk parameters.
         Then we walk entirely around the parameter space."""
-        pass
+
+        if len(pardict) > 2:
+            raise ValueError("Only two parameters at a time.")
 
     def plot_data(self, outputdir="."):
         plt.switch_backend("agg")
@@ -847,6 +849,7 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
     # plot seismogram
     fig = plt.figure(figsize=(15, 5))
     ax1 = plt.subplot(211)
+    plt.subplots_adjust(left=0.025, right=0.975)
     ax1.plot(times, obsd.data, color="black", linewidth=0.75,
              label="Observed")
     if isinstance(synt, Trace):
@@ -854,6 +857,7 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
                  label="Synthetic")
     ax1.set_xlim(times[0], times[-1])
     ax1.legend(loc='upper right', frameon=False, ncol=3, prop={'size': 11})
+    lpy.remove_xticklabels(ax1)
 
     # Setting top left corner text manually
     if isinstance(tag, str):
