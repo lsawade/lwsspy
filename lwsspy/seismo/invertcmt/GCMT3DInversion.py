@@ -857,7 +857,7 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
                  label="Synthetic")
     ax1.set_xlim(times[0], times[-1])
     ax1.legend(loc='upper right', frameon=False, ncol=3, prop={'size': 11})
-    lpy.remove_xticklabels(ax1)
+    ax1.tick_params(labelbottom=False, labeltop=False)
 
     # Setting top left corner text manually
     if isinstance(tag, str):
