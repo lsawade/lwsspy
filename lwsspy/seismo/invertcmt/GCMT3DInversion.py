@@ -425,7 +425,7 @@ class GCMT3DInversion:
 
         # Process each wavetype.
         for _par, _parsubdict in self.pardict.items():
-            for _wtype, _stream in self.data_dict.items():
+            for _wtype in self.synt_dict.keys():
                 lpy.print_action(f"Processing {_par} for {_wtype}")
 
                 # Call processing function and processing dictionary
@@ -446,17 +446,20 @@ class GCMT3DInversion:
                     event_longitude=self.cmtsource.longitude)
                 )
                 print(f"Stream {_wtype}/{_par}: ",
-                      len(self.synt_dict[_wtype]["synt"]))
+                      len(self.synt_dict[_wtype][_par]))
 
                 if parallel:
                     self.synt_dict[_wtype][_par] = self.sumfunc(
                         lpy.starmap_with_kwargs(
                             p, self.process_func,
-                            zip(_stream, repeat(self.stations)),
-                            repeat(processdict), len(_stream))).copy()
+                            zip(self.synt_dict[_wtype]
+                                [_par], repeat(self.stations)),
+                            repeat(processdict),
+                            len(self.synt_dict[_wtype][_par]))).copy()
                 else:
                     self.synt_dict[_wtype][_par] = self.process_func(
-                        _stream, self.stations, **processdict)
+                        self.synt_dict[_wtype][_par], self.stations,
+                        **processdict)
                 # divide by perturbation value and scale by scale length
                 if _parsubdict["pert"] is not None:
                     if _parsubdict["pert"] != 1.0:
