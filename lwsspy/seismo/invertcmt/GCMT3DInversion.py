@@ -361,6 +361,7 @@ class GCMT3DInversion:
         lpy.print_action("Loading forward synthetics")
         temp_synt = read(os.path.join(
             self.synt_syntdir, "OUTPUT_FILES", "*.sac"))
+        print("loaded type", type(temp_synt))
 
         for _wtype, _ in self.data_dict.items():
             self.synt_dict[_wtype]["synt"] = temp_synt.copy()
