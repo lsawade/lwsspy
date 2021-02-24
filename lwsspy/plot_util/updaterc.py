@@ -18,7 +18,7 @@ def updaterc(rebuild=True):
         # Add Helvetica from own font dir if not available
         font = _add_Helvetica()
     else:
-        font = "Liberation"
+        font = "DejaVuSans"
 
     if rebuild:
         matplotlib.font_manager._rebuild()
