@@ -21,7 +21,7 @@ from itertools import repeat
 from obspy import read, read_events, Stream, Trace
 import multiprocessing.pool as mpp
 
-lpy.updaterc()
+lpy.updaterc(rebuild=False)
 
 
 # Main parameters
