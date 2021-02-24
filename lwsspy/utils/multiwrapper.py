@@ -2,7 +2,6 @@ from itertools import repeat
 from contextlib import contextmanager
 import multiprocessing
 from typing import List, Union, Callable, Iterable
-import tqdm
 
 
 def split(container, count):
