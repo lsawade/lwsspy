@@ -387,6 +387,10 @@ class GCMT3DInversion:
 
     def __process_synt__(self):
 
+        if self.multiprocesses > 1:
+            parallel = True
+            p = mpp.Pool(processes=self.multiprocesses)
+
         for _wtype in self.processdict.keys():
             lpy.print_action(f"Processing synt for {_wtype}")
 
@@ -409,21 +413,21 @@ class GCMT3DInversion:
             )
             print(f"Stream {_wtype}/synt: ",
                   len(self.synt_dict[_wtype]["synt"]))
-            if self.multiprocesses <= 1:
-                self.synt_dict[_wtype]["synt"] = self.process_func(
-                    self.synt_dict[_wtype]["synt"], **processdict)
-            else:
+
+            if parallel:
                 lpy.print_action(
                     f"Processing in parallel using {self.multiprocesses} cores")
-                with mpp.Pool(processes=self.multiprocesses) as p:
-                    self.synt_dict[_wtype]["synt"] = self.sumfunc(
-                        lpy.starmap_with_kwargs(
-                            p, self.process_func,
-                            zip(self.synt_dict[_wtype]["synt"],
-                                repeat(self.stations)),
-                            repeat(processdict), len(
-                                self.synt_dict[_wtype]["synt"])
-                        ))
+                self.synt_dict[_wtype]["synt"] = self.sumfunc(
+                    lpy.starmap_with_kwargs(
+                        p, self.process_func,
+                        zip(self.synt_dict[_wtype]["synt"],
+                            repeat(self.stations)),
+                        repeat(processdict), len(
+                            self.synt_dict[_wtype]["synt"])
+                    ))
+            else:
+                self.synt_dict[_wtype]["synt"] = self.process_func(
+                    self.synt_dict[_wtype]["synt"], **processdict)
 
         # Process each wavetype.
         for _par, _parsubdict in self.pardict.items():
@@ -449,17 +453,16 @@ class GCMT3DInversion:
                 )
                 print(f"Stream {_wtype}/{_par}: ",
                       len(self.synt_dict[_wtype]["synt"]))
-                if self.multiprocesses < 1:
+
+                if parallel:
+                    self.synt_dict[_wtype][_par] = self.sumfunc(
+                        lpy.starmap_with_kwargs(
+                            p, self.process_func,
+                            zip(_stream, repeat(self.stations)),
+                            repeat(processdict), len(_stream)))
+                else:
                     self.synt_dict[_wtype][_par] = self.process_func(
                         _stream, self.stations, **processdict)
-                else:
-                    with mpp.Pool(processes=self.multiprocesses) as p:
-                        self.synt_dict[_wtype][_par] = self.sumfunc(
-                            lpy.starmap_with_kwargs(
-                                p, self.process_func,
-                                zip(_stream, repeat(self.stations)),
-                                repeat(processdict), len(_stream)))
-
                 # divide by perturbation value and scale by scale length
                 if _parsubdict["pert"] is not None:
                     if _parsubdict["pert"] != 1.0:
@@ -471,6 +474,8 @@ class GCMT3DInversion:
                 if _par == "time_shift":
                     self.synt_dict[_wtype][_par].differentiate(
                         method='gradient')
+        if parallel:
+            p.close()
 
     def __window__(self):
 
