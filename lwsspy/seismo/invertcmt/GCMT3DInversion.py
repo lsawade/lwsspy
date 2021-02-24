@@ -342,7 +342,7 @@ class GCMT3DInversion:
                             p, self.process_func,
                             zip(_stream, repeat(self.stations)),
                             repeat(processdict), len(_stream))
-                    )
+                    ).copy()
 
     def __load_synt__(self):
 
@@ -412,7 +412,7 @@ class GCMT3DInversion:
                             repeat(self.stations)),
                         repeat(processdict), len(
                             self.synt_dict[_wtype]["synt"])
-                    ))
+                    )).copy()
             else:
                 self.synt_dict[_wtype]["synt"] = self.process_func(
                     self.synt_dict[_wtype]["synt"], **processdict)
@@ -447,7 +447,7 @@ class GCMT3DInversion:
                         lpy.starmap_with_kwargs(
                             p, self.process_func,
                             zip(_stream, repeat(self.stations)),
-                            repeat(processdict), len(_stream)))
+                            repeat(processdict), len(_stream))).copy()
                 else:
                     self.synt_dict[_wtype][_par] = self.process_func(
                         _stream, self.stations, **processdict)
