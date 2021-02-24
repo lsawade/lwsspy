@@ -719,7 +719,7 @@ class GCMT3DInversion:
                     fig = plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
                                            tag=_wtype)
                     pdf.savefig()  # saves the current figure into a pdf page
-                    fig.close()
+                    plt.close(fig)
 
                     # We can also set the file's metadata via the PdfPages object:
                 d = pdf.infodict()
