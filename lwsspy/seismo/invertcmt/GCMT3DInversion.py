@@ -772,16 +772,13 @@ def plot_seismograms(obsd: Trace, synt: Trace or None = None,
                       for i in range(synt.stats.npts)]
 
     # plot seismogram
-    if synt is not None:
-        fig = plt.figure(figsize=(15, 5))
-        ax1 = plt.subplot(211)
-    else:
-        fig = plt.figure(figsize=(15, 2))
-        ax1 = plt.subplot(111)
+    fig = plt.figure(figsize=(15, 5))
+    ax1 = plt.subplot(211)
     ax1.plot(times, obsd.data, color="black", linewidth=0.75,
              label="Observed")
-    ax1.plot(times_synt, synt.data, color="red", linewidth=0.75,
-             label="Synthetic")
+    if synt is not None:
+        ax1.plot(times_synt, synt.data, color="red", linewidth=0.75,
+                 label="Synthetic")
     ax1.set_xlim(times[0], times[-1])
     ax1.legend(loc='upper right', frameon=False, ncol=3, prop={'size': 11})
 
@@ -797,8 +794,9 @@ def plot_seismograms(obsd: Trace, synt: Trace or None = None,
         ax2 = plt.subplot(212)
         ax2.plot(times, lpy.envelope(obsd.data), color="black",
                  linewidth=1.0, label="Observed")
-        ax2.plot(times, lpy.envelope(synt.data), color="red", linewidth=1,
-                 label="Synthetic")
+        if synt is not None:
+            ax2.plot(times, lpy.envelope(synt.data), color="red", linewidth=1,
+                     label="Synthetic")
         ax2.set_xlim(times[0], times[-1])
         ax2.set_xlabel("Time [s]", fontsize=13)
         lpy.plot_label(ax2, "Envelope", location=1, dist=0.005)
