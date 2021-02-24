@@ -27,7 +27,7 @@ def updaterc(rebuild=False):
     params = {
         # 'font.family': font,
         'font.size': 12,
-        'pdf.fonttype': 3,
+        # 'pdf.fonttype': 3,
         'font.weight': 'normal',
         'ps.useafm': True,
         'pdf.use14corefonts': True,
