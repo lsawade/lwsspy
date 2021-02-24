@@ -3,7 +3,7 @@ import os
 import platform
 
 
-def updaterc(rebuild=True):
+def updaterc(rebuild=False):
     """Updates the rcParams to something generic that looks ok good out of
     the box.
 
@@ -25,7 +25,7 @@ def updaterc(rebuild=True):
         matplotlib.font_manager._rebuild()
 
     params = {
-        'font.family': font,
+        # 'font.family': font,
         'font.size': 12,
         'pdf.fonttype': 3,
         'font.weight': 'normal',
