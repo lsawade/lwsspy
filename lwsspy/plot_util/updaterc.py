@@ -14,18 +14,18 @@ def updaterc(rebuild=False):
 
     Last modified: Lucas Sawade, 2020.09.15 01.00 (lsawade@princeton.edu)
     """
-    if platform.system() == "Darwin":
-        # Add Helvetica from own font dir if not available
-        # font = _add_Helvetica()
-        font = 'sans-serif'
-    else:
-        font = 'LiberationSans-Regular'
+    # if platform.system() == "Darwin":
+    #     # Add Helvetica from own font dir if not available
+    #     # font = _add_Helvetica()
+    #     font = 'sans-serif'
+    # else:
+    #     font = 'LiberationSans-Regular'
 
-    if rebuild:
-        matplotlib.font_manager._rebuild()
+    # if rebuild:
+    #     matplotlib.font_manager._rebuild()
 
     params = {
-        # 'font.family': font,
+        'font.family': "Helvetica",
         'font.size': 12,
         # 'pdf.fonttype': 3,
         'font.weight': 'normal',
