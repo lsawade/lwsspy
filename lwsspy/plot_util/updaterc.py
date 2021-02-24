@@ -16,7 +16,8 @@ def updaterc(rebuild=True):
     """
     if platform.system() == "Darwin":
         # Add Helvetica from own font dir if not available
-        font = _add_Helvetica()
+        # font = _add_Helvetica()
+        font = 'sans-serif'
     else:
         font = 'LiberationSans-Regular'
 
@@ -81,26 +82,26 @@ def updaterc(rebuild=True):
     matplotlib.rcParams.update(params)
 
 
-def _add_Helvetica():
+# def _add_Helvetica():
 
-    # Check if Helvetica in system fonts
-    from matplotlib import font_manager
-    fonts = [os.path.basename(x).split(".")[0]
-             for x in font_manager.findSystemFonts(
-        fontpaths=None)]
-    fonts.sort()
-    # print(fonts)
-    if "HelveticaNeue" in fonts:
-        pass
-    elif "Helvetica Neue" in fonts:
-        pass
-    elif "Helvetica" in fonts:
-        return "Helvetica"
-    else:
-        font_file = os.path.join(
-            os.path.dirname(__file__), 'fonts', 'HelveticaNeue.ttc')
-        font_manager.fontManager.addfont(font_file)
-    return "Helvetica Neue"
+#     # Check if Helvetica in system fonts
+#     from matplotlib import font_manager
+#     fonts = [os.path.basename(x).split(".")[0]
+#              for x in font_manager.findSystemFonts(
+#         fontpaths=None)]
+#     fonts.sort()
+#     # print(fonts)
+#     if "HelveticaNeue" in fonts:
+#         pass
+#     elif "Helvetica Neue" in fonts:
+#         pass
+#     elif "Helvetica" in fonts:
+#         return "Helvetica"
+#     else:
+#         font_file = os.path.join(
+#             os.path.dirname(__file__), 'fonts', 'HelveticaNeue.ttc')
+#         font_manager.fontManager.addfont(font_file)
+#     return "Helvetica Neue"
 
 
 def updaterc_pres(rebuild=False):
