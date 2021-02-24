@@ -15,6 +15,7 @@ from copy import deepcopy
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
+from matplotlib.backends.backend_pdf import PdfPages
 from itertools import repeat
 from obspy import read, read_events, Stream, Trace
 import multiprocessing.pool as mpp
@@ -702,31 +703,31 @@ class GCMT3DInversion:
     def plot_windows(self, outputdir="."):
         plt.switch_backend("agg")
         for _wtype in self.processdict.keys():
-            with PdfPages(os.path.join(outputdir, f"traces_{_wtype}") as pdf:
+            with PdfPages(os.path.join(outputdir, f"traces_{_wtype}")) as pdf:
                 for obsd_tr in self.data_dict[_wtype]:
                     try:
-                        synt_tr=synthetic.select(
+                        synt_tr = synthetic.select(
                             station=obs_tr.stats.station,
                             network=obs_tr.stats.network,
                             component=component)[0]
                     except Exception as err:
                         print("Couldn't find corresponding synt for obsd trace(%s):"
-                             "%s" % (obs_tr.id, err))
+                              "%s" % (obs_tr.id, err))
                         continue
 
-                    fig=plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
+                    fig = plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
                                            tag=_wtype)
                     pdf.savefig()  # saves the current figure into a pdf page
                     fig.close()
 
-                          # We can also set the file's metadata via the PdfPages object:
-                d=pdf.infodict()
-                d['Title']=f"{_wtype.capitalize()}-Wave-PDF"
-                d['Author']='Lucas Sawade'
-                d['Subject']='Trace comparison in one pdf'
-                d['Keywords']='seismology, moment tensor inversion'
-                d['CreationDate']=datetime.datetime.today()
-                d['ModDate']=datetime.datetime.today()
+                    # We can also set the file's metadata via the PdfPages object:
+                d = pdf.infodict()
+                d['Title'] = f"{_wtype.capitalize()}-Wave-PDF"
+                d['Author'] = 'Lucas Sawade'
+                d['Subject'] = 'Trace comparison in one pdf'
+                d['Keywords'] = 'seismology, moment tensor inversion'
+                d['CreationDate'] = datetime.datetime.today()
+                d['ModDate'] = datetime.datetime.today()
 
     @ staticmethod
     def __create_dir__(dir, overwrite=False):
@@ -741,30 +742,30 @@ class GCMT3DInversion:
 
 
 def plot_new_seismogram(obsd: Trace, synt: Trace,
-                        cmtsource: Union[lpy.CMTSource, None]=None,
-                        tag: Union[str, None]=None):
+                        cmtsource: Union[lpy.CMTSource, None] = None,
+                        tag: Union[str, None] = None):
 
-    station=obsd.stats.station
-    network=obsd.stats.network
-    channel=obsd.stats.channel
-    location=obsd.stats.location
+    station = obsd.stats.station
+    network = obsd.stats.network
+    channel = obsd.stats.channel
+    location = obsd.stats.location
 
-    trace_id=f"{network}.{station}.{location}.{channel}"
+    trace_id = f"{network}.{station}.{location}.{channel}"
 
     # Times and offsets computed individually, since the grid search applies
     # a timeshift which changes the times of the traces.
     if cmtsource is None:
-        offset=0
+        offset = 0
     else:
-        offset=obsd.stats.starttime - cmtsource.cmt_time
-        offset_synt=synt.stats.starttime - cmtsource.cmt_time
+        offset = obsd.stats.starttime - cmtsource.cmt_time
+        offset_synt = synt.stats.starttime - cmtsource.cmt_time
 
-    times=[offset + obsd.stats.delta * i for i in range(obsd.stats.npts)]
-    times_synt=[offset_synt + synt.stats.delta * i
+    times = [offset + obsd.stats.delta * i for i in range(obsd.stats.npts)]
+    times_synt = [offset_synt + synt.stats.delta * i
                   for i in range(synt.stats.npts)]
-    fig=plt.figure(figsize=(15, 5))
+    fig = plt.figure(figsize=(15, 5))
     # plot seismogram
-    ax1=plt.subplot(211)
+    ax1 = plt.subplot(211)
     ax1.plot(times, obsd.data, color="black", linewidth=0.75,
              label="Observed")
     ax1.plot(times_synt, synt.data, color="red", linewidth=0.75,
@@ -774,13 +775,13 @@ def plot_new_seismogram(obsd: Trace, synt: Trace,
 
     # Setting top left corner text manually
     if isinstance(tag, str):
-        label=f"{trace_id}\n{tag}"
+        label = f"{trace_id}\n{tag}"
     else:
-        label=f"{trace_id}"
+        label = f"{trace_id}"
     lpy.plot_label(ax1, label, location=1)
 
     # plot envelope
-    ax2=plt.subplot(212)
+    ax2 = plt.subplot(212)
     ax2.plot(times, lpy.envelope(obsd.data), color="black",
              linewidth=1.0, label="Observed")
     ax2.plot(times, lpy.envelope(synt.data), color="red", linewidth=1,
@@ -791,13 +792,13 @@ def plot_new_seismogram(obsd: Trace, synt: Trace,
 
     try:
         for win in obsd.stats.windows:
-            left=win[0] + offset
-            right=win[1] + offset
-            re1=Rectangle((left, ax1.get_ylim()[0]), right - left,
+            left = win[0] + offset
+            right = win[1] + offset
+            re1 = Rectangle((left, ax1.get_ylim()[0]), right - left,
                             ax1.get_ylim()[1] - ax1.get_ylim()[0],
                             color="blue", alpha=0.25, zorder=-1)
             ax1.add_patch(re1)
-            re2=Rectangle((left, ax2.get_ylim()[0]), right - left,
+            re2 = Rectangle((left, ax2.get_ylim()[0]), right - left,
                             ax2.get_ylim()[1] - ax2.get_ylim()[0],
                             color="blue", alpha=0.25, zorder=-1)
             ax2.add_patch(re2)
