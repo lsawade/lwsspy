@@ -690,7 +690,7 @@ class GCMT3DInversion:
     def plot_data(self, outputdir="."):
         plt.switch_backend("agg")
         for _wtype in self.processdict.keys():
-            with PdfPages(os.path.join(outputdir, f"traces_{_wtype}.pdf")) as pdf:
+            with PdfPages(os.path.join(outputdir, f"data_{_wtype}.pdf")) as pdf:
                 for obsd_tr in self.data_dict[_wtype]:
                     fig = plot_seismograms(obsd_tr, cmtsource=self.cmtsource,
                                            tag=_wtype)
@@ -709,7 +709,7 @@ class GCMT3DInversion:
     def plot_windows(self, outputdir="."):
         plt.switch_backend("agg")
         for _wtype in self.processdict.keys():
-            with PdfPages(os.path.join(outputdir, f"traces_{_wtype}.pdf")) as pdf:
+            with PdfPages(os.path.join(outputdir, f"windows_{_wtype}.pdf")) as pdf:
                 for obsd_tr in self.data_dict[_wtype]:
                     try:
                         synt_tr = self.synt_dict[_wtype]["synt"].select(
