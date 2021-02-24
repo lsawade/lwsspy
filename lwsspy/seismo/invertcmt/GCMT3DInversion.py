@@ -303,7 +303,7 @@ class GCMT3DInversion:
 
         # Populate the data dictionary.
         for _wtype, _stream in self.data_dict.items():
-            self.data_dict[_wtype] += deepcopy(self.data)
+            self.data_dict[_wtype] = self.data.copy()
 
     def __process_data__(self):
 
