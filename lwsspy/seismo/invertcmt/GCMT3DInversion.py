@@ -747,7 +747,7 @@ class GCMT3DInversion:
                 pass
 
 
-def plot_seismograms(obsd: Trace, synt: Trace or None = None,
+def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
                      cmtsource: Union[lpy.CMTSource, None] = None,
                      tag: Union[str, None] = None):
     station = obsd.stats.station
@@ -763,11 +763,11 @@ def plot_seismograms(obsd: Trace, synt: Trace or None = None,
         offset = 0
     else:
         offset = obsd.stats.starttime - cmtsource.cmt_time
-        if synt is not None:
+        if isinstance(synt, Trace):
             offset_synt = synt.stats.starttime - cmtsource.cmt_time
 
     times = [offset + obsd.stats.delta * i for i in range(obsd.stats.npts)]
-    if synt is not None:
+    if isinstance(synt, Trace):
         times_synt = [offset_synt + synt.stats.delta * i
                       for i in range(synt.stats.npts)]
 
@@ -776,7 +776,7 @@ def plot_seismograms(obsd: Trace, synt: Trace or None = None,
     ax1 = plt.subplot(211)
     ax1.plot(times, obsd.data, color="black", linewidth=0.75,
              label="Observed")
-    if synt is not None:
+    if isinstance(synt, Trace):
         ax1.plot(times_synt, synt.data, color="red", linewidth=0.75,
                  label="Synthetic")
     ax1.set_xlim(times[0], times[-1])
@@ -793,28 +793,27 @@ def plot_seismograms(obsd: Trace, synt: Trace or None = None,
     ax2 = plt.subplot(212)
     ax2.plot(times, lpy.envelope(obsd.data), color="black",
              linewidth=1.0, label="Observed")
-    if synt is not None:
+    if isinstance(synt, Trace):
         ax2.plot(times, lpy.envelope(synt.data), color="red", linewidth=1,
                  label="Synthetic")
     ax2.set_xlim(times[0], times[-1])
     ax2.set_xlabel("Time [s]", fontsize=13)
     lpy.plot_label(ax2, "Envelope", location=1, dist=0.005)
-
-    try:
-        for win in obsd.stats.windows:
-            left = win[0] + offset
-            right = win[1] + offset
-            re1 = Rectangle((left, ax1.get_ylim()[0]), right - left,
-                            ax1.get_ylim()[1] - ax1.get_ylim()[0],
-                            color="blue", alpha=0.25, zorder=-1)
-            ax1.add_patch(re1)
-            if synt is not None:
+    if isinstance(synt, Trace):
+        try:
+            for win in obsd.stats.windows:
+                left = win[0] + offset
+                right = win[1] + offset
+                re1 = Rectangle((left, ax1.get_ylim()[0]), right - left,
+                                ax1.get_ylim()[1] - ax1.get_ylim()[0],
+                                color="blue", alpha=0.25, zorder=-1)
+                ax1.add_patch(re1)
                 re2 = Rectangle((left, ax2.get_ylim()[0]), right - left,
                                 ax2.get_ylim()[1] - ax2.get_ylim()[0],
                                 color="blue", alpha=0.25, zorder=-1, box=False)
                 ax2.add_patch(re2)
-    except Exception as e:
-        print(e)
+        except Exception as e:
+            print(e)
 
     return fig
 
