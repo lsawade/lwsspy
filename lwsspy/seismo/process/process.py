@@ -312,7 +312,6 @@ def process_stream(st: Stream, inventory: Union[Inventory, None] = None,
 
     # rotate
     if rotate_flag:
-        print("ROTATING")
         st = rotate_stream(st, event_latitude, event_longitude,
                            inventory=inventory, mode="ALL->RT",
                            sanity_check=sanity_check)
