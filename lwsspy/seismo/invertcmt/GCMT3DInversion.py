@@ -849,7 +849,7 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
     # Figure Setup
     fig = plt.figure(figsize=(15, 5))
     ax1 = plt.subplot(211)
-    plt.subplots_adjust(left=0.05, right=0.95, top=0.975)
+    plt.subplots_adjust(left=0.03, right=0.97, top=0.95)
 
     ax1.plot(times, obsd.data, color="black", linewidth=0.75,
              label="Observed")
