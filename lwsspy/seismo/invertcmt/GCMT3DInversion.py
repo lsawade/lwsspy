@@ -789,7 +789,7 @@ class GCMT3DInversion:
             with PdfPages(os.path.join(
                     outputdir,
                     f"{network}.{station}_{_wtype}_derivatives.pdf")) as pdf:
-                for _par, _stream in self.synt_dict[_wtype].keys():
+                for _par in self.synt_dict[_wtype].keys():
                     if _par != "synt":
                         try:
                             synt = self.synt_dict[_wtype][_par].select(
