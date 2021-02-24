@@ -363,7 +363,7 @@ class GCMT3DInversion:
             self.synt_syntdir, "OUTPUT_FILES", "*.sac"))
 
         for _wtype, _ in self.data_dict.items():
-            self.synt_dict[_wtype]["synt"] += deepcopy(temp_synt)
+            self.synt_dict[_wtype]["synt"] += temp_synt.copy()
 
         # Populate the data dictionary.
         lpy.print_action("Loading parameter synthetics")
@@ -380,7 +380,7 @@ class GCMT3DInversion:
 
             # Populate the wavetype Streams.
             for _wtype, _ in self.data_dict.items():
-                self.synt_dict[_wtype][_par] += deepcopy(temp_synt)
+                self.synt_dict[_wtype][_par] += temp_synt.copy()
 
         del temp_synt
 
@@ -408,7 +408,7 @@ class GCMT3DInversion:
             )
             print(f"Stream {_wtype}/synt: ",
                   len(self.synt_dict[_wtype]["synt"]))
-            if self.multiprocesses < 1:
+            if self.multiprocesses <= 1:
                 self.synt_dict[_wtype]["synt"] = self.process_func(
                     self.synt_dict[_wtype]["synt"], **processdict)
             else:
