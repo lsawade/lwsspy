@@ -65,6 +65,7 @@ if "-m" not in sys.argv:
     from .math.cart2sph import cart2sph  # noqa
     from .math.convm import convm  # noqa
     from .math.eigsort import eigsort  # noqa
+    from .math.envelope import envelope  # noqa
     from .math.geo2cart import geo2cart  # noqa
     from .math.cart2geo import cart2geo  # noqa
     from .math.cart2sph import cart2sph  # noqa
