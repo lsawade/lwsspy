@@ -378,6 +378,10 @@ class GCMT3DInversion:
         if self.multiprocesses > 1:
             parallel = True
             p = mpp.Pool(processes=self.multiprocesses)
+            lpy.print_action(
+                f"Processing in parallel using {self.multiprocesses} cores")
+        else:
+            parallel = False
 
         for _wtype in self.processdict.keys():
             lpy.print_action(f"Processing synt for {_wtype}")
@@ -403,8 +407,6 @@ class GCMT3DInversion:
                   len(self.synt_dict[_wtype]["synt"]))
 
             if parallel:
-                lpy.print_action(
-                    f"Processing in parallel using {self.multiprocesses} cores")
                 self.synt_dict[_wtype]["synt"] = self.sumfunc(
                     lpy.starmap_with_kwargs(
                         p, self.process_func,
