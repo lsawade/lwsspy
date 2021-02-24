@@ -809,9 +809,9 @@ class GCMT3DInversion:
                                       f"-- {err}")
                                 continue
 
-                            fig = plot_seismograms(synt_tr,
-                                                   cmtsource=self.cmtsource,
-                                                   tag=_wtype)
+                            fig = plot_seismograms(
+                                synt_tr, cmtsource=self.cmtsource,
+                                tag=f"{_wtype.capitalize()}-{_par.capitalize()})
                             pdf.savefig()  # saves the current figure into a pdf page
                             plt.close(fig)
 
