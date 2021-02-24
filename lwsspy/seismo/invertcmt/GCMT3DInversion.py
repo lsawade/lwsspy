@@ -685,6 +685,19 @@ class GCMT3DInversion:
 
         return gradient
 
+    def __compute_gradient_and_hessian__(self):
+
+        gradient = np.zeros_like(self.model)
+        hessian = np.zeros_like(self.model)
+
+        for _wtype in self.processdict.keys():
+            tmp_g, tmp_h = lpy.stream_grad_frechet_win(
+                self.data_dict[_wtype], self.synt_dict[_wtype]["synt"],
+                [self.synt_dict[_wtype][_par] for _par in self.pardict.keys()])
+            gradient += tmp_g
+            hessian += tmp_h
+        return gradient, np.outer(hessian, hessian)
+
     def misfit_walk(self, pardict: dict):
         """Pardict containing an array of the walk parameters.
         Then we walk entirely around the parameter space."""
