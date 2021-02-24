@@ -781,6 +781,49 @@ class GCMT3DInversion:
                 d['CreationDate'] = datetime.datetime.today()
                 d['ModDate'] = datetime.datetime.today()
 
+    def plot_station_der(self, network: str, station: str, outputdir="."):
+        plt.switch_backend("pdf")
+        # Get station data
+        for _wtype in self.processdict.keys():
+            # Plot PDF for each wtype
+            with PdfPages(os.path.join(
+                    outputdir,
+                    f"{network}.{station}_{_wtype}_derivatives.pdf")) as pdf:
+                for _par, _stream in self.synt_dict[_wtype].keys():
+                    if _par != "synt":
+                        try:
+                            synt = self.synt_dict[_wtype][_par].select(
+                                network=network, station=station)
+                        except Exception as e:
+                            print(f"Could load station "
+                                  f"{network}{station} -- {e}")
+                        for component in ["Z", "R", "T"]:
+                            try:
+                                synt_tr = synt.select(
+                                    station=station, network=network,
+                                    component=component)[0]
+                            except Exception as err:
+                                print(f"Couldn't find obs or syn "
+                                      f"for NET.STA.COMP:"
+                                      f" {network}.{station}.{component} "
+                                      f"-- {err}")
+                                continue
+
+                            fig = plot_seismograms(synt_tr,
+                                                   cmtsource=self.cmtsource,
+                                                   tag=_wtype)
+                            pdf.savefig()  # saves the current figure into a pdf page
+                            plt.close(fig)
+
+                    # We can also set the file's metadata via the PdfPages object:
+                d = pdf.infodict()
+                d['Title'] = f"{_wtype.capitalize()}-Wave-PDF"
+                d['Author'] = 'Lucas Sawade'
+                d['Subject'] = 'Trace comparison in one pdf'
+                d['Keywords'] = 'seismology, moment tensor inversion'
+                d['CreationDate'] = datetime.datetime.today()
+                d['ModDate'] = datetime.datetime.today()
+
     def plot_windows(self, outputdir="."):
         plt.switch_backend("pdf")
         for _wtype in self.processdict.keys():
