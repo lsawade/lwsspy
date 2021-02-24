@@ -319,6 +319,7 @@ class GCMT3DInversion:
 
             # Process dict
             processdict = deepcopy(self.processdict[_wtype]["process"])
+
             processdict.pop("relative_starttime")
             processdict.pop("relative_endtime")
             processdict["starttime"] = starttime
@@ -328,7 +329,7 @@ class GCMT3DInversion:
                 event_latitude=self.cmtsource.latitude,
                 event_longitude=self.cmtsource.longitude)
             )
-
+            print("rotate", processdict["rotate_flag"])
             if self.multiprocesses < 1:
                 self.data_dict[_wtype] = self.process_func(
                     _stream, self.stations, **processdict)
