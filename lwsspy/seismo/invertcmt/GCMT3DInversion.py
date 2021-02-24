@@ -422,7 +422,7 @@ class GCMT3DInversion:
                 self.synt_dict[_wtype]["synt"] = self.process_func(
                     self.synt_dict[_wtype]["synt"], self.stations,
                     **processdict)
-
+        return
         # Process each wavetype.
         for _par, _parsubdict in self.pardict.items():
             for _wtype, _stream in self.data_dict.items():
@@ -704,7 +704,7 @@ class GCMT3DInversion:
     def plot_windows(self, outputdir="."):
         plt.switch_backend("agg")
         for _wtype in self.processdict.keys():
-            with PdfPages(os.path.join(outputdir, f"traces_{_wtype}")) as pdf:
+            with PdfPages(os.path.join(outputdir, f"traces_{_wtype}.pdf")) as pdf:
                 for obsd_tr in self.data_dict[_wtype]:
                     try:
                         synt_tr = self.synt_dict[_wtype]["synt"].select(
@@ -779,7 +779,7 @@ def plot_seismograms(obsd: Trace, synt: Trace,
         label = f"{trace_id}\n{tag}"
     else:
         label = f"{trace_id}"
-    lpy.plot_label(ax1, label, location=1)
+    lpy.plot_label(ax1, label, location=1, dist=0.005, box=False)
 
     # plot envelope
     ax2 = plt.subplot(212)
@@ -789,7 +789,7 @@ def plot_seismograms(obsd: Trace, synt: Trace,
              label="Synthetic")
     ax2.set_xlim(times[0], times[-1])
     ax2.set_xlabel("Time [s]", fontsize=13)
-    lpy.plot_label(ax1, "Envelope", location=1)
+    lpy.plot_label(ax2, "Envelope", location=1, dist=0.005)
 
     try:
         for win in obsd.stats.windows:
@@ -801,7 +801,7 @@ def plot_seismograms(obsd: Trace, synt: Trace,
             ax1.add_patch(re1)
             re2 = Rectangle((left, ax2.get_ylim()[0]), right - left,
                             ax2.get_ylim()[1] - ax2.get_ylim()[0],
-                            color="blue", alpha=0.25, zorder=-1)
+                            color="blue", alpha=0.25, zorder=-1, box=False)
             ax2.add_patch(re2)
     except Exception as e:
         print(e)
