@@ -691,7 +691,7 @@ class GCMT3DInversion:
         hessian = np.zeros_like(self.model)
 
         for _wtype in self.processdict.keys():
-            tmp_g, tmp_h = lpy.stream_grad_frechet_win(
+            tmp_g, tmp_h = lpy.stream_grad_hess_win(
                 self.data_dict[_wtype], self.synt_dict[_wtype]["synt"],
                 [self.synt_dict[_wtype][_par] for _par in self.pardict.keys()])
             gradient += tmp_g
