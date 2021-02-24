@@ -417,7 +417,8 @@ class GCMT3DInversion:
                     )).copy()
             else:
                 self.synt_dict[_wtype]["synt"] = self.process_func(
-                    self.synt_dict[_wtype]["synt"], **processdict)
+                    self.synt_dict[_wtype]["synt"], self.stations,
+                    **processdict)
 
         # Process each wavetype.
         for _par, _parsubdict in self.pardict.items():
