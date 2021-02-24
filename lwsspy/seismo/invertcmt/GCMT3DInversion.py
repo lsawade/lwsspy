@@ -406,7 +406,7 @@ class GCMT3DInversion:
                 event_latitude=self.cmtsource.latitude,
                 event_longitude=self.cmtsource.longitude)
             )
-
+            print(f"Stream {_wtype}/{"synt"}: ", len(self.synt_dict[_wtype]["synt"]))
             if self.multiprocesses < 1:
                 self.synt_dict[_wtype]["synt"] = self.process_func(
                     self.synt_dict[_wtype]["synt"], **processdict)
@@ -444,7 +444,8 @@ class GCMT3DInversion:
                     event_latitude=self.cmtsource.latitude,
                     event_longitude=self.cmtsource.longitude)
                 )
-
+                print(f"Stream {_wtype}/{_par}: ",
+                      len(self.synt_dict[_wtype]["synt"]))
                 if self.multiprocesses < 1:
                     self.synt_dict[_wtype][_par] = self.process_func(
                         _stream, self.stations, **processdict)
@@ -462,7 +463,8 @@ class GCMT3DInversion:
                             self.synt_dict[_wtype][_par],
                             1.0/_parsubdict["pert"] * _parsubdict["scale"])
                 else:
-                    if _parsubdict["scale"] != 1.0:
+                    if (_parsubdict["scale"] != 1.0) \
+                            and (_parsubdict["scale"] is not None):
                         lpy.stream_multiply(
                             self.synt_dict[_wtype][_par],
                             1.0/_parsubdict["pert"] * _parsubdict["scale"])
