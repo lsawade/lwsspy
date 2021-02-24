@@ -668,7 +668,7 @@ class GCMT3DInversion:
         cost = 0
         for _wtype in self.processdict.keys():
 
-            cost += lpy.stream_cost_win(self.data_dict,
+            cost += lpy.stream_cost_win(self.data_dict[_wtype],
                                         self.synt_dict[_wtype]["synt"])
 
         return cost
@@ -679,10 +679,9 @@ class GCMT3DInversion:
 
         for _i, _par in enumerate(self.pardict.keys()):
             for _wtype in self.processdict.keys():
-
                 gradient[_i] += lpy.stream_grad_frechet_win(
-                    self.data_dict[_wtype], self.synt_dict["synt"][_wtype],
-                    self.synt_dict[_par][_wtype])
+                    self.data_dict[_wtype], self.synt_dict[_wtype]["synt"],
+                    self.synt_dict[_wtype][_par])
 
         return gradient
 
