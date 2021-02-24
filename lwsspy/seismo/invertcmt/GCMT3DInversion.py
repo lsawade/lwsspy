@@ -707,7 +707,7 @@ class GCMT3DInversion:
                 d['ModDate'] = datetime.datetime.today()
 
     def plot_windows(self, outputdir="."):
-        plt.switch_backend("agg")
+        plt.switch_backend("pdf")
         for _wtype in self.processdict.keys():
             with PdfPages(os.path.join(outputdir, f"windows_{_wtype}.pdf")) as pdf:
                 for obsd_tr in self.data_dict[_wtype]:
