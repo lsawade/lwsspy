@@ -742,9 +742,9 @@ class GCMT3DInversion:
                 pass
 
 
-def plot_seismogram(obsd: Trace, synt: Trace,
-                    cmtsource: Union[lpy.CMTSource, None] = None,
-                    tag: Union[str, None] = None):
+def plot_seismograms(obsd: Trace, synt: Trace,
+                     cmtsource: Union[lpy.CMTSource, None] = None,
+                     tag: Union[str, None] = None):
 
     station = obsd.stats.station
     network = obsd.stats.network
