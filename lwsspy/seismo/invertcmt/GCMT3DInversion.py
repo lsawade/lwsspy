@@ -663,6 +663,28 @@ class GCMT3DInversion:
 
         return self.__compute_cost__(), self.__compute_gradient__()
 
+    def compute_cost_gradient_hessian(self, model):
+
+        # # Update model
+        # for _i, _scale, _new_model \
+        #         in enumerate(zip(self.scale, model)):
+        #     self.model[_i] = _new_model * _scale
+        self.model = model
+
+        # Write sources for next iteration
+        self.__write_sources__()
+
+        # Run the simulations
+        self.__run_simulations__()
+
+        # Get streams
+        self.process_synt()
+
+        # Window Data
+        self.__window__()
+
+        return self.__compute_cost__(), *self.__compute_gradient_and_hessian__()
+
     def __compute_cost__(self):
 
         cost = 0
@@ -698,12 +720,125 @@ class GCMT3DInversion:
             hessian += tmp_h
         return gradient, np.outer(hessian, hessian)
 
-    def misfit_walk(self, pardict: dict):
+    def misfit_walk(self):
         """Pardict containing an array of the walk parameters.
         Then we walk entirely around the parameter space."""
 
-        if len(pardict) > 2:
-            raise ValueError("Only two parameters at a time.")
+        # if len(pardict) > 2:
+        #     raise ValueError("Only two parameters at a time.")
+
+        # depths = np.arange(self.cmtsource.depth_in_m - 10000,
+        #                    self.cmtsource.depth_in_m + 10100, 1000)
+        # times = np.arange(-10.0, 10.1, 1.0)
+        depths = np.arange(self.cmtsource.depth_in_m - 1000,
+                           self.cmtsource.depth_in_m + 1100, 1000)
+        times = np.arange(-2.0, 2.1, 1.0)
+        t, z = np.meshgrid(times, depths)
+        cost = np.zeros(z.shape)
+        grad = np.zeros((*z.shape, 2))
+        hess = np.zeros((*z.shape, 2, 2))
+        dm = np.zeros((*z.shape, 2))
+        for _i, _dep in enumerate(depths):
+            for _j, _time in enumerate(times):
+                lpy.print_action(f"Computing CgH for: ({_dep} km, {_time} s)")
+                c, g, h = self.compute_cost_and_gradient_hessian(
+                    np.array([_dep, _time]))
+                cost[_i, _j] = c
+                grad[_i, _j, :] = g
+                hess[_i, _j, :, :] = h
+
+        damp = 0.0001
+        # Get the Gauss newton step
+        for _i in range(z.shape[0]):
+            for _j in range(z.shape[1]):
+                dm[_i, _j, :] = np.linalg.solve(
+                    hess[_i, _j, :, :] + damp * np.diag(np.ones(2)), - grad[_i, _j, :])
+
+        extent = [np.min(t), np.max(t), np.min(z), np.max(z)]
+        aspect = (np.max(t) - np.min(t))/(np.max(z) - np.min(z))
+        plt.figure(figsize=(11, 6.5))
+        # Cost
+        ax1 = plt.subplot(3, 4, 9)
+        plt.imshow(cost, interpolation=None, extent=extent, aspect=aspect)
+        lpy.plot_label(ax1, r"$\mathcal{C}$", dist=0)
+        c1 = plt.colorbar()
+        c1.ax.tick_params(labelsize=7)
+        c1.ax.yaxis.offsetText.set_fontsize(7)
+        ax1.axes.invert_yaxis()
+        plt.ylabel(r'$z$')
+        plt.xlabel(r'$t$')
+
+        # Gradient
+        ax2 = plt.subplot(3, 4, 6, sharey=ax1)
+        plt.imshow(grad[:, :, 1], interpolation=None,
+                   extent=extent, aspect=aspect)
+        c2 = plt.colorbar()
+        c2.ax.tick_params(labelsize=7)
+        c2.ax.yaxis.offsetText.set_fontsize(7)
+        ax2.tick_params(labelbottom=False)
+        lpy.plot_label(ax2, r"$g_{\Delta t}$", dist=0)
+
+        ax3 = plt.subplot(3, 4, 10, sharey=ax1)
+        plt.imshow(grad[:, :, 0], interpolation=None,
+                   extent=extent, aspect=aspect)
+        c3 = plt.colorbar()
+        c3.ax.tick_params(labelsize=7)
+        c3.ax.yaxis.offsetText.set_fontsize(7)
+        ax3.tick_params(labelleft=False)
+        lpy.plot_label(ax3, r"$g_z$", dist=0)
+        plt.xlabel(r'$\Delta t$')
+
+        # Hessian
+        ax4 = plt.subplot(3, 4, 3, sharey=ax1)
+        plt.imshow(hess[:, :, 0, 1], interpolation=None,
+                   extent=extent, aspect=aspect)
+        c4 = plt.colorbar()
+        c4.ax.tick_params(labelsize=7)
+        c4.ax.yaxis.offsetText.set_fontsize(7)
+        ax4.tick_params(labelbottom=False)
+        lpy.plot_label(ax4, r"$\mathcal{H}_{z,\Delta t}$", dist=0)
+
+        ax5 = plt.subplot(3, 4, 7, sharey=ax1)
+        plt.imshow(hess[:, :, 1, 1], interpolation=None,
+                   extent=extent, aspect=aspect)
+        c5 = plt.colorbar()
+        c5.ax.tick_params(labelsize=7)
+        c5.ax.yaxis.offsetText.set_fontsize(7)
+        ax5.tick_params(labelleft=False, labelbottom=False)
+        lpy.plot_label(ax5, r"$\mathcal{H}_{\Delta t,\Delta t}$", dist=0)
+
+        ax6 = plt.subplot(3, 4, 11, sharey=ax1)
+        plt.imshow(hess[:, :, 0, 0], interpolation=None,
+                   extent=extent, aspect=aspect)
+        c6 = plt.colorbar()
+        c6.ax.tick_params(labelsize=7)
+        c6.ax.yaxis.offsetText.set_fontsize(7)
+        ax6.tick_params(labelleft=False)
+        lpy.plot_label(ax6, r"$\mathcal{H}_{z,z}$", dist=0)
+        plt.xlabel(r'$\Delta t$')
+
+        # Gradient/Hessian
+        ax7 = plt.subplot(3, 4, 8, sharey=ax1)
+        plt.imshow(dm[:, :, 1], interpolation=None,
+                   extent=extent, aspect=aspect)
+        c7 = plt.colorbar()
+        c7.ax.tick_params(labelsize=7)
+        c7.ax.yaxis.offsetText.set_fontsize(7)
+        ax7.tick_params(labelleft=False, labelbottom=False)
+        lpy.plot_label(ax7, r"$\mathrm{d}\Delta$", dist=0)
+
+        ax8 = plt.subplot(3, 4, 12, sharey=ax1)
+        plt.imshow(dm[:, :, 0], interpolation=None,
+                   extent=extent, aspect=aspect)
+        c8 = plt.colorbar()
+        c8.ax.tick_params(labelsize=7)
+        c8.ax.yaxis.offsetText.set_fontsize(7)
+        ax8.tick_params(labelleft=False)
+        lpy.plot_label(ax8, r"$\mathrm{d}z$", dist=0)
+        plt.xlabel(r'$\Delta t$')
+
+        plt.subplots_adjust(hspace=0.2, wspace=0.15)
+        plt.savefig(f"SyntheticCostGradHess.pdf")
 
     def plot_data(self, outputdir="."):
         plt.switch_backend("agg")
