@@ -687,19 +687,24 @@ class GCMT3DInversion:
         Then we walk entirely around the parameter space."""
         pass
 
-    def plot_data(self):
-        print("Not working right now")
-        return
-        for network in self.stations:
-            for station in network:
-                for _wtype in self.processdict.keys():
-                    streamplot = self.data_dict[_wtype].select(
-                        network=network.code,
-                        station=station.code)
-                    N = len(streamplot)
-                    plt.figure(figsize=(2*N, 10))
-                    streamplot.plot(block=False)
-                    plt.suptitle(_wtype.capitalize())
+    def plot_data(self, outputdir="."):
+        plt.switch_backend("agg")
+        for _wtype in self.processdict.keys():
+            with PdfPages(os.path.join(outputdir, f"traces_{_wtype}.pdf")) as pdf:
+                for obsd_tr in self.data_dict[_wtype]:
+                    fig = plot_seismograms(obsd_tr, cmtsource=self.cmtsource,
+                                           tag=_wtype)
+                    pdf.savefig()  # saves the current figure into a pdf page
+                    plt.close(fig)
+
+                    # We can also set the file's metadata via the PdfPages object:
+                d = pdf.infodict()
+                d['Title'] = f"{_wtype.capitalize()}-Wave-Data-PDF"
+                d['Author'] = 'Lucas Sawade'
+                d['Subject'] = 'Trace comparison in one pdf'
+                d['Keywords'] = 'seismology, moment tensor inversion'
+                d['CreationDate'] = datetime.datetime.today()
+                d['ModDate'] = datetime.datetime.today()
 
     def plot_windows(self, outputdir="."):
         plt.switch_backend("agg")
@@ -742,10 +747,9 @@ class GCMT3DInversion:
                 pass
 
 
-def plot_seismograms(obsd: Trace, synt: Trace,
+def plot_seismograms(obsd: Trace, synt: Trace or None = None,
                      cmtsource: Union[lpy.CMTSource, None] = None,
                      tag: Union[str, None] = None):
-
     station = obsd.stats.station
     network = obsd.stats.network
     channel = obsd.stats.channel
@@ -759,14 +763,21 @@ def plot_seismograms(obsd: Trace, synt: Trace,
         offset = 0
     else:
         offset = obsd.stats.starttime - cmtsource.cmt_time
-        offset_synt = synt.stats.starttime - cmtsource.cmt_time
+        if synt is not None:
+            offset_synt = synt.stats.starttime - cmtsource.cmt_time
 
     times = [offset + obsd.stats.delta * i for i in range(obsd.stats.npts)]
-    times_synt = [offset_synt + synt.stats.delta * i
-                  for i in range(synt.stats.npts)]
-    fig = plt.figure(figsize=(15, 5))
+    if synt is not None:
+        times_synt = [offset_synt + synt.stats.delta * i
+                      for i in range(synt.stats.npts)]
+
     # plot seismogram
-    ax1 = plt.subplot(211)
+    if synt is not None:
+        fig = plt.figure(figsize=(15, 5))
+        ax1 = plt.subplot(211)
+    else:
+        fig = plt.figure(figsize=(15, 2))
+        ax1 = plt.subplot(111)
     ax1.plot(times, obsd.data, color="black", linewidth=0.75,
              label="Observed")
     ax1.plot(times_synt, synt.data, color="red", linewidth=0.75,
@@ -782,14 +793,15 @@ def plot_seismograms(obsd: Trace, synt: Trace,
     lpy.plot_label(ax1, label, location=1, dist=0.005, box=False)
 
     # plot envelope
-    ax2 = plt.subplot(212)
-    ax2.plot(times, lpy.envelope(obsd.data), color="black",
-             linewidth=1.0, label="Observed")
-    ax2.plot(times, lpy.envelope(synt.data), color="red", linewidth=1,
-             label="Synthetic")
-    ax2.set_xlim(times[0], times[-1])
-    ax2.set_xlabel("Time [s]", fontsize=13)
-    lpy.plot_label(ax2, "Envelope", location=1, dist=0.005)
+    if synt is not None:
+        ax2 = plt.subplot(212)
+        ax2.plot(times, lpy.envelope(obsd.data), color="black",
+                 linewidth=1.0, label="Observed")
+        ax2.plot(times, lpy.envelope(synt.data), color="red", linewidth=1,
+                 label="Synthetic")
+        ax2.set_xlim(times[0], times[-1])
+        ax2.set_xlabel("Time [s]", fontsize=13)
+        lpy.plot_label(ax2, "Envelope", location=1, dist=0.005)
 
     try:
         for win in obsd.stats.windows:
@@ -799,10 +811,11 @@ def plot_seismograms(obsd: Trace, synt: Trace,
                             ax1.get_ylim()[1] - ax1.get_ylim()[0],
                             color="blue", alpha=0.25, zorder=-1)
             ax1.add_patch(re1)
-            re2 = Rectangle((left, ax2.get_ylim()[0]), right - left,
-                            ax2.get_ylim()[1] - ax2.get_ylim()[0],
-                            color="blue", alpha=0.25, zorder=-1, box=False)
-            ax2.add_patch(re2)
+            if synt is not None:
+                re2 = Rectangle((left, ax2.get_ylim()[0]), right - left,
+                                ax2.get_ylim()[1] - ax2.get_ylim()[0],
+                                color="blue", alpha=0.25, zorder=-1, box=False)
+                ax2.add_patch(re2)
     except Exception as e:
         print(e)
 
