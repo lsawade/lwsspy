@@ -105,8 +105,9 @@ class GCMT3DInversion:
         self.launch_method = launch_method.split()
 
         # Processing parameters
-        self.process_func = process_func
         self.processdict = processdict
+        self.process_func = process_func
+        self.window_func = window_func
         self.duration = duration
         self.duration_in_m = np.ceil(duration/60.0)
         self.simulation_duration = np.round(self.duration_in_m * 1.05)
@@ -464,12 +465,17 @@ class GCMT3DInversion:
                             self.synt_dict[_wtype][_par],
                             1.0/_parsubdict["pert"])
 
+                # Compute frechet derivative with respect to time
+                if _par == "time_shift":
+                    self.synt_dict[_wtype][_par].differentiate(
+                        method='gradient')
+
     def __window__(self):
 
         for _wtype in self.processdict.keys():
             lpy.print_action("Windowing {_wtype}")
             self.window_func(self.data_dict[_wtype],
-                             self.synt_dict["synt"][_wtype],
+                             self.synt_dict[_wtype]["synt"],
                              self.processdict[_wtype]["window"],
                              station=self.stations, event=self.xml_event)
             lpy.add_tapers(self.data_dict[_wtype],
@@ -641,7 +647,7 @@ class GCMT3DInversion:
         for _wtype in self.processdict.keys():
 
             cost += lpy.stream_cost_win(self.data_dict,
-                                        self.synt_dict["synt"][_wtype])
+                                        self.synt_dict[_wtype]["synt"])
 
         return cost
 
