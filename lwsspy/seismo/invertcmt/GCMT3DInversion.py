@@ -362,8 +362,9 @@ class GCMT3DInversion:
         temp_synt = read(os.path.join(
             self.synt_syntdir, "OUTPUT_FILES", "*.sac"))
         print("loaded type", type(temp_synt))
+        print("copied type", type(temp_synt.copy())
 
-        for _wtype, _ in self.data_dict.items():
+        for _wtype, _ in self.processdict.keys():
             self.synt_dict[_wtype]["synt"] = temp_synt.copy()
 
         # Populate the data dictionary.
