@@ -784,22 +784,21 @@ def plot_seismograms(obsd: Trace, synt: Trace or None = None,
 
     # Setting top left corner text manually
     if isinstance(tag, str):
-        label = f"{trace_id}\n{tag}"
+        label = f"{trace_id}\n{tag.capitalize()}"
     else:
         label = f"{trace_id}"
     lpy.plot_label(ax1, label, location=1, dist=0.005, box=False)
 
     # plot envelope
+    ax2 = plt.subplot(212)
+    ax2.plot(times, lpy.envelope(obsd.data), color="black",
+             linewidth=1.0, label="Observed")
     if synt is not None:
-        ax2 = plt.subplot(212)
-        ax2.plot(times, lpy.envelope(obsd.data), color="black",
-                 linewidth=1.0, label="Observed")
-        if synt is not None:
-            ax2.plot(times, lpy.envelope(synt.data), color="red", linewidth=1,
-                     label="Synthetic")
-        ax2.set_xlim(times[0], times[-1])
-        ax2.set_xlabel("Time [s]", fontsize=13)
-        lpy.plot_label(ax2, "Envelope", location=1, dist=0.005)
+        ax2.plot(times, lpy.envelope(synt.data), color="red", linewidth=1,
+                 label="Synthetic")
+    ax2.set_xlim(times[0], times[-1])
+    ax2.set_xlabel("Time [s]", fontsize=13)
+    lpy.plot_label(ax2, "Envelope", location=1, dist=0.005)
 
     try:
         for win in obsd.stats.windows:
