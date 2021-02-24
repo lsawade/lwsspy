@@ -217,21 +217,8 @@ class GCMT3DInversion:
         # Create data directory
         self.__create_dir__(self.datadir)
 
-        # Create forward directory
-        if self.specfemdir is not None:
-            lpy.createsimdir(self.specfemdir, self.synt_syntdir,
-                             specfem_dict=self.specfem_dict)
-        else:
-            self.__create_dir__(self.syntdir)
-
-        # Create one directory synthetics and each parameter
-        for _pardir in self.synt_pardirs.values():
-            if _par not in self.nosimpars:
-                if self.specfemdir is not None:
-                    lpy.createsimdir(self.specfemdir, _pardir,
-                                     specfem_dict=self.specfem_dict)
-                else:
-                    self.__create_dir__(_pardir)
+        # Simulation directory are created as part of the prep simulations
+        # routine
 
     def __init_model_and_scale__(self):
 
@@ -498,6 +485,22 @@ class GCMT3DInversion:
         pass
 
     def __prep_simulations__(self):
+
+        # Create forward directory
+        if self.specfemdir is not None:
+            lpy.createsimdir(self.specfemdir, self.synt_syntdir,
+                             specfem_dict=self.specfem_dict)
+        else:
+            self.__create_dir__(self.syntdir)
+
+        # Create one directory synthetics and each parameter
+        for _par, _pardir in self.synt_pardirs.items():
+            if _par not in self.nosimpars:
+                if self.specfemdir is not None:
+                    lpy.createsimdir(self.specfemdir, _pardir,
+                                     specfem_dict=self.specfem_dict)
+                else:
+                    self.__create_dir__(_pardir)
 
         # Write stations file
         lpy.inv2STATIONS(
