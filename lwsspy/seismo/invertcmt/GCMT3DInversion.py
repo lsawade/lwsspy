@@ -474,6 +474,7 @@ class GCMT3DInversion:
 
         for _wtype in self.processdict.keys():
             lpy.print_action("Windowing {_wtype}")
+            print(self.synt_dict[_wtype]["synt"])
             self.window_func(self.data_dict[_wtype],
                              self.synt_dict[_wtype]["synt"],
                              self.processdict[_wtype]["window"],
