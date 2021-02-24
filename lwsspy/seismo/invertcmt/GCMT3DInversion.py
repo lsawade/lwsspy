@@ -11,6 +11,7 @@ import lwsspy as lpy
 from typing import Callable, Union
 import os
 import shutil
+import datetime
 from copy import deepcopy
 import numpy as np
 import matplotlib.pyplot as plt
@@ -706,13 +707,13 @@ class GCMT3DInversion:
             with PdfPages(os.path.join(outputdir, f"traces_{_wtype}")) as pdf:
                 for obsd_tr in self.data_dict[_wtype]:
                     try:
-                        synt_tr = synthetic.select(
-                            station=obs_tr.stats.station,
-                            network=obs_tr.stats.network,
-                            component=component)[0]
+                        synt_tr = self.synt_dict[_wtype]["synt"].select(
+                            station=obsd_tr.stats.station,
+                            network=obsd_tr.stats.network,
+                            component=obsd_tr.stats.channel[-1])[0]
                     except Exception as err:
                         print("Couldn't find corresponding synt for obsd trace(%s):"
-                              "%s" % (obs_tr.id, err))
+                              "%s" % (obsd_tr.id, err))
                         continue
 
                     fig = plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
@@ -741,9 +742,9 @@ class GCMT3DInversion:
                 pass
 
 
-def plot_new_seismogram(obsd: Trace, synt: Trace,
-                        cmtsource: Union[lpy.CMTSource, None] = None,
-                        tag: Union[str, None] = None):
+def plot_seismogram(obsd: Trace, synt: Trace,
+                    cmtsource: Union[lpy.CMTSource, None] = None,
+                    tag: Union[str, None] = None):
 
     station = obsd.stats.station
     network = obsd.stats.network
