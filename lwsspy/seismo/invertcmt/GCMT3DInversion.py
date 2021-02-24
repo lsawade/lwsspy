@@ -361,8 +361,6 @@ class GCMT3DInversion:
         lpy.print_action("Loading forward synthetics")
         temp_synt = read(os.path.join(
             self.synt_syntdir, "OUTPUT_FILES", "*.sac"))
-        print("loaded type", type(temp_synt))
-        print("copied type", type(temp_synt.copy()))
 
         for _wtype in self.processdict.keys():
             self.synt_dict[_wtype]["synt"] = temp_synt.copy()
@@ -461,16 +459,10 @@ class GCMT3DInversion:
 
                 # divide by perturbation value and scale by scale length
                 if _parsubdict["pert"] is not None:
-                    if 1.0/_parsubdict["pert"] * _parsubdict["scale"] != 1.0:
+                    if _parsubdict["pert"] != 1.0:
                         lpy.stream_multiply(
                             self.synt_dict[_wtype][_par],
-                            1.0/_parsubdict["pert"] * _parsubdict["scale"])
-                else:
-                    if (_parsubdict["scale"] != 1.0) \
-                            and (_parsubdict["scale"] is not None):
-                        lpy.stream_multiply(
-                            self.synt_dict[_wtype][_par],
-                            1.0/_parsubdict["pert"] * _parsubdict["scale"])
+                            1.0/_parsubdict["pert"])
 
     def __window__(self):
 
