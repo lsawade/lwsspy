@@ -416,13 +416,14 @@ class GCMT3DInversion:
                 lpy.print_action(
                     f"Processing in parallel using {self.multiprocesses} cores")
                 with mpp.Pool(processes=self.multiprocesses) as p:
-                    self.synt_dict[_wtype]["synt"] = lpy.starmap_with_kwargs(
-                        p, self.process_func,
-                        zip(self.synt_dict[_wtype]["synt"],
-                            repeat(self.stations)),
-                        repeat(processdict), len(
-                            self.synt_dict[_wtype]["synt"])
-                    )
+                    self.synt_dict[_wtype]["synt"] = self.sumfunc(
+                        lpy.starmap_with_kwargs(
+                            p, self.process_func,
+                            zip(self.synt_dict[_wtype]["synt"],
+                                repeat(self.stations)),
+                            repeat(processdict), len(
+                                self.synt_dict[_wtype]["synt"])
+                        ))
 
         # Process each wavetype.
         for _par, _parsubdict in self.pardict.items():
@@ -453,10 +454,11 @@ class GCMT3DInversion:
                         _stream, self.stations, **processdict)
                 else:
                     with mpp.Pool(processes=self.multiprocesses) as p:
-                        self.synt_dict[_wtype][_par] = lpy.starmap_with_kwargs(
-                            p, self.process_func,
-                            zip(_stream, repeat(self.stations)),
-                            repeat(processdict), len(_stream))
+                        self.synt_dict[_wtype][_par] = self.sumfunc(
+                            lpy.starmap_with_kwargs(
+                                p, self.process_func,
+                                zip(_stream, repeat(self.stations)),
+                                repeat(processdict), len(_stream)))
 
                 # divide by perturbation value and scale by scale length
                 if _parsubdict["pert"] is not None:
