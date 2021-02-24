@@ -846,10 +846,11 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
         times_synt = [offset_synt + synt.stats.delta * i
                       for i in range(synt.stats.npts)]
 
-    # plot seismogram
+    # Figure Setup
     fig = plt.figure(figsize=(15, 5))
     ax1 = plt.subplot(211)
-    plt.subplots_adjust(left=0.025, right=0.975)
+    plt.subplots_adjust(left=0.05, right=0.95, top=0.975)
+
     ax1.plot(times, obsd.data, color="black", linewidth=0.75,
              label="Observed")
     if isinstance(synt, Trace):
