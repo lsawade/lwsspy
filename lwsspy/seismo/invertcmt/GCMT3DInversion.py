@@ -422,7 +422,7 @@ class GCMT3DInversion:
                 self.synt_dict[_wtype]["synt"] = self.process_func(
                     self.synt_dict[_wtype]["synt"], self.stations,
                     **processdict)
-        return
+
         # Process each wavetype.
         for _par, _parsubdict in self.pardict.items():
             for _wtype, _stream in self.data_dict.items():
@@ -555,7 +555,8 @@ class GCMT3DInversion:
                     dsyn_pars["USE_SOURCE_DERIVATIVE"] = False
 
                 # Adapt duration
-                dsyn_pars["RECORD_LENGTH_IN_MINUTES"] = self.simulation_duration
+                dsyn_pars["RECORD_LENGTH_IN_MINUTES"] = \
+                    self.simulation_duration
 
                 # Write Stuff to Par_file
                 lpy.write_parfile(dsyn_pars, dsyn_parfile)
@@ -735,6 +736,75 @@ class GCMT3DInversion:
                 d['CreationDate'] = datetime.datetime.today()
                 d['ModDate'] = datetime.datetime.today()
 
+    def plot_station(self, network: str, station: str, outputdir="."):
+        plt.switch_backend("pdf")
+        # Get station data
+        for _wtype in self.processdict.keys():
+            try:
+                obsd = self.data_dict[_wtype].select(
+                    network=network, station=station)
+                synt = self.synt_dict[_wtype]["synt"].select(
+                    network=network, station=station)
+            except Exception as e:
+                print(f"Could load station {network}{station} -- {e}")
+            # Plot PDF for each wtype
+            with PdfPages(os.path.join(outputdir, f"{network}.{station}_{_wtype}.pdf")) as pdf:
+                for component in ["Z", "R", "T"]:
+                    try:
+                        obsd_tr = obsd.select(
+                            station=station, network=network,
+                            component=component)[0]
+                        synt_tr = synt.select(
+                            station=station, network=network,
+                            component=component)[0]
+                    except Exception as err:
+                        print(f"Couldn't find obs or syn for NET.STA.COMP:"
+                              f" {network}.{station}.{component} -- {err}")
+                        continue
+
+                    fig = plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
+                                           tag=_wtype)
+                    pdf.savefig()  # saves the current figure into a pdf page
+                    plt.close(fig)
+
+                    # We can also set the file's metadata via the PdfPages object:
+                d = pdf.infodict()
+                d['Title'] = f"{_wtype.capitalize()}-Wave-PDF"
+                d['Author'] = 'Lucas Sawade'
+                d['Subject'] = 'Trace comparison in one pdf'
+                d['Keywords'] = 'seismology, moment tensor inversion'
+                d['CreationDate'] = datetime.datetime.today()
+                d['ModDate'] = datetime.datetime.today()
+
+    def plot_windows(self, outputdir="."):
+        plt.switch_backend("pdf")
+        for _wtype in self.processdict.keys():
+            with PdfPages(os.path.join(outputdir, f"windows_{_wtype}.pdf")) as pdf:
+                for obsd_tr in self.data_dict[_wtype]:
+                    try:
+                        synt_tr = self.synt_dict[_wtype]["synt"].select(
+                            station=obsd_tr.stats.station,
+                            network=obsd_tr.stats.network,
+                            component=obsd_tr.stats.channel[-1])[0]
+                    except Exception as err:
+                        print("Couldn't find corresponding synt for obsd trace(%s):"
+                              "%s" % (obsd_tr.id, err))
+                        continue
+
+                    fig = plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
+                                           tag=_wtype)
+                    pdf.savefig()  # saves the current figure into a pdf page
+                    plt.close(fig)
+
+                    # We can also set the file's metadata via the PdfPages object:
+                d = pdf.infodict()
+                d['Title'] = f"{_wtype.capitalize()}-Wave-PDF"
+                d['Author'] = 'Lucas Sawade'
+                d['Subject'] = 'Trace comparison in one pdf'
+                d['Keywords'] = 'seismology, moment tensor inversion'
+                d['CreationDate'] = datetime.datetime.today()
+                d['ModDate'] = datetime.datetime.today()
+
     @ staticmethod
     def __create_dir__(dir, overwrite=False):
         if os.path.exists(dir) is False:
@@ -798,7 +868,7 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
                  label="Synthetic")
     ax2.set_xlim(times[0], times[-1])
     ax2.set_xlabel("Time [s]", fontsize=13)
-    lpy.plot_label(ax2, "Envelope", location=1, dist=0.005)
+    lpy.plot_label(ax2, "Envelope", location=1, dist=0.005, box=False)
     if isinstance(synt, Trace):
         try:
             for win in obsd.stats.windows:
