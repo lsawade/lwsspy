@@ -71,7 +71,7 @@ class GCMT3DInversion:
             databasedir: str,
             specfemdir: str,
             processdict: dict = processdict,
-            pardict: dict = dict(depth_in_m=dict(scale=1000.0, pert=None),
+            pardict: dict = dict(depth_in_m=dict(scale=1.0, pert=None),
                                  time_shift=dict(scale=1.0, pert=None)),
             zero_trace: bool = False,
             duration: float = 3600.0,
@@ -164,6 +164,14 @@ class GCMT3DInversion:
             self.__load_data__()
         with lpy.Timer():
             self.__process_data__()
+
+    def process_synt(self):
+        lpy.print_bar("PREPPING SYNTHETICS")
+
+        with lpy.Timer():
+            self.__load_synt__()
+        with lpy.Timer():
+            self.__process_synt__()
 
     def __get_number_of_forward_simulations__(self):
 
@@ -379,7 +387,7 @@ class GCMT3DInversion:
     def __process_synt__(self):
 
         for _wtype in self.processdict.keys():
-            lpy.print_action("Processing synt for {_wtype}")
+            lpy.print_action(f"Processing synt for {_wtype}")
 
             # Call processing function and processing dictionary
             starttime = self.cmtsource.origin_time \
@@ -417,7 +425,7 @@ class GCMT3DInversion:
         # Process each wavetype.
         for _par, _parsubdict in self.pardict.items():
             for _wtype, _stream in self.data_dict.items():
-                lpy.print_action("Processing {_par} for {_wtype}")
+                lpy.print_action(f"Processing {_par} for {_wtype}")
 
                 # Call processing function and processing dictionary
                 starttime = self.cmtsource.origin_time \
@@ -451,12 +459,12 @@ class GCMT3DInversion:
                 if _parsubdict["pert"] is not None:
                     if 1.0/_parsubdict["pert"] * _parsubdict["scale"] != 1.0:
                         lpy.stream_multiply(
-                            self.synt_dict[_par][_wtype],
+                            self.synt_dict[_wtype][_par],
                             1.0/_parsubdict["pert"] * _parsubdict["scale"])
                 else:
                     if _parsubdict["scale"] != 1.0:
                         lpy.stream_multiply(
-                            self.synt_dict[_par][_wtype],
+                            self.synt_dict[_wtype][_par],
                             1.0/_parsubdict["pert"] * _parsubdict["scale"])
 
     def __window__(self):
