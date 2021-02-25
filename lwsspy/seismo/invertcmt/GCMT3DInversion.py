@@ -719,7 +719,8 @@ class GCMT3DInversion:
         # times = np.arange(-10.0, 10.1, 1.0)
         depths = np.arange(self.cmtsource.depth_in_m - 1000,
                            self.cmtsource.depth_in_m + 1100, 1000)
-        times = np.arange(-2.0, 2.1, 1.0)
+        times = np.arange(self.cmtsource.time_shift - 2.0,
+                          self.cmtsource.time_shift + 2.1, 1.0)
         t, z = np.meshgrid(times, depths)
         cost = np.zeros(z.shape)
         grad = np.zeros((*z.shape, 2))
@@ -740,7 +741,7 @@ class GCMT3DInversion:
             for _j in range(z.shape[1]):
                 dm[_i, _j, :] = np.linalg.solve(
                     hess[_i, _j, :, :] + damp * np.diag(np.ones(2)), - grad[_i, _j, :])
-
+        plt.switch_backend("pdf")
         extent = [np.min(t), np.max(t), np.min(z), np.max(z)]
         aspect = (np.max(t) - np.min(t))/(np.max(z) - np.min(z))
         plt.figure(figsize=(11, 6.5))
@@ -828,7 +829,7 @@ class GCMT3DInversion:
         plt.savefig("SyntheticCostGradHess.pdf")
 
     def plot_data(self, outputdir="."):
-        plt.switch_backend("agg")
+        plt.switch_backend("pdf")
         for _wtype in self.processdict.keys():
             with PdfPages(os.path.join(outputdir, f"data_{_wtype}.pdf")) as pdf:
                 for obsd_tr in self.data_dict[_wtype]:
