@@ -492,10 +492,11 @@ class GCMT3DInversion:
 
             # Prepare optim steepest
             optim = lpy.Optimization("gn")
-            optim.compute_cost_and_grad_and_hess = self.compute_cost_gradient_hessian
+            optim.compute_cost_and_grad_and_hess = \
+                self.compute_cost_gradient_hessian
             optim.is_preco = False
             optim.niter_max = 7
-            optim.damping = 0.01
+            optim.damping = 0.001
             optim.nls_max = 1
             optim.stopping_criterion = 1e-8
             optim.n = len(self.model)
