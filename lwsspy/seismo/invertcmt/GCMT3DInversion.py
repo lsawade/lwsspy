@@ -462,18 +462,15 @@ class GCMT3DInversion:
             p.close()
 
     def __window__(self):
-        if self.not_windowed_yet:
-            for _wtype in self.processdict.keys():
-                lpy.print_action(f"Windowing {_wtype}")
-                print(self.synt_dict[_wtype]["synt"])
-                self.window_func(self.data_dict[_wtype],
-                                 self.synt_dict[_wtype]["synt"],
-                                 self.processdict[_wtype]["window"],
-                                 station=self.stations, event=self.xml_event)
-                lpy.add_tapers(self.data_dict[_wtype],
-                               taper_type="tukey", alpha=0.25)
 
-            self.not_windowed_yet = False
+        for _wtype in self.processdict.keys():
+            lpy.print_action(f"Windowing {_wtype}")
+            self.window_func(self.data_dict[_wtype],
+                             self.synt_dict[_wtype]["synt"],
+                             self.processdict[_wtype]["window"],
+                             station=self.stations, event=self.xml_event)
+            lpy.add_tapers(self.data_dict[_wtype],
+                           taper_type="tukey", alpha=0.25)
 
     def forward(self):
         pass
@@ -658,7 +655,9 @@ class GCMT3DInversion:
         self.__process_synt__()
 
         # Window Data
-        self.__window__()
+        if self.not_windowed_yet:
+            self.__window__()
+            self.not_windowed_yet = False
 
         return self.__compute_cost__(), self.__compute_gradient__()
 
@@ -680,7 +679,10 @@ class GCMT3DInversion:
         self.process_synt()
 
         # Window Data
-        self.__window__()
+        # Window Data
+        if self.not_windowed_yet:
+            self.__window__()
+            self.not_windowed_yet = False
 
         # Evaluate
         cost = self.__compute_cost__()
