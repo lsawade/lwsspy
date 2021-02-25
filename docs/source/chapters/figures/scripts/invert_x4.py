@@ -128,19 +128,19 @@ optim.stopping_criterion = 1e-10
 optim.n = len(model)
 optim_pnlcg = optim.solve(optim, model)
 
-print(50 * "*", " GN ", 54 * "*")
-# Prepare optim nlcg
-optim = Optimization("gn")
-# optim.compute_cost = x4
-# optim.compute_grad = x4_prime
-optim.compute_cost_and_grad_and_hess = cost_and_grad_and_hess
-optim.apply_preconditioner = x4_preco
-optim.is_preco = False
-optim.niter_max = 50
-optim.damping = 0.0
-optim.stopping_criterion = 1e-10
-optim.n = len(model)
-optim_gn = optim.solve(optim, model)
+# print(50 * "*", " GN ", 54 * "*")
+# # Prepare optim nlcg
+# optim = Optimization("gn")
+# # optim.compute_cost = x4
+# # optim.compute_grad = x4_prime
+# optim.compute_cost_and_grad_and_hess = cost_and_grad_and_hess
+# optim.apply_preconditioner = x4_preco
+# optim.is_preco = False
+# optim.niter_max = 50
+# optim.damping = 0.0
+# optim.stopping_criterion = 1e-10
+# optim.n = len(model)
+# optim_gn = optim.solve(optim, model)
 
 # Steepest preco
 # optim = Optimization("gn")

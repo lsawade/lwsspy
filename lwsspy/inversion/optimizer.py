@@ -146,27 +146,26 @@ def Solve_Optimisation_Problem(optim, model):
         optim.descent_direction(optim)
 
         # Perform linesearch
-        if optim.type == "gn":
-            optim.model = optim.model + optim.descent
-            optim.fcost, optim.grad, optim.hess = \
-                optim.compute_cost_and_grad_and_hess(optim.model)
-        else:
+        # optim.model = optim.model + optim.descent
+        # optim.fcost, optim.grad, optim.hess = \
+        #     optim.compute_cost_and_grad_and_hess(optim.model)
 
-            # Compute product of descent times gradient
-            optim.q = scalar_product(optim.descent, optim.grad)
+        # Compute product of descent times gradient
+        optim.q = scalar_product(optim.descent, optim.grad)
 
-            perform_linesearch(optim)
-            if optim.flag == "fail":
-                break
+        # Perform linesearch
+        perform_linesearch(optim)
+        if optim.flag == "fail":
+            break
 
-            # If linesearch successful update informations
-            optim.fcost = optim.fcost_new
-            optim.model = optim.model_new
-            if optim.type == "nlcg":
-                optim.grad_prev = optim.grad
+        # If linesearch successful update informations
+        optim.fcost = optim.fcost_new
+        optim.model = optim.model_new
+        if optim.type == "nlcg":
+            optim.grad_prev = optim.grad
 
-            optim.grad = optim.grad_new
-            optim.q = optim.qnew
+        optim.grad = optim.grad_new
+        optim.q = optim.qnew
 
         optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
 
@@ -257,10 +256,9 @@ def get_gauss_newton_descent_direction(optim):
 
     # Get the easiest descent direction with a Gauss Newton descent
     optim.descent = np.linalg.solve(
-        optim.hess
-        + optim.damping * np.mean(optim.hess) *
-        np.diag(np.ones_like(optim.hess)),
-        - optim.grad)
+        optim.hess, - optim.grad)
+    # + optim.damping * np.mean(optim.hess) *
+    # np.diag(np.ones_like(optim.hess))
     # optim.descent = - np.linalg.solve(
     #     optim.hess + optim.damping * np.diag(np.diag(optim.hess)), optim.grad)
 
