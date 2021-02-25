@@ -642,7 +642,8 @@ class GCMT3DInversion:
         self.__process_synt__()
 
         # Window Data
-        self.__window__()
+        if self.not_windowed_yet:
+            self.__window__()
 
         return self.__compute_cost__(), self.__compute_gradient__()
 
