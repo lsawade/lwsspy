@@ -719,8 +719,8 @@ class GCMT3DInversion:
         # times = np.arange(-10.0, 10.1, 1.0)
         depths = np.arange(self.cmtsource.depth_in_m - 1000,
                            self.cmtsource.depth_in_m + 1100, 1000)
-        times = np.arange(self.cmtsource.time_shift - 2.0,
-                          self.cmtsource.time_shift + 2.1, 1.0)
+        times = np.arange(self.cmtsource.time_shift - 1.0,
+                          self.cmtsource.time_shift + 1.1, 1.0)
         t, z = np.meshgrid(times, depths)
         cost = np.zeros(z.shape)
         grad = np.zeros((*z.shape, 2))
