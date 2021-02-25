@@ -250,8 +250,8 @@ class GCMT3DInversion:
 
         # Setup download times depending on input...
         # Maybe get from process dict?
-        starttime = self.cmtsource.origin_time + self.starttime_offset
-        endtime = self.cmtsource.origin_time + self.duration \
+        starttime = self.cmtsource.cmt_time + self.starttime_offset
+        endtime = self.cmtsource.cmt_time + self.duration \
             + self.endtime_offset
 
         lpy.print_bar("Data Download")
