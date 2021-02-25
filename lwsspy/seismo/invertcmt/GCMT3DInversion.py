@@ -474,8 +474,22 @@ class GCMT3DInversion:
     def forward(self):
         pass
 
-    def optimize(self, optim: lpy.Optimization):
-        pass
+    def optimize(self):
+
+        lpy.print_section("BFGS")
+        # Prepare optim steepest
+        optim = lpy.Optimization("bfgs")
+        optim.compute_cost_and_gradient = self.compute_cost_and_gradient
+        optim.is_preco = False
+        optim.niter_max = 7
+        optim.stopping_criterion = 1e-8
+        optim.n = len(self.model)
+        optim_bfgs = optim.solve(optim, self.model)
+
+        lpy.plot_optimization(
+            optim_bfgs, outfile=f"SyntheticDepthInversionMisfitReduction.pdf")
+        lpy.plot_model_history(optim_bfgs, labellist=[r'$z$', r'$\Delta t$'],
+                               outfile=f"SyntheticDepthInversionModelHistory.pdf")
 
     def __prep_simulations__(self):
 
@@ -624,7 +638,7 @@ class GCMT3DInversion:
              if _par not in self.nosimpars])
         lpy.run_cmds_parallel(cmd_list, cwdlist=cwdlist)
 
-    def compute_cost_and_gradient(self, model):
+    def compute_cost_gradient(self, model):
 
         # Update model
         for _i, _scale, _new_model \
