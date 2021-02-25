@@ -78,8 +78,8 @@ class GCMT3DInversion:
                                  time_shift=dict(scale=1.0, pert=None)),
             zero_trace: bool = False,
             duration: float = 3600.0,
-            starttime_offset: float = -300.0,
-            endtime_offset: float = 300.0,
+            starttime_offset: float = -50.0,
+            endtime_offset: float = 50.0,
             download_data: bool = False,
             node_login: Union[str, None] = None,
             conda_activation: str = conda_activation,
@@ -423,44 +423,27 @@ class GCMT3DInversion:
                     self.synt_dict[_wtype]["synt"], self.stations,
                     **processdict)
 
-        # Process each wavetype.
-        for _par, _parsubdict in self.pardict.items():
-            for _wtype in self.processdict.keys():
-                lpy.print_action(f"Processing {_par} for {_wtype}")
-
-                # Call processing function and processing dictionary
-                starttime = self.cmtsource.cmt_time \
-                    + self.processdict[_wtype]["process"]["relative_starttime"]
-                endtime = self.cmtsource.cmt_time \
-                    + self.processdict[_wtype]["process"]["relative_endtime"]
-
-                # Process dict
-                processdict = deepcopy(self.processdict[_wtype]["process"])
-                processdict.pop("relative_starttime")
-                processdict.pop("relative_endtime")
-                processdict["starttime"] = starttime
-                processdict["endtime"] = endtime
-                processdict.update(dict(
-                    remove_response_flag=False,
-                    event_latitude=self.cmtsource.latitude,
-                    event_longitude=self.cmtsource.longitude)
-                )
+            # Process each wavetype.
+            for _par, _parsubdict in self.pardict.items():
                 print(f"Stream {_wtype}/{_par}: ",
                       len(self.synt_dict[_wtype][_par]))
-
-                if parallel:
-                    self.synt_dict[_wtype][_par] = self.sumfunc(
-                        lpy.starmap_with_kwargs(
-                            p, self.process_func,
-                            zip(self.synt_dict[_wtype]
-                                [_par], repeat(self.stations)),
-                            repeat(processdict),
-                            len(self.synt_dict[_wtype][_par]))).copy()
+                if _par in self.nosimpars:
+                    self.synt_dict[_wtype][_par] = \
+                        self.synt_dict[_wtype]["synt"].copy()
                 else:
-                    self.synt_dict[_wtype][_par] = self.process_func(
-                        self.synt_dict[_wtype][_par], self.stations,
-                        **processdict)
-                # divide by perturbation value and scale by scale length
+                    if parallel:
+                        self.synt_dict[_wtype][_par] = self.sumfunc(
+                            lpy.starmap_with_kwargs(
+                                p, self.process_func,
+                                zip(self.synt_dict[_wtype]
+                                    [_par], repeat(self.stations)),
+                                repeat(processdict),
+                                len(self.synt_dict[_wtype][_par]))).copy()
+                    else:
+                        self.synt_dict[_wtype][_par] = self.process_func(
+                            self.synt_dict[_wtype][_par], self.stations,
+                            **processdict)
+                    # divide by perturbation value and scale by scale length
                 if _parsubdict["pert"] is not None:
                     if _parsubdict["pert"] != 1.0:
                         lpy.stream_multiply(
