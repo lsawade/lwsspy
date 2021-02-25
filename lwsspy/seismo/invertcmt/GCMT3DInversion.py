@@ -498,8 +498,8 @@ class GCMT3DInversion:
             optim.damping = 0.01
             optim.nls_max = 1
             optim.stopping_criterion = 1e-8
-            optim.n = len(model)
-            optim_out = optim.solve(optim, model)
+            optim.n = len(self.model)
+            optim_out = optim.solve(optim, self.model)
         else:
             raise ValueError(f"{method} not implemented.")
 
@@ -507,7 +507,9 @@ class GCMT3DInversion:
         lpy.plot_optimization(
             optim_out, outfile="SyntheticDepthInversionMisfitReduction.pdf")
         lpy.plot_model_history(optim_out, labellist=[r'$z$', r'$\Delta t$'],
-                               outfile=f"SyntheticDepthInversionModelHistory.pdf")
+                               outfile="SyntheticDepthInversionModelHistory.pdf")
+
+        self.model = optim.model
 
     def __prep_simulations__(self):
 
