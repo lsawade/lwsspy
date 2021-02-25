@@ -728,7 +728,7 @@ class GCMT3DInversion:
         for _i, _dep in enumerate(depths):
             for _j, _time in enumerate(times):
                 lpy.print_action(f"Computing CgH for: ({_dep} km, {_time} s)")
-                c, g, h = self.compute_cost_and_gradient_hessian(
+                c, g, h = self.compute_cost_gradient_hessian(
                     np.array([_dep, _time]))
                 cost[_i, _j] = c
                 grad[_i, _j, :] = g
@@ -825,7 +825,7 @@ class GCMT3DInversion:
         plt.xlabel(r'$\Delta t$')
 
         plt.subplots_adjust(hspace=0.2, wspace=0.15)
-        plt.savefig(f"SyntheticCostGradHess.pdf")
+        plt.savefig("SyntheticCostGradHess.pdf")
 
     def plot_data(self, outputdir="."):
         plt.switch_backend("agg")
