@@ -482,10 +482,12 @@ class GCMT3DInversion:
         optim.compute_cost_and_gradient = self.compute_cost_gradient
         optim.is_preco = False
         optim.niter_max = 7
+        optim.nls_max = 1
         optim.stopping_criterion = 1e-8
         optim.n = len(self.model)
         optim_bfgs = optim.solve(optim, self.model)
 
+        plt.switch_backend("pdf")
         lpy.plot_optimization(
             optim_bfgs, outfile=f"SyntheticDepthInversionMisfitReduction.pdf")
         lpy.plot_model_history(optim_bfgs, labellist=[r'$z$', r'$\Delta t$'],
