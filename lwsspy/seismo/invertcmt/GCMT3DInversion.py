@@ -228,7 +228,7 @@ class GCMT3DInversion:
         # Get the model vector given the parameters to invert for
         self.model = np.array(
             [getattr(self.cmtsource, _par) for _par in self.pardict.keys()])
-
+        self.init_model = 1.0 * self.model
         self.pars = [_par for _par in self.pardict.keys()]
 
         # Create scaling vector
@@ -641,9 +641,7 @@ class GCMT3DInversion:
     def compute_cost_gradient(self, model):
 
         # Update model
-        for _i, _scale, _new_model \
-                in enumerate(zip(self.scale, model)):
-            self.model[_i] = _new_model * _scale
+        self.model = model
 
         # Write sources for next iteration
         self.__write_sources__()
