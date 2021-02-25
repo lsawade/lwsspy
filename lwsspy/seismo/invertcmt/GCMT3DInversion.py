@@ -474,18 +474,31 @@ class GCMT3DInversion:
     def forward(self):
         pass
 
-    def optimize(self):
+    def optimize(self, method="gn"):
+        if method == "bfgs":
+            lpy.print_section("BFGS")
+            # Prepare optim steepest
+            optim = lpy.Optimization("bfgs")
+            optim.compute_cost_and_gradient = self.compute_cost_gradient
+            optim.is_preco = False
+            optim.niter_max = 7
+            optim.nls_max = 1
+            optim.stopping_criterion = 5e-2
+            optim.n = len(self.model)
+            optim_out = optim.solve(optim, self.model)
+        elif method == "gn":
+            lpy.print_section("GN")
 
-        lpy.print_section("BFGS")
-        # Prepare optim steepest
-        optim = lpy.Optimization("bfgs")
-        optim.compute_cost_and_gradient = self.compute_cost_gradient
-        optim.is_preco = False
-        optim.niter_max = 7
-        optim.nls_max = 1
-        optim.stopping_criterion = 1e-8
-        optim.n = len(self.model)
-        optim_bfgs = optim.solve(optim, self.model)
+            # Prepare optim steepest
+            optim = lpy.Optimization("gn")
+            optim.compute_cost_and_grad_and_hess = self.compute_cost_gradient_hessian
+            optim.is_preco = False
+            optim.niter_max = 7
+            optim.damping = 0.01
+            optim.nls_max = 1
+            optim.stopping_criterion = 1e-8
+            optim.n = len(model)
+            optim_out = optim.solve(optim, model)
 
         plt.switch_backend("pdf")
         lpy.plot_optimization(
@@ -663,10 +676,7 @@ class GCMT3DInversion:
 
     def compute_cost_gradient_hessian(self, model):
 
-        # # Update model
-        # for _i, _scale, _new_model \
-        #         in enumerate(zip(self.scale, model)):
-        #     self.model[_i] = _new_model * _scale
+        # Assign model
         self.model = model
 
         # Write sources for next iteration
@@ -678,7 +688,6 @@ class GCMT3DInversion:
         # Get streams
         self.process_synt()
 
-        # Window Data
         # Window Data
         if self.not_windowed_yet:
             self.__window__()
