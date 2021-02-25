@@ -486,6 +486,7 @@ class GCMT3DInversion:
             optim.stopping_criterion = 5e-2
             optim.n = len(self.model)
             optim_out = optim.solve(optim, self.model)
+
         elif method == "gn":
             lpy.print_section("GN")
 
@@ -499,11 +500,13 @@ class GCMT3DInversion:
             optim.stopping_criterion = 1e-8
             optim.n = len(model)
             optim_out = optim.solve(optim, model)
+        else:
+            raise ValueError(f"{method} not implemented.")
 
         plt.switch_backend("pdf")
         lpy.plot_optimization(
-            optim_bfgs, outfile=f"SyntheticDepthInversionMisfitReduction.pdf")
-        lpy.plot_model_history(optim_bfgs, labellist=[r'$z$', r'$\Delta t$'],
+            optim_out, outfile="SyntheticDepthInversionMisfitReduction.pdf")
+        lpy.plot_model_history(optim_out, labellist=[r'$z$', r'$\Delta t$'],
                                outfile=f"SyntheticDepthInversionModelHistory.pdf")
 
     def __prep_simulations__(self):
