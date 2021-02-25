@@ -479,7 +479,7 @@ class GCMT3DInversion:
         lpy.print_section("BFGS")
         # Prepare optim steepest
         optim = lpy.Optimization("bfgs")
-        optim.compute_cost_and_gradient = self.compute_cost_and_gradient
+        optim.compute_cost_and_gradient = self.compute_cost_gradient
         optim.is_preco = False
         optim.niter_max = 7
         optim.stopping_criterion = 1e-8
