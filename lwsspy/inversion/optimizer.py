@@ -329,7 +329,8 @@ def perform_linesearch(optim):
 
         # New model and evaluate
         optim.model_new = optim.model + optim.alpha * optim.descent
-
+        print(
+            f"\nils: {ils} -- model: {optim.model} -- descent: {optim.descent}\n")
         # If simultaneous cost and grad computation is defined do that.
         if optim.compute_cost_and_grad_and_hess is not None:
             optim.fcost_new, optim.grad_new, optim.hess_new = \
