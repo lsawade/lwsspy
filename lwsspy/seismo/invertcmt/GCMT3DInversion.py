@@ -460,7 +460,7 @@ class GCMT3DInversion:
     def __window__(self):
 
         for _wtype in self.processdict.keys():
-            lpy.print_action("Windowing {_wtype}")
+            lpy.print_action(f"Windowing {_wtype}")
             print(self.synt_dict[_wtype]["synt"])
             self.window_func(self.data_dict[_wtype],
                              self.synt_dict[_wtype]["synt"],
