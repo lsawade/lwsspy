@@ -63,7 +63,7 @@ class GCMT3DInversion:
     #     'latitude', 'longitude', 'depth_in_m', 'time_shift', 'hdur'
     # ]
     parameter_check_list: list = [
-        'depth_in_m', 'time_shift'
+        'depth_in_m'
     ]
 
     nosimpars: list = ["time_shift", "half_duration"]
@@ -74,8 +74,7 @@ class GCMT3DInversion:
             databasedir: str,
             specfemdir: str,
             processdict: dict = processdict,
-            pardict: dict = dict(depth_in_m=dict(scale=1.0, pert=None),
-                                 time_shift=dict(scale=1.0, pert=None)),
+            pardict: dict = dict(depth_in_m=dict(scale=1.0, pert=None)),
             zero_trace: bool = False,
             duration: float = 3600.0,
             starttime_offset: float = -50.0,
