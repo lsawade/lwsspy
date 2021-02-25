@@ -125,7 +125,7 @@ def Solve_Optimisation_Problem(optim, model):
     optim.gsave = np.zeros((optim.n, optim.nb_mem))
 
     # Some attached defs
-    optim.bfgs_formula = bfgs_formula         # accessible outside for resolution
+    optim.bfgs_formula = bfgs_formula       # accessible outside for resolution
     optim.get_si_and_yi = get_optim_si_yi      # could be overwritten
     optim.store_grad_and_model = store_grad_and_model  # could be overwritten
 
