@@ -113,7 +113,7 @@ class GCMT3DInversion:
         self.window_func = window_func
         self.duration = duration
         self.duration_in_m = np.ceil(duration/60.0)
-        self.simulation_duration = np.round(self.duration_in_m * 1.05)
+        self.simulation_duration = np.round(self.duration_in_m * 1.2)
         self.multiprocesses = multiprocesses
         self.sumfunc = lambda results: Stream(results)
 
@@ -315,9 +315,9 @@ class GCMT3DInversion:
             lpy.print_action(f"Processing data for {_wtype}")
 
             # Call processing function and processing dictionary
-            starttime = self.cmtsource.origin_time \
+            starttime = self.cmtsource.cmt_time \
                 + self.processdict[_wtype]["process"]["relative_starttime"]
-            endtime = self.cmtsource.origin_time \
+            endtime = self.cmtsource.cmt_time \
                 + self.processdict[_wtype]["process"]["relative_endtime"]
 
             # Process dict
@@ -332,7 +332,7 @@ class GCMT3DInversion:
                 event_latitude=self.cmtsource.latitude,
                 event_longitude=self.cmtsource.longitude)
             )
-            print("rotate", processdict["rotate_flag"])
+
             if self.multiprocesses < 1:
                 self.data_dict[_wtype] = self.process_func(
                     _stream, self.stations, **processdict)
@@ -390,9 +390,9 @@ class GCMT3DInversion:
             lpy.print_action(f"Processing synt for {_wtype}")
 
             # Call processing function and processing dictionary
-            starttime = self.cmtsource.origin_time \
+            starttime = self.cmtsource.cmt_time \
                 + self.processdict[_wtype]["process"]["relative_starttime"]
-            endtime = self.cmtsource.origin_time \
+            endtime = self.cmtsource.cmt_time \
                 + self.processdict[_wtype]["process"]["relative_endtime"]
 
             # Process dict
