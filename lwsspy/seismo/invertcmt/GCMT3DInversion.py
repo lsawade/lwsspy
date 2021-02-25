@@ -79,7 +79,7 @@ class GCMT3DInversion:
             zero_trace: bool = False,
             duration: float = 3600.0,
             starttime_offset: float = -300.0,
-            endtime_offset: float = 0.0,
+            endtime_offset: float = 300.0,
             download_data: bool = False,
             node_login: Union[str, None] = None,
             conda_activation: str = conda_activation,
