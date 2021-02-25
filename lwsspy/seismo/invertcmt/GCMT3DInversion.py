@@ -425,13 +425,13 @@ class GCMT3DInversion:
 
         # Process each wavetype.
         for _par, _parsubdict in self.pardict.items():
-            for _wtype in self.synt_dict.keys():
+            for _wtype in self.processdict.keys():
                 lpy.print_action(f"Processing {_par} for {_wtype}")
 
                 # Call processing function and processing dictionary
-                starttime = self.cmtsource.origin_time \
+                starttime = self.cmtsource.cmt_time \
                     + self.processdict[_wtype]["process"]["relative_starttime"]
-                endtime = self.cmtsource.origin_time \
+                endtime = self.cmtsource.cmt_time \
                     + self.processdict[_wtype]["process"]["relative_endtime"]
 
                 # Process dict
