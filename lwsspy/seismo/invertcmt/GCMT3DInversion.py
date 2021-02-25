@@ -651,8 +651,7 @@ class GCMT3DInversion:
         self.__run_simulations__()
 
         # Get streams
-        self.__load_synt__()
-        self.__process_synt__()
+        self.process_synt()
 
         # Window Data
         if self.not_windowed_yet:
