@@ -256,7 +256,8 @@ def get_gauss_newton_descent_direction(optim):
     print(optim.hess)
 
     # Get the easiest descent direction with a Gauss Newton descent
-    optim.descent = np.linalg.solve(np.diag(np.diag(optim.hess)), - optim.grad)
+    optim.descent = np.linalg.solve(
+        optim.hess + optim.damping * np.diag(np.ones(2)), - optim.grad)
     # optim.descent = - np.linalg.solve(
     #     optim.hess + optim.damping * np.diag(np.diag(optim.hess)), optim.grad)
 
