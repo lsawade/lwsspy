@@ -177,7 +177,7 @@ class GCMT3DInversion:
         with lpy.Timer():
             self.__process_synt__()
 
-    def process_all_synt_synt(self):
+    def process_all_synt(self):
         lpy.print_bar("PREPPING SYNTHETICS")
 
         with lpy.Timer():
@@ -742,7 +742,7 @@ class GCMT3DInversion:
         self.__run_simulations__()
 
         # Get streams
-        self.process_synt()
+        self.process_all_synt()
 
         # Window Data
         if self.not_windowed_yet:
