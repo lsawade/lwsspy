@@ -180,9 +180,11 @@ class GCMT3DInversion:
     def get_windows(self):
 
         self.__prep_simulations__()
+        self.__write_sources__()
         self.__run_forward_only__()
         self.process_synt()
         self.__window__()
+        self.not_windowed_yet = False
 
     def process_all_synt(self):
         lpy.print_bar("PREPPING SYNTHETICS")
@@ -566,7 +568,7 @@ class GCMT3DInversion:
         plt.switch_backend("pdf")
         lpy.plot_optimization(
             self.optim, outfile="SyntheticDepthInversionMisfitReduction.pdf")
-        lpy.plot_model_history(optim, labellist=[r'$z$', r'$\Delta t$'],
+        lpy.plot_model_history(self.optim, labellist=[r'$z$', r'$\Delta t$'],
                                outfile="SyntheticDepthInversionModelHistory.pdf")
 
         self.model = optim.model
