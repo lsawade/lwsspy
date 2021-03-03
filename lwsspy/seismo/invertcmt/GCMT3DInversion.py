@@ -1157,7 +1157,7 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
                 ax1.add_patch(re1)
                 re2 = Rectangle((left, ax2.get_ylim()[0]), right - left,
                                 ax2.get_ylim()[1] - ax2.get_ylim()[0],
-                                color="blue", alpha=0.25, zorder=-1, box=False)
+                                color="blue", alpha=0.25, zorder=-1)
                 ax2.add_patch(re2)
         except Exception as e:
             print(e)
