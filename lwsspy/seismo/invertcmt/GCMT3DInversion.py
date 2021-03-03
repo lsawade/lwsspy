@@ -510,37 +510,37 @@ class GCMT3DInversion:
     def forward(self):
         pass
 
-    def optimize(self, method="gn"):
+    def optimize(self, optim: lpy.Optimization):
 
-        if isinstance(self.optim, None):
-            if method == "bfgs":
-                lpy.print_section("BFGS")
-                # Prepare optim steepest
-                optim = lpy.Optimization("bfgs")
-                optim.compute_cost_and_gradient = self.compute_cost_gradient
-                optim.is_preco = False
-                optim.niter_max = 7
-                optim.nls_max = 1
-                optim.stopping_criterion = 5e-2
-                optim.n = len(self.model)
+        # if isinstance(self.optim, None):
+        #     if method == "bfgs":
+        #         lpy.print_section("BFGS")
+        #         # Prepare optim steepest
+        #         optim = lpy.Optimization("bfgs")
+        #         optim.compute_cost_and_gradient = self.compute_cost_gradient
+        #         optim.is_preco = False
+        #         optim.niter_max = 7
+        #         optim.nls_max = 1
+        #         optim.stopping_criterion = 5e-2
+        #         optim.n = len(self.model)
 
-            elif method == "gn":
-                lpy.print_section("GN")
+        #     elif method == "gn":
+        #         lpy.print_section("GN")
 
-                # Prepare optim steepest
-                optim = lpy.Optimization("gn")
-                optim.compute_cost_and_grad_and_hess = \
-                    self.compute_cost_gradient_hessian
-                optim.is_preco = False
-                optim.niter_max = 7
-                optim.damping = 0.001
-                optim.nls_max = 1
-                optim.stopping_criterion = 1e-8
-                optim.n = len(self.model)
-            else:
-                raise ValueError(f"{method} not implemented.")
-        else:
-            optim = self.optim
+        #         # Prepare optim steepest
+        #         optim = lpy.Optimization("gn")
+        #         optim.compute_cost_and_grad_and_hess = \
+        #             self.compute_cost_gradient_hessian
+        #         optim.is_preco = False
+        #         optim.niter_max = 7
+        #         optim.damping = 0.001
+        #         optim.nls_max = 1
+        #         optim.stopping_criterion = 1e-8
+        #         optim.n = len(self.model)
+        #     else:
+        #         raise ValueError(f"{method} not implemented.")
+        # else:
+        #     optim = self.optim
 
         self.optim = optim.solve(self.model)
 
