@@ -114,6 +114,8 @@ if "-m" not in sys.argv:
     from .seismo.download_waveforms_cmt2storage import download_waveforms_cmt2storage  # noqa
     from .seismo.download_waveforms_to_storage import download_waveforms_to_storage  # noqa
     from .seismo.filterstationxml import filterstationxml  # noqa
+    from .seismo.gaussiant import gaussiant  # noqa
+    from .seismo.gaussiant import dgaussiant  # noqa
     from .seismo.get_inv_aspect_extent import get_inv_aspect_extent  # noqa
     from .seismo.inv2stationxml import inv2stationxml  # noqa
     from .seismo.inv2geoloc import inv2geoloc  # noqa
