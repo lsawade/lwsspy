@@ -70,64 +70,59 @@ class GCMT3DInversion:
 
     nosimpars: list = ["time_shift", "half_duration"]
 
-    # Original file used for the inversion
-    cmtsolutionfile: str
+    def __init__(
+            self,
+            cmtsolutionfile: str,
+            databasedir: str,
+            specfemdir: str,
+            processdict: dict = processdict,
+            pardict: dict = dict(depth_in_m=dict(scale=1.0, pert=None)),
+            zero_trace: bool = False,
+            duration: float = 3600.0,
+            starttime_offset: float = -50.0,
+            endtime_offset: float = 50.0,
+            download_data: bool = False,
+            node_login: Union[str, None] = None,
+            conda_activation: str = conda_activation,
+            bash_escape: str = bash_escape,
+            download_dict: dict = download_dict,
+            overwrite: bool = False,
+            launch_method: str = "srun -n6 --gpus-per-task=1",
+            process_func: Callable = lpy.process_stream,
+            window_func: Callable = lpy.window_on_stream,
+            multiprocesses: int = 0):
 
-    # Database directory
-    databasedir: str
+        # CMTSource
+        self.cmtsource = lpy.CMTSource.from_CMTSOLUTION_file(cmtsolutionfile)
+        self.xml_event = read_events(cmtsolutionfile)[0]
 
-    # Specfem Directory
-    specfemdir: str
+        # File locations
+        self.databasedir = os.path.abspath(databasedir)
+        self.cmtdir = os.path.join(self.databasedir, self.cmtsource.eventname)
+        self.cmt_in_db = os.path.join(self.cmtdir, self.cmtsource.eventname)
+        self.overwrite: bool = overwrite
+        self.download_data = download_data
 
-    # Processing diction
-    processdict: Optional[dict] = processdict
-    pardict: Optional[dict] = dict(depth_in_m=dict(scale=1.0, pert=None))
-    zero_trace:  Optional[bool] = False
-    duration: float = 3600.0
-    starttime_offset: float = -50.0
-    endtime_offset: float = 50.0
-    download_data: Optional[bool] = False
-    node_login: Union[str, None] = None
-    conda_activation: str = conda_activation
-    bash_escape: str = bash_escape
-    download_dict: dict = download_dict
-    overwrite: Optional[bool] = False
-    launch_method: str = "srun -n6 --gpus-per-task=1"
-    process_func: Callable = lpy.process_stream
-    window_func: Callable = lpy.window_on_stream
-    multiprocesses: int = 0
+        # Simulation stuff
+        self.specfemdir = specfemdir
+        self.specfem_dict = specfem_dict
+        self.launch_method = launch_method.split()
 
-    # CMTSource
-    self.cmtsource = lpy.CMTSource.from_CMTSOLUTION_file(cmtsolutionfile)
-    self.xml_event = read_events(cmtsolutionfile)[0]
+        # Processing parameters
+        self.processdict = processdict
+        self.process_func = process_func
+        self.window_func = window_func
+        self.duration = duration
+        self.duration_in_m = np.ceil(duration/60.0)
+        self.simulation_duration = np.round(self.duration_in_m * 1.2)
+        self.multiprocesses = multiprocesses
+        self.sumfunc = lambda results: Stream(results)
 
-    # File locations
-    self.databasedir = os.path.abspath(databasedir)
-    self.cmtdir = os.path.join(self.databasedir, self.cmtsource.eventname)
-    self.cmt_in_db = os.path.join(self.cmtdir, self.cmtsource.eventname)
-    self.overwrite: bool = overwrite
-    self.download_data = download_data
+        # Inversion dictionary
+        self.pardict = pardict
 
-    # Simulation stuff
-    self.specfemdir = specfemdir
-    self.specfem_dict = specfem_dict
-    self.launch_method = launch_method.split()
-
-    # Processing parameters
-    self.processdict = processdict
-    self.process_func = process_func
-    self.window_func = window_func
-    self.duration = duration
-    self.duration_in_m = np.ceil(duration/60.0)
-    self.simulation_duration = np.round(self.duration_in_m * 1.2)
-    self.multiprocesses = multiprocesses
-     self.sumfunc = lambda results: Stream(results)
-
-      # Inversion dictionary
-      self.pardict = pardict
-
-       # Check Parameter dict for wrong parameters
-       for _par in self.pardict.keys():
+        # Check Parameter dict for wrong parameters
+        for _par in self.pardict.keys():
             if _par not in self.parameter_check_list:
                 raise ValueError(
                     f"{_par} not supported at this point. \n"
@@ -484,7 +479,7 @@ class GCMT3DInversion:
         pass
 
     def optimize(self, method="gn"):
-        
+
         if isinstance(self.optim, None):
             if method == "bfgs":
                 lpy.print_section("BFGS")
@@ -514,10 +509,8 @@ class GCMT3DInversion:
                 raise ValueError(f"{method} not implemented.")
         else:
             optim = self.optim
-        
+
         self.optim = optim.solve(self.model)
-
-
 
         plt.switch_backend("pdf")
         lpy.plot_optimization(
