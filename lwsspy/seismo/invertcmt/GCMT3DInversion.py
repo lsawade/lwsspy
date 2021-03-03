@@ -245,7 +245,7 @@ class GCMT3DInversion:
         self.scale = np.array([_dict["scale"]
                                for _, _dict in self.pardict.items()])
 
-        self.scaled_model /= self.scale
+        self.scaled_model = self.model/self.scale
 
     def __initialize_waveform_dictionaries__(self):
 
@@ -558,8 +558,8 @@ class GCMT3DInversion:
 
         plt.switch_backend("pdf")
         lpy.plot_optimization(
-            optim_out, outfile="SyntheticDepthInversionMisfitReduction.pdf")
-        lpy.plot_model_history(optim_out, labellist=[r'$z$', r'$\Delta t$'],
+            self.optim, outfile="SyntheticDepthInversionMisfitReduction.pdf")
+        lpy.plot_model_history(optim, labellist=[r'$z$', r'$\Delta t$'],
                                outfile="SyntheticDepthInversionModelHistory.pdf")
 
         self.model = optim.model
