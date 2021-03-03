@@ -703,6 +703,16 @@ class GCMT3DInversion:
         cost = self.__compute_cost__()
         g, h = self.__compute_gradient_and_hessian__()
 
+
+        # Actually write zero trace routine yourself, this is to 
+        # elaborate..
+        # if zero_trace:
+        #     bb[na - 1] = - np.sum(old_par[0:3])
+        #     AA[0:6, na - 1] = np.array([1, 1, 1, 0, 0, 0])
+        #     AA[na - 1, 0:6] = np.array([1, 1, 1, 0, 0, 0])
+        #     AA[na - 1, na - 1] = 0.0
+
+
         return cost, g, h
 
     def __compute_cost__(self):
