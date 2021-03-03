@@ -177,6 +177,12 @@ class GCMT3DInversion:
         with lpy.Timer():
             self.__process_synt__()
 
+    def get_windows(self):
+
+        self.__prep_simulations__()
+        self.__run_forward_only__()
+        self.process_synt()
+
     def process_all_synt(self):
         lpy.print_bar("PREPPING SYNTHETICS")
 
@@ -735,8 +741,9 @@ class GCMT3DInversion:
 
     def compute_cost_gradient_hessian(self, model):
 
-        # Assign model
-        self.model = model
+        # Update model
+        self.model = model * self.scale
+        self.scaled_model = model
 
         # Write sources for next iteration
         self.__write_sources__()
