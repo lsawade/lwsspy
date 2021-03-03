@@ -177,6 +177,16 @@ class GCMT3DInversion:
         with lpy.Timer():
             self.__process_synt__()
 
+    def process_all_synt_synt(self):
+        lpy.print_bar("PREPPING SYNTHETICS")
+
+        with lpy.Timer():
+            self.__load_synt__()
+            self.__load_synt_par__()
+        with lpy.Timer():
+            self.__process_synt__()
+            self.__process_synt_par__()
+
     def __get_number_of_forward_simulations__(self):
 
         # For normal forward synthetics
