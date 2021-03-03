@@ -350,7 +350,7 @@ class GCMT3DInversion:
                             repeat(processdict), len(_stream))
                     ).copy()
 
-    def __load_synt__(self):
+    def __load_synt__(self, no_grad=False):
 
         # Load forward data
         lpy.print_action("Loading forward synthetics")
@@ -361,6 +361,9 @@ class GCMT3DInversion:
             self.synt_dict[_wtype]["synt"] = temp_synt.copy()
 
         # Populate the data dictionary.
+        if no_grad:
+            return
+
         lpy.print_action("Loading parameter synthetics")
         for _par, _pardirs in self.synt_pardirs.items():
             lpy.print_action(f"    {_par}")
@@ -379,7 +382,7 @@ class GCMT3DInversion:
 
         del temp_synt
 
-    def __process_synt__(self):
+    def __process_synt__(self, no_grad=False):
 
         if self.multiprocesses > 1:
             parallel = True
@@ -425,6 +428,10 @@ class GCMT3DInversion:
                 self.synt_dict[_wtype]["synt"] = self.process_func(
                     self.synt_dict[_wtype]["synt"], self.stations,
                     **processdict)
+
+            # Skip the processing of the frechet derivativs if not available.
+            if no_grad:
+                continue
 
             # Process each wavetype.
             for _par, _parsubdict in self.pardict.items():
