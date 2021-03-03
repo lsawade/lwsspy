@@ -182,6 +182,7 @@ class GCMT3DInversion:
         self.__prep_simulations__()
         self.__run_forward_only__()
         self.process_synt()
+        self.__window__()
 
     def process_all_synt(self):
         lpy.print_bar("PREPPING SYNTHETICS")
