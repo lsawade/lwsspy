@@ -75,7 +75,7 @@ class GCMT3DInversion:
             databasedir: str,
             specfemdir: str,
             processdict: dict = processdict,
-            pardict: dict = dict(depth_in_m=dict(scale=1.0, pert=None)),
+            pardict: dict = dict(depth_in_m=dict(scale=1000.0, pert=None)),
             zero_trace: bool = False,
             duration: float = 3600.0,
             starttime_offset: float = -50.0,
@@ -244,6 +244,8 @@ class GCMT3DInversion:
         # Create scaling vector
         self.scale = np.array([_dict["scale"]
                                for _, _dict in self.pardict.items()])
+
+        self.scaled_model /= self.scale
 
     def __initialize_waveform_dictionaries__(self):
 
@@ -524,15 +526,15 @@ class GCMT3DInversion:
 
         # if isinstance(self.optim, None):
         #     if method == "bfgs":
-        #         lpy.print_section("BFGS")
-        #         # Prepare optim steepest
-        #         optim = lpy.Optimization("bfgs")
-        #         optim.compute_cost_and_gradient = self.compute_cost_gradient
-        #         optim.is_preco = False
-        #         optim.niter_max = 7
-        #         optim.nls_max = 1
-        #         optim.stopping_criterion = 5e-2
-        #         optim.n = len(self.model)
+        # lpy.print_section("BFGS")
+        # # Prepare optim steepest
+        # optim = lpy.Optimization("bfgs")
+        # optim.compute_cost_and_gradient = self.compute_cost_gradient
+        # optim.is_preco = False
+        # optim.niter_max = 7
+        # optim.nls_max = 1
+        # optim.stopping_criterion = 5e-2
+        # optim.n = len(self.model)
 
         #     elif method == "gn":
         #         lpy.print_section("GN")
@@ -712,7 +714,8 @@ class GCMT3DInversion:
     def compute_cost_gradient(self, model):
 
         # Update model
-        self.model = model
+        self.model = model * self.scale
+        self.scaled_model = model
 
         # Write sources for next iteration
         self.__write_sources__()
@@ -728,7 +731,7 @@ class GCMT3DInversion:
             self.__window__()
             self.not_windowed_yet = False
 
-        return self.__compute_cost__(), self.__compute_gradient__()
+        return self.__compute_cost__(), self.__compute_gradient__() * self.scale
 
     def compute_cost_gradient_hessian(self, model):
 
@@ -752,6 +755,7 @@ class GCMT3DInversion:
         # Evaluate
         cost = self.__compute_cost__()
         g, h = self.__compute_gradient_and_hessian__()
+        h = np.diag(self.scale) @ h @ np.diag(self.scale)
 
         # Actually write zero trace routine yourself, this is to
         # elaborate..
