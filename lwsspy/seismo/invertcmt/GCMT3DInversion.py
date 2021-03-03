@@ -721,7 +721,7 @@ class GCMT3DInversion:
         self.__run_simulations__()
 
         # Get streams
-        self.process_synt()
+        self.process_all_synt()
 
         # Window Data
         if self.not_windowed_yet:
@@ -1149,8 +1149,8 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
     if isinstance(synt, Trace):
         try:
             for win in obsd.stats.windows:
-                left = win[0] + offset
-                right = win[1] + offset
+                left = times[win.left]
+                right = times[win.right]
                 re1 = Rectangle((left, ax1.get_ylim()[0]), right - left,
                                 ax1.get_ylim()[1] - ax1.get_ylim()[0],
                                 color="blue", alpha=0.25, zorder=-1)
