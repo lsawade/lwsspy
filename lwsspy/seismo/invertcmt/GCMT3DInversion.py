@@ -148,8 +148,6 @@ class GCMT3DInversion:
         self.synt_dict: dict = dict()
 
     def init(self):
-        # Split the launch method
-        self.launch_method_list = self.launch_method.split()
 
         # Initialize directory
         self.__initialize_dir__()
