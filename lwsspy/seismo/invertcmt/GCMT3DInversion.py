@@ -59,7 +59,6 @@ parameter_check_list = ['depth_in_m']
 nosimpars = ["time_shift", "half_duration"]
 
 
-@dataclass
 class GCMT3DInversion:
 
     # parameter_check_list: list = [
