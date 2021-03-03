@@ -8,10 +8,11 @@ CMTSOLUTTION depth.
 import lwsspy as lpy
 
 # External
-from typing import Callable, Union
+from typing import Callable, Union, Optional, List
 import os
 import shutil
 import datetime
+from dataclasses import dataclass
 from copy import deepcopy
 import numpy as np
 import matplotlib.pyplot as plt
@@ -56,6 +57,7 @@ compute_node_login = "lsawade@traverse.princeton.edu"
 bash_escape = "source ~/.bash_profile"
 
 
+@dataclass
 class GCMT3DInversion:
 
     # parameter_check_list: list = [
@@ -68,59 +70,64 @@ class GCMT3DInversion:
 
     nosimpars: list = ["time_shift", "half_duration"]
 
-    def __init__(
-            self,
-            cmtsolutionfile: str,
-            databasedir: str,
-            specfemdir: str,
-            processdict: dict = processdict,
-            pardict: dict = dict(depth_in_m=dict(scale=1.0, pert=None)),
-            zero_trace: bool = False,
-            duration: float = 3600.0,
-            starttime_offset: float = -50.0,
-            endtime_offset: float = 50.0,
-            download_data: bool = False,
-            node_login: Union[str, None] = None,
-            conda_activation: str = conda_activation,
-            bash_escape: str = bash_escape,
-            download_dict: dict = download_dict,
-            overwrite: bool = False,
-            launch_method: str = "srun -n6 --gpus-per-task=1",
-            process_func: Callable = lpy.process_stream,
-            window_func: Callable = lpy.window_on_stream,
-            multiprocesses: int = 0):
+    # Original file used for the inversion
+    cmtsolutionfile: str
 
-        # CMTSource
-        self.cmtsource = lpy.CMTSource.from_CMTSOLUTION_file(cmtsolutionfile)
-        self.xml_event = read_events(cmtsolutionfile)[0]
+    # Database directory
+    databasedir: str
 
-        # File locations
-        self.databasedir = os.path.abspath(databasedir)
-        self.cmtdir = os.path.join(self.databasedir, self.cmtsource.eventname)
-        self.cmt_in_db = os.path.join(self.cmtdir, self.cmtsource.eventname)
-        self.overwrite: bool = overwrite
-        self.download_data = download_data
+    # Specfem Directory
+    specfemdir: str
 
-        # Simulation stuff
-        self.specfemdir = specfemdir
-        self.specfem_dict = specfem_dict
-        self.launch_method = launch_method.split()
+    # Processing diction
+    processdict: Optional[dict] = processdict
+    pardict: Optional[dict] = dict(depth_in_m=dict(scale=1.0, pert=None))
+    zero_trace:  Optional[bool] = False
+    duration: float = 3600.0
+    starttime_offset: float = -50.0
+    endtime_offset: float = 50.0
+    download_data: Optional[bool] = False
+    node_login: Union[str, None] = None
+    conda_activation: str = conda_activation
+    bash_escape: str = bash_escape
+    download_dict: dict = download_dict
+    overwrite: Optional[bool] = False
+    launch_method: str = "srun -n6 --gpus-per-task=1"
+    process_func: Callable = lpy.process_stream
+    window_func: Callable = lpy.window_on_stream
+    multiprocesses: int = 0
 
-        # Processing parameters
-        self.processdict = processdict
-        self.process_func = process_func
-        self.window_func = window_func
-        self.duration = duration
-        self.duration_in_m = np.ceil(duration/60.0)
-        self.simulation_duration = np.round(self.duration_in_m * 1.2)
-        self.multiprocesses = multiprocesses
-        self.sumfunc = lambda results: Stream(results)
+    # CMTSource
+    self.cmtsource = lpy.CMTSource.from_CMTSOLUTION_file(cmtsolutionfile)
+    self.xml_event = read_events(cmtsolutionfile)[0]
 
-        # Inversion dictionary
-        self.pardict = pardict
+    # File locations
+    self.databasedir = os.path.abspath(databasedir)
+    self.cmtdir = os.path.join(self.databasedir, self.cmtsource.eventname)
+    self.cmt_in_db = os.path.join(self.cmtdir, self.cmtsource.eventname)
+    self.overwrite: bool = overwrite
+    self.download_data = download_data
 
-        # Check Parameter dict for wrong parameters
-        for _par in self.pardict.keys():
+    # Simulation stuff
+    self.specfemdir = specfemdir
+    self.specfem_dict = specfem_dict
+    self.launch_method = launch_method.split()
+
+    # Processing parameters
+    self.processdict = processdict
+    self.process_func = process_func
+    self.window_func = window_func
+    self.duration = duration
+    self.duration_in_m = np.ceil(duration/60.0)
+    self.simulation_duration = np.round(self.duration_in_m * 1.2)
+    self.multiprocesses = multiprocesses
+     self.sumfunc = lambda results: Stream(results)
+
+      # Inversion dictionary
+      self.pardict = pardict
+
+       # Check Parameter dict for wrong parameters
+       for _par in self.pardict.keys():
             if _par not in self.parameter_check_list:
                 raise ValueError(
                     f"{_par} not supported at this point. \n"
@@ -147,6 +154,8 @@ class GCMT3DInversion:
         self.synt_dict: dict = dict()
 
     def init(self):
+        # Split the launch method
+        self.launch_method_list = self.launch_method.split()
 
         # Initialize directory
         self.__initialize_dir__()
@@ -475,34 +484,40 @@ class GCMT3DInversion:
         pass
 
     def optimize(self, method="gn"):
-        if method == "bfgs":
-            lpy.print_section("BFGS")
-            # Prepare optim steepest
-            optim = lpy.Optimization("bfgs")
-            optim.compute_cost_and_gradient = self.compute_cost_gradient
-            optim.is_preco = False
-            optim.niter_max = 7
-            optim.nls_max = 1
-            optim.stopping_criterion = 5e-2
-            optim.n = len(self.model)
-            optim_out = optim.solve(optim, self.model)
+        
+        if isinstance(self.optim, None):
+            if method == "bfgs":
+                lpy.print_section("BFGS")
+                # Prepare optim steepest
+                optim = lpy.Optimization("bfgs")
+                optim.compute_cost_and_gradient = self.compute_cost_gradient
+                optim.is_preco = False
+                optim.niter_max = 7
+                optim.nls_max = 1
+                optim.stopping_criterion = 5e-2
+                optim.n = len(self.model)
 
-        elif method == "gn":
-            lpy.print_section("GN")
+            elif method == "gn":
+                lpy.print_section("GN")
 
-            # Prepare optim steepest
-            optim = lpy.Optimization("gn")
-            optim.compute_cost_and_grad_and_hess = \
-                self.compute_cost_gradient_hessian
-            optim.is_preco = False
-            optim.niter_max = 7
-            optim.damping = 0.001
-            optim.nls_max = 1
-            optim.stopping_criterion = 1e-8
-            optim.n = len(self.model)
-            optim_out = optim.solve(optim, self.model)
+                # Prepare optim steepest
+                optim = lpy.Optimization("gn")
+                optim.compute_cost_and_grad_and_hess = \
+                    self.compute_cost_gradient_hessian
+                optim.is_preco = False
+                optim.niter_max = 7
+                optim.damping = 0.001
+                optim.nls_max = 1
+                optim.stopping_criterion = 1e-8
+                optim.n = len(self.model)
+            else:
+                raise ValueError(f"{method} not implemented.")
         else:
-            raise ValueError(f"{method} not implemented.")
+            optim = self.optim
+        
+        self.optim = optim.solve(self.model)
+
+
 
         plt.switch_backend("pdf")
         lpy.plot_optimization(
@@ -703,15 +718,13 @@ class GCMT3DInversion:
         cost = self.__compute_cost__()
         g, h = self.__compute_gradient_and_hessian__()
 
-
-        # Actually write zero trace routine yourself, this is to 
+        # Actually write zero trace routine yourself, this is to
         # elaborate..
         # if zero_trace:
         #     bb[na - 1] = - np.sum(old_par[0:3])
         #     AA[0:6, na - 1] = np.array([1, 1, 1, 0, 0, 0])
         #     AA[na - 1, 0:6] = np.array([1, 1, 1, 0, 0, 0])
         #     AA[na - 1, na - 1] = 0.0
-
 
         return cost, g, h
 
