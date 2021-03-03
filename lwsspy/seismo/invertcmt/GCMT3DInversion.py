@@ -554,7 +554,7 @@ class GCMT3DInversion:
         # else:
         #     optim = self.optim
 
-        self.optim = optim.solve(optim, self.model)
+        self.optim = optim.solve(optim, self.scaled_model)
 
         plt.switch_backend("pdf")
         lpy.plot_optimization(
