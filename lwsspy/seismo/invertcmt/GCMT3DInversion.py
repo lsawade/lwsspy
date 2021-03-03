@@ -347,7 +347,7 @@ class GCMT3DInversion:
                             repeat(processdict), len(_stream))
                     ).copy()
 
-    def __load_synt__(self, no_grad=False):
+    def __load_synt__(self):
 
         # Load forward data
         lpy.print_action("Loading forward synthetics")
@@ -357,10 +357,8 @@ class GCMT3DInversion:
         for _wtype in self.processdict.keys():
             self.synt_dict[_wtype]["synt"] = temp_synt.copy()
 
-        # Populate the data dictionary.
-        if no_grad:
-            return
-
+    def __load_synt_par__(self):
+        # Load frechet data
         lpy.print_action("Loading parameter synthetics")
         for _par, _pardirs in self.synt_pardirs.items():
             lpy.print_action(f"    {_par}")
@@ -426,9 +424,39 @@ class GCMT3DInversion:
                     self.synt_dict[_wtype]["synt"], self.stations,
                     **processdict)
 
-            # Skip the processing of the frechet derivativs if not available.
-            if no_grad:
-                continue
+        if parallel:
+            p.close()
+
+    def __process_synt_par__(self):
+
+        if self.multiprocesses > 1:
+            parallel = True
+            p = mpp.Pool(processes=self.multiprocesses)
+            lpy.print_action(
+                f"Processing in parallel using {self.multiprocesses} cores")
+        else:
+            parallel = False
+
+        for _wtype in self.processdict.keys():
+            lpy.print_action(f"Processing synt for {_wtype}")
+
+            # Call processing function and processing dictionary
+            starttime = self.cmtsource.cmt_time \
+                + self.processdict[_wtype]["process"]["relative_starttime"]
+            endtime = self.cmtsource.cmt_time \
+                + self.processdict[_wtype]["process"]["relative_endtime"]
+
+            # Process dict
+            processdict = deepcopy(self.processdict[_wtype]["process"])
+            processdict.pop("relative_starttime")
+            processdict.pop("relative_endtime")
+            processdict["starttime"] = starttime
+            processdict["endtime"] = endtime
+            processdict.update(dict(
+                remove_response_flag=False,
+                event_latitude=self.cmtsource.latitude,
+                event_longitude=self.cmtsource.longitude)
+            )
 
             # Process each wavetype.
             for _par, _parsubdict in self.pardict.items():
