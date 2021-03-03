@@ -19,8 +19,12 @@ def plot_model_history(optim: Union[List[Optimization], Optimization],
     """
 
     # Change type to list
-    if type(optim) is not list:
+    if isinstance(optim, Optimization):
         optim = [optim]
+    elif isinstance(optim, list):
+        pass
+    else:
+        raise ValueError("Wrong")
 
     # Get model parameter number
     ncol = int(np.ceil(optim[0].n))
