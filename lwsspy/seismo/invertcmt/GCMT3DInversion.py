@@ -771,10 +771,11 @@ class GCMT3DInversion:
         h = np.diag(self.scale) @ h @ np.diag(self.scale)
 
         if self.damping > 0.0:
+            factor = self.damping * np.max(np.abs((np.diag(h))))
             mnorm = np.sum((self.scaled_model - self.init_scaled_model)**2)
-            cost += self.damping/2 * mnorm
-            g += self.damping * (self.scaled_model - self.init_scaled_model)
-            h += self.damping * np.eye(len(self.model))
+            cost += factor/2 * mnorm
+            g += factor * (self.scaled_model - self.init_scaled_model)
+            h += factor * np.eye(len(self.model))
 
             # Actually write zero trace routine yourself, this is to
             # elaborate..
