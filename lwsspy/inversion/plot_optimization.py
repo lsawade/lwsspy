@@ -19,7 +19,7 @@ def plot_optimization(optim: Union[List[Optimization], Optimization],
     if type(optim) is not list:
         optim = [optim]
     # Plot values
-    plt.figure(figsize=(4, 4))
+    plt.figure(figsize=(6, 6))
     ax = plt.axes()
     ax.set_yscale("log")
     for _opt in optim:
@@ -31,6 +31,6 @@ def plot_optimization(optim: Union[List[Optimization], Optimization],
     plt.title("Misfit Reduction")
 
     if outfile is not None:
-        plt.savefig(outfile, dpi=300)
+        plt.savefig(outfile)
     else:
         plt.show()

@@ -85,7 +85,7 @@ class GCMT3DInversion:
             conda_activation: str = conda_activation,
             bash_escape: str = bash_escape,
             download_dict: dict = download_dict,
-            damping: float = 0.01,
+            damping: float = 0.001,
             overwrite: bool = False,
             launch_method: str = "srun -n6 --gpus-per-task=1",
             process_func: Callable = lpy.process_stream,
@@ -164,7 +164,7 @@ class GCMT3DInversion:
         self.__init_model_and_scale__()
 
     def process_data(self):
-        lpy.print_bar("PREPPING DATA")
+        lpy.print_section("Loading and processing the data")
 
         with lpy.Timer():
             self.__load_data__()
@@ -172,7 +172,7 @@ class GCMT3DInversion:
             self.__process_data__()
 
     def process_synt(self):
-        lpy.print_bar("PREPPING SYNTHETICS")
+        lpy.print_section("Loading and processing the modeled data")
 
         with lpy.Timer():
             self.__load_synt__()
@@ -536,38 +536,10 @@ class GCMT3DInversion:
 
     def optimize(self, optim: lpy.Optimization):
 
-        # if isinstance(self.optim, None):
-        #     if method == "bfgs":
-        # lpy.print_section("BFGS")
-        # # Prepare optim steepest
-        # optim = lpy.Optimization("bfgs")
-        # optim.compute_cost_and_gradient = self.compute_cost_gradient
-        # optim.is_preco = False
-        # optim.niter_max = 7
-        # optim.nls_max = 1
-        # optim.stopping_criterion = 5e-2
-        # optim.n = len(self.model)
-
-        #     elif method == "gn":
-        #         lpy.print_section("GN")
-
-        #         # Prepare optim steepest
-        # optim = lpy.Optimization("gn")
-        # optim.compute_cost_and_grad_and_hess = \
-        #     self.compute_cost_gradient_hessian
-        # optim.is_preco = False
-        # optim.niter_max = 7
-        # optim.damping = 0.001
-        # optim.nls_max = 1
-        # optim.stopping_criterion = 1e-8
-        # optim.n = len(self.model)
-        #     else:
-        #         raise ValueError(f"{method} not implemented.")
-        # else:
-        #     optim = self.optim
-
-        self.optim = optim.solve(optim, self.scaled_model)
-
+        try:
+            self.optim = optim.solve(optim, self.scaled_model)
+        except KeyboardInterrupt:
+            self.optim = optim
         plt.switch_backend("pdf")
         lpy.plot_optimization(
             self.optim, outfile="SyntheticDepthInversionMisfitReduction.pdf")
@@ -578,6 +550,7 @@ class GCMT3DInversion:
 
     def __prep_simulations__(self):
 
+        lpy.print_action("Prepping simulations")
         # Create forward directory
         if self.specfemdir is not None:
             lpy.createsimdir(self.specfemdir, self.synt_syntdir,
@@ -770,20 +743,20 @@ class GCMT3DInversion:
         g, h = self.__compute_gradient_and_hessian__()
         h = np.diag(self.scale) @ h @ np.diag(self.scale)
 
+        # Actually write zero trace routine yourself, this is to
+        # elaborate..
+        # if zero_trace:
+        #     bb[na - 1] = - np.sum(old_par[0:3])
+        #     AA[0:6, na - 1] = np.array([1, 1, 1, 0, 0, 0])
+        #     AA[na - 1, 0:6] = np.array([1, 1, 1, 0, 0, 0])
+        #     AA[na - 1, na - 1] = 0.0
+
         if self.damping > 0.0:
             factor = self.damping * np.max(np.abs((np.diag(h))))
             mnorm = np.sum((self.scaled_model - self.init_scaled_model)**2)
             cost += factor/2 * mnorm
             g += factor * (self.scaled_model - self.init_scaled_model)
             h += factor * np.eye(len(self.model))
-
-            # Actually write zero trace routine yourself, this is to
-            # elaborate..
-            # if zero_trace:
-            #     bb[na - 1] = - np.sum(old_par[0:3])
-            #     AA[0:6, na - 1] = np.array([1, 1, 1, 0, 0, 0])
-            #     AA[na - 1, 0:6] = np.array([1, 1, 1, 0, 0, 0])
-            #     AA[na - 1, na - 1] = 0.0
 
         return cost, g, h
 

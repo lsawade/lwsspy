@@ -169,15 +169,12 @@ def Solve_Optimisation_Problem(optim, model):
 
         optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
 
-        print(f"\nModel: {optim.model} -- Grad: {optim.grad}\n")
-
         # Check stopping criteria
-        if ((optim.fcost / optim.fcost_ini) < optim.stopping_criterion) \
-                or (_iter > optim.niter_max):
-            optim.save_model_and_gradient(optim)
+        if ((optim.fcost / optim.fcost_ini) < optim.stopping_criterion):
             print("Optimization algorithm has converged.")
             break
 
+    optim.save_model_and_gradient(optim)
     return optim
 
 
@@ -192,7 +189,7 @@ def get_steepest_descent_direction(optim):
     """
     if (optim.is_preco is True):
         optim.norm_grad = norm_l2(optim.grad)
-        optim.descent = -optim.apply_preconditioner(optim.grad)
+        optim.descent = -optim.apply_preconditioner(optim.model)
         optim.norm_desc = norm_l2(optim.descent)
         optim.descent = optim.descent * optim.norm_grad / optim.norm_desc
     else:
@@ -321,7 +318,7 @@ def perform_linesearch(optim):
         # New model and evaluate
         optim.model_new = optim.model + optim.alpha * optim.descent
         print(
-            f"\nils: {ils} -- model: {optim.model} -- descent: {optim.descent}\n")
+            f"\nils: {ils} -- model: {optim.model_new} -- alpha: {optim.alpha}\n")
         # If simultaneous cost and grad computation is defined do that.
         if optim.compute_cost_and_grad_and_hess is not None:
             optim.fcost_new, optim.grad_new, optim.hess_new = \

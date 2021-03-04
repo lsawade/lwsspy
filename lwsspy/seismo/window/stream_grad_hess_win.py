@@ -3,7 +3,8 @@ from obspy import Stream
 import numpy as np
 
 
-def stream_grad_and_hess_win(data: Stream, synt: Stream, dsyn: List[Stream]) \
+def stream_grad_and_hess_win(data: Stream, synt: Stream, dsyn: List[Stream],
+                             verbose: float = False) \
         -> Tuple[float, float]:
     """Computes the gradient and the approximate hessian of the cost function
     using the Frechet derivative of the forward modelled data.
