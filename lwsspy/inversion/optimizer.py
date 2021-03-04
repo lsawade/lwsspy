@@ -256,12 +256,17 @@ def get_gauss_newton_descent_direction(optim):
 
     # Get the easiest descent direction with a Gauss Newton descent
     print("Damping: ", optim.damping)
+
+    damp_matrix = np.zeros_like(optim.hess)
+
     if optim.damping > 0:
-        trace = np.matrix.trace(optim.hess)
-        damp_matrix = np.zeros_like(optim.hess)
+        trace = np.mean(np.diag(optim.hess))
         np.fill_diagonal(damp_matrix, trace * optim.damping)
+
         print("Condition # after damping: ",
               np.linalg.cond(optim.hess + damp_matrix))
+    print("Hessian after damping:")
+    print(optim.hess + damp_matrix)
     optim.descent = np.linalg.solve(
         optim.hess + damp_matrix, -optim.grad)
     # + optim.damping * np.mean(optim.hess) *
