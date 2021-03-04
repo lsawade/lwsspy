@@ -85,6 +85,7 @@ class GCMT3DInversion:
             conda_activation: str = conda_activation,
             bash_escape: str = bash_escape,
             download_dict: dict = download_dict,
+            damping: float = 0.01,
             overwrite: bool = False,
             launch_method: str = "srun -n6 --gpus-per-task=1",
             process_func: Callable = lpy.process_stream,
@@ -142,6 +143,7 @@ class GCMT3DInversion:
         self.__get_number_of_forward_simulations__()
         self.not_windowed_yet = True
         self.zero_trace = zero_trace
+        self.damping = damping
 
         # Initialize data dictionaries
         self.data_dict: dict = dict()
@@ -255,6 +257,7 @@ class GCMT3DInversion:
                                for _, _dict in self.pardict.items()])
 
         self.scaled_model = self.model/self.scale
+        self.init_scaled_model = 1.0 * self.scaled_model
 
     def __initialize_waveform_dictionaries__(self):
 
@@ -767,13 +770,19 @@ class GCMT3DInversion:
         g, h = self.__compute_gradient_and_hessian__()
         h = np.diag(self.scale) @ h @ np.diag(self.scale)
 
-        # Actually write zero trace routine yourself, this is to
-        # elaborate..
-        # if zero_trace:
-        #     bb[na - 1] = - np.sum(old_par[0:3])
-        #     AA[0:6, na - 1] = np.array([1, 1, 1, 0, 0, 0])
-        #     AA[na - 1, 0:6] = np.array([1, 1, 1, 0, 0, 0])
-        #     AA[na - 1, na - 1] = 0.0
+        if self.damping > 0.0:
+            mnorm = np.sum((self.scaled_model - self.init_scaled_model)**2)
+            cost += self.damping/2 * mnorm
+            g += self.damping * (self.scaled_model - self.init_scaled_model)
+            h += self.damping * np.eye(len(self.model))
+
+            # Actually write zero trace routine yourself, this is to
+            # elaborate..
+            # if zero_trace:
+            #     bb[na - 1] = - np.sum(old_par[0:3])
+            #     AA[0:6, na - 1] = np.array([1, 1, 1, 0, 0, 0])
+            #     AA[na - 1, 0:6] = np.array([1, 1, 1, 0, 0, 0])
+            #     AA[na - 1, na - 1] = 0.0
 
         return cost, g, h
 
