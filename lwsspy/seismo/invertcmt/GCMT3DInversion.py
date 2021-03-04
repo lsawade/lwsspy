@@ -795,7 +795,61 @@ class GCMT3DInversion:
             hessian += tmp_h
         return gradient, np.outer(hessian, hessian)
 
-    def misfit_walk(self):
+    def misfit_walk_depth(self):
+
+        depths = np.arange(self.cmtsource.depth_in_m - 10000,
+                           self.cmtsource.depth_in_m + 10100, 2000)
+        cost = np.zeros_like(depths)
+        grad = np.zeros((*depths.shape, 1))
+        hess = np.zeros((*depths.shape, 1, 1))
+        dm = np.zeros((*depths.shape, 1))
+
+        for _i, _dep in enumerate(depths):
+            lpy.print_action(f"Computing CgH for: ({_dep} km")
+            c, g, h = self.compute_cost_gradient_hessian(
+                np.array([_dep]))
+            cost[_i] = c
+            grad[_i, :] = g
+            hess[_i, :, :] = h
+
+        damp = 0.0001
+        # Get the Gauss newton step
+        for _i in range(len(depths)):
+            dm[_i, :] = np.linalg.solve(
+                hess[_i, :, :]
+                + damp * np.abs(hess[_i, :, :]) * np.eye(1),
+                - grad[_i, :])
+
+        plt.switch_backend("pdf")
+        plt.figure(figsize=(12, 4))
+        # Cost function
+        ax = plt.subplot(141)
+        plt.plot(cost, depths/1000.0, label="Cost")
+        plt.legend(frameon=False, loc='upper right')
+        plt.xlabel("Cost")
+        plt.ylabel("Depth [km]")
+
+        ax = plt.subplot(142, sharey=ax)
+        plt.plot(np.squeeze(grad), depths/1000.0, label="Cost")
+        plt.legend(frameon=False, loc='upper right')
+        plt.xlabel("Gradient")
+        plt.ylabel("Depth [km]")
+
+        ax = plt.subplot(143, sharey=ax)
+        plt.plot(np.squeeze(hess), depths/1000.0, label="Gradient")
+        plt.legend(frameon=False, loc='upper right')
+        plt.xlabel("G.-N. Hessian")
+        plt.ylabel("Depth [km]")
+
+        ax = plt.subplot(144, sharey=ax)
+        plt.plot(np.squeeze(dm), depths/1000.0, label="Gradient")
+        plt.legend(frameon=False, loc='upper right')
+        plt.xlabel("$\Delta$m [km]")
+        plt.ylabel("Depth [km]")
+
+        plt.savefig("misfit_walk_depth.pdf")
+
+    def misfit_walk_depth_times(self):
         """Pardict containing an array of the walk parameters.
         Then we walk entirely around the parameter space."""
 
