@@ -54,6 +54,22 @@ def rosenbrock_preco(q):
     return q
 
 
+def rosenbrock_preco_steepest(r):
+    """Rosenbrock Preconditioner
+    """
+    x = 1.5
+    y = 1.5
+    h = np.zeros(2)
+    h[0] = 2 - 400*y + 1200*x*x
+    h[1] = 200
+    # h(3) = -400*x;
+    q = 0
+    h = rosenbrock_pprime(r)
+    l = 0.0001 * np.max(np.abs(np.diag(h))) * np.eye(2)
+    q = np.linalg.solve(h + l, rosenbrock_prime(r))
+    return q
+
+
 def compute_cost_and_grad_and_hess(r):
     return rosenbrock(r), rosenbrock_prime(r), rosenbrock_pprime(r)
 
@@ -89,7 +105,7 @@ print(50 * "*", " Steepest ", 50 * "*")
 optim = Optimization("steepest")
 optim.compute_cost = rosenbrock
 optim.compute_gradient = rosenbrock_prime
-optim.apply_preconditioner = rosenbrock_preco
+optim.apply_preconditioner = rosenbrock_preco_steepest
 optim.is_preco = False
 optim.niter_max = 50
 optim.stopping_criterion = 1e-10
@@ -100,7 +116,7 @@ optim_step = optim.solve(optim, model)
 optim = Optimization("steepest")
 optim.compute_cost = rosenbrock
 optim.compute_gradient = rosenbrock_prime
-optim.apply_preconditioner = rosenbrock_preco
+optim.apply_preconditioner = rosenbrock_preco_steepest
 optim.is_preco = True
 optim.niter_max = 50
 optim.stopping_criterion = 1e-10
@@ -132,18 +148,18 @@ optim.n = len(model)
 optim_pnlcg = optim.solve(optim, model)
 
 # Steepest preco
-print(50 * "*", " Gauss-Newton ", 50 * "*")
-optim = Optimization("gn")
-# optim.compute_cost = rosenbrock
-# optim.compute_gradient = rosenbrock_prime
-optim.compute_cost_and_grad_and_hess = compute_cost_and_grad_and_hess
-# optim.apply_preconditioner = rosenbrock_preco
-optim.is_preco = True
-optim.niter_max = 50
-optim.damping = 0.0
-optim.stopping_criterion = 1e-10
-optim.n = len(model)
-optim_gn = optim.solve(optim, model)
+# print(50 * "*", " Gauss-Newton ", 50 * "*")
+# optim = Optimization("gn")
+# # optim.compute_cost = rosenbrock
+# # optim.compute_gradient = rosenbrock_prime
+# optim.compute_cost_and_grad_and_hess = compute_cost_and_grad_and_hess
+# # optim.apply_preconditioner = rosenbrock_preco
+# optim.is_preco = True
+# optim.niter_max = 50
+# optim.damping = 0.0
+# optim.stopping_criterion = 1e-10
+# optim.n = len(model)
+# optim_gn = optim.solve(optim, model)
 
 # Get costs
 f1 = optim_bfgs.fcost_hist
@@ -158,8 +174,8 @@ f5 = optim_nlcg.fcost_hist
 i5 = np.arange(len(f5))
 f6 = optim_pnlcg.fcost_hist
 i6 = np.arange(len(f6))
-f7 = optim_gn.fcost_hist
-i7 = np.arange(len(f7))
+# f7 = optim_gn.fcost_hist
+# i7 = np.arange(len(f7))
 
 # Plot
 plt.figure(figsize=(11, 5))
@@ -172,8 +188,8 @@ plt.plot(i2, f2, label="pbfgs")
 plt.plot(i3, f3, label="steep")
 plt.plot(i4, f4, label="psteep")
 plt.plot(i5, f5, label="nlcg")
-plt.plot(i6, f6, label="pnlcg")
-plt.plot(i7, f7, label="gn")
+# plt.plot(i6, f6, label="pnlcg")
+# plt.plot(i7, f7, label="gn")
 plt.legend(loc=4)
 
 ax2 = plt.subplot(1, 2, 2)
@@ -191,18 +207,17 @@ plt.plot(optim_nlcg.msave[0, :optim_nlcg.current_iter+1],
          optim_nlcg.msave[1, :optim_nlcg.current_iter+1], label="steep")
 plt.plot(optim_pnlcg.msave[0, :optim_pnlcg.current_iter+1],
          optim_pnlcg.msave[1, :optim_pnlcg.current_iter+1], label="psteep")
-plt.plot(optim_gn.msave[0, :optim_gn.current_iter+1],
-         optim_gn.msave[1, :optim_gn.current_iter+1], label="gn")
+# plt.plot(optim_gn.msave[0, :optim_gn.current_iter+1],
+#          optim_gn.msave[1, :optim_gn.current_iter+1], label="gn")
 ax2.set_rasterization_zorder(-10)
 ax2.set_aspect('equal', 'box')
 plt.legend(loc=3)
 plt.title('Model Movement')
-plt.savefig(os.path.join(DOCFIGURES, "optimization.svg"), dpi=300)
-plt.savefig(os.path.join(DOCFIGURES, "optimization.pdf"), dpi=300)
 plt.show()
 
-plot_model_history(optim_gn, outfile="./testhist.pdf")
-plot_optimization(optim_gn, outfile="./testoptim.pdf")
+
+# plot_model_history(optim_gn, outfile="./testhist.pdf")
+# plot_optimization(optim_gn, outfile="./testoptim.pdf")
 
 
-print(optim_gn.msave)
+# print(optim_gn.msave)
