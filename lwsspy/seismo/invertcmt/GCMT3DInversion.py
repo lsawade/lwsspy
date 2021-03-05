@@ -817,10 +817,10 @@ class GCMT3DInversion:
 
         scaled_depths = np.arange(self.cmtsource.depth_in_m - 10000,
                                   self.cmtsource.depth_in_m + 10100, 2000)/1000.0
-        cost = np.zeros_like(depths)
-        grad = np.zeros((*depths.shape, 1))
-        hess = np.zeros((*depths.shape, 1, 1))
-        dm = np.zeros((*depths.shape, 1))
+        cost = np.zeros_like(scaled_depths)
+        grad = np.zeros((*scaled_depths.shape, 1))
+        hess = np.zeros((*scaled_depths.shape, 1, 1))
+        dm = np.zeros((*scaled_depths.shape, 1))
 
         for _i, _dep in enumerate(scaled_depths):
             lpy.print_action(f"Computing CgH for: {_dep} km")
