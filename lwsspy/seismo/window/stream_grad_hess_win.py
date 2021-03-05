@@ -51,7 +51,7 @@ def stream_grad_and_hess_win(data: Stream, synt: Stream, dsyn: List[Stream],
                     wobs = d[win.left:win.right]
                     wdsdm = dsdm[win.left:win.right]
                     gw = np.sum((wsyn - wobs) * wdsdm * tap) * dt
-                    hw = np.sum(wdsdm * tap) * dt
+                    hw = np.sum(wdsdm**2 * tap) * dt
                     if normalize:
                         factor = np.sum(tap * wobs ** 2) * dt
                         gw /= factor
