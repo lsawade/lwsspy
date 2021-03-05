@@ -86,11 +86,13 @@ class GCMT3DInversion:
             bash_escape: str = bash_escape,
             download_dict: dict = download_dict,
             damping: float = 0.001,
+            normalize: bool = True,
             overwrite: bool = False,
             launch_method: str = "srun -n6 --gpus-per-task=1",
             process_func: Callable = lpy.process_stream,
             window_func: Callable = lpy.window_on_stream,
-            multiprocesses: int = 0):
+            multiprocesses: int = 0,
+            debug: bool = False):
 
         # CMTSource
         self.cmtsource = lpy.CMTSource.from_CMTSOLUTION_file(cmtsolutionfile)
@@ -144,10 +146,14 @@ class GCMT3DInversion:
         self.not_windowed_yet = True
         self.zero_trace = zero_trace
         self.damping = damping
+        self.normalize = normalize
 
         # Initialize data dictionaries
         self.data_dict: dict = dict()
         self.synt_dict: dict = dict()
+
+        # Other
+        self.debug = debug
 
     def init(self):
 
@@ -527,7 +533,8 @@ class GCMT3DInversion:
             self.window_func(self.data_dict[_wtype],
                              self.synt_dict[_wtype]["synt"],
                              self.processdict[_wtype]["window"],
-                             station=self.stations, event=self.xml_event)
+                             station=self.stations, event=self.xml_event,
+                             _verbose=self.debug)
             lpy.add_tapers(self.data_dict[_wtype],
                            taper_type="tukey", alpha=0.25)
 
@@ -767,7 +774,9 @@ class GCMT3DInversion:
         for _wtype in self.processdict.keys():
 
             cost += lpy.stream_cost_win(self.data_dict[_wtype],
-                                        self.synt_dict[_wtype]["synt"])
+                                        self.synt_dict[_wtype]["synt"],
+                                        verbose=self.debug,
+                                        normalize=self.normalize)
 
         return cost
 
@@ -779,7 +788,8 @@ class GCMT3DInversion:
             for _wtype in self.processdict.keys():
                 gradient[_i] += lpy.stream_grad_frechet_win(
                     self.data_dict[_wtype], self.synt_dict[_wtype]["synt"],
-                    self.synt_dict[_wtype][_par])
+                    self.synt_dict[_wtype][_par], normalize=self.normalize,
+                    verbose=self.debug)
 
         return gradient
 
@@ -791,7 +801,8 @@ class GCMT3DInversion:
         for _wtype in self.processdict.keys():
             tmp_g, tmp_h = lpy.stream_grad_and_hess_win(
                 self.data_dict[_wtype], self.synt_dict[_wtype]["synt"],
-                [self.synt_dict[_wtype][_par] for _par in self.pardict.keys()])
+                [self.synt_dict[_wtype][_par] for _par in self.pardict.keys()],
+                verbose=self.debug, normalize=self.normalize)
             gradient += tmp_g
             hessian += tmp_h
         return gradient, np.outer(hessian, hessian)

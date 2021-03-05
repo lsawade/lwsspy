@@ -210,7 +210,8 @@ def window_on_stream(observed: obspy.Stream, synthetic: obspy.Stream,
     # all_windows = {}
 
     for component in config_dict["components"].keys():
-        print(f"\n\n{component}\n\n")
+        if _verbose:
+            print(f"\n\n{component}\n\n")
         # Get component specific values
         config = copy.deepcopy(config_base)
         if config_dict["components"][component] is not None:
@@ -219,7 +220,8 @@ def window_on_stream(observed: obspy.Stream, synthetic: obspy.Stream,
 
         # Get single compenent of stream to work on it
         obs = observed.select(component=component)
-        print(f"Length of windowobs: {len(obs)}")
+        if _verbose:
+            print(f"Length of windowobs: {len(obs)}")
         # Loop over traces
         for obs_tr in obs:
             # component = obs_tr.stats.channel[-1]
@@ -228,8 +230,9 @@ def window_on_stream(observed: obspy.Stream, synthetic: obspy.Stream,
                                           network=obs_tr.stats.network,
                                           component=component)[0]
             except Exception as err:
-                print("Couldn't find corresponding synt for obsd trace(%s):"
-                      "%s" % (obs_tr.id, err))
+                if _verbose:
+                    print("Couldn't find corresponding synt for obsd trace(%s):"
+                          "%s" % (obs_tr.id, err))
                 continue
 
             # Station is the normal inventory, nothing fancy
@@ -239,7 +242,8 @@ def window_on_stream(observed: obspy.Stream, synthetic: obspy.Stream,
                 event=event, _verbose=_verbose,
                 figure_mode=figure_mode, figure_dir=figure_dir)
 
-            print(f"Win on trace: {obs_tr.stats.windows}")
+            if _verbose:
+                print(f"Win on trace: {obs_tr.stats.windows}")
 
 
 def merge_windows(observed: obspy.Stream):
