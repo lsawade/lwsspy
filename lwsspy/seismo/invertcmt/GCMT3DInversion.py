@@ -752,8 +752,6 @@ class GCMT3DInversion:
         # Evaluate
         cost = self.__compute_cost__()
         g, h = self.__compute_gradient_and_hessian__()
-        g *= self.scale
-        # h = np.diag(self.scale) @ h @ np.diag(self.scale)
 
         # Actually write zero trace routine yourself, this is to
         # elaborate..
@@ -765,10 +763,14 @@ class GCMT3DInversion:
 
         if self.damping > 0.0:
             factor = self.damping * np.max(np.abs((np.diag(h))))
-            mnorm = np.sum((self.scaled_model - self.init_scaled_model)**2)
-            cost += factor/2 * mnorm
-            g += factor * (self.scaled_model - self.init_scaled_model)
+            modelres = self.model - self.init_model
+            cost += factor/2 * np.sum(modelres**2)
+            g += factor * modelres
             h += factor * np.eye(len(self.model))
+
+        # Scaling of the cost function
+        g *= self.scale
+        # h = np.diag(self.scale) @ h @ np.diag(self.scale)
 
         return cost, g, h
 
