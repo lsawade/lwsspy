@@ -813,13 +813,10 @@ class GCMT3DInversion:
             grad[_i, :] = g
             hess[_i, :, :] = h
 
-        damp = 0.0001
         # Get the Gauss newton step
         for _i in range(len(depths)):
             dm[_i, :] = np.linalg.solve(
-                hess[_i, :, :]
-                + damp * np.abs(hess[_i, :, :]) * np.eye(1),
-                - grad[_i, :])
+                hess[_i, :, :], -grad[_i, :])
 
         plt.switch_backend("pdf")
         plt.figure(figsize=(12, 4))

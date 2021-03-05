@@ -50,8 +50,10 @@ def stream_grad_and_hess_win(data: Stream, synt: Stream, dsyn: List[Stream],
                     wsyn = s[win.left:win.right]
                     wobs = d[win.left:win.right]
                     wdsdm = dsdm[win.left:win.right]
-                    g[_i] += np.sum((wsyn - wobs) * wdsdm * tap) * dt
-                    h[_i] += np.sum(wdsdm * tap) * dt
+                    g[_i] += np.sum((wsyn - wobs) * wdsdm * tap) * dt \
+                        / (np.sum(tap * (wobs) ** 2) * dt)
+                    h[_i] += np.sum(wdsdm * tap) * dt\
+                        / (np.sum(tap * (wobs) ** 2) * dt)
 
         except Exception as e:
             print(f"When accessing {network}.{station}.{component}")
