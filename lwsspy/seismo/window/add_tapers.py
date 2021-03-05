@@ -3,7 +3,7 @@ from scipy import signal
 
 
 def add_tapers(observed: obspy.Stream, taper_type: str = "tukey",
-               alpha: float = 0.25):
+               alpha: float = 0.25, verbose: bool = False):
     """Attaches tapers to all Trace.Stats in Stream using preexisting 
     Stats.windows.
 
@@ -32,7 +32,8 @@ def add_tapers(observed: obspy.Stream, taper_type: str = "tukey",
                 length = win.right - win.left
                 tr.stats.tapers.append(taper(length, alpha=alpha))
         except Exception as e:
-            print(
-                f"Not able to read windows at"
-                f"{tr.stats.network}.{tr.stats.station}."
-                f"{tr.stats.location}.{tr.stats.channel}: {e}")
+            if verbose:
+                print(
+                    f"Not able to read windows at"
+                    f"{tr.stats.network}.{tr.stats.station}."
+                    f"{tr.stats.location}.{tr.stats.channel}: {e}")
