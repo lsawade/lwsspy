@@ -189,9 +189,11 @@ class GCMT3DInversion:
 
         self.__prep_simulations__()
         self.__write_sources__()
-        self.__run_forward_only__()
+        with lpy.Timer():
+            self.__run_forward_only__()
         self.process_synt()
-        self.__window__()
+        with lpy.Timer():
+            self.__window__()
         self.not_windowed_yet = False
 
     def process_all_synt(self):
@@ -713,7 +715,8 @@ class GCMT3DInversion:
         self.__write_sources__()
 
         # Run the simulations
-        self.__run_simulations__()
+        with lpy.Timer():
+            self.__run_simulations__()
 
         # Get streams
         self.process_all_synt()
@@ -735,7 +738,8 @@ class GCMT3DInversion:
         self.__write_sources__()
 
         # Run the simulations
-        self.__run_simulations__()
+        with lpy.Timer():
+            self.__run_simulations__()
 
         # Get streams
         self.process_all_synt()
@@ -748,6 +752,7 @@ class GCMT3DInversion:
         # Evaluate
         cost = self.__compute_cost__()
         g, h = self.__compute_gradient_and_hessian__()
+        g *= self.scale
         h = np.diag(self.scale) @ h @ np.diag(self.scale)
 
         # Actually write zero trace routine yourself, this is to
@@ -757,15 +762,14 @@ class GCMT3DInversion:
         #     AA[0:6, na - 1] = np.array([1, 1, 1, 0, 0, 0])
         #     AA[na - 1, 0:6] = np.array([1, 1, 1, 0, 0, 0])
         #     AA[na - 1, na - 1] = 0.0
-        print("H shape:", h.shape)
+
         if self.damping > 0.0:
-            print("Damoing even though I shouldn't be.")
             factor = self.damping * np.max(np.abs((np.diag(h))))
             mnorm = np.sum((self.scaled_model - self.init_scaled_model)**2)
             cost += factor/2 * mnorm
             g += factor * (self.scaled_model - self.init_scaled_model)
             h += factor * np.eye(len(self.model))
-        print("H shape:", h.shape)
+
         return cost, g, h
 
     def __compute_cost__(self):
