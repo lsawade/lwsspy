@@ -828,22 +828,22 @@ class GCMT3DInversion:
         plt.ylabel("Depth [km]")
 
         ax = plt.subplot(142, sharey=ax)
-        plt.plot(np.squeeze(grad), depths/1000.0, label="Cost")
+        plt.plot(np.squeeze(grad), depths/1000.0, label="Grad")
         plt.legend(frameon=False, loc='upper right')
         plt.xlabel("Gradient")
-        plt.ylabel("Depth [km]")
+        ax.tick_params(labelleft=False, labelright=False)
 
         ax = plt.subplot(143, sharey=ax)
-        plt.plot(np.squeeze(hess), depths/1000.0, label="Gradient")
+        plt.plot(np.squeeze(hess), depths/1000.0, label="Hess")
         plt.legend(frameon=False, loc='upper right')
         plt.xlabel("G.-N. Hessian")
-        plt.ylabel("Depth [km]")
+        ax.tick_params(labelleft=False, labelright=False)
 
         ax = plt.subplot(144, sharey=ax)
-        plt.plot(np.squeeze(dm), depths/1000.0, label="Gradient")
+        plt.plot(np.squeeze(dm), depths/1000.0, label="Step")
         plt.legend(frameon=False, loc='upper right')
         plt.xlabel("$\Delta$m [km]")
-        plt.ylabel("Depth [km]")
+        ax.tick_params(labelleft=False, labelright=False)
 
         plt.savefig("misfit_walk_depth.pdf")
 
