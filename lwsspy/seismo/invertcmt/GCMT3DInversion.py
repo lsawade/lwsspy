@@ -197,7 +197,7 @@ class GCMT3DInversion:
         self.not_windowed_yet = False
 
     def process_all_synt(self):
-        lpy.print_bar("PREPPING SYNTHETICS")
+        lpy.print_section("Loading and processing all modeled data")
 
         with lpy.Timer():
             self.__load_synt__()
@@ -831,7 +831,7 @@ class GCMT3DInversion:
         # Get the Gauss newton step
         for _i in range(len(depths)):
             dm[_i, :] = np.linalg.solve(
-                hess[_i, :, :], -grad[_i, :])
+                hess[_i, :, :], -grad[_i, :]) * self.scale
 
         plt.switch_backend("pdf")
         plt.figure(figsize=(12, 4))
