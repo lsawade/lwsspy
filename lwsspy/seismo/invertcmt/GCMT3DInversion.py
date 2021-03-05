@@ -831,7 +831,7 @@ class GCMT3DInversion:
         # Get the Gauss newton step
         for _i in range(len(depths)):
             dm[_i, :] = np.linalg.solve(
-                hess[_i, :, :], -grad[_i, :]) * self.scale
+                hess[_i, :, :], -grad[_i, :])
 
         plt.switch_backend("pdf")
         plt.figure(figsize=(12, 4))
