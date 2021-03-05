@@ -799,7 +799,7 @@ class GCMT3DInversion:
     def misfit_walk_depth(self):
 
         depths = np.arange(self.cmtsource.depth_in_m - 10000,
-                           self.cmtsource.depth_in_m + 10100, 2000)
+                           self.cmtsource.depth_in_m + 10100, 1000)
         cost = np.zeros_like(depths)
         grad = np.zeros((*depths.shape, 1))
         hess = np.zeros((*depths.shape, 1, 1))
