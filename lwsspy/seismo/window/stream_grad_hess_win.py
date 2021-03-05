@@ -4,7 +4,7 @@ import numpy as np
 
 
 def stream_grad_and_hess_win(data: Stream, synt: Stream, dsyn: List[Stream],
-                             verbose: float = False) \
+                             normalize: bool = True, verbose: float = False) \
         -> Tuple[float, float]:
     """Computes the gradient and the approximate hessian of the cost function
     using the Frechet derivative of the forward modelled data.
@@ -50,10 +50,14 @@ def stream_grad_and_hess_win(data: Stream, synt: Stream, dsyn: List[Stream],
                     wsyn = s[win.left:win.right]
                     wobs = d[win.left:win.right]
                     wdsdm = dsdm[win.left:win.right]
-                    g[_i] += np.sum((wsyn - wobs) * wdsdm * tap) * dt \
-                        / (np.sum(tap * (wobs) ** 2) * dt)
-                    h[_i] += np.sum(wdsdm * tap) * dt\
-                        / (np.sum(tap * (wobs) ** 2) * dt)
+                    gw = np.sum((wsyn - wobs) * wdsdm * tap) * dt
+                    hw = np.sum(wdsdm * tap) * dt
+                    if normalize:
+                        factor = np.sum(tap * (wobs) ** 2) * dt
+                        gw /= factor
+                        hw /= factor
+                    g[_i] += gw
+                    h[_i] += hw
 
         except Exception as e:
             print(f"When accessing {network}.{station}.{component}")

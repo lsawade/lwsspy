@@ -2,7 +2,8 @@ import numpy as np
 from obspy import Stream
 
 
-def stream_cost_win(data: Stream, synt: Stream, verbose=False) -> float:
+def stream_cost_win(data: Stream, synt: Stream, normalize: bool = True,
+                    verbose: bool = False) -> float:
     """Takes in data and synthetics stream and computes windowed least squares
     cost. The stats object of the Traces in the stream _*must*_ contain both
     `windows` and the `tapers` attributes!
@@ -39,8 +40,10 @@ def stream_cost_win(data: Stream, synt: Stream, verbose=False) -> float:
             for win, tap in zip(tr.stats.windows, tr.stats.tapers):
                 ws = s[win.left:win.right]
                 wo = d[win.left:win.right]
-                x += 0.5 * (np.sum(tap * (ws - wo) ** 2) * dt)\
-                    / (np.sum(tap * (wo) ** 2) * dt)
+                costw = 0.5 * (np.sum(tap * (ws - wo) ** 2) * dt)
+                if normalize:
+                    costw /= np.sum(tap * (wo) ** 2) * dt
+                x += costw
 
         except Exception as e:
             print(f"Error at ({network}.{station}.{component}): {e}")
