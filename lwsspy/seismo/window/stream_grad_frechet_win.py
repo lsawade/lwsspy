@@ -3,7 +3,7 @@ from obspy import Stream
 
 
 def stream_grad_frechet_win(data: Stream, synt: Stream, dsyn: Stream,
-                            verbose: float = False) -> float:
+                            normalize: bool = True, verbose: float = False) -> float:
     """Computes the gradient of a the least squares cost function wrt. 1
     parameter given its forward computation and the frechet derivative.
     The stats object of the Traces in the stream _*must*_ contain both
@@ -46,7 +46,10 @@ def stream_grad_frechet_win(data: Stream, synt: Stream, dsyn: Stream,
                 wsyn = s[win.left:win.right]
                 wobs = d[win.left:win.right]
                 wdsdm = dsdm[win.left:win.right]
-                x += np.sum((wsyn - wobs) * wdsdm * tap) * dt
+                costw = np.sum((wsyn - wobs) * wdsdm * tap) * dt
+                if normalize:
+                    costw /= np.sum(tap * (wobs)**2) * dt
+                x += costw
 
         except Exception as e:
             if verbose:
