@@ -46,6 +46,7 @@ def stream_cost_win(data: Stream, synt: Stream, normalize: bool = True,
                 x += costw
 
         except Exception as e:
-            print(f"Error at ({network}.{station}.{component}): {e}")
+            if verbose:
+                print(f"Error at ({network}.{station}.{component}): {e}")
 
     return x
