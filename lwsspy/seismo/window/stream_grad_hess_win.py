@@ -60,7 +60,8 @@ def stream_grad_and_hess_win(data: Stream, synt: Stream, dsyn: List[Stream],
                     h[_i] += hw
 
         except Exception as e:
-            print(f"When accessing {network}.{station}.{component}")
-            print(e)
+            if verbose:
+                print(f"When accessing {network}.{station}.{component}")
+                print(e)
 
     return g, h
