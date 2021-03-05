@@ -750,14 +750,15 @@ class GCMT3DInversion:
         #     AA[0:6, na - 1] = np.array([1, 1, 1, 0, 0, 0])
         #     AA[na - 1, 0:6] = np.array([1, 1, 1, 0, 0, 0])
         #     AA[na - 1, na - 1] = 0.0
-
+        print("H shape:", h.shape)
         if self.damping > 0.0:
+            print("Damoing even though I shouldn't be.")
             factor = self.damping * np.max(np.abs((np.diag(h))))
             mnorm = np.sum((self.scaled_model - self.init_scaled_model)**2)
             cost += factor/2 * mnorm
             g += factor * (self.scaled_model - self.init_scaled_model)
             h += factor * np.eye(len(self.model))
-
+        print("H shape:", h.shape)
         return cost, g, h
 
     def __compute_cost__(self):
