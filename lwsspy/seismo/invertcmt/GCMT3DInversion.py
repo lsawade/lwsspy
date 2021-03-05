@@ -522,9 +522,9 @@ class GCMT3DInversion:
                     self.synt_dict[_wtype][_par].differentiate(
                         method='gradient')
                     lpy.stream_multiply(self.synt_dict[_wtype][_par], -1.0)
-                # if _par == "depth_in_m":
-                #     lpy.stream_multiply(
-                #         self.synt_dict[_wtype][_par], 1.0/1000.0)
+                if _par == "depth_in_m":
+                    lpy.stream_multiply(
+                        self.synt_dict[_wtype][_par], 1.0/1000.0)
         if parallel:
             p.close()
 
@@ -769,7 +769,7 @@ class GCMT3DInversion:
             h += factor * np.eye(len(self.model))
 
         # Scaling of the cost function
-        g *= self.scale
+        # g *= self.scale
         # h = np.diag(self.scale) @ h @ np.diag(self.scale)
 
         return cost, g, h

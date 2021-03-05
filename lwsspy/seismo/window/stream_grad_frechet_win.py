@@ -48,7 +48,7 @@ def stream_grad_frechet_win(data: Stream, synt: Stream, dsyn: Stream,
                 wdsdm = dsdm[win.left:win.right]
                 costw = np.sum((wsyn - wobs) * wdsdm * tap) * dt
                 if normalize:
-                    costw /= np.sum(tap * (wobs)**2) * dt
+                    costw /= np.sum(tap * wobs ** 2) * dt
                 x += costw
 
         except Exception as e:

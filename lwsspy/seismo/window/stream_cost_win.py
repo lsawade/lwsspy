@@ -42,7 +42,7 @@ def stream_cost_win(data: Stream, synt: Stream, normalize: bool = True,
                 wo = d[win.left:win.right]
                 costw = 0.5 * (np.sum(tap * (ws - wo) ** 2) * dt)
                 if normalize:
-                    costw /= np.sum(tap * (wo) ** 2) * dt
+                    costw /= np.sum(tap * wo ** 2) * dt
                 x += costw
 
         except Exception as e:
