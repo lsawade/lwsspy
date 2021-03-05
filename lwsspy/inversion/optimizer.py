@@ -173,8 +173,11 @@ def Solve_Optimisation_Problem(optim, model):
         if ((optim.fcost / optim.fcost_ini) < optim.stopping_criterion):
             print("Optimization algorithm has converged.")
             break
+        if np.max(np.abs((optim.alpha * optim.descent)/optim.model_ini)) \
+                < optim.stopping_criterion_model:
+            print("Model is not updating enough anymore.")
+            break
 
-    optim.save_model_and_gradient(optim)
     return optim
 
 
@@ -288,7 +291,7 @@ def get_optim_si_yi(optim, i):
 
     Parameters
     ----------
-    optim : Optimization 
+    optim : Optimization
         Optimization class
     i : int
         iteration counter
@@ -321,11 +324,11 @@ def perform_linesearch(optim):
             f"\nils: {ils} -- model: {optim.model_new} -- alpha: {optim.alpha}\n")
         # If simultaneous cost and grad computation is defined do that.
         if optim.compute_cost_and_grad_and_hess is not None:
-            optim.fcost_new, optim.grad_new, optim.hess_new = \
-                optim.compute_cost_and_grad_and_hess(optim.model)
+            optim.fcost_new, optim.grad_new, optim.hess_new = optim.compute_cost_and_grad_and_hess(
+                optim.model)
         elif optim.compute_cost_and_gradient is not None:
-            optim.fcost_new, optim.grad_new = \
-                optim.compute_cost_and_gradient(optim.model_new)
+            optim.fcost_new, optim.grad_new = optim.compute_cost_and_gradient(
+                optim.model_new)
         else:
             optim.fcost_new = optim.compute_cost(optim.model_new)
             optim.grad_new = optim.compute_gradient(optim.model_new)
@@ -402,7 +405,7 @@ def check_wolfe_conditions(optim):
     # Check descent direction
     if optim.q > 0:
         optim.w3 = False
-        #error('Not a descent dir');
+        # error('Not a descent dir');
 
     # Check first wolfe
     if optim.fcost_new <= optim.fcost + optim.c1 * optim.alpha * optim.q:
@@ -474,6 +477,7 @@ class Optimization:
         norm_grad_init: float = 0.0,
         norm_grad: float = 0.0,
         stopping_criterion: float = 1e-10,
+        stopping_criterion_model: float = 1e-3,
         niter_max: int = 50,
         qk: float = 0.0,
         q: float = 0.0,
@@ -529,6 +533,8 @@ class Optimization:
             current norm of the gradient, by default 0.0
         stopping_criterion : float, optional
             value to cost function has to reach, by default 1e-10
+        stopping_criterion_model : float, optional
+            value to stop at if model isn't updating enough anymore
         niter_max : int, optional
             max iteration (excluding the linesearch), by default 50
         qk : float, optional
@@ -607,6 +613,7 @@ class Optimization:
         self.norm_grad_init = norm_grad_init
         self.norm_grad = norm_grad
         self.stopping_criterion = stopping_criterion
+        self.stopping_criterion_model = stopping_criterion_model
         self.niter_max = niter_max
         self.qk = qk
         self.q = q
