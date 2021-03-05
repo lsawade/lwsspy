@@ -753,7 +753,7 @@ class GCMT3DInversion:
         cost = self.__compute_cost__()
         g, h = self.__compute_gradient_and_hessian__()
         g *= self.scale
-        h = np.diag(self.scale) @ h @ np.diag(self.scale)
+        # h = np.diag(self.scale) @ h @ np.diag(self.scale)
 
         # Actually write zero trace routine yourself, this is to
         # elaborate..
@@ -813,14 +813,14 @@ class GCMT3DInversion:
 
     def misfit_walk_depth(self):
 
-        depths = np.arange(self.cmtsource.depth_in_m - 10000,
-                           self.cmtsource.depth_in_m + 10100, 1000)/1000.0
+        scaled_depths = np.arange(self.cmtsource.depth_in_m - 10000,
+                                  self.cmtsource.depth_in_m + 10100, 2000)/1000.0
         cost = np.zeros_like(depths)
         grad = np.zeros((*depths.shape, 1))
         hess = np.zeros((*depths.shape, 1, 1))
         dm = np.zeros((*depths.shape, 1))
 
-        for _i, _dep in enumerate(depths):
+        for _i, _dep in enumerate(scaled_depths):
             lpy.print_action(f"Computing CgH for: {_dep} km")
             c, g, h = self.compute_cost_gradient_hessian(
                 np.array([_dep]))
@@ -829,7 +829,7 @@ class GCMT3DInversion:
             hess[_i, :, :] = h
 
         # Get the Gauss newton step
-        for _i in range(len(depths)):
+        for _i in range(len(scaled_depths)):
             dm[_i, :] = np.linalg.solve(
                 hess[_i, :, :], -grad[_i, :])
 
@@ -837,25 +837,25 @@ class GCMT3DInversion:
         plt.figure(figsize=(12, 4))
         # Cost function
         ax = plt.subplot(141)
-        plt.plot(cost, depths, label="Cost")
+        plt.plot(cost, scaled_depths, label="Cost")
         plt.legend(frameon=False, loc='upper right')
         plt.xlabel("Cost")
         plt.ylabel("Depth [km]")
 
         ax = plt.subplot(142, sharey=ax)
-        plt.plot(np.squeeze(grad), depths, label="Grad")
+        plt.plot(np.squeeze(grad), scaled_depths, label="Grad")
         plt.legend(frameon=False, loc='upper right')
         plt.xlabel("Gradient")
         ax.tick_params(labelleft=False, labelright=False)
 
         ax = plt.subplot(143, sharey=ax)
-        plt.plot(np.squeeze(hess), depths, label="Hess")
+        plt.plot(np.squeeze(hess), scaled_depths, label="Hess")
         plt.legend(frameon=False, loc='upper right')
         plt.xlabel("G.-N. Hessian")
         ax.tick_params(labelleft=False, labelright=False)
 
         ax = plt.subplot(144, sharey=ax)
-        plt.plot(np.squeeze(dm), depths, label="Step")
+        plt.plot(np.squeeze(dm), scaled_depths, label="Step")
         plt.legend(frameon=False, loc='upper right')
         plt.xlabel("$\Delta$m [km]")
         ax.tick_params(labelleft=False, labelright=False)
