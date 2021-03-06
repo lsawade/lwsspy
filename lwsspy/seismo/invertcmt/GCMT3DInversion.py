@@ -1245,6 +1245,8 @@ def bin():
     gcmt3d.init()
     gcmt3d.process_data()
     gcmt3d.get_windows()
-    c, g, h = gcmt3d.compute_cost_gradient_hessian(np.array([12.0])
+    c, g, h = gcmt3d.compute_cost_gradient_hessian(np.array([12.0]))
 
-    print(f"Cost: {c:.3e} -- Grad: {c:.3e} -- Hess: {g.flatten()}")
+    print(f"Cost: {c}")
+    print(f"Grad: {np.array_str(g.flatten())}")
+    print(f"Hess: {np.array_str(h.flatten())}")
