@@ -811,7 +811,7 @@ class GCMT3DInversion:
                 verbose=self.debug, normalize=self.normalize)
             gradient += tmp_g
             hessian += tmp_h
-        return gradient, np.outer(hessian, hessian)
+        return gradient
 
     def misfit_walk_depth(self):
 
