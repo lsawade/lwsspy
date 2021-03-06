@@ -29,7 +29,7 @@ def stream_grad_and_hess_win(data: Stream, synt: Stream, dsyn: List[Stream],
     """
 
     g = np.zeros(len(dsyn))
-    h = np.zeros(len(dsyn), len(dsyn))
+    h = np.zeros((len(dsyn), len(dsyn)))
 
     for tr in data:
         network, station, component = (
