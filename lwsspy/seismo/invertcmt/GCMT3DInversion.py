@@ -815,6 +815,9 @@ class GCMT3DInversion:
 
     def misfit_walk_depth(self):
 
+        # Start the walk
+        lpy.print_bar("Misfit walk: Depth")
+
         scaled_depths = np.arange(self.cmtsource.depth_in_m - 10000,
                                   self.cmtsource.depth_in_m + 10100, 1000)/1000.0
         cost = np.zeros_like(scaled_depths)
@@ -828,7 +831,7 @@ class GCMT3DInversion:
             with lpy.Timer():
                 c, g, h = self.compute_cost_gradient_hessian(
                     np.array([_dep]))
-                print(f"\n    Iteration for {_dep} km done.")
+                print(f"\n     Iteration for {_dep} km done.")
             cost[_i] = c
             grad[_i, :] = g
             hess[_i, :, :] = h
@@ -866,6 +869,9 @@ class GCMT3DInversion:
         ax.tick_params(labelleft=False, labelright=False)
 
         plt.savefig("misfit_walk_depth.pdf")
+
+        # Start the walk
+        lpy.print_bar("DONE.")
 
     def misfit_walk_depth_times(self):
         """Pardict containing an array of the walk parameters.
@@ -1248,8 +1254,4 @@ def bin():
     gcmt3d.init()
     gcmt3d.process_data()
     gcmt3d.get_windows()
-    c, g, h = gcmt3d.compute_cost_gradient_hessian(np.array([12.0]))
-
-    print(f"Cost: {c}")
-    print(f"Grad: {np.array_str(g.flatten())}")
-    print(f"Hess: {np.array_str(h.flatten())}")
+    gcmt3d.misfit_walk_depth()
