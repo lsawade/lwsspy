@@ -802,7 +802,7 @@ class GCMT3DInversion:
     def __compute_gradient_and_hessian__(self):
 
         gradient = np.zeros_like(self.model)
-        hessian = np.zeros_like((len(self.model), len(self.model)))
+        hessian = np.zeros((len(self.model), len(self.model)))
 
         for _wtype in self.processdict.keys():
             tmp_g, tmp_h = lpy.stream_grad_and_hess_win(
