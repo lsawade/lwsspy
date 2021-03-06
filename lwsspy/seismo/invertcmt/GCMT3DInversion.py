@@ -816,16 +816,19 @@ class GCMT3DInversion:
     def misfit_walk_depth(self):
 
         scaled_depths = np.arange(self.cmtsource.depth_in_m - 10000,
-                                  self.cmtsource.depth_in_m + 10100, 2000)/1000.0
+                                  self.cmtsource.depth_in_m + 10100, 1000)/1000.0
         cost = np.zeros_like(scaled_depths)
         grad = np.zeros((*scaled_depths.shape, 1))
         hess = np.zeros((*scaled_depths.shape, 1, 1))
         dm = np.zeros((*scaled_depths.shape, 1))
 
         for _i, _dep in enumerate(scaled_depths):
-            lpy.print_action(f"Computing CgH for: {_dep} km")
-            c, g, h = self.compute_cost_gradient_hessian(
-                np.array([_dep]))
+
+            lpy.print_section(f"Computing CgH for: {_dep} km")
+            with lpy.Timer():
+                c, g, h = self.compute_cost_gradient_hessian(
+                    np.array([_dep]))
+                print(f"\n    Iteration for {_dep} km done.")
             cost[_i] = c
             grad[_i, :] = g
             hess[_i, :, :] = h
