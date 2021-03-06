@@ -809,7 +809,7 @@ class GCMT3DInversion:
                 self.data_dict[_wtype], self.synt_dict[_wtype]["synt"],
                 [self.synt_dict[_wtype][_par] for _par in self.pardict.keys()],
                 verbose=self.debug, normalize=self.normalize)
-            gradient += tmp_g
+            gradient += tmp_g                                                                   
             hessian += tmp_h
         return gradient, np.outer(hessian, hessian)
 

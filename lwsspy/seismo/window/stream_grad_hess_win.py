@@ -29,7 +29,7 @@ def stream_grad_and_hess_win(data: Stream, synt: Stream, dsyn: List[Stream],
     """
 
     g = np.zeros(len(dsyn))
-    h = np.zeros(len(dsyn))
+    h = np.zeros(len(dsyn), len(dsyn))
 
     for tr in data:
         network, station, component = (
@@ -42,22 +42,37 @@ def stream_grad_and_hess_win(data: Stream, synt: Stream, dsyn: List[Stream],
         try:
             s = synt.select(network=network, station=station,
                             component=component)[0].data
+            # Create trace list for the Frechet derivatives
+            dsdm = []
+            for ds in dsyn:
+                dsdm.append(ds.select(network=network, station=station,
+                                      component=component)[0].data)
 
-            for _i, ds in enumerate(dsyn):
-                dsdm = ds.select(network=network, station=station,
-                                 component=component)[0].data
-                for win, tap in zip(tr.stats.windows, tr.stats.tapers):
-                    wsyn = s[win.left:win.right]
-                    wobs = d[win.left:win.right]
-                    wdsdm = dsdm[win.left:win.right]
-                    gw = np.sum((wsyn - wobs) * wdsdm * tap) * dt
-                    hw = np.sum(wdsdm**2 * tap) * dt
+            # Loop over windows
+            for win, tap in zip(tr.stats.windows, tr.stats.tapers):
+                # Get data in windows
+                wsyn = s[win.left:win.right]
+                wobs = d[win.left:win.right]
+
+                # Normalization factor on window
+                factor = np.sum(tap * wobs ** 2) * dt
+
+                # Compute Gradient
+                for _i, _dsdm_i in enumerate(dsdm):
+                    # Get derivate with respect to model parameter i
+                    wdsdm_i = _dsdm_i[win.left:win.right]
+                    gw = np.sum(((wsyn - wobs) * tap) * wdsdm_i) * dt
                     if normalize:
-                        factor = np.sum(tap * wobs ** 2) * dt
                         gw /= factor
-                        hw /= factor
                     g[_i] += gw
-                    h[_i] += hw
+
+                    for _j, _dsdm_j in enumerate(dsdm):
+                        # Get derivate with respect to model parameter j
+                        wdsdm_j = _dsdm_j[win.left:win.right]
+                        hw = ((wdsdm_i * tap) @ (wdsdm_j * tap)) * dt
+                        if normalize:
+                            hw /= factor
+                        h[_i, _j] += hw
 
         except Exception as e:
             if verbose:

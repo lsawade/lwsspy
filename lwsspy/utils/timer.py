@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 import time
 from typing import Callable, ClassVar, Dict, Optional
+from .sec2hhmmss import sec2timestamp
 
 
 class TimerError(Exception):
@@ -10,7 +11,7 @@ class TimerError(Exception):
 class Timer:
     timers: ClassVar[Dict[str, float]] = dict()
     name: Optional[str] = None
-    text: str = "     Elapsed time: {:0.4f} seconds"
+    text: str = "     Elapsed time: {:s} seconds"
     logger: Optional[Callable[[str], None]] = print
     _start_time = None
 
@@ -37,7 +38,7 @@ class Timer:
 
         # Report elapsed time
         if self.logger:
-            self.logger(self.text.format(elapsed_time))
+            self.logger(self.text.format(sec2timestamp(elapsed_time)))
         if self.name:
             self.timers[self.name] += elapsed_time
 
