@@ -769,8 +769,8 @@ class GCMT3DInversion:
             h += factor * np.eye(len(self.model))
 
         # Scaling of the cost function
-        # g *= self.scale
-        # h = np.diag(self.scale) @ h @ np.diag(self.scale)
+        g *= self.scale
+        h = np.diag(self.scale) @ h @ np.diag(self.scale)
 
         return cost, g, h
 
