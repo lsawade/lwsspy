@@ -1271,8 +1271,7 @@ def bin():
     optim_gn.stopping_criterion = 9.5e-1
     optim_gn.n = len(gcmt3d.model)
 
-    gcmt3d.optimize(optim_gn)
-    optim_out = deepcopy(gcmt3d.optim)
+    optim_out = gcmt3d.optimize(optim_gn)
 
     gcmt3d.__update_cmt__(optim_out.model)
     gcmt3d.cmt_out.write_CMTSOLUTION_file(f"{gcmt3d.cmt_out.eventname}_GN")
