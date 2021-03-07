@@ -1284,7 +1284,7 @@ def bin():
     lpy.plot_optimization(
         optim_out, outfile=f"{gcmt3d.cmtdir}/GN_MisfitReduction.pdf")
     lpy.plot_model_history(optim_out, labellist=['Depth [km]'],
-                           outfile="{gcmt3d.cmtdir}/GN_ModelHistory.pdf")
+                           outfile=f"{gcmt3d.cmtdir}/GN_ModelHistory.pdf")
     lpy.plot_single_parameter_optimization(
         optim_out, modellabel='Depth [km]',
         outfile=f"{gcmt3d.cmtdir}/GN_InversionHistory.pdf")
