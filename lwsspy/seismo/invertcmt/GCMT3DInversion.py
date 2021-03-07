@@ -629,7 +629,7 @@ class GCMT3DInversion:
         cmt = deepcopy(self.cmtsource)
         for _par, _modelval in zip(self.pars, model * self.scale):
             setattr(cmt, _par, _modelval)
-        self.cmt_out
+        self.cmt_out = cmt
 
     def __write_sources__(self):
 
@@ -1259,7 +1259,7 @@ def bin():
     gcmt3d.get_windows()
     # gcmt3d.misfit_walk_depth()
 
-    # Gauss Newton
+    # Gauss Newton Optimization Structure
     lpy.print_bar("GN")
     optim_gn = lpy.Optimization("gn")
     optim_gn.compute_cost_and_grad_and_hess = \
@@ -1271,17 +1271,23 @@ def bin():
     optim_gn.stopping_criterion = 9.5e-1
     optim_gn.n = len(gcmt3d.model)
 
+    # Run optimization
     optim_out = gcmt3d.optimize(optim_gn)
 
+    # Update model and write model
     gcmt3d.__update_cmt__(optim_out.model)
     gcmt3d.cmt_out.write_CMTSOLUTION_file(
         f"{gcmt3d.cmtdir}/{gcmt3d.cmt_out.eventname}_GN")
 
+    # Write PDF
     plt.switch_backend("pdf")
     lpy.plot_optimization(
         optim_out, outfile=f"{gcmt3d.cmtdir}/GN_MisfitReduction.pdf")
     lpy.plot_model_history(optim_out, labellist=['Depth [km]'],
                            outfile="{gcmt3d.cmtdir}/GN_ModelHistory.pdf")
+    lpy.plot_single_parameter_optimization(
+        optim_out, modellabel='Depth [km]',
+        outfile=f"{gcmt3d.cmtdir}/GN_InversionHistory.pdf")
 
     # # BFGS
     # lpy.print_bar("BFGS")
