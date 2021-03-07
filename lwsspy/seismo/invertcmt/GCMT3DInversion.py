@@ -96,6 +96,7 @@ class GCMT3DInversion:
 
         # CMTSource
         self.cmtsource = lpy.CMTSource.from_CMTSOLUTION_file(cmtsolutionfile)
+        self.cmt_out = deepcopy(self.cmtsource)
         self.xml_event = read_events(cmtsolutionfile)[0]
 
         # File locations
@@ -546,16 +547,12 @@ class GCMT3DInversion:
     def optimize(self, optim: lpy.Optimization):
 
         try:
-            self.optim = optim.solve(optim, self.scaled_model)
-        except KeyboardInterrupt:
-            self.optim = optim
-        plt.switch_backend("pdf")
-        lpy.plot_optimization(
-            self.optim, outfile="SyntheticDepthInversionMisfitReduction.pdf")
-        lpy.plot_model_history(self.optim, labellist=[r'$z$', r'$\Delta t$'],
-                               outfile="SyntheticDepthInversionModelHistory.pdf")
-
-        self.model = optim.model
+            optim_out = optim.solve(optim, self.scaled_model)
+            self.model = optim.model
+            return optim_out
+        except Exception as e:
+            print(e)
+            return optim
 
     def __prep_simulations__(self):
 
@@ -627,6 +624,12 @@ class GCMT3DInversion:
 
                 # Write Stuff to Par_file
                 lpy.write_parfile(dsyn_pars, dsyn_parfile)
+
+    def __update_cmt__(self, model):
+        cmt = deepcopy(self.cmtsource)
+        for _par, _modelval in zip(self.pars, model * self.scale):
+            setattr(cmt, _par, _modelval)
+        self.cmt_out
 
     def __write_sources__(self):
 
@@ -1254,4 +1257,54 @@ def bin():
     gcmt3d.init()
     gcmt3d.process_data()
     gcmt3d.get_windows()
-    gcmt3d.misfit_walk_depth()
+    # gcmt3d.misfit_walk_depth()
+
+    # Gauss Newton
+    lpy.print_bar("GN")
+    optim_gn = lpy.Optimization("gn")
+    optim_gn.compute_cost_and_grad_and_hess = \
+        gcmt3d.compute_cost_gradient_hessian
+    optim_gn.is_preco = False
+    optim_gn.niter_max = 5
+    optim_gn.nls_max = 3
+    optim_gn.alpha = 1.0
+    optim_gn.stopping_criterion = 9.5e-1
+    optim_gn.n = len(gcmt3d.model)
+
+    gcmt3d.optimize(optim_gn)
+    optim_out = deepcopy(gcmt3d.optim)
+
+    gcmt3d.__update_cmt__(optim_out.model)
+    gcmt3d.cmt_out.write_CMTSOLUTION_file(f"{gcmt3d.cmt_out.eventname}_GN")
+
+    plt.switch_backend("pdf")
+    lpy.plot_optimization(
+        optim_out, outfile="GN_MisfitReduction.pdf")
+    lpy.plot_model_history(optim_out, labellist=['Depth [km]'],
+                           outfile="GN_ModelHistory.pdf")
+
+    # # BFGS
+    # lpy.print_bar("BFGS")
+    # optim_bfgs = lpy.Optimization("bfgs")
+    # optim_bfgs.compute_cost_and_gradient = gcmt3d.compute_cost_gradient
+    # optim_bfgs.is_preco = False
+    # optim_bfgs.niter_max = 5
+    # optim_bfgs.nls_max = 3
+    # optim_bfgs.stopping_criterion = 9.5e-1
+    # optim_bfgs.n = len(gcmt3d.model)
+
+    # gcmt3d.__update_cmt__(optim.model)
+    # gcmt3d.cmt_out.write_CMTSOLUTION_file(f"{gcmt3d.cmt_out.eventname}_GN")
+
+    # # Regularized Gauss Newton
+    # gcmt3d.damping = 0.001
+    # lpy.print_bar("GN-Regularized")
+    # optim_gn = lpy.Optimization("gn")
+    # optim_gn.compute_cost_and_grad_and_hess = \
+    #     gcmt3d.compute_cost_gradient_hessian
+    # optim_gn.is_preco = False
+    # optim_gn.niter_max = 5
+    # optim_gn.nls_max = 3
+    # optim_gn.alpha = 1.0
+    # optim_gn.stopping_criterion = 9.5e-1
+    # optim_gn.n = len(gcmt3d.model)
