@@ -27,7 +27,6 @@ def plot_optimization(optim: Union[List[Optimization], Optimization],
         c = _opt.fcost_hist
         it = np.arange(len(c))
         plt.plot(it, c, label=_opt.type.upper())
-    plt.ylim(0.001, 1)
     ax.set_yscale('log')
     plt.legend(loc=1)
     plt.title("Misfit Reduction")

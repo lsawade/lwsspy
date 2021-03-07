@@ -39,6 +39,7 @@ if "-m" not in sys.argv:
     from .inversion.optimizer import Optimization  # noqa
     from .inversion.plot_optimization import plot_optimization  # noqa
     from .inversion.plot_model_history import plot_model_history  # noqa
+    from .inversion.plot_single_parameter_optimization import plot_single_parameter_optimization  # noqa
 
     # IO
     from .utils.io import load_asdf  # noqa

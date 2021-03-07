@@ -1274,13 +1274,14 @@ def bin():
     optim_out = gcmt3d.optimize(optim_gn)
 
     gcmt3d.__update_cmt__(optim_out.model)
-    gcmt3d.cmt_out.write_CMTSOLUTION_file(f"{gcmt3d.cmt_out.eventname}_GN")
+    gcmt3d.cmt_out.write_CMTSOLUTION_file(
+        f"{gcmt3d.cmtdir}/{gcmt3d.cmt_out.eventname}_GN")
 
     plt.switch_backend("pdf")
     lpy.plot_optimization(
-        optim_out, outfile="GN_MisfitReduction.pdf")
+        optim_out, outfile=f"{gcmt3d.cmtdir}/GN_MisfitReduction.pdf")
     lpy.plot_model_history(optim_out, labellist=['Depth [km]'],
-                           outfile="GN_ModelHistory.pdf")
+                           outfile="{gcmt3d.cmtdir}/GN_ModelHistory.pdf")
 
     # # BFGS
     # lpy.print_bar("BFGS")

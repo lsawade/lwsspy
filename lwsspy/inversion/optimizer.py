@@ -172,12 +172,15 @@ def Solve_Optimisation_Problem(optim, model):
         # Check stopping criteria
         if ((optim.fcost / optim.fcost_ini) < optim.stopping_criterion):
             print("Optimization algorithm has converged.")
+            optim.save_model_and_gradient(optim)
             break
-        if np.max(np.abs((optim.alpha * optim.descent)/optim.model_ini)) \
+        elif np.max(np.abs((optim.alpha * optim.descent)/optim.model_ini)) \
                 < optim.stopping_criterion_model:
             print("Model is not updating enough anymore.")
+            optim.save_model_and_gradient(optim)
             break
 
+    optim.save_model_and_gradient(optim)
     return optim
 
 
