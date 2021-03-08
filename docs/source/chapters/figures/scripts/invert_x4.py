@@ -48,7 +48,7 @@ def x4_preco(q):
     """
     x = 0.79370053
     h = np.zeros(1)
-    h[0] = 12 * (x) ** 2
+    h[0] = 12 * (x) ** 2 + 0.002
     # h(3) = -400*x;
     q = q/h
     return q
@@ -66,7 +66,9 @@ def x4_preco_2(x):
 
 
 # Define initial model
-model = np.array([-3])
+model = np.array([-2.0])
+maxiter = 20
+maxnls = 5
 
 # Prepare optim bfgs
 print(50 * "*", " BFGS ", 54 * "*")
@@ -75,7 +77,8 @@ optim.compute_cost = x4
 optim.compute_grad = x4_prime
 optim.apply_preconditioner = x4_preco
 optim.is_preco = False
-optim.niter_max = 50
+optim.niter_max = maxiter
+optim.nls_max = maxnls
 optim.stopping_criterion = 1e-10
 optim.n = len(model)
 optim_bfgs = optim.solve(optim, model)
@@ -86,7 +89,8 @@ optim.compute_cost = x4
 optim.compute_grad = x4_prime
 optim.apply_preconditioner = x4_preco
 optim.is_preco = True
-optim.niter_max = 50
+optim.niter_max = maxiter
+optim.nls_max = maxnls
 optim.stopping_criterion = 1e-10
 optim.n = len(model)
 optim_pbfgs = optim.solve(optim, model)
@@ -99,7 +103,8 @@ optim = Optimization("steepest")
 optim.compute_cost_and_gradient = cost_and_grad
 optim.apply_preconditioner = x4_preco
 optim.is_preco = False
-optim.niter_max = 50
+optim.niter_max = maxiter
+optim.nls_max = maxnls
 optim.stopping_criterion = 1e-10
 optim.n = len(model)
 optim_step = optim.solve(optim, model)
@@ -107,10 +112,12 @@ optim_step = optim.solve(optim, model)
 # Steepest preco
 optim = Optimization("steepest")
 optim.compute_cost = x4
-optim.compute_grad = x4_prime
-optim.apply_preconditioner = x4_preco_2
+optim.compute_gradient = x4_prime
+optim.compute_cost_and_gradient = cost_and_grad
+optim.apply_preconditioner = x4_preco
 optim.is_preco = True
-optim.niter_max = 50
+optim.niter_max = maxiter
+optim.nls_max = maxnls
 optim.stopping_criterion = 1e-10
 optim.n = len(model)
 optim.alpha = 1
@@ -120,10 +127,11 @@ print(50 * "*", " NLCG ", 54 * "*")
 # Prepare optim nlcg
 optim = Optimization("nlcg")
 optim.compute_cost = x4
-optim.compute_grad = x4_prime
+optim.compute_gradient = x4_prime
 optim.apply_preconditioner = x4_preco
 optim.is_preco = False
-optim.niter_max = 50
+optim.niter_max = maxiter
+optim.nls_max = maxnls
 optim.stopping_criterion = 1e-10
 optim.n = len(model)
 optim_nlcg = optim.solve(optim, model)
@@ -131,39 +139,29 @@ optim_nlcg = optim.solve(optim, model)
 # Steepest preco
 optim = Optimization("nlcg")
 optim.compute_cost = x4
-optim.compute_grad = x4_prime
+optim.compute_gradient = x4_prime
 optim.apply_preconditioner = x4_preco
 optim.is_preco = True
-optim.niter_max = 50
+optim.niter_max = maxiter
+optim.nls_max = maxnls
 optim.stopping_criterion = 1e-10
 optim.n = len(model)
 optim_pnlcg = optim.solve(optim, model)
 
-# print(50 * "*", " GN ", 54 * "*")
-# # Prepare optim nlcg
-# optim = Optimization("gn")
-# optim.compute_cost = x4
-# optim.compute_grad = x4_prime
-# optim.compute_cost_and_grad_and_hess = cost_and_grad_and_hess
-# # optim.apply_preconditioner = x4_preco
-# optim.is_preco = False
-# optim.niter_max = 50
-# optim.damping = 0.0
-# optim.stopping_criterion = 1e-10
-# optim.n = len(model)
-# optim_gn = optim.solve(optim, model)
-
-# Steepest preco
-# optim = Optimization("gn")
-# # optim.compute_cost = x4
-# # optim.compute_gradient = x4_prime
-# optim.compute_cost_and_grad_and_hess = cost_and_grad_and_hess
+print(50 * "*", " GN ", 54 * "*")
+# Prepare optim nlcg
+optim = Optimization("gn")
+optim.compute_cost = x4
+optim.compute_gradient = x4_prime
+optim.compute_cost_and_grad_and_hess = cost_and_grad_and_hess
 # optim.apply_preconditioner = x4_preco
-# optim.is_preco = True
-# optim.niter_max = 50
-# optim.stopping_criterion = 1e-10
-# optim.n = len(model)
-# optim_pnlcg = optim.solve(optim, model)
+optim.is_preco = False
+optim.niter_max = maxiter
+optim.nls_max = maxnls
+optim.stopping_criterion = 1e-10
+optim.n = len(model)
+optim_gn = optim.solve(optim, model)
+
 
 # Get costs
 f1 = optim_bfgs.fcost_hist
@@ -178,8 +176,8 @@ f5 = optim_nlcg.fcost_hist
 i5 = np.arange(len(f5))
 f6 = optim_pnlcg.fcost_hist
 i6 = np.arange(len(f6))
-# f7 = optim_gn.fcost_hist
-# i7 = np.arange(len(f7))
+f7 = optim_gn.fcost_hist
+i7 = np.arange(len(f7))
 
 
 # Plot
@@ -194,7 +192,7 @@ plt.plot(i3, f3, label="steep")
 plt.plot(i4, f4, label="psteep")
 plt.plot(i5, f5, label="nlcg")
 plt.plot(i6, f6, label="pnlcg")
-# plt.plot(i7, f7, label="gn")
+plt.plot(i7, f7, label="gn")
 plt.legend(loc=4)
 
 ax2 = plt.subplot(1, 2, 2)
@@ -211,8 +209,8 @@ plt.plot(optim_nlcg.msave[0, :optim_nlcg.current_iter+1],
          x4([optim_nlcg.msave[0, :optim_nlcg.current_iter+1]]), label="steep")
 plt.plot(optim_pnlcg.msave[0, :optim_pnlcg.current_iter+1], x4(
     [optim_pnlcg.msave[0, :optim_pnlcg.current_iter+1]]), label="psteep")
-# plt.plot(optim_gn.msave[0, :optim_gn.current_iter+1], x4(
-#     [optim_gn.msave[0, :optim_gn.current_iter+1]]), label="gn")
+plt.plot(optim_gn.msave[0, :optim_gn.current_iter+1], x4(
+    [optim_gn.msave[0, :optim_gn.current_iter+1]]), label="gn")
 plt.plot(x[0], x4(x), label=r"$f(x) = x^4 - 4x^2 -2x$")
 # ax2.set_aspect('equal', 'box')
 plt.legend(loc=1)

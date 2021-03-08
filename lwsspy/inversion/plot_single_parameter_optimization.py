@@ -34,6 +34,7 @@ def plot_single_parameter_optimization(
     plt.figure(figsize=(8, 4))
     plt.subplots_adjust(wspace=0.35)
     ax = plt.subplot(121)
+    lpy.plot_label(ax, "a)", location=6, box=False)
     for _opt in optim:
         # Get values
         c = _opt.fcost_hist
@@ -43,10 +44,9 @@ def plot_single_parameter_optimization(
     plt.legend(frameon=False, loc='upper right')
     plt.xlabel("Iteration N")
     plt.ylabel("Norm. Misfit")
-    lpy.plot_label(ax, "a)", location=6)
 
     ax1 = plt.subplot(122, sharex=ax)
-    lpy.plot_label(ax1, "b)", location=6)
+    lpy.plot_label(ax1, "b)", location=6, box=False)
     for _opt in optim:
         plt.plot(np.arange(_opt.current_iter + 1),
                  _opt.msave[0, :_opt.current_iter + 1],

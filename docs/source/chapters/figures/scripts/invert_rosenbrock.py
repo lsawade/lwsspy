@@ -105,7 +105,7 @@ print(50 * "*", " Steepest ", 50 * "*")
 optim = Optimization("steepest")
 optim.compute_cost = rosenbrock
 optim.compute_gradient = rosenbrock_prime
-optim.apply_preconditioner = rosenbrock_preco_steepest
+optim.apply_preconditioner = rosenbrock_preco
 optim.is_preco = False
 optim.niter_max = 50
 optim.stopping_criterion = 1e-10
@@ -147,19 +147,16 @@ optim.stopping_criterion = 1e-10
 optim.n = len(model)
 optim_pnlcg = optim.solve(optim, model)
 
-# Steepest preco
-# print(50 * "*", " Gauss-Newton ", 50 * "*")
-# optim = Optimization("gn")
-# # optim.compute_cost = rosenbrock
-# # optim.compute_gradient = rosenbrock_prime
-# optim.compute_cost_and_grad_and_hess = compute_cost_and_grad_and_hess
-# # optim.apply_preconditioner = rosenbrock_preco
-# optim.is_preco = True
-# optim.niter_max = 50
-# optim.damping = 0.0
-# optim.stopping_criterion = 1e-10
-# optim.n = len(model)
-# optim_gn = optim.solve(optim, model)
+# Gauss-Newton
+print(50 * "*", " Gauss-Newton ", 50 * "*")
+optim = Optimization("gn")
+optim.compute_cost_and_grad_and_hess = compute_cost_and_grad_and_hess
+optim.is_preco = False
+optim.niter_max = 50
+optim.damping = 0.0
+optim.stopping_criterion = 1e-10
+optim.n = len(model)
+optim_gn = optim.solve(optim, model)
 
 # Get costs
 f1 = optim_bfgs.fcost_hist
@@ -174,8 +171,8 @@ f5 = optim_nlcg.fcost_hist
 i5 = np.arange(len(f5))
 f6 = optim_pnlcg.fcost_hist
 i6 = np.arange(len(f6))
-# f7 = optim_gn.fcost_hist
-# i7 = np.arange(len(f7))
+f7 = optim_gn.fcost_hist
+i7 = np.arange(len(f7))
 
 # Plot
 plt.figure(figsize=(11, 5))
@@ -188,13 +185,14 @@ plt.plot(i2, f2, label="pbfgs")
 plt.plot(i3, f3, label="steep")
 plt.plot(i4, f4, label="psteep")
 plt.plot(i5, f5, label="nlcg")
-# plt.plot(i6, f6, label="pnlcg")
-# plt.plot(i7, f7, label="gn")
+plt.plot(i6, f6, label="pnlcg")
+plt.plot(i7, f7, label="gn")
 plt.legend(loc=4)
 
 ax2 = plt.subplot(1, 2, 2)
 x, y = np.meshgrid(np.linspace(-2.5, 2.5, 300), np.linspace(-0.5, 2.5, 200))
-plt.pcolormesh(x, y, np.log10(rosenbrock([x, y])), zorder=-11, cmap='gray')
+plt.pcolormesh(x, y, np.log10(rosenbrock([x, y])), zorder=-11, cmap='gray',
+               shading='auto')
 plt.plot(optim_bfgs.msave[0, :optim_bfgs.current_iter+1],
          optim_bfgs.msave[1, :optim_bfgs.current_iter+1], label="bfgs")
 plt.plot(optim_pbfgs.msave[0, :optim_pbfgs.current_iter+1],
@@ -207,10 +205,12 @@ plt.plot(optim_nlcg.msave[0, :optim_nlcg.current_iter+1],
          optim_nlcg.msave[1, :optim_nlcg.current_iter+1], label="steep")
 plt.plot(optim_pnlcg.msave[0, :optim_pnlcg.current_iter+1],
          optim_pnlcg.msave[1, :optim_pnlcg.current_iter+1], label="psteep")
-# plt.plot(optim_gn.msave[0, :optim_gn.current_iter+1],
-#          optim_gn.msave[1, :optim_gn.current_iter+1], label="gn")
+plt.plot(optim_gn.msave[0, :optim_gn.current_iter+1],
+         optim_gn.msave[1, :optim_gn.current_iter+1], label="gn")
 ax2.set_rasterization_zorder(-10)
-ax2.set_aspect('equal', 'box')
+# ax2.set_aspect('equazl', 'box')
+plt.xlim(0.4, 1.6)
+plt.ylim(0.8, 2.4)
 plt.legend(loc=3)
 plt.title('Model Movement')
 plt.show()
