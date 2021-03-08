@@ -30,6 +30,12 @@ def map_axes(proj: str = "moll", central_longitude=0.0) -> plt.Axes:
     :Last Modified:
         2021.01.13 20.30
 
+    Examples
+    --------
+
+    >>> from lwsspy import map_axes
+    >>> map_axes()
+
     """
 
     # Check whether name is supported.

@@ -101,7 +101,7 @@ def Solve_Optimisation_Problem(optim, model):
         optim.fcost_ini, optim.grad_ini = \
             optim.compute_cost_and_gradient(optim.model)
     else:
-        optim.fcost_ini = deepcopy(optim.compute_cost(optim.model))
+        optim.fcost_ini = optim.compute_cost(optim.model)
         optim.grad_ini = optim.compute_gradient(optim.model)
 
     optim.fcost = optim.fcost_ini
@@ -127,11 +127,17 @@ def Solve_Optimisation_Problem(optim, model):
     # Some attached defs
     optim.bfgs_formula = bfgs_formula       # accessible outside for resolution
     optim.get_si_and_yi = get_optim_si_yi      # could be overwritten
-    optim.store_grad_and_model = store_grad_and_model  # could be overwritten
+    # optim.store_grad_and_model = store_grad_and_model  # could be overwritten
 
     # Perform optimization
     print(f"\nModel: {optim.model} -- Grad: {optim.grad}\n")
+
+    # Store initial values for cost, model, and gradient
     optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
+    optim.current_iter = 0
+    optim.save_model_and_gradient(optim)
+
+    # Start iteration.
     for _iter in range(optim.niter_max):
 
         # Initialize
@@ -139,16 +145,8 @@ def Solve_Optimisation_Problem(optim, model):
         optim.ar = 0
         optim.current_iter = _iter
 
-        # Save gradient and model
-        optim.save_model_and_gradient(optim)
-
         # Get descent direction
         optim.descent_direction(optim)
-
-        # Perform linesearch
-        # optim.model = optim.model + optim.descent
-        # optim.fcost, optim.grad, optim.hess = \
-        #     optim.compute_cost_and_grad_and_hess(optim.model)
 
         # Compute product of descent times gradient
         optim.q = scalar_product(optim.descent, optim.grad)
@@ -158,16 +156,19 @@ def Solve_Optimisation_Problem(optim, model):
         if optim.flag == "fail":
             break
 
-        # If linesearch successful update informations
-        optim.fcost = optim.fcost_new
-        optim.model = optim.model_new
+        # Save previous gradient for Non-linear conjugate gradient
         if optim.type == "nlcg":
             optim.grad_prev = optim.grad
 
+        # If linesearch successful update informations
+        optim.fcost = optim.fcost_new
+        optim.model = optim.model_new
         optim.grad = optim.grad_new
         optim.q = optim.qnew
 
+        # Add cost, grad and model to the history
         optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
+        optim.save_model_and_gradient(optim)
 
         # Check stopping criteria
         if ((optim.fcost / optim.fcost_ini) < optim.stopping_criterion):
@@ -180,6 +181,7 @@ def Solve_Optimisation_Problem(optim, model):
             optim.save_model_and_gradient(optim)
             break
 
+    # Save final model parameter.
     optim.save_model_and_gradient(optim)
     return optim
 
@@ -195,7 +197,8 @@ def get_steepest_descent_direction(optim):
     """
     if (optim.is_preco is True):
         optim.norm_grad = norm_l2(optim.grad)
-        optim.descent = -optim.apply_preconditioner(optim.model)
+        optim.descent = -optim.apply_preconditioner(optim.grad)
+        print(optim.descent)
         optim.norm_desc = norm_l2(optim.descent)
         optim.descent = optim.descent * optim.norm_grad / optim.norm_desc
     else:
@@ -253,6 +256,7 @@ def get_gauss_newton_descent_direction(optim):
 
     optim.descent = np.linalg.solve(
         optim.hess, -optim.grad)
+    optim.alpha = 1  # should always be tried first
 
 
 def bfgs_formula(optim):
@@ -323,18 +327,22 @@ def perform_linesearch(optim):
 
         # New model and evaluate
         optim.model_new = optim.model + optim.alpha * optim.descent
-        print(
-            f"\nils: {ils} -- model: {optim.model_new} -- alpha: {optim.alpha}\n")
+
         # If simultaneous cost and grad computation is defined do that.
         if optim.compute_cost_and_grad_and_hess is not None:
             optim.fcost_new, optim.grad_new, optim.hess_new = optim.compute_cost_and_grad_and_hess(
-                optim.model)
+                optim.model_new)
         elif optim.compute_cost_and_gradient is not None:
             optim.fcost_new, optim.grad_new = optim.compute_cost_and_gradient(
                 optim.model_new)
         else:
             optim.fcost_new = optim.compute_cost(optim.model_new)
             optim.grad_new = optim.compute_gradient(optim.model_new)
+
+        print(
+            f"\nils: {ils} -- "
+            f"f/fo={optim.fcost_new/optim.fcost_ini:5.4e} -- "
+            f"model: {optim.model_new} -- alpha: {optim.alpha}\n")
 
         # Safeguard check for inf and nans...
         if np.isnan(optim.fcost_new) or np.isinf(optim.fcost_new):
@@ -480,7 +488,7 @@ class Optimization:
         norm_grad_init: float = 0.0,
         norm_grad: float = 0.0,
         stopping_criterion: float = 1e-10,
-        stopping_criterion_model: float = 1e-3,
+        stopping_criterion_model: float = 1e-4,
         niter_max: int = 50,
         qk: float = 0.0,
         q: float = 0.0,
