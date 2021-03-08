@@ -179,6 +179,13 @@ i6 = np.arange(len(f6))
 f7 = optim_gn.fcost_hist
 i7 = np.arange(len(f7))
 
+optim_list = [
+    optim_bfgs, optim_pbfgs, optim_step, optim_pstep,
+    optim_nlcg, optim_pnlcg, optim_gn
+]
+labellist = [
+    "BFGS", "P-BFGS", "Steep", "P-Steep", "NLCG", "P-NLCG", "GN"
+]
 
 # Plot
 plt.figure(figsize=(11, 5))
@@ -215,6 +222,12 @@ plt.plot(x[0], x4(x), label=r"$f(x) = x^4 - 4x^2 -2x$")
 # ax2.set_aspect('equal', 'box')
 plt.legend(loc=1)
 plt.title('Model Movement')
+
+
+lpy.plot_single_parameter_optimization(
+    optim_list, modellabel="x", outfile=os.path.join(
+        DOCFIGURES, "optimization_singlepplot_x4.pdf")
+)
 plt.show()
 
 plt.savefig(os.path.join(DOCFIGURES, "optimization_x4.svg"))
