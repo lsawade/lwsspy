@@ -7,6 +7,7 @@ from lwsspy import DOCFIGURES  # Location to store figure
 from lwsspy import updaterc    # Makes figure pretty in my opinion
 from lwsspy import Optimization
 from lwsspy import plot_optimization
+from lwsspy import plot_single_parameter_optimization
 updaterc(rebuild=True)
 
 
@@ -222,12 +223,8 @@ plt.plot(x[0], x4(x), label=r"$f(x) = x^4 - 4x^2 -2x$")
 # ax2.set_aspect('equal', 'box')
 plt.legend(loc=1)
 plt.title('Model Movement')
-
-
-lpy.plot_single_parameter_optimization(
-    optim_list, modellabel="x", outfile=os.path.join(
-        DOCFIGURES, "optimization_singlepplot_x4.pdf")
-)
+plot_single_parameter_optimization(
+    optim_list, modellabel="x", labellist=labellist)
 plt.show()
 
 plt.savefig(os.path.join(DOCFIGURES, "optimization_x4.svg"))
