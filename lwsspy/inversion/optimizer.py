@@ -377,8 +377,8 @@ def perform_linesearch(optim):
                 optim.alpha = optim.factor * optim.alpha
 
     # Check linesearch
-    if ils == optim.nls_max:  # and optim.w1== False and optim.w2 == False)
-        raise ValueError("Linesearch failed, stop optimization")
+    if ils == (optim.nls_max - 1):  # and optim.w1== False and optim.w2 == False)
+        optim.flag = "fail"
 
 
 def store_grad_and_model(optim):
