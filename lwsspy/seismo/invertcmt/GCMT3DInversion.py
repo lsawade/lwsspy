@@ -1265,27 +1265,29 @@ def bin():
 
     with lpy.Timer():
 
-        # # Gauss Newton Optimization Structure
-        # lpy.print_bar("GN")
-        # optim_gn = lpy.Optimization("gn")
-        # optim_gn.compute_cost_and_grad_and_hess = \
-        #     gcmt3d.compute_cost_gradient_hessian
-        # optim_gn.is_preco = False
-        # optim_gn.niter_max = max_iter
-        # optim_gn.nls_max = max_nls
-        # optim_gn.alpha = 1.0
-        # optim_gn.stopping_criterion = 9.5e-1
-        # optim_gn.n = len(gcmt3d.model)
+        # Gauss Newton Optimization Structure
+        lpy.print_bar("GN")
+        optim_gn = lpy.Optimization("gn")
+        optim_gn.compute_cost_and_grad_and_hess = \
+            gcmt3d.compute_cost_gradient_hessian
+        optim_gn.is_preco = False
+        optim_gn.niter_max = max_iter
+        optim_gn.nls_max = max_nls
+        optim_gn.alpha = 1.0
+        optim_gn.stopping_criterion = 9.5e-1
+        optim_gn.n = len(gcmt3d.model)
 
-        # # Run optimization
-        # optim_out = gcmt3d.optimize(optim_gn)
+        # Run optimization
+        with lpy.Timer():
+            optim_out = gcmt3d.optimize(optim_gn)
+            lpy.print_action("DONE with Gauss-Newton.")
 
-        # # Update model and write model
-        # gcmt3d.__update_cmt__(optim_out.model)
-        # gcmt3d.cmt_out.write_CMTSOLUTION_file(
-        #     f"{gcmt3d.cmtdir}/{gcmt3d.cmt_out.eventname}_GN")
+        # Update model and write model
+        gcmt3d.__update_cmt__(optim_out.model)
+        gcmt3d.cmt_out.write_CMTSOLUTION_file(
+            f"{gcmt3d.cmtdir}/{gcmt3d.cmt_out.eventname}_GN")
 
-        # optim_list. append(deepcopy(optim_out))
+        optim_list.append(deepcopy(optim_out))
 
         # # BFGS
         # gcmt3d.__init_model_and_scale__()
@@ -1323,7 +1325,9 @@ def bin():
         optim_gnr.n = len(gcmt3d.model)
 
         # Run optimization
-        optim_out = gcmt3d.optimize(optim_gnr)
+        with lpy.Timer():
+            optim_out = gcmt3d.optimize(optim_gnr)
+            lpy.print_action("DONE with Regularized Gauss-Newton")
 
         # Update model and write model
         gcmt3d.__update_cmt__(optim_out.model)
@@ -1332,34 +1336,9 @@ def bin():
 
         optim_list. append(deepcopy(optim_out))
 
-        # # BFGSR
-        # gcmt3d.__init_model_and_scale__()
-        # lpy.print_bar("BFGS Regularized")
-        # optim_bfgsr = lpy.Optimization("bfgs")
-        # optim_bfgsr.compute_cost_and_gradient = gcmt3d.compute_cost_gradient
-        # optim_bfgsr.is_preco = False
-        # optim_bfgsr.niter_max = max_iter
-        # optim_bfgsr.nls_max = max_nls
-        # optim_bfgsr.stopping_criterion = 9.5e-1
-        # optim_bfgsr.n = len(gcmt3d.model)
-
-        # # Run optimization
-        # optim_out = gcmt3d.optimize(optim_bfgs)
-
-        # # Update model and write model
-        # gcmt3d.__update_cmt__(optim_out.model)
-        # gcmt3d.cmt_out.write_CMTSOLUTION_file(
-        #     f"{gcmt3d.cmtdir}/{gcmt3d.cmt_out.eventname}_BFGSR")
-
-        # optim_list. append(deepcopy(optim_out))
-
     # Write PDF
     plt.switch_backend("pdf")
-    lpy.plot_optimization(
-        optim_list, outfile=f"{gcmt3d.cmtdir}/Compare_MisfitReduction.pdf")
-    lpy.plot_model_history(optim_list, labellist=['Depth [km]'],
-                           outfile=f"{gcmt3d.cmtdir}/Compare_ModelHistory.pdf")
     lpy.plot_single_parameter_optimization(
         optim_list, modellabel='Depth [km]',
         labellist=["GN", "BFGS", "GN-R"],  # "BFGS-R"
-        outfile=f"{gcmt3d.cmtdir}/GNR_MANYDAMPINGS_InversionHistory.pdf")
+        outfile=f"{gcmt3d.cmtdir}/COMP_MANYDAMPINGS_InversionHistory.pdf")
