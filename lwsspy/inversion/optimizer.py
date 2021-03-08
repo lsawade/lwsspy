@@ -378,6 +378,7 @@ def perform_linesearch(optim):
 
     # Check linesearch
     if ils == (optim.nls_max - 1):  # and optim.w1== False and optim.w2 == False)
+        print("Linesearch ended without finding good model candidate.")
         optim.flag = "fail"
 
 
@@ -483,7 +484,7 @@ class Optimization:
         norm_grad_init: float = 0.0,
         norm_grad: float = 0.0,
         stopping_criterion: float = 1e-10,
-        stopping_criterion_model: float = 1e-4,
+        stopping_criterion_model: float = 1e-3,
         niter_max: int = 50,
         qk: float = 0.0,
         q: float = 0.0,
