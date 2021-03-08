@@ -168,12 +168,16 @@ def Solve_Optimisation_Problem(optim, model):
         # Check stopping criteria
         if ((optim.fcost / optim.fcost_ini) < optim.stopping_criterion):
             print("Optimization algorithm has converged.")
+            # Update the iteration number otherwise the previous one is overwritten
+            optim.current_iter = _iter + 1
             optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
             optim.save_model_and_gradient(optim)
             break
         elif np.max(np.abs((optim.alpha * optim.descent)/optim.model_ini)) \
                 < optim.stopping_criterion_model:
             print("Model is not updating enough anymore.")
+            # Update the iteration number otherwise the previous one is overwritten
+            optim.current_iter = _iter + 1
             optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
             optim.save_model_and_gradient(optim)
             break
