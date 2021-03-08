@@ -40,26 +40,33 @@ def plot_single_parameter_optimization(
 
     # Plot values
     plt.figure(figsize=(8, 4))
-    plt.subplots_adjust(wspace=0.35, left=0.2, right=0.8)
+    plt.subplots_adjust(wspace=0.35, left=0.1, right=0.9)
     ax = plt.subplot(121)
     lpy.plot_label(ax, "a)", location=6, box=False)
     for _opt, _label in zip(optim, labellist):
         # Get values
         c = _opt.fcost_hist
         it = np.arange(len(c))
-        plt.plot(it, c, label=_label)
-    ax.set_yscale('log')
+        plt.plot(it, np.log(c), label=_label)
+    # ax.set_yscale('log')
     plt.legend(frameon=False, loc='upper right')
     plt.xlabel("Iteration N")
-    plt.ylabel("Norm. Misfit")
+    plt.ylabel("Norm. Log. Misfit")
 
     ax1 = plt.subplot(122, sharex=ax)
     lpy.plot_label(ax1, "b)", location=6, box=False)
+    firstlist, lastlist = [], []
     for _opt, _label in zip(optim, labellist):
+        firstlist.append(_opt.msave[0, 0])
+        lastlist.append(_opt.msave[0, _opt.current_iter + 1])
         plt.plot(np.arange(_opt.current_iter + 1),
                  _opt.msave[0, :_opt.current_iter + 1],
                  label=_label)
-    plt.legend(frameon=False, loc='upper right')
+    if np.mean(firstlist) < np.mean(lastlist):
+        loc = 'lower right'
+    else:
+        loc = 'upper right'
+    plt.legend(frameon=False, loc=loc)
     plt.xlabel("Iteration N")
     plt.ylabel(modellabel)
 
