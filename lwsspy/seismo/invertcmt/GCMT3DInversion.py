@@ -1246,12 +1246,12 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
 def bin():
 
     # Inputs
-    event = "C201711191509A"
+    event = "C200811240902A"
     database = "/gpfs/alpine/geo111/scratch/lsawade/testdatabase"
     specfemdir = "/gpfs/alpine/geo111/scratch/lsawade/SpecfemMagic/specfem3d_globe"
     launch_method = "jsrun -n 6 -a 4 -c 4 -g 1"
 
-    gcmt3d = GCMT3DInversion(event, database, specfemdir, download_data=False,
+    gcmt3d = GCMT3DInversion(event, database, specfemdir, download_data=True,
                              overwrite=False, launch_method=launch_method,
                              damping=0.000)
     gcmt3d.init()
@@ -1360,6 +1360,6 @@ def bin():
     lpy.plot_model_history(optim_list, labellist=['Depth [km]'],
                            outfile=f"{gcmt3d.cmtdir}/Compare_ModelHistory.pdf")
     lpy.plot_single_parameter_optimization(
-        optim_out, modellabel='Depth [km]',
+        optim_list, modellabel='Depth [km]',
         labellist=["GN", "BFGS", "GN-R", "BFGS-R"],
         outfile=f"{gcmt3d.cmtdir}/Compare_InversionHistory.pdf")
