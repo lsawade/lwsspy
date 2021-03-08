@@ -1246,7 +1246,7 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
 def bin():
 
     # Inputs
-    event = "C201711191509A"
+    event = "C200811240902A"
     database = "/gpfs/alpine/geo111/scratch/lsawade/testdatabase"
     specfemdir = "/gpfs/alpine/geo111/scratch/lsawade/SpecfemMagic/specfem3d_globe"
     launch_method = "jsrun -n 6 -a 4 -c 4 -g 1"
