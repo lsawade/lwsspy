@@ -132,11 +132,6 @@ def Solve_Optimisation_Problem(optim, model):
     # Perform optimization
     print(f"\nModel: {optim.model} -- Grad: {optim.grad}\n")
 
-    # Store initial values for cost, model, and gradient
-    optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
-    optim.current_iter = 0
-    optim.save_model_and_gradient(optim)
-
     # Start iteration.
     for _iter in range(optim.niter_max):
 
@@ -144,6 +139,10 @@ def Solve_Optimisation_Problem(optim, model):
         optim.al = 0
         optim.ar = 0
         optim.current_iter = _iter
+
+        # Save model
+        optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
+        optim.save_model_and_gradient(optim)
 
         # Get descent direction
         optim.descent_direction(optim)
@@ -181,8 +180,6 @@ def Solve_Optimisation_Problem(optim, model):
             optim.save_model_and_gradient(optim)
             break
 
-    # Save final model parameter.
-    optim.save_model_and_gradient(optim)
     return optim
 
 
