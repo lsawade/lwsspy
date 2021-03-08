@@ -165,18 +165,16 @@ def Solve_Optimisation_Problem(optim, model):
         optim.grad = optim.grad_new
         optim.q = optim.qnew
 
-        # Add cost, grad and model to the history
-        optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
-        optim.save_model_and_gradient(optim)
-
         # Check stopping criteria
         if ((optim.fcost / optim.fcost_ini) < optim.stopping_criterion):
             print("Optimization algorithm has converged.")
+            optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
             optim.save_model_and_gradient(optim)
             break
         elif np.max(np.abs((optim.alpha * optim.descent)/optim.model_ini)) \
                 < optim.stopping_criterion_model:
             print("Model is not updating enough anymore.")
+            optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
             optim.save_model_and_gradient(optim)
             break
 
