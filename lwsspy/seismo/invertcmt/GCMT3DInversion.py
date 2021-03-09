@@ -1340,5 +1340,5 @@ def bin():
     plt.switch_backend("pdf")
     lpy.plot_single_parameter_optimization(
         optim_list, modellabel='Depth [km]',
-        labellist=["GN", "BFGS", "GN-R"],  # "BFGS-R"
+        labellist=["GN", "GN-R"],  # "BFGS-R" "BFGS",
         outfile=f"{gcmt3d.cmtdir}/COMP_MANYDAMPINGS_InversionHistory.pdf")
