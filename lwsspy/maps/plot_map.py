@@ -48,12 +48,12 @@ def plot_map(fill=True, zorder=None, labelstopright: bool = True,
     ax = plt.gca()
 
     # Put lables all around
-    if type(ax.projection) != cartopy.crs.Mollweide:
+    if isinstance(ax.projection, cartopy.crs.PlateCarree):
 
         # Set xticks Should be automated, but I just don't know how rn
-        ax.set_xticks([-180, -150, -120, -90, -60, -30, 0, 30,
-                       60, 90, 120, 150, 180], crs=ax.projection)
-        ax.set_yticks([-90, -60, -30, 0, 30, 60, 90], crs=ax.projection)
+        ax.set_xticks([-180, -135, -90, -45, 0, 45,
+                       90, 135, 180], crs=ax.projection)
+        ax.set_yticks([-90, -45, 0,  45, 90], crs=ax.projection)
 
         # Set label formatter
         ax.xaxis.set_major_formatter(cartopy.mpl.ticker.LongitudeFormatter())

@@ -35,6 +35,10 @@ if "-m" not in sys.argv:
 
     # -------- FUNCTIONS & CLASSES --------------------------------------------
 
+    # Geographical things
+    from .geo.geo_weights import GeoWeights
+    from .geo.azi_weights import azi_weights
+
     # Inversion
     from .inversion.optimizer import Optimization  # noqa
     from .inversion.plot_optimization import plot_optimization  # noqa
@@ -185,6 +189,7 @@ if "-m" not in sys.argv:
     from .statistics.clm import clm  # noqa
     from .statistics.distlist import distlist  # noqa
     from .statistics.errorellipse import errorellipse  # noqa
+    from .statistics.even2Dpoints import even2Dpoints  # noqa
     from .statistics.fakerelation import fakerelation  # noqa
     from .statistics.fitgaussian2d import fitgaussian2d  # noqa
     from .statistics.gaussian2d import gaussian2d  # noqa
