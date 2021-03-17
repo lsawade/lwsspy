@@ -25,12 +25,14 @@ def updaterc(rebuild=False):
     #     matplotlib.font_manager._rebuild()
 
     params = {
-        'font.family': "Helvetica",
+        'font.family': "Arial",
         'font.size': 12,
         # 'pdf.fonttype': 3,
         'font.weight': 'normal',
-        'ps.useafm': True,
-        'pdf.use14corefonts': True,
+        # 'pdf.fonttype': 42,
+        # 'ps.fonttype': 42,
+        # 'ps.useafm': True,
+        # 'pdf.use14corefonts': True,
         'axes.unicode_minus': False,
         'axes.labelweight': 'normal',
         'axes.labelsize': 'small',
@@ -74,11 +76,11 @@ def updaterc(rebuild=False):
         'legend.framealpha': 1,
         'legend.scatterpoints': 3,
         'legend.edgecolor': 'inherit',
-        'legend.facecolor': 'w'
-        # 'mathtext.fontset': 'custom',
-        # 'mathtext.rm': 'Bitstream Vera Sans',
-        # 'mathtext.it': 'Bitstream Vera Sans:italic',
-        # 'mathtext.bf':'Bitstream Vera Sans:bold'
+        'legend.facecolor': 'w',
+        'mathtext.fontset': 'custom',
+        'mathtext.rm': 'Arial',
+        'mathtext.it': 'Arial:italic',
+        'mathtext.bf': 'Arial:bold'
     }
     matplotlib.rcParams.update(params)
 

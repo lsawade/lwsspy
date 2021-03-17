@@ -3,7 +3,9 @@ Taken from ObsPy originally, but heavily modified.
 
 """
 # External
-from typing import List
+from __future__ import annotations
+from copy import deepcopy
+from typing import List, Union
 import numpy as np
 from scipy.spatial import cKDTree
 from obspy.core.inventory import Station
@@ -83,20 +85,69 @@ class SphericalNN(object):
         m = np.isfinite(d)
         return d[m], i[m]
 
-    def query_pairs(self, maximum_distance):
+    def query_pairs(self, maximum_distance=180.0):
         """Query pairs within the kdtree
 
         Parameters
         ----------
-        maximum_distance : [type]
-            [description]
+        maximum_distance : float
+            Maximum query distance in deg
 
         Returns
         -------
         set or ndarray
             Set of pairs (i, j) where i < j
         """
-        return self.kd_tree.query_pairs(maximum_distance)
+        distkm = np.abs(2 * np.sin(maximum_distance/2.0 /
+                                   180.0*np.pi)) * lpy.EARTH_RADIUS_KM
+        return self.kd_tree.query_pairs(distkm, output_type='ndarray')
+
+    def sparse_distance_matrix(self, other: Union[SphericalNN, None] = None,
+                               maximum_distance=180.0, sparse: bool = False,
+                               km: bool = False):
+        """Computes the sparse distance matrix between two kdtree. if no other 
+        kdtree is provided, this kdtree is used
+
+        Parameters
+        ----------
+        other : SphericalNN
+            other SphericalNN tree
+        maximum_distance : float
+            Maximum query distance in deg
+        sparse: bool
+            Flag to output sparse array for memory. Default False
+        km: bool
+            flag to output distances in kilometers. Default False
+
+
+        Returns
+        -------
+        set or ndarray
+            Set of pairs (i, j) where i < j
+        """
+        # Get distance
+        distkm = np.abs(2 * np.sin(maximum_distance/2.0 /
+                                   180.0*np.pi)) * lpy.EARTH_RADIUS_KM
+
+        # Get tree
+        if isinstance(other, SphericalNN):
+            other = other.kd_tree
+        else:
+            other = deepcopy(self).kd_tree
+
+        # Compute dense or sparse distance matrix
+        if sparse:
+            output_mat = self.kd_tree.sparse_distance_matrix(
+                other, distkm)
+        else:
+            output_mat = self.kd_tree.sparse_distance_matrix(
+                other, distkm).toarray()
+
+        # Convert form kilometers to degrees.
+        if km is False:
+            output_mat *= lpy.KM2DEG
+
+        return output_mat
 
     def interp(self, data, qlat, qlon, maximum_distance=None,
                no_weighting=False, k: int = 10, p: float = 2.0):
@@ -151,7 +202,7 @@ class SphericalNN(object):
             # Filter out distances too far out.
             if maximum_distance is not None:
                 qdata = np.where(
-                    d <= 2 * np.sin(maximum_distance/2.0/180.0*np.pi)
+                    d <= np.abs(2 * np.sin(maximum_distance/2.0/180.0*np.pi))
                     * lpy.EARTH_RADIUS_KM,
                     qdata, np.nan)
 
@@ -168,8 +219,8 @@ class SphericalNN(object):
             # Modified Shepard's method
             if maximum_distance is not None:
                 # Get cartesian distance
-                cartd = 2 * np.sin(maximum_distance/2.0/180.0*np.pi) \
-                    * lpy.EARTH_RADIUS_KM
+                cartd = np.abs(2 * np.sin(maximum_distance/2.0/180.0*np.pi)
+                               * lpy.EARTH_RADIUS_KM)
 
                 # Compute the weights using modified shepard
                 w = (np.fmax(0, cartd - d) / cartd * d) ** 2
