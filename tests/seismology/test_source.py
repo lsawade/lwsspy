@@ -16,6 +16,7 @@ import obspy
 from lwsspy.seismo.source import CMTSource
 import pytest
 import tempfile
+import numpy as np
 from obspy import read_events
 # from functions_for_testing import assertDictAlmostEqual
 
@@ -89,3 +90,44 @@ def test_load_quakeML():
         print("CMT\n", CMTSource.from_CMTSOLUTION_file(cmtfile))
         # assertDictAlmostEqual(CMTSource.from_quakeml_file(new_xml_path),
         #                       CMTSource.from_CMTSOLUTION_file(cmtfile))
+
+
+def test_tbp(cmt):
+
+    # Test eigenvalue decomposition
+    lb, ev = cmt.tbp
+
+    # Compute tensor from eigenvalues and vectors
+    tensor = np.linalg.inv(ev) @ np.diag(lb) @ ev
+
+    # Test whether they match.
+    np.testing.assert_array_almost_equal(tensor, cmt.fulltensor)
+
+
+def test_decomposition(cmt):
+
+    # Get eigenvalues and vectors for testing
+    (M1, M2, M3), ev = cmt.tbp
+    print(M1, M2, M3)
+
+    # Get decomposition
+    Miso, Mclvd, Mdc = cmt.decomp("iso_clvd_dc")
+    print(Miso, Mdc, Mclvd)
+
+    # As defined in Vavryčuk 2015
+    eiso = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    edc = np.array([[1, 0, 0], [0, 0, 0], [0, 0, -1]])
+
+    if M1+M3-2 * M2 < 0:
+        eclvd = 0.5*np.array([[2, 0, 0], [0, -1, 0], [0, 0, -1]])
+    else:
+        eclvd = 0.5*np.array([[1, 0, 0], [0, 1, 0], [0, 0, -2]])
+
+    # Reconstruct moment tensor in eigen basis
+    M = Miso * eiso + Mdc * edc + Mclvd * eclvd
+
+    # Compute original tensor using the eigenvectors
+    tensor = np.linalg.inv(ev) @ M @ ev
+
+    # Test whether they match.
+    np.testing.assert_array_almost_equal(tensor, cmt.fulltensor)

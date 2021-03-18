@@ -35,9 +35,4 @@ def azi_weights(lat0, lon0, lat, lon, weights=None, nbins=12, p=0.5):
     # Normalize
     w /= np.mean(w)
 
-    print("Min:    ", np.min(w))
-    print("Max:    ", np.max(w))
-    print("Median: ", np.median(w))
-    print("Mean:   ", np.mean(w))
-
     return w

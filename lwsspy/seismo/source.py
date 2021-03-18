@@ -21,6 +21,8 @@ import numpy as np
 from obspy import UTCDateTime, read_events
 from obspy.core.event import Event
 import warnings
+from . import sourcedecomposition
+from inspect import getmembers, isfunction
 
 
 class CMTSource(object):
@@ -32,9 +34,9 @@ class CMTSource(object):
     def __init__(self, origin_time=UTCDateTime(0),
                  pde_latitude=0.0, pde_longitude=0.0, mb=0.0, ms=0.0,
                  pde_depth_in_m=None, region_tag=None, eventname=None,
-                 cmt_time=0.0, half_duration=0.0, latitude=0.0, longitude=0.0,
-                 depth_in_m=None, m_rr=0.0, m_tt=0.0, m_pp=0.0, m_rt=0.0,
-                 m_rp=0.0, m_tp=0.0):
+                 cmt_time=UTCDateTime(0), half_duration=0.0, latitude=0.0,
+                 longitude=0.0, depth_in_m=None, m_rr=1.0, m_tt=1.0, m_pp=1.0, m_rt=1.0,
+                 m_rp=1.0, m_tp=1.0):
         """
         :param latitude: latitude of the source in degree
         :param longitude: longitude of the source in degree
@@ -306,23 +308,90 @@ class CMTSource(object):
         return np.array([self.m_rr, self.m_tt, self.m_pp, self.m_rt, self.m_rp,
                          self.m_tp])
 
+    @property
+    def fulltensor(self):
+        """
+        ndarray of full moment tensor components in r, theta, phi coordinates:
+        """
+        return np.array([[self.m_rr, self.m_rt, self.m_rp],
+                         [self.m_rt, self.m_tt, self.m_tp],
+                         [self.m_rp, self.m_tp, self.m_pp]])
+
+    @property
+    def tbp(self):
+        """Returns tension (t), null (b), and pressure (p) axis and
+        corresponding eigenvalues.
+
+        Returns
+        -------
+        tuple
+            matrix with tbp column vectors, corresponding eigenvalues
+        """
+        # Get eigenvalues and eigenvectors
+        lb, ev = np.linalg.eig(self.fulltensor)
+
+        order = lb.argsort()[::-1]  # in decreasing order -> tpb
+
+        return lb[order], ev[:, order]
+
+    @property
+    def tbp_norm(self):
+        """Returns the same as tpb, but eigenvalues are normalized
+        by the scalar moment.
+        """
+        lb, ev = self.tbp
+        return lb/self.M0, ev
+
+    def decomp(self, dtype="eps_nu"):
+        """Returns decomposition based on eignevalues of the moment tensor
+
+        Parameters
+        ----------
+        dtype : str, optional
+            type of decomposition. implement new decomposition by adding
+            function to sourcedecomposition module, by default "eps_nu"
+
+        Returns
+        -------
+        arraylike
+            decomposed source, output depends on function output.
+
+        Raises
+        ------
+        ValueError
+            If dtype is not implemented an error will be raised.
+        """
+
+        # Get possible decompositions
+        dtypes = [func for func, _ in getmembers(
+            sourcedecomposition, isfunction)]
+
+        if dtype not in dtypes:
+            raise ValueError(
+                f"{dtype} not implemented. Possible dtypes are: {dtypes}")
+
+        # Get function from the module
+        decompfunc = getattr(sourcedecomposition, dtype)
+        (M1, M2, M3), _ = self.tbp
+
+        return decompfunc(M1, M2, M3)
+
     def __str__(self):
         return_str = 'CMT Source -- %s\n' % self.eventname
         return_str += 'origin time(pde): %s\n' % self.origin_time
-        return_str += 'pde location(lat, lon): %f, %f deg\n' \
-            % (self.pde_latitude, self.pde_longitude)
+        return_str += 'pde location(lat, lon): %f, %f deg\n' % (
+            self.pde_latitude, self.pde_longitude)
         return_str += 'pde depth: %f\n' % self.pde_depth_in_m
         return_str += 'CMT time: %s\n' % self.cmt_time
-        return_str += 'CMT location(lat, lon): %f, %f deg\n' \
-            % (self.latitude, self.longitude)
-        return_str += 'CMT depth: %6.1e km\n' \
-                      % (self.depth_in_m / 1e3,)
+        return_str += 'CMT location(lat, lon): %f, %f deg\n' % (
+            self.latitude, self.longitude)
+        return_str += 'CMT depth: %6.1e km\n' % (
+            self.depth_in_m / 1e3,)
         return_str += 'half duration: %f\n' % self.half_duration
         return_str += 'Moment Tensor [Mrr, Mtt, Mpp, Mrt, Mrp, Mtp]: \n'
-        return_str += '              %s\n' \
-            % self.tensor
-        return_str += 'Magnitude: %4.2f(mw), %4.2f(mb), %4.2f(ms)\n' \
-                      % (self.moment_magnitude, self.mb, self.ms)
+        return_str += '              %s\n' % self.tensor
+        return_str += 'Magnitude: %4.2f(mw), %4.2f(mb), %4.2f(ms)\n' % (
+            self.moment_magnitude, self.mb, self.ms)
         return_str += 'region tag: %s' % self.region_tag
 
         return return_str

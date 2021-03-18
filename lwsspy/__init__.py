@@ -87,7 +87,9 @@ if "-m" not in sys.argv:
     from .plot_util.fixedpointcolornorm import FixedPointColorNorm  # noqa
     from .plot_util.get_aspect import get_aspect  # noqa
     from .plot_util.get_stats_label_length import get_stats_label_length  # noqa
+    from .plot_util.hudsondiamondaxes import hdaxes  # noqa
     from .plot_util.midpointcolornorm import MidpointNormalize  # noqa
+    from .plot_util.midpointlognorm import MidPointLogNorm  # noqa
     from .plot_util.nice_colorbar import nice_colorbar  # noqa
     from .plot_util.pick_colors_from_cmap import pick_colors_from_cmap  # noqa
     from .plot_util.plot_label import plot_label  # noqa
@@ -109,11 +111,13 @@ if "-m" not in sys.argv:
     from .plot_util.updaterc import updaterc_pres  # noqa
     from .plot_util.update_colorcycler import update_colorcycler  # noqa
     from .plot_util.view_colormap import view_colormap  # noqa
+    from .plot_util.zerotraceaxes import ztaxes  # noqa
 
     # Seismology
     from .seismo.cmt2inv import cmt2inv  # noqa
     from .seismo.cmt2stationxml import cmt2stationxml  # noqa
     from .seismo.cmtdir2stationxmldir import cmtdir2stationxmldir  # noqa
+    from .seismo.cmt_catalog import CMTCatalog
     from .seismo.download_data import download_data  # noqa
     from .seismo.download_gcmt_catalog import download_gcmt_catalog  # noqa
     from .seismo.download_waveforms_cmt2storage import download_waveforms_cmt2storage  # noqa
