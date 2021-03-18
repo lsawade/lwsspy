@@ -12,7 +12,6 @@ from typing import Callable, Union, Optional, List
 import os
 import shutil
 import datetime
-from dataclasses import dataclass
 from copy import deepcopy
 import numpy as np
 import matplotlib.pyplot as plt

@@ -12,13 +12,13 @@ def plot_label(ax: matplotlib.axes.Axes, label: str, aspect: float = 1,
 
     Plot locations are set as follows::
 
-           6        7 
+           6   14   7 
             --------
          5 |1      2|  8
-           |        |
+        13 |        | 15
         12 |3      4|  9
             --------
-          11       10
+          11   16  10
 
 
     Parameters
@@ -110,6 +110,22 @@ def plot_label(ax: matplotlib.axes.Axes, label: str, aspect: float = 1,
     elif location == 12:
         plt.text(-dist, 0.0, label, horizontalalignment='right',
                  verticalalignment='bottom', transform=ax.transAxes,
+                 bbox=boxdict, fontdict=fontdict, **kwargs)
+    elif location == 13:
+        plt.text(-dist, 0.5, label, horizontalalignment='right',
+                 verticalalignment='center_baseline', transform=ax.transAxes,
+                 bbox=boxdict, fontdict=fontdict, **kwargs)
+    elif location == 14:
+        plt.text(0.5, 1.0 + dist * aspect, label, horizontalalignment='center',
+                 verticalalignment='bottom', transform=ax.transAxes,
+                 bbox=boxdict, fontdict=fontdict, **kwargs)
+    elif location == 15:
+        plt.text(1 + dist, 0.5, label, horizontalalignment='left',
+                 verticalalignment='center_baseline', transform=ax.transAxes,
+                 bbox=boxdict, fontdict=fontdict, **kwargs)
+    elif location == 16:
+        plt.text(0.5, -dist * aspect, label, horizontalalignment='center',
+                 verticalalignment='top', transform=ax.transAxes,
                  bbox=boxdict, fontdict=fontdict, **kwargs)
     else:
         raise ValueError("Other corners not defined.")
