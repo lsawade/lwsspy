@@ -301,8 +301,9 @@ class GCMT3DInversion:
 
                 # Compute Combination weights.
                 weights = (azi_weights * geo_weights)
-                self.weights[_wtype][_component]["combination"] = np.sum(
-                    weights)/len(weights)
+                weights /= np.sum(weights)/len(weights)
+                self.weights[_wtype][_component]["combination"] = deepcopy(
+                    weights)
 
                 # Add weights to traces
                 for _tr in RTZ_traces[_component]:
