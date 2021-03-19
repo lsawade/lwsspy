@@ -325,7 +325,7 @@ class GCMT3DInversion:
                     self.weights[_wtype][_component]["final"].append(
                         deepcopy(_tr.stats.weights))
 
-        with open(os.path.join(self.cmtdir, "weights.pkl", "wb")) as f:
+        with open(os.path.join(self.cmtdir, "weights.pkl"), "wb") as f:
             cPickle.dump(deepcopy(self.weights), f)
             #         # Get station parameters
             # stationlist = []  # for appending weights to the right channels
