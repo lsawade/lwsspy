@@ -227,8 +227,9 @@ class GCMT3DInversion:
                     network=net, station=sta, location=loc, channel=cha)
 
                 # Remove Traces from Streams
-                self.data_dict[_wtype].remove(
-                    network=net, station=sta, location=loc, channel=cha)
+                tr = self.data_dict[_wtype].select(
+                    network=net, station=sta, location=loc, channel=cha)[0]
+                self.data_dict[_wtype].remove(tr)
 
     def __remove_zero_window_traces__(self):
         """Removes the traces from the data_dict wavetype streams, and
@@ -267,8 +268,9 @@ class GCMT3DInversion:
                 set(zero_window_removal_dict[_wtype]) - channel_removal_set
 
             for (net, sta, loc, cha) in self.window_removal_dict[_wtype]:
-                self.data_dict[_wtype].remove(
-                    network=net, station=sta, location=loc, channel=cha)
+                tr = self.data_dict[_wtype].select(
+                    network=net, station=sta, location=loc, channel=cha)[0]
+                self.data_dict[_wtype].remove(tr)
 
         # Remove Channels from inventory that aren't needed.
         for (net, sta, loc, cha) in channel_removal_set:
@@ -281,7 +283,9 @@ class GCMT3DInversion:
         for _i, _wtype, _pardict in enumerate(self.synt_dict.items()):
             for _stream in _pardict.values():
                 for (net, sta, loc, cha) in self.window_removal_dict[_wtype]:
-                    self.data_dict[_wtype].remove(
+                    tr = _stream.select(
+                        network=net, station=sta, location=loc, channel=cha)[0]
+                    _stream.remove(
                         network=net, station=sta, location=loc, channel=cha)
 
     def process_all_synt(self):
