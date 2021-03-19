@@ -296,7 +296,7 @@ class GCMT3DInversion:
         with lpy.Timer():
             self.__load_synt__()
             self.__load_synt_par__()
-            self.__remove_zero_windows_on_synt()
+            self.__remove_zero_windows_on_synt__()
 
         with lpy.Timer():
             self.__process_synt__()
