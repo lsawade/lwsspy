@@ -271,9 +271,8 @@ class GCMT3DInversion:
                 latitudes = []
                 longitudes = []
                 for _tr in RTZ_traces[_component]:
-                    coord_dict = self.stations.get_coordinates(_tr.get_id())
-                    latitudes.append(coord_dict["latitude"])
-                    longitudes.append(coord_dict["longitude"])
+                    latitudes.append(_tr.stats.latitude)
+                    longitudes.append(_tr.stats.longitude)
 
                 # Save locations into dict
                 self.weights[_wtype][_component]["lat"] = deepcopy(latitudes)
