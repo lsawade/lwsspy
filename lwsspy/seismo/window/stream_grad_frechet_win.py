@@ -41,19 +41,22 @@ def stream_grad_frechet_win(data: Stream, synt: Stream, dsyn: Stream,
                             component=component)[0].data
             dsdm = dsyn.select(network=network, station=station,
                                component=component)[0].data
-
+            costt = 0
+            fnorm = 0
             for win, tap in zip(tr.stats.windows, tr.stats.tapers):
                 wsyn = s[win.left:win.right]
                 wobs = d[win.left:win.right]
                 wdsdm = dsdm[win.left:win.right]
-                costw = np.sum((wsyn - wobs) * wdsdm * tap) * dt
-                if normalize:
-                    costw /= np.sum(tap * wobs ** 2) * dt
-                x += costw
+                costt += np.sum((wsyn - wobs) * wdsdm * tap) * dt
+                fnorm += np.sum(tap * wobs ** 2) * dt
+            if normalize:
+                x += costt/fnorm
+            else:
+                x += costt
 
         except Exception as e:
             if verbose:
                 print(
                     f"Error - Gradient - {network}.{station}.{component}: {e}")
 
-    return x
+    return x/len(data)

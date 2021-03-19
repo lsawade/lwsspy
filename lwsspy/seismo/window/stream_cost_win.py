@@ -37,16 +37,21 @@ def stream_cost_win(data: Stream, synt: Stream, normalize: bool = True,
             s = synt.select(network=network, station=station,
                             component=component)[0].data
 
+            fnorm = 0
+            costt = 0
             for win, tap in zip(tr.stats.windows, tr.stats.tapers):
                 ws = s[win.left:win.right]
                 wo = d[win.left:win.right]
-                costw = 0.5 * (np.sum(tap * (ws - wo) ** 2) * dt)
-                if normalize:
-                    costw /= np.sum(tap * wo ** 2) * dt
-                x += costw
+                costt += 0.5 * (np.sum(tap * (ws - wo) ** 2) * dt)
+                fnorm += np.sum(tap * wo ** 2) * dt
+
+            if normalize:
+                x += costt/fnorm
+            else:
+                x += costt
 
         except Exception as e:
             if verbose:
                 print(f"Error at ({network}.{station}.{component}): {e}")
 
-    return x
+    return x/len(data)
