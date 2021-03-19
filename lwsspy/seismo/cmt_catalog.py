@@ -1,13 +1,18 @@
 from __future__ import annotations
+
+import os
+import time
+import inspect
 from typing import List, Union, Iterable
+from glob import glob
+import _pickle as cPickle
+import numpy as np
+from obspy.core.event import Event
+from obspy import Catalog
+
 from .source import CMTSource
 from . import sourcedecomposition
-from obspy import Catalog
-from obspy.core.event import Event
-from glob import glob
-import numpy as np
-import inspect
-import _pickle as cPickle
+from ..utils.sec2hhmmss import sec2hhmmss
 
 
 class CMTCatalog:
@@ -267,10 +272,62 @@ class CMTCatalog:
                 _cmtother = other.get_event(_cmt.eventname)
                 cmtself.append(_cmt)
                 cmtother.append(_cmtother)
-            except ValueError as e:
+            except ValueError:
                 if verbose:
                     print(
                         f"Didn't find corresponding events "
                         f"for {_cmt.eventname}")
 
         return CMTCatalog(cmtself), CMTCatalog(cmtother)
+
+    def cmts2dir(self, outdir: str = "./newcatalog"):
+
+        # Create dir if doesn't exist.
+        if os.path.exists(outdir) is False:
+            os.mkdir(outdir)
+
+        # Start print
+        print(f"---> Writing cmts to {outdir}/")
+        t0 = time.time()
+
+        # Writing
+        for _cmt in self.cmts:
+            outfilename = os.path.join(outdir, _cmt.eventname)
+            _cmt.write_CMTSOLUTION_file(outfilename)
+        
+        # End print
+        t1 = time.time()
+        print(f"     Done. Elapsed Time: {sec2hhmmss(t1-t0)}")
+
+    def cmts2file(self, outfile: str = "./catalog.txt"):
+        
+        # Start print
+        print(f"---> Writing cmts to {outfile}")
+        t0 = time.time()
+        
+        # Writing
+        for _i, _cmt in enumerate(self.cmts):
+            if _i == 0:
+                _cmt.write_CMTSOLUTION_file(outfile)
+            else:
+                _cmt.write_CMTSOLUTION_file(outfile, mode="a")
+        
+        # End print
+        t1 = time.time()
+        print(f"     Done. Elapsed Time: {sec2hhmmss(t1-t0)}")
+
+    def unique(self, ret: bool = False):
+        """Applies uniqueness condition depending on eventname or returns
+        catalog with unique entries. Default is application on self."""
+
+        # Get eventnames
+        eventnames = self.getvals("eventname")
+
+        # Get unique entries from eventnames
+        _, uniq = np.unique(eventnames, return_index=True)
+
+        # Return or apply on self
+        if ret:
+            return CMTCatalog(self[uniq].cmts)
+        else:
+            self.cmts = self[uniq].cmts

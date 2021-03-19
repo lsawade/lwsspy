@@ -235,12 +235,12 @@ class CMTSource(object):
                    m_rr=m_rr, m_tt=m_tt, m_pp=m_pp, m_rt=m_rt,
                    m_rp=m_rp, m_tp=m_tp)
 
-    def write_CMTSOLUTION_file(self, filename):
+    def write_CMTSOLUTION_file(self, filename, mode="w"):
         """
         Initialize a source object from a CMTSOLUTION file.
         :param filename: path to the CMTSOLUTION file
         """
-        with open(filename, "w") as f:
+        with open(filename, mode) as f:
             # Reconstruct the first line as well as possible. All
             # hypocentral information is missing.
             f.write(
