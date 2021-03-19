@@ -245,9 +245,9 @@ class GCMT3DInversion:
             lpy.print_action(f"    for {_wtype}")
             zero_window_removal_dict[_wtype] = []
             for _tr in _stream:
-                
+                print(_tr.id)
                 if len(_tr.stats.windows) == 0:
-                    print("Hello")
+                    print("Hello", _tr.id, )
                     net = _tr.stats.network
                     sta = _tr.stats.station
                     loc = _tr.stats.location
