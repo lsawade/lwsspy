@@ -302,7 +302,7 @@ class GCMT3DInversion:
         # Remove the set from the window removal dicts
         for _i, (_wtype, _pardict) in enumerate(self.synt_dict.items()):
             for _stream in _pardict.values():
-                for (net, sta, loc, cha) in self.window_removal_dict[_wtype]:
+                for (net, sta, loc, cha) in self.zero_window_removal_dict[_wtype]:
                     tr = _stream.select(
                         network=net, station=sta, location=loc, channel=cha)[0]
                     _stream.remove(tr)
