@@ -223,7 +223,7 @@ class GCMT3DInversion:
         for _i, _wtype in enumerate(self.data_dict.keys()):
             for (net, sta, loc, cha) in station_removal_list:
                 # Remove channels from inventory
-                self.stations.remove(
+                self.stations = self.stations.remove(
                     network=net, station=sta, location=loc, channel=cha)
 
                 # Remove Traces from Streams
@@ -274,7 +274,7 @@ class GCMT3DInversion:
 
         # Remove Channels from inventory that aren't needed.
         for (net, sta, loc, cha) in channel_removal_set:
-            self.stations.remove(
+            self.stations = self.stations.remove(
                 network=net, station=sta, location=loc, channel=cha)
 
     def __remove_zero_windows_on_synt(self):
