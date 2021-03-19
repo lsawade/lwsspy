@@ -283,7 +283,7 @@ class GCMT3DInversion:
     def __remove_zero_windows_on_synt__(self):
 
         # Remove the set from the window removal dicts
-        for _i, _wtype, _pardict in enumerate(self.synt_dict.items()):
+        for _i, (_wtype, _pardict) in enumerate(self.synt_dict.items()):
             for _stream in _pardict.values():
                 for (net, sta, loc, cha) in self.window_removal_dict[_wtype]:
                     tr = _stream.select(
