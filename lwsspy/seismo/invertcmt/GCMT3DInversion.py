@@ -235,6 +235,8 @@ class GCMT3DInversion:
         """Removes the traces from the data_dict wavetype streams, and
         creates list with stations for each trace to be used for removal
         prior to processing of the synthetics.
+
+        Not removing stuff from inventory, because negligible
         """
 
         # Process each wavetype.
@@ -260,23 +262,23 @@ class GCMT3DInversion:
             else:
                 channel_removal_set.intersection(
                     set(zero_window_removal_dict[_wtype]))
-        print(len(channel_removal_set))
-        print(len(zero_window_removal_dict[_wtype]))
+
         # Remove the set from the window removal dicts
         for _i, _wtype in enumerate(self.data_dict.keys()):
             self.zero_window_removal_dict[_wtype] = set(
                 zero_window_removal_dict[_wtype]) - channel_removal_set
-            print(self.zero_window_removal_dict[_wtype])
-            for (net, sta, loc, cha) in self.zero_window_removal_dict[_wtype]:
-                st = self.data_dict[_wtype].select(
-                    network=net, station=sta, location=loc, channel=cha)[0]
-                for tr in st:
-                    self.data_dict[_wtype].remove(tr)
 
-        # Remove Channels from inventory that aren't needed.
-        for (net, sta, loc, cha) in channel_removal_set:
-            self.stations = self.stations.remove(
-                network=net, station=sta, location=loc, channel=cha)
+            for (net, sta, loc, cha) in self.zero_window_removal_dict[_wtype]:
+                tr = self.data_dict[_wtype].select(
+                    network=net, station=sta, location=loc, channel=cha)[0]
+                self.data_dict[_wtype].remove(tr)
+
+        # Remove the set from the window removal dicts
+        for _i, _wtype in enumerate(self.data_dict.keys()):
+            for (net, sta, loc, cha) in channel_removal_set:
+                tr = self.data_dict[_wtype].select(
+                    network=net, station=sta, location=loc, channel=cha)[0]
+                self.data_dict[_wtype].remove(tr)
 
     def __remove_zero_windows_on_synt__(self):
 
