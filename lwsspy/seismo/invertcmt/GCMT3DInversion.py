@@ -285,8 +285,7 @@ class GCMT3DInversion:
                 for (net, sta, loc, cha) in self.window_removal_dict[_wtype]:
                     tr = _stream.select(
                         network=net, station=sta, location=loc, channel=cha)[0]
-                    _stream.remove(
-                        network=net, station=sta, location=loc, channel=cha)
+                    _stream.remove(tr)
 
     def process_all_synt(self):
         lpy.print_section("Loading and processing all modeled data")
