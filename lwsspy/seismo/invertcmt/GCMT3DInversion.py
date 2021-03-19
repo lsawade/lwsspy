@@ -306,7 +306,7 @@ class GCMT3DInversion:
                 # Add weights to traces
                 for _tr in RTZ_traces[_component]:
                     _tr.stats.weights = _cweight * weights
-                    waveweightdict[_wtype] += _cweight * weights
+                    waveweightdict[_wtype] += np.sum(_cweight * weights)
 
         # Normalize by component and aximuthal weights
         for _i, (_wtype, _) in enumerate(self.data_dict.items()):
