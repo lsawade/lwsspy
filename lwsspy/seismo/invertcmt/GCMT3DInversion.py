@@ -151,6 +151,7 @@ class GCMT3DInversion:
         # Initialize data dictionaries
         self.data_dict: dict = dict()
         self.synt_dict: dict = dict()
+        self.zero_window_removal_dict: dict = dict()
 
         # Other
         self.debug = debug
@@ -194,7 +195,63 @@ class GCMT3DInversion:
         self.process_synt()
         with lpy.Timer():
             self.__window__()
+        with lpy.Timer():
+            self.__remove_zero_window_traces__()
+            self.__prep_simulations__()
         self.not_windowed_yet = False
+
+    def __remove_zero_window_traces__(self):
+        """Removes the traces from the data_dict wavetype streams, and
+        creates list with stations for each trace to be used for removal
+        prior to processing of the synthetics.
+        """
+
+        # Process each wavetype.
+        zero_window_removal_dict = dict()
+        lpy.print_action("Removing traces without windows...")
+        for _wtype, _stream in self.data_dict.items():
+
+            lpy.print_action(f"    for {_wtype}")
+            zero_window_removal_dict[_wtype] = []
+            for _tr in _stream:
+                if len(_tr.stats.windows) == 0:
+                    net = _tr.stats.network
+                    sta = _tr.stats.station
+                    loc = _tr.stats.location
+                    cha = _tr.stats.channel
+                    zero_window_removal_dict[_wtype].append(
+                        (net, sta, loc, cha))
+
+        # Create list of all traces that do not have to be simulated anymore
+        for _i, _wtype in enumerate(self.data_dict.keys()):
+            if _i == 0:
+                channel_removal_set = set(zero_window_removal_dict[_wtype])
+            else:
+                channel_removal_set.intersection(
+                    set(zero_window_removal_dict[_wtype]))
+
+        # Remove the set from the window removal dicts
+        for _i, _wtype in enumerate(self.data_dict.keys()):
+            self.zero_window_removal_dict[_wtype] = \
+                set(zero_window_removal_dict[_wtype]) - channel_removal_set
+
+            for (net, sta, loc, cha) in self.window_removal_dict[_wtype]:
+                self.data_dict[_wtype].remove(
+                    network=net, station=sta, location=loc, channel=cha)
+
+        # Remove Channels from inventory that aren't needed.
+        for (net, sta, loc, cha) in channel_removal_set:
+            self.stations.remove(
+                network=net, station=sta, location=loc, channel=cha)
+
+    def __remove_zero_windows_on_synt(self):
+
+        # Remove the set from the window removal dicts
+        for _i, _wtype, _pardict in enumerate(self.synt_dict.items()):
+            for _stream in _pardict.values():
+                for (net, sta, loc, cha) in self.window_removal_dict[_wtype]:
+                    self.data_dict[_wtype].remove(
+                        network=net, station=sta, location=loc, channel=cha)
 
     def process_all_synt(self):
         lpy.print_section("Loading and processing all modeled data")
@@ -202,6 +259,8 @@ class GCMT3DInversion:
         with lpy.Timer():
             self.__load_synt__()
             self.__load_synt_par__()
+            self.__remove_zero_windows_on_synt()
+
         with lpy.Timer():
             self.__process_synt__()
             self.__process_synt_par__()
@@ -272,7 +331,6 @@ class GCMT3DInversion:
         for _wtype in self.processdict.keys():
             self.data_dict[_wtype] = Stream()
             self.synt_dict[_wtype] = dict()
-
             self.synt_dict[_wtype]["synt"] = Stream()
 
             for _par in self.pardict.keys():
