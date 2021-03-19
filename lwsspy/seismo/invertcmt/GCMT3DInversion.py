@@ -260,13 +260,13 @@ class GCMT3DInversion:
             else:
                 channel_removal_set.intersection(
                     set(zero_window_removal_dict[_wtype]))
-        print(channel_removal_set)
-        print(self.zero_window_removal_dict[_wtype])
+        print(len(channel_removal_set))
+
         # Remove the set from the window removal dicts
         for _i, _wtype in enumerate(self.data_dict.keys()):
             self.zero_window_removal_dict[_wtype] = \
                 set(zero_window_removal_dict[_wtype]) - channel_removal_set
-
+            print(len(self.zero_window_removal_dict[_wtype]))
             for (net, sta, loc, cha) in self.zero_window_removal_dict[_wtype]:
                 st = self.data_dict[_wtype].select(
                     network=net, station=sta, location=loc, channel=cha)[0]
