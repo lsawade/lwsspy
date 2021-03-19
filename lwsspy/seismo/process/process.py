@@ -331,11 +331,9 @@ def process_stream(st: Stream, inventory: Union[Inventory, None] = None,
 
     # rotate
     if rotate_flag:
-        st.rotate('->ZNE', inventory=inventory)
-        st.rotate('NE->RT')
-        # st = rotate_stream(st, event_latitude, event_longitude,
-        #                    inventory=inventory, mode="ALL->RT",
-        #                    sanity_check=sanity_check)
+        st = rotate_stream(st, event_latitude, event_longitude,
+                           inventory=inventory, mode="ALL->RT",
+                           sanity_check=sanity_check)
 
     # Convert to single precision to save space.
     for tr in st:
