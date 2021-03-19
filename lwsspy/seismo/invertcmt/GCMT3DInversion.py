@@ -252,7 +252,6 @@ class GCMT3DInversion:
                     cha = _tr.stats.channel
                     zero_window_removal_dict[_wtype].append(
                         (net, sta, loc, cha))
-        print(zero_window_removal_dict)
 
         # Create list of all traces that do not have to be simulated anymore
         for _i, _wtype in enumerate(self.data_dict.keys()):
@@ -266,7 +265,7 @@ class GCMT3DInversion:
         for _i, _wtype in enumerate(self.data_dict.keys()):
             self.zero_window_removal_dict[_wtype] = \
                 set(zero_window_removal_dict[_wtype]) - channel_removal_set
-
+            print(self.zero_window_removal_dict[_wtype])
             for (net, sta, loc, cha) in self.zero_window_removal_dict[_wtype]:
                 st = self.data_dict[_wtype].select(
                     network=net, station=sta, location=loc, channel=cha)[0]
