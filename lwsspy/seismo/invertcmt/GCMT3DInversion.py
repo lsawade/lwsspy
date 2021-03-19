@@ -218,7 +218,7 @@ class GCMT3DInversion:
                     station_removal_list.append((net, sta, loc, cha))
         # Create set.
         station_removal_list = set(station_removal_list)
-
+        print(station_removal_list)
         # Remove stations
         for _i, _wtype in enumerate(self.data_dict.keys()):
             for (net, sta, loc, cha) in station_removal_list:
