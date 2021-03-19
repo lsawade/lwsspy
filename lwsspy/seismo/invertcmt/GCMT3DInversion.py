@@ -248,6 +248,7 @@ class GCMT3DInversion:
             waveweightdict[_wtype] = 0
 
             # Get wave type weight from process.yml
+            self.weights[_wtype] = dict()
             waveweight = self.processdict[_wtype]["weight"]
             self.weights[_wtype]["weight"] = deepcopy(waveweight)
 
@@ -256,6 +257,7 @@ class GCMT3DInversion:
             for _component, _cweight in RTZ_dict.items():
 
                 # Copy compnent weight to dictionary
+                self.weights[_wtype][_component] = dict()
                 self.weights[_wtype][_component]["weight"] = deepcopy(_cweight)
 
                 # Create reference
