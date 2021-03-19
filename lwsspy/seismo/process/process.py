@@ -310,13 +310,6 @@ def process_stream(st: Stream, inventory: Union[Inventory, None] = None,
             # just cut
             st.trim(starttime, endtime)
 
-    # rotate
-    if rotate_flag:
-        st.rotate('->ZNE', inventory=inventory)
-        st = rotate_stream(st, event_latitude, event_longitude,
-                           inventory=inventory, mode="ALL->RT",
-                           sanity_check=sanity_check)
-
     # Attach the epicentral distance to trace
     if geodata and (inventory is not None) and (event_latitude is not None) \
             and (event_longitude is not None):
@@ -336,6 +329,14 @@ def process_stream(st: Stream, inventory: Union[Inventory, None] = None,
                 event_latitude, event_longitude, lat, lon)[0]/m2deg
             tr.stats.back_azimuth = gps2dist_azimuth(
                 event_latitude, event_longitude, lat, lon)[1]
+
+    # rotate
+    if rotate_flag:
+        st.rotate('->ZNE', inventory=inventory)
+        st.rotate('NE->RT')
+        # st = rotate_stream(st, event_latitude, event_longitude,
+        #                    inventory=inventory, mode="ALL->RT",
+        #                    sanity_check=sanity_check)
 
     # Convert to single precision to save space.
     for tr in st:
