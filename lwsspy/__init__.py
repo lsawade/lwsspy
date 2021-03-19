@@ -173,6 +173,7 @@ if "-m" not in sys.argv:
 
     # CMT3D
     from .seismo.invertcmt.GCMT3DInversion import GCMT3DInversion  # noqa
+    from .seismo.invertcmt.plot_weights import plot_weightpickle  # noqa
 
     # Shell
     from .shell.cat import cat  # noqa
