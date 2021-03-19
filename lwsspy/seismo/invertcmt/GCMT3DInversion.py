@@ -267,7 +267,7 @@ class GCMT3DInversion:
             self.zero_window_removal_dict[_wtype] = \
                 set(zero_window_removal_dict[_wtype]) - channel_removal_set
 
-            for (net, sta, loc, cha) in self.window_removal_dict[_wtype]:
+            for (net, sta, loc, cha) in self.zero_window_removal_dict[_wtype]:
                 tr = self.data_dict[_wtype].select(
                     network=net, station=sta, location=loc, channel=cha)[0]
                 self.data_dict[_wtype].remove(tr)
