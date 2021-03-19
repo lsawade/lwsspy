@@ -212,24 +212,24 @@ class GCMT3DInversion:
             for _tr in _stream:
                 net = _tr.stats.network
                 sta = _tr.stats.station
-                loc = _tr.stats.location
                 cha = _tr.stats.channel
                 if cha[-1] in checklist:
-                    station_removal_list.append((net, sta, loc, cha))
+                    station_removal_list.append((net, sta))
         # Create set.
         station_removal_list = set(station_removal_list)
-        print(station_removal_list)
+
         # Remove stations
         for _i, _wtype in enumerate(self.data_dict.keys()):
-            for (net, sta, loc, cha) in station_removal_list:
+            for (net, sta) in station_removal_list:
                 # Remove channels from inventory
                 self.stations = self.stations.remove(
-                    network=net, station=sta, location=loc, channel=cha)
+                    network=net, station=sta)
 
                 # Remove Traces from Streams
-                tr = self.data_dict[_wtype].select(
-                    network=net, station=sta, location=loc, channel=cha)[0]
-                self.data_dict[_wtype].remove(tr)
+                st = self.data_dict[_wtype].select(
+                    network=net, station=sta)
+                for tr in st:
+                    self.data_dict[_wtype].remove(tr)
 
     def __remove_zero_window_traces__(self):
         """Removes the traces from the data_dict wavetype streams, and
@@ -427,7 +427,7 @@ class GCMT3DInversion:
 
         # Load seismic data
         self.data = read(os.path.join(self.waveformdir, "*.mseed"))
-
+        self.raw_data = self.data.copy()
         # Populate the data dictionary.
         for _wtype, _stream in self.data_dict.items():
             self.data_dict[_wtype] = self.data.copy()
@@ -454,18 +454,17 @@ class GCMT3DInversion:
             processdict.update(dict(
                 remove_response_flag=True,
                 event_latitude=self.cmtsource.latitude,
-                event_longitude=self.cmtsource.longitude,
-                geodata=True)
+                event_longitude=self.cmtsource.longitude
             )
 
             if self.multiprocesses < 1:
-                self.data_dict[_wtype] = self.process_func(
+                self.data_dict[_wtype]=self.process_func(
                     _stream, self.stations, **processdict)
             else:
                 lpy.print_action(
                     f"Processing in parallel using {self.multiprocesses} cores")
                 with mpp.Pool(processes=self.multiprocesses) as p:
-                    self.data_dict[_wtype] = self.sumfunc(
+                    self.data_dict[_wtype]=self.sumfunc(
                         lpy.starmap_with_kwargs(
                             p, self.process_func,
                             zip(_stream, repeat(self.stations)),
@@ -476,11 +475,11 @@ class GCMT3DInversion:
 
         # Load forward data
         lpy.print_action("Loading forward synthetics")
-        temp_synt = read(os.path.join(
+        temp_synt=read(os.path.join(
             self.synt_syntdir, "OUTPUT_FILES", "*.sac"))
 
         for _wtype in self.processdict.keys():
-            self.synt_dict[_wtype]["synt"] = temp_synt.copy()
+            self.synt_dict[_wtype]["synt"]=temp_synt.copy()
 
     def __load_synt_par__(self):
         # Load frechet data
@@ -489,55 +488,54 @@ class GCMT3DInversion:
             lpy.print_action(f"    {_par}")
 
             if _par in self.nosimpars:
-                temp_synt = read(os.path.join(
+                temp_synt=read(os.path.join(
                     self.synt_syntdir, "OUTPUT_FILES", "*.sac"))
             else:
                 # Load foward/perturbed data
-                temp_synt = read(os.path.join(
+                temp_synt=read(os.path.join(
                     _pardirs, "OUTPUT_FILES", "*.sac"))
 
             # Populate the wavetype Streams.
             for _wtype, _ in self.data_dict.items():
-                self.synt_dict[_wtype][_par] = temp_synt.copy()
+                self.synt_dict[_wtype][_par]=temp_synt.copy()
 
         del temp_synt
 
     def __process_synt__(self, no_grad=False):
 
         if self.multiprocesses > 1:
-            parallel = True
-            p = mpp.Pool(processes=self.multiprocesses)
+            parallel=True
+            p=mpp.Pool(processes=self.multiprocesses)
             lpy.print_action(
                 f"Processing in parallel using {self.multiprocesses} cores")
         else:
-            parallel = False
+            parallel=False
 
         for _wtype in self.processdict.keys():
             lpy.print_action(f"Processing synt for {_wtype}")
 
             # Call processing function and processing dictionary
-            starttime = self.cmtsource.cmt_time \
+            starttime=self.cmtsource.cmt_time \
                 + self.processdict[_wtype]["process"]["relative_starttime"]
-            endtime = self.cmtsource.cmt_time \
+            endtime=self.cmtsource.cmt_time \
                 + self.processdict[_wtype]["process"]["relative_endtime"]
 
             # Process dict
-            processdict = deepcopy(self.processdict[_wtype]["process"])
+            processdict=deepcopy(self.processdict[_wtype]["process"])
             processdict.pop("relative_starttime")
             processdict.pop("relative_endtime")
-            processdict["starttime"] = starttime
-            processdict["endtime"] = endtime
+            processdict["starttime"]=starttime
+            processdict["endtime"]=endtime
             processdict.update(dict(
                 remove_response_flag=False,
                 event_latitude=self.cmtsource.latitude,
-                event_longitude=self.cmtsource.longitude,
-                geodata=True)
+                event_longitude=self.cmtsource.longitude
             )
             print(f"Stream {_wtype}/synt: ",
                   len(self.synt_dict[_wtype]["synt"]))
 
             if parallel:
-                self.synt_dict[_wtype]["synt"] = self.sumfunc(
+                self.synt_dict[_wtype]["synt"]=self.sumfunc(
                     lpy.starmap_with_kwargs(
                         p, self.process_func,
                         zip(self.synt_dict[_wtype]["synt"],
@@ -546,7 +544,7 @@ class GCMT3DInversion:
                             self.synt_dict[_wtype]["synt"])
                     )).copy()
             else:
-                self.synt_dict[_wtype]["synt"] = self.process_func(
+                self.synt_dict[_wtype]["synt"]=self.process_func(
                     self.synt_dict[_wtype]["synt"], self.stations,
                     **processdict)
 
@@ -556,33 +554,32 @@ class GCMT3DInversion:
     def __process_synt_par__(self):
 
         if self.multiprocesses > 1:
-            parallel = True
-            p = mpp.Pool(processes=self.multiprocesses)
+            parallel=True
+            p=mpp.Pool(processes=self.multiprocesses)
             lpy.print_action(
                 f"Processing in parallel using {self.multiprocesses} cores")
         else:
-            parallel = False
+            parallel=False
 
         for _wtype in self.processdict.keys():
             lpy.print_action(f"Processing synt for {_wtype}")
 
             # Call processing function and processing dictionary
-            starttime = self.cmtsource.cmt_time \
+            starttime=self.cmtsource.cmt_time \
                 + self.processdict[_wtype]["process"]["relative_starttime"]
-            endtime = self.cmtsource.cmt_time \
+            endtime=self.cmtsource.cmt_time \
                 + self.processdict[_wtype]["process"]["relative_endtime"]
 
             # Process dict
-            processdict = deepcopy(self.processdict[_wtype]["process"])
+            processdict=deepcopy(self.processdict[_wtype]["process"])
             processdict.pop("relative_starttime")
             processdict.pop("relative_endtime")
-            processdict["starttime"] = starttime
-            processdict["endtime"] = endtime
+            processdict["starttime"]=starttime
+            processdict["endtime"]=endtime
             processdict.update(dict(
                 remove_response_flag=False,
                 event_latitude=self.cmtsource.latitude,
-                event_longitude=self.cmtsource.longitude,
-                geodata=True)
+                event_longitude=self.cmtsource.longitude
             )
 
             # Process each wavetype.
@@ -590,11 +587,11 @@ class GCMT3DInversion:
                 print(f"Stream {_wtype}/{_par}: ",
                       len(self.synt_dict[_wtype][_par]))
                 if _par in self.nosimpars:
-                    self.synt_dict[_wtype][_par] = \
-                        self.synt_dict[_wtype]["synt"].copy()
+                    self.synt_dict[_wtype][_par]=self.synt_dict[_wtype]["synt"].copy(
+                    )
                 else:
                     if parallel:
-                        self.synt_dict[_wtype][_par] = self.sumfunc(
+                        self.synt_dict[_wtype][_par]=self.sumfunc(
                             lpy.starmap_with_kwargs(
                                 p, self.process_func,
                                 zip(self.synt_dict[_wtype]
@@ -602,7 +599,7 @@ class GCMT3DInversion:
                                 repeat(processdict),
                                 len(self.synt_dict[_wtype][_par]))).copy()
                     else:
-                        self.synt_dict[_wtype][_par] = self.process_func(
+                        self.synt_dict[_wtype][_par]=self.process_func(
                             self.synt_dict[_wtype][_par], self.stations,
                             **processdict)
                     # divide by perturbation value and scale by scale length
@@ -641,8 +638,8 @@ class GCMT3DInversion:
     def optimize(self, optim: lpy.Optimization):
 
         try:
-            optim_out = optim.solve(optim, self.scaled_model)
-            self.model = optim.model
+            optim_out=optim.solve(optim, self.scaled_model)
+            self.model=optim.model
             return optim_out
         except Exception as e:
             print(e)
@@ -672,12 +669,12 @@ class GCMT3DInversion:
             self.stations, os.path.join(self.synt_syntdir, "DATA", "STATIONS"))
 
         # Update Par_file depending on the parameter.
-        syn_parfile = os.path.join(self.synt_syntdir, "DATA", "Par_file")
-        syn_pars = lpy.read_parfile(syn_parfile)
-        syn_pars["USE_SOURCE_DERIVATIVE"] = False
+        syn_parfile=os.path.join(self.synt_syntdir, "DATA", "Par_file")
+        syn_pars=lpy.read_parfile(syn_parfile)
+        syn_pars["USE_SOURCE_DERIVATIVE"]=False
 
         # Adapt duration
-        syn_pars["RECORD_LENGTH_IN_MINUTES"] = self.simulation_duration
+        syn_pars["RECORD_LENGTH_IN_MINUTES"]=self.simulation_duration
 
         # Write Stuff to Par_file
         lpy.write_parfile(syn_pars, syn_parfile)
@@ -693,42 +690,41 @@ class GCMT3DInversion:
                     self.stations, os.path.join(_pardir, "DATA", "STATIONS"))
 
                 # Update Par_file depending on the parameter.
-                dsyn_parfile = os.path.join(_pardir, "DATA", "Par_file")
-                dsyn_pars = lpy.read_parfile(dsyn_parfile)
+                dsyn_parfile=os.path.join(_pardir, "DATA", "Par_file")
+                dsyn_pars=lpy.read_parfile(dsyn_parfile)
 
                 # Set data parameters and  write new parfiles
-                locations = ["latitude", "longitude", "depth_in_m"]
+                locations=["latitude", "longitude", "depth_in_m"]
                 if _par in locations:
-                    dsyn_pars["USE_SOURCE_DERIVATIVE"] = True
+                    dsyn_pars["USE_SOURCE_DERIVATIVE"]=True
                     if _par == "depth_in_m":
                         # 1 for depth
-                        dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"] = 1
+                        dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"]=1
                     elif _par == "latitude":
                         # 2 for latitude
-                        dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"] = 2
+                        dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"]=2
                     else:
                         # 3 for longitude
-                        dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"] = 3
+                        dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"]=3
                 else:
-                    dsyn_pars["USE_SOURCE_DERIVATIVE"] = False
+                    dsyn_pars["USE_SOURCE_DERIVATIVE"]=False
 
                 # Adapt duration
-                dsyn_pars["RECORD_LENGTH_IN_MINUTES"] = \
-                    self.simulation_duration
+                dsyn_pars["RECORD_LENGTH_IN_MINUTES"]=self.simulation_duration
 
                 # Write Stuff to Par_file
                 lpy.write_parfile(dsyn_pars, dsyn_parfile)
 
     def __update_cmt__(self, model):
-        cmt = deepcopy(self.cmtsource)
+        cmt=deepcopy(self.cmtsource)
         for _par, _modelval in zip(self.pars, model * self.scale):
             setattr(cmt, _par, _modelval)
-        self.cmt_out = cmt
+        self.cmt_out=cmt
 
     def __write_sources__(self):
 
         # Update cmt solution with new model values
-        cmt = deepcopy(self.cmtsource)
+        cmt=deepcopy(self.cmtsource)
         for _par, _modelval in zip(self.pars, self.model):
             setattr(cmt, _par, _modelval)
 
@@ -744,10 +740,10 @@ class GCMT3DInversion:
 
                 if self.pardict[_par]["pert"] is not None:
                     # Perturb source at parameter
-                    cmt_pert = deepcopy(cmt)
+                    cmt_pert=deepcopy(cmt)
 
                     # Get the parameter to be perturbed
-                    to_be_perturbed = getattr(cmt_pert, _par)
+                    to_be_perturbed=getattr(cmt_pert, _par)
 
                     # Perturb the parameter
                     to_be_perturbed += self.pardict[_par]["pert"]
@@ -757,7 +753,7 @@ class GCMT3DInversion:
 
                     # If parameter a part of the tensor elements then set the
                     # rest of the parameters to 0.
-                    tensorlist = ['m_rr', 'm_tt', 'm_pp',
+                    tensorlist=['m_rr', 'm_tt', 'm_pp',
                                   'm_rt', 'm_rp', 'm_tp']
                     if _par in tensorlist:
                         for _tensor_el in tensorlist:
@@ -773,9 +769,9 @@ class GCMT3DInversion:
 
         lpy.print_action("Submitting all simulations")
         # Initialize necessary commands
-        cmd_list = self.nsim * [[*self.launch_method, './bin/xspecfem3D']]
+        cmd_list=self.nsim * [[*self.launch_method, './bin/xspecfem3D']]
 
-        cwdlist = [self.synt_syntdir]
+        cwdlist=[self.synt_syntdir]
         cwdlist.extend(
             [_pardir for _par, _pardir in self.synt_pardirs.items()
              if _par not in self.nosimpars])
@@ -785,18 +781,18 @@ class GCMT3DInversion:
 
         # Initialize necessary commands
         lpy.print_action("Submitting forward simulation")
-        cmd_list = [[*self.launch_method, './bin/xspecfem3D']]
-        cwdlist = [self.synt_syntdir]
+        cmd_list=[[*self.launch_method, './bin/xspecfem3D']]
+        cwdlist=[self.synt_syntdir]
         lpy.run_cmds_parallel(cmd_list, cwdlist=cwdlist)
 
     def __run_parameters_only__(self):
 
         # Initialize necessary commands
         lpy.print_action("Submitting parameter simulations")
-        cmd_list = (self.nsim - 1) * \
+        cmd_list=(self.nsim - 1) * \
             [[*self.launch_method, './bin/xspecfem3D']]
 
-        cwdlist = []
+        cwdlist=[]
         cwdlist.extend(
             [_pardir for _par, _pardir in self.synt_pardirs.items()
              if _par not in self.nosimpars])
@@ -805,8 +801,8 @@ class GCMT3DInversion:
     def compute_cost_gradient(self, model):
 
         # Update model
-        self.model = model * self.scale
-        self.scaled_model = model
+        self.model=model * self.scale
+        self.scaled_model=model
 
         # Write sources for next iteration
         self.__write_sources__()
@@ -821,15 +817,15 @@ class GCMT3DInversion:
         # Window Data
         if self.not_windowed_yet:
             self.__window__()
-            self.not_windowed_yet = False
+            self.not_windowed_yet=False
 
         return self.__compute_cost__(), self.__compute_gradient__() * self.scale
 
     def compute_cost_gradient_hessian(self, model):
 
         # Update model
-        self.model = model * self.scale
-        self.scaled_model = model
+        self.model=model * self.scale
+        self.scaled_model=model
 
         # Write sources for next iteration
         self.__write_sources__()
@@ -844,11 +840,11 @@ class GCMT3DInversion:
         # Window Data
         if self.not_windowed_yet:
             self.__window__()
-            self.not_windowed_yet = False
+            self.not_windowed_yet=False
 
         # Evaluate
-        cost = self.__compute_cost__()
-        g, h = self.__compute_gradient_and_hessian__()
+        cost=self.__compute_cost__()
+        g, h=self.__compute_gradient_and_hessian__()
 
         # Actually write zero trace routine yourself, this is to
         # elaborate..
@@ -859,21 +855,21 @@ class GCMT3DInversion:
         #     AA[na - 1, na - 1] = 0.0
 
         if self.damping > 0.0:
-            factor = self.damping * np.max(np.abs((np.diag(h))))
-            modelres = self.model - self.init_model
+            factor=self.damping * np.max(np.abs((np.diag(h))))
+            modelres=self.model - self.init_model
             cost += factor/2 * np.sum(modelres**2)
             g += factor * modelres
             h += factor * np.eye(len(self.model))
 
         # Scaling of the cost function
         g *= self.scale
-        h = np.diag(self.scale) @ h @ np.diag(self.scale)
+        h=np.diag(self.scale) @ h @ np.diag(self.scale)
 
         return cost, g, h
 
     def __compute_cost__(self):
 
-        cost = 0
+        cost=0
         for _wtype in self.processdict.keys():
 
             cost += lpy.stream_cost_win(self.data_dict[_wtype],
@@ -885,7 +881,7 @@ class GCMT3DInversion:
 
     def __compute_gradient__(self):
 
-        gradient = np.zeros_like(self.model)
+        gradient=np.zeros_like(self.model)
 
         for _i, _par in enumerate(self.pardict.keys()):
             for _wtype in self.processdict.keys():
@@ -898,11 +894,11 @@ class GCMT3DInversion:
 
     def __compute_gradient_and_hessian__(self):
 
-        gradient = np.zeros_like(self.model)
-        hessian = np.zeros((len(self.model), len(self.model)))
+        gradient=np.zeros_like(self.model)
+        hessian=np.zeros((len(self.model), len(self.model)))
 
         for _wtype in self.processdict.keys():
-            tmp_g, tmp_h = lpy.stream_grad_and_hess_win(
+            tmp_g, tmp_h=lpy.stream_grad_and_hess_win(
                 self.data_dict[_wtype], self.synt_dict[_wtype]["synt"],
                 [self.synt_dict[_wtype][_par] for _par in self.pardict.keys()],
                 verbose=self.debug, normalize=self.normalize)
@@ -915,51 +911,51 @@ class GCMT3DInversion:
         # Start the walk
         lpy.print_bar("Misfit walk: Depth")
 
-        scaled_depths = np.arange(self.cmtsource.depth_in_m - 10000,
+        scaled_depths=np.arange(self.cmtsource.depth_in_m - 10000,
                                   self.cmtsource.depth_in_m + 10100, 1000)/1000.0
-        cost = np.zeros_like(scaled_depths)
-        grad = np.zeros((*scaled_depths.shape, 1))
-        hess = np.zeros((*scaled_depths.shape, 1, 1))
-        dm = np.zeros((*scaled_depths.shape, 1))
+        cost=np.zeros_like(scaled_depths)
+        grad=np.zeros((*scaled_depths.shape, 1))
+        hess=np.zeros((*scaled_depths.shape, 1, 1))
+        dm=np.zeros((*scaled_depths.shape, 1))
 
         for _i, _dep in enumerate(scaled_depths):
 
             lpy.print_section(f"Computing CgH for: {_dep} km")
             with lpy.Timer():
-                c, g, h = self.compute_cost_gradient_hessian(
+                c, g, h=self.compute_cost_gradient_hessian(
                     np.array([_dep]))
                 print(f"\n     Iteration for {_dep} km done.")
-            cost[_i] = c
-            grad[_i, :] = g
-            hess[_i, :, :] = h
+            cost[_i]=c
+            grad[_i, :]=g
+            hess[_i, :, :]=h
 
         # Get the Gauss newton step
         for _i in range(len(scaled_depths)):
-            dm[_i, :] = np.linalg.solve(
+            dm[_i, :]=np.linalg.solve(
                 hess[_i, :, :], -grad[_i, :])
 
         plt.switch_backend("pdf")
         plt.figure(figsize=(12, 4))
         # Cost function
-        ax = plt.subplot(141)
+        ax=plt.subplot(141)
         plt.plot(cost, scaled_depths, label="Cost")
         plt.legend(frameon=False, loc='upper right')
         plt.xlabel("Cost")
         plt.ylabel("Depth [km]")
 
-        ax = plt.subplot(142, sharey=ax)
+        ax=plt.subplot(142, sharey=ax)
         plt.plot(np.squeeze(grad), scaled_depths, label="Grad")
         plt.legend(frameon=False, loc='upper right')
         plt.xlabel("Gradient")
         ax.tick_params(labelleft=False, labelright=False)
 
-        ax = plt.subplot(143, sharey=ax)
+        ax=plt.subplot(143, sharey=ax)
         plt.plot(np.squeeze(hess), scaled_depths, label="Hess")
         plt.legend(frameon=False, loc='upper right')
         plt.xlabel("G.-N. Hessian")
         ax.tick_params(labelleft=False, labelright=False)
 
-        ax = plt.subplot(144, sharey=ax)
+        ax=plt.subplot(144, sharey=ax)
         plt.plot(np.squeeze(dm), scaled_depths, label="Step")
         plt.legend(frameon=False, loc='upper right')
         plt.xlabel("$\Delta$m [km]")
@@ -980,39 +976,39 @@ class GCMT3DInversion:
         # depths = np.arange(self.cmtsource.depth_in_m - 10000,
         #                    self.cmtsource.depth_in_m + 10100, 1000)
         # times = np.arange(-10.0, 10.1, 1.0)
-        depths = np.arange(self.cmtsource.depth_in_m - 1000,
+        depths=np.arange(self.cmtsource.depth_in_m - 1000,
                            self.cmtsource.depth_in_m + 1100, 1000)
-        times = np.arange(self.cmtsource.time_shift - 1.0,
+        times=np.arange(self.cmtsource.time_shift - 1.0,
                           self.cmtsource.time_shift + 1.1, 1.0)
-        t, z = np.meshgrid(times, depths)
-        cost = np.zeros(z.shape)
-        grad = np.zeros((*z.shape, 2))
-        hess = np.zeros((*z.shape, 2, 2))
-        dm = np.zeros((*z.shape, 2))
+        t, z=np.meshgrid(times, depths)
+        cost=np.zeros(z.shape)
+        grad=np.zeros((*z.shape, 2))
+        hess=np.zeros((*z.shape, 2, 2))
+        dm=np.zeros((*z.shape, 2))
         for _i, _dep in enumerate(depths):
             for _j, _time in enumerate(times):
                 lpy.print_action(f"Computing CgH for: ({_dep} km, {_time} s)")
-                c, g, h = self.compute_cost_gradient_hessian(
+                c, g, h=self.compute_cost_gradient_hessian(
                     np.array([_dep, _time]))
-                cost[_i, _j] = c
-                grad[_i, _j, :] = g
-                hess[_i, _j, :, :] = h
+                cost[_i, _j]=c
+                grad[_i, _j, :]=g
+                hess[_i, _j, :, :]=h
 
-        damp = 0.0001
+        damp=0.0001
         # Get the Gauss newton step
         for _i in range(z.shape[0]):
             for _j in range(z.shape[1]):
-                dm[_i, _j, :] = np.linalg.solve(
+                dm[_i, _j, :]=np.linalg.solve(
                     hess[_i, _j, :, :] + damp * np.diag(np.ones(2)), - grad[_i, _j, :])
         plt.switch_backend("pdf")
-        extent = [np.min(t), np.max(t), np.min(z), np.max(z)]
-        aspect = (np.max(t) - np.min(t))/(np.max(z) - np.min(z))
+        extent=[np.min(t), np.max(t), np.min(z), np.max(z)]
+        aspect=(np.max(t) - np.min(t))/(np.max(z) - np.min(z))
         plt.figure(figsize=(11, 6.5))
         # Cost
-        ax1 = plt.subplot(3, 4, 9)
+        ax1=plt.subplot(3, 4, 9)
         plt.imshow(cost, interpolation=None, extent=extent, aspect=aspect)
         lpy.plot_label(ax1, r"$\mathcal{C}$", dist=0)
-        c1 = plt.colorbar()
+        c1=plt.colorbar()
         c1.ax.tick_params(labelsize=7)
         c1.ax.yaxis.offsetText.set_fontsize(7)
         ax1.axes.invert_yaxis()
@@ -1020,19 +1016,19 @@ class GCMT3DInversion:
         plt.xlabel(r'$t$')
 
         # Gradient
-        ax2 = plt.subplot(3, 4, 6, sharey=ax1)
+        ax2=plt.subplot(3, 4, 6, sharey=ax1)
         plt.imshow(grad[:, :, 1], interpolation=None,
                    extent=extent, aspect=aspect)
-        c2 = plt.colorbar()
+        c2=plt.colorbar()
         c2.ax.tick_params(labelsize=7)
         c2.ax.yaxis.offsetText.set_fontsize(7)
         ax2.tick_params(labelbottom=False)
         lpy.plot_label(ax2, r"$g_{\Delta t}$", dist=0)
 
-        ax3 = plt.subplot(3, 4, 10, sharey=ax1)
+        ax3=plt.subplot(3, 4, 10, sharey=ax1)
         plt.imshow(grad[:, :, 0], interpolation=None,
                    extent=extent, aspect=aspect)
-        c3 = plt.colorbar()
+        c3=plt.colorbar()
         c3.ax.tick_params(labelsize=7)
         c3.ax.yaxis.offsetText.set_fontsize(7)
         ax3.tick_params(labelleft=False)
@@ -1040,28 +1036,28 @@ class GCMT3DInversion:
         plt.xlabel(r'$\Delta t$')
 
         # Hessian
-        ax4 = plt.subplot(3, 4, 3, sharey=ax1)
+        ax4=plt.subplot(3, 4, 3, sharey=ax1)
         plt.imshow(hess[:, :, 0, 1], interpolation=None,
                    extent=extent, aspect=aspect)
-        c4 = plt.colorbar()
+        c4=plt.colorbar()
         c4.ax.tick_params(labelsize=7)
         c4.ax.yaxis.offsetText.set_fontsize(7)
         ax4.tick_params(labelbottom=False)
         lpy.plot_label(ax4, r"$\mathcal{H}_{z,\Delta t}$", dist=0)
 
-        ax5 = plt.subplot(3, 4, 7, sharey=ax1)
+        ax5=plt.subplot(3, 4, 7, sharey=ax1)
         plt.imshow(hess[:, :, 1, 1], interpolation=None,
                    extent=extent, aspect=aspect)
-        c5 = plt.colorbar()
+        c5=plt.colorbar()
         c5.ax.tick_params(labelsize=7)
         c5.ax.yaxis.offsetText.set_fontsize(7)
         ax5.tick_params(labelleft=False, labelbottom=False)
         lpy.plot_label(ax5, r"$\mathcal{H}_{\Delta t,\Delta t}$", dist=0)
 
-        ax6 = plt.subplot(3, 4, 11, sharey=ax1)
+        ax6=plt.subplot(3, 4, 11, sharey=ax1)
         plt.imshow(hess[:, :, 0, 0], interpolation=None,
                    extent=extent, aspect=aspect)
-        c6 = plt.colorbar()
+        c6=plt.colorbar()
         c6.ax.tick_params(labelsize=7)
         c6.ax.yaxis.offsetText.set_fontsize(7)
         ax6.tick_params(labelleft=False)
@@ -1069,19 +1065,19 @@ class GCMT3DInversion:
         plt.xlabel(r'$\Delta t$')
 
         # Gradient/Hessian
-        ax7 = plt.subplot(3, 4, 8, sharey=ax1)
+        ax7=plt.subplot(3, 4, 8, sharey=ax1)
         plt.imshow(dm[:, :, 1], interpolation=None,
                    extent=extent, aspect=aspect)
-        c7 = plt.colorbar()
+        c7=plt.colorbar()
         c7.ax.tick_params(labelsize=7)
         c7.ax.yaxis.offsetText.set_fontsize(7)
         ax7.tick_params(labelleft=False, labelbottom=False)
         lpy.plot_label(ax7, r"$\mathrm{d}\Delta$", dist=0)
 
-        ax8 = plt.subplot(3, 4, 12, sharey=ax1)
+        ax8=plt.subplot(3, 4, 12, sharey=ax1)
         plt.imshow(dm[:, :, 0], interpolation=None,
                    extent=extent, aspect=aspect)
-        c8 = plt.colorbar()
+        c8=plt.colorbar()
         c8.ax.tick_params(labelsize=7)
         c8.ax.yaxis.offsetText.set_fontsize(7)
         ax8.tick_params(labelleft=False)
@@ -1096,19 +1092,19 @@ class GCMT3DInversion:
         for _wtype in self.processdict.keys():
             with PdfPages(os.path.join(outputdir, f"data_{_wtype}.pdf")) as pdf:
                 for obsd_tr in self.data_dict[_wtype]:
-                    fig = plot_seismograms(obsd_tr, cmtsource=self.cmtsource,
+                    fig=plot_seismograms(obsd_tr, cmtsource=self.cmtsource,
                                            tag=_wtype)
                     pdf.savefig()  # saves the current figure into a pdf page
                     plt.close(fig)
 
                     # We can also set the file's metadata via the PdfPages object:
-                d = pdf.infodict()
-                d['Title'] = f"{_wtype.capitalize()}-Wave-Data-PDF"
-                d['Author'] = 'Lucas Sawade'
-                d['Subject'] = 'Trace comparison in one pdf'
-                d['Keywords'] = 'seismology, moment tensor inversion'
-                d['CreationDate'] = datetime.datetime.today()
-                d['ModDate'] = datetime.datetime.today()
+                d=pdf.infodict()
+                d['Title']=f"{_wtype.capitalize()}-Wave-Data-PDF"
+                d['Author']='Lucas Sawade'
+                d['Subject']='Trace comparison in one pdf'
+                d['Keywords']='seismology, moment tensor inversion'
+                d['CreationDate']=datetime.datetime.today()
+                d['ModDate']=datetime.datetime.today()
 
     def plot_windows(self, outputdir="."):
         plt.switch_backend("pdf")
@@ -1116,7 +1112,7 @@ class GCMT3DInversion:
             with PdfPages(os.path.join(outputdir, f"windows_{_wtype}.pdf")) as pdf:
                 for obsd_tr in self.data_dict[_wtype]:
                     try:
-                        synt_tr = self.synt_dict[_wtype]["synt"].select(
+                        synt_tr=self.synt_dict[_wtype]["synt"].select(
                             station=obsd_tr.stats.station,
                             network=obsd_tr.stats.network,
                             component=obsd_tr.stats.channel[-1])[0]
@@ -1125,28 +1121,28 @@ class GCMT3DInversion:
                               "%s" % (obsd_tr.id, err))
                         continue
 
-                    fig = plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
+                    fig=plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
                                            tag=_wtype)
                     pdf.savefig()  # saves the current figure into a pdf page
                     plt.close(fig)
 
                     # We can also set the file's metadata via the PdfPages object:
-                d = pdf.infodict()
-                d['Title'] = f"{_wtype.capitalize()}-Wave-PDF"
-                d['Author'] = 'Lucas Sawade'
-                d['Subject'] = 'Trace comparison in one pdf'
-                d['Keywords'] = 'seismology, moment tensor inversion'
-                d['CreationDate'] = datetime.datetime.today()
-                d['ModDate'] = datetime.datetime.today()
+                d=pdf.infodict()
+                d['Title']=f"{_wtype.capitalize()}-Wave-PDF"
+                d['Author']='Lucas Sawade'
+                d['Subject']='Trace comparison in one pdf'
+                d['Keywords']='seismology, moment tensor inversion'
+                d['CreationDate']=datetime.datetime.today()
+                d['ModDate']=datetime.datetime.today()
 
     def plot_station(self, network: str, station: str, outputdir="."):
         plt.switch_backend("pdf")
         # Get station data
         for _wtype in self.processdict.keys():
             try:
-                obsd = self.data_dict[_wtype].select(
+                obsd=self.data_dict[_wtype].select(
                     network=network, station=station)
-                synt = self.synt_dict[_wtype]["synt"].select(
+                synt=self.synt_dict[_wtype]["synt"].select(
                     network=network, station=station)
             except Exception as e:
                 print(f"Could load station {network}{station} -- {e}")
@@ -1154,10 +1150,10 @@ class GCMT3DInversion:
             with PdfPages(os.path.join(outputdir, f"{network}.{station}_{_wtype}.pdf")) as pdf:
                 for component in ["Z", "R", "T"]:
                     try:
-                        obsd_tr = obsd.select(
+                        obsd_tr=obsd.select(
                             station=station, network=network,
                             component=component)[0]
-                        synt_tr = synt.select(
+                        synt_tr=synt.select(
                             station=station, network=network,
                             component=component)[0]
                     except Exception as err:
@@ -1165,19 +1161,19 @@ class GCMT3DInversion:
                               f" {network}.{station}.{component} -- {err}")
                         continue
 
-                    fig = plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
+                    fig=plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
                                            tag=_wtype)
                     pdf.savefig()  # saves the current figure into a pdf page
                     plt.close(fig)
 
                     # We can also set the file's metadata via the PdfPages object:
-                d = pdf.infodict()
-                d['Title'] = f"{_wtype.capitalize()}-Wave-PDF"
-                d['Author'] = 'Lucas Sawade'
-                d['Subject'] = 'Trace comparison in one pdf'
-                d['Keywords'] = 'seismology, moment tensor inversion'
-                d['CreationDate'] = datetime.datetime.today()
-                d['ModDate'] = datetime.datetime.today()
+                d=pdf.infodict()
+                d['Title']=f"{_wtype.capitalize()}-Wave-PDF"
+                d['Author']='Lucas Sawade'
+                d['Subject']='Trace comparison in one pdf'
+                d['Keywords']='seismology, moment tensor inversion'
+                d['CreationDate']=datetime.datetime.today()
+                d['ModDate']=datetime.datetime.today()
 
     def plot_station_der(self, network: str, station: str, outputdir="."):
         plt.switch_backend("pdf")
@@ -1190,14 +1186,14 @@ class GCMT3DInversion:
                 for _par in self.synt_dict[_wtype].keys():
                     if _par != "synt":
                         try:
-                            synt = self.synt_dict[_wtype][_par].select(
+                            synt=self.synt_dict[_wtype][_par].select(
                                 network=network, station=station)
                         except Exception as e:
                             print(f"Could load station "
                                   f"{network}{station} -- {e}")
                         for component in ["Z", "R", "T"]:
                             try:
-                                synt_tr = synt.select(
+                                synt_tr=synt.select(
                                     station=station, network=network,
                                     component=component)[0]
                             except Exception as err:
@@ -1207,20 +1203,20 @@ class GCMT3DInversion:
                                       f"-- {err}")
                                 continue
 
-                            fig = plot_seismograms(
+                            fig=plot_seismograms(
                                 synt_tr, cmtsource=self.cmtsource,
                                 tag=f"{_wtype.capitalize()}-{_par.capitalize()}")
                             pdf.savefig()  # saves the current figure into a pdf page
                             plt.close(fig)
 
                     # We can also set the file's metadata via the PdfPages object:
-                d = pdf.infodict()
-                d['Title'] = f"{_wtype.capitalize()}-Wave-PDF"
-                d['Author'] = 'Lucas Sawade'
-                d['Subject'] = 'Trace comparison in one pdf'
-                d['Keywords'] = 'seismology, moment tensor inversion'
-                d['CreationDate'] = datetime.datetime.today()
-                d['ModDate'] = datetime.datetime.today()
+                d=pdf.infodict()
+                d['Title']=f"{_wtype.capitalize()}-Wave-PDF"
+                d['Author']='Lucas Sawade'
+                d['Subject']='Trace comparison in one pdf'
+                d['Keywords']='seismology, moment tensor inversion'
+                d['CreationDate']=datetime.datetime.today()
+                d['ModDate']=datetime.datetime.today()
 
     def plot_windows(self, outputdir="."):
         plt.switch_backend("pdf")
@@ -1228,7 +1224,7 @@ class GCMT3DInversion:
             with PdfPages(os.path.join(outputdir, f"windows_{_wtype}.pdf")) as pdf:
                 for obsd_tr in self.data_dict[_wtype]:
                     try:
-                        synt_tr = self.synt_dict[_wtype]["synt"].select(
+                        synt_tr=self.synt_dict[_wtype]["synt"].select(
                             station=obsd_tr.stats.station,
                             network=obsd_tr.stats.network,
                             component=obsd_tr.stats.channel[-1])[0]
@@ -1237,19 +1233,19 @@ class GCMT3DInversion:
                               "%s" % (obsd_tr.id, err))
                         continue
 
-                    fig = plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
+                    fig=plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
                                            tag=_wtype)
                     pdf.savefig()  # saves the current figure into a pdf page
                     plt.close(fig)
 
                     # We can also set the file's metadata via the PdfPages object:
-                d = pdf.infodict()
-                d['Title'] = f"{_wtype.capitalize()}-Wave-PDF"
-                d['Author'] = 'Lucas Sawade'
-                d['Subject'] = 'Trace comparison in one pdf'
-                d['Keywords'] = 'seismology, moment tensor inversion'
-                d['CreationDate'] = datetime.datetime.today()
-                d['ModDate'] = datetime.datetime.today()
+                d=pdf.infodict()
+                d['Title']=f"{_wtype.capitalize()}-Wave-PDF"
+                d['Author']='Lucas Sawade'
+                d['Subject']='Trace comparison in one pdf'
+                d['Keywords']='seismology, moment tensor inversion'
+                d['CreationDate']=datetime.datetime.today()
+                d['ModDate']=datetime.datetime.today()
 
     @ staticmethod
     def __create_dir__(dir, overwrite=False):
@@ -1263,33 +1259,33 @@ class GCMT3DInversion:
                 pass
 
 
-def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
-                     cmtsource: Union[lpy.CMTSource, None] = None,
-                     tag: Union[str, None] = None):
-    station = obsd.stats.station
-    network = obsd.stats.network
-    channel = obsd.stats.channel
-    location = obsd.stats.location
+def plot_seismograms(obsd: Trace, synt: Union[Trace, None]=None,
+                     cmtsource: Union[lpy.CMTSource, None]=None,
+                     tag: Union[str, None]=None):
+    station=obsd.stats.station
+    network=obsd.stats.network
+    channel=obsd.stats.channel
+    location=obsd.stats.location
 
-    trace_id = f"{network}.{station}.{location}.{channel}"
+    trace_id=f"{network}.{station}.{location}.{channel}"
 
     # Times and offsets computed individually, since the grid search applies
     # a timeshift which changes the times of the traces.
     if cmtsource is None:
-        offset = 0
+        offset=0
     else:
-        offset = obsd.stats.starttime - cmtsource.cmt_time
+        offset=obsd.stats.starttime - cmtsource.cmt_time
         if isinstance(synt, Trace):
-            offset_synt = synt.stats.starttime - cmtsource.cmt_time
+            offset_synt=synt.stats.starttime - cmtsource.cmt_time
 
-    times = [offset + obsd.stats.delta * i for i in range(obsd.stats.npts)]
+    times=[offset + obsd.stats.delta * i for i in range(obsd.stats.npts)]
     if isinstance(synt, Trace):
-        times_synt = [offset_synt + synt.stats.delta * i
+        times_synt=[offset_synt + synt.stats.delta * i
                       for i in range(synt.stats.npts)]
 
     # Figure Setup
-    fig = plt.figure(figsize=(15, 5))
-    ax1 = plt.subplot(211)
+    fig=plt.figure(figsize=(15, 5))
+    ax1=plt.subplot(211)
     plt.subplots_adjust(left=0.03, right=0.97, top=0.95)
 
     ax1.plot(times, obsd.data, color="black", linewidth=0.75,
@@ -1303,13 +1299,13 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
 
     # Setting top left corner text manually
     if isinstance(tag, str):
-        label = f"{trace_id}\n{tag.capitalize()}"
+        label=f"{trace_id}\n{tag.capitalize()}"
     else:
-        label = f"{trace_id}"
+        label=f"{trace_id}"
     lpy.plot_label(ax1, label, location=1, dist=0.005, box=False)
 
     # plot envelope
-    ax2 = plt.subplot(212)
+    ax2=plt.subplot(212)
     ax2.plot(times, lpy.envelope(obsd.data), color="black",
              linewidth=1.0, label="Observed")
     if isinstance(synt, Trace):
@@ -1321,13 +1317,13 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
     if isinstance(synt, Trace):
         try:
             for win in obsd.stats.windows:
-                left = times[win.left]
-                right = times[win.right]
-                re1 = Rectangle((left, ax1.get_ylim()[0]), right - left,
+                left=times[win.left]
+                right=times[win.right]
+                re1=Rectangle((left, ax1.get_ylim()[0]), right - left,
                                 ax1.get_ylim()[1] - ax1.get_ylim()[0],
                                 color="blue", alpha=0.25, zorder=-1)
                 ax1.add_patch(re1)
-                re2 = Rectangle((left, ax2.get_ylim()[0]), right - left,
+                re2=Rectangle((left, ax2.get_ylim()[0]), right - left,
                                 ax2.get_ylim()[1] - ax2.get_ylim()[0],
                                 color="blue", alpha=0.25, zorder=-1)
                 ax2.add_patch(re2)
@@ -1340,40 +1336,39 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
 def bin():
 
     # Inputs
-    event = "C200811240902A"
-    database = "/gpfs/alpine/geo111/scratch/lsawade/testdatabase"
-    specfemdir = "/gpfs/alpine/geo111/scratch/lsawade/SpecfemMagic/specfem3d_globe"
-    launch_method = "jsrun -n 6 -a 4 -c 4 -g 1"
+    event="C200811240902A"
+    database="/gpfs/alpine/geo111/scratch/lsawade/testdatabase"
+    specfemdir="/gpfs/alpine/geo111/scratch/lsawade/SpecfemMagic/specfem3d_globe"
+    launch_method="jsrun -n 6 -a 4 -c 4 -g 1"
 
-    gcmt3d = GCMT3DInversion(event, database, specfemdir, download_data=False,
+    gcmt3d=GCMT3DInversion(event, database, specfemdir, download_data=False,
                              overwrite=False, launch_method=launch_method,
                              damping=0.000)
     gcmt3d.init()
     gcmt3d.process_data()
     gcmt3d.get_windows()
     # gcmt3d.misfit_walk_depth()
-    optim_list = []
+    optim_list=[]
 
-    max_iter = 5
-    max_nls = 4
+    max_iter=5
+    max_nls=4
 
     with lpy.Timer():
 
         # Gauss Newton Optimization Structure
         lpy.print_bar("GN")
-        optim_gn = lpy.Optimization("gn")
-        optim_gn.compute_cost_and_grad_and_hess = \
-            gcmt3d.compute_cost_gradient_hessian
-        optim_gn.is_preco = False
-        optim_gn.niter_max = max_iter
-        optim_gn.nls_max = max_nls
-        optim_gn.alpha = 1.0
-        optim_gn.stopping_criterion = 9.5e-1
-        optim_gn.n = len(gcmt3d.model)
+        optim_gn=lpy.Optimization("gn")
+        optim_gn.compute_cost_and_grad_and_hess=gcmt3d.compute_cost_gradient_hessian
+        optim_gn.is_preco=False
+        optim_gn.niter_max=max_iter
+        optim_gn.nls_max=max_nls
+        optim_gn.alpha=1.0
+        optim_gn.stopping_criterion=9.5e-1
+        optim_gn.n=len(gcmt3d.model)
 
         # Run optimization
         with lpy.Timer():
-            optim_out = gcmt3d.optimize(optim_gn)
+            optim_out=gcmt3d.optimize(optim_gn)
             lpy.print_action("DONE with Gauss-Newton.")
 
         # Update model and write model
@@ -1405,22 +1400,21 @@ def bin():
         # optim_list. append(deepcopy(optim_out))
 
         # # Regularized Gauss Newton
-        gcmt3d.damping = 0.1
+        gcmt3d.damping=0.1
         gcmt3d.__init_model_and_scale__()
         lpy.print_bar("Gauss-Newton Regularized")
-        optim_gnr = lpy.Optimization("gn")
-        optim_gnr.compute_cost_and_grad_and_hess = \
-            gcmt3d.compute_cost_gradient_hessian
-        optim_gnr.is_preco = False
-        optim_gnr.niter_max = max_iter
-        optim_gnr.nls_max = max_nls
-        optim_gnr.alpha = 1.0
-        optim_gnr.stopping_criterion = 9.5e-1
-        optim_gnr.n = len(gcmt3d.model)
+        optim_gnr=lpy.Optimization("gn")
+        optim_gnr.compute_cost_and_grad_and_hess=gcmt3d.compute_cost_gradient_hessian
+        optim_gnr.is_preco=False
+        optim_gnr.niter_max=max_iter
+        optim_gnr.nls_max=max_nls
+        optim_gnr.alpha=1.0
+        optim_gnr.stopping_criterion=9.5e-1
+        optim_gnr.n=len(gcmt3d.model)
 
         # Run optimization
         with lpy.Timer():
-            optim_out = gcmt3d.optimize(optim_gnr)
+            optim_out=gcmt3d.optimize(optim_gnr)
             lpy.print_action("DONE with Regularized Gauss-Newton")
 
         # Update model and write model
