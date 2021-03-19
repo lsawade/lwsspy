@@ -268,16 +268,17 @@ class GCMT3DInversion:
                 set(zero_window_removal_dict[_wtype]) - channel_removal_set
 
             for (net, sta, loc, cha) in self.zero_window_removal_dict[_wtype]:
-                tr = self.data_dict[_wtype].select(
+                st = self.data_dict[_wtype].select(
                     network=net, station=sta, location=loc, channel=cha)[0]
-                self.data_dict[_wtype].remove(tr)
+                for tr in st:
+                    self.data_dict[_wtype].remove(tr)
 
         # Remove Channels from inventory that aren't needed.
         for (net, sta, loc, cha) in channel_removal_set:
             self.stations = self.stations.remove(
                 network=net, station=sta, location=loc, channel=cha)
 
-    def __remove_zero_windows_on_synt(self):
+    def __remove_zero_windows_on_synt__(self):
 
         # Remove the set from the window removal dicts
         for _i, _wtype, _pardict in enumerate(self.synt_dict.items()):
