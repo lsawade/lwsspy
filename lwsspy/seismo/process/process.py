@@ -323,11 +323,15 @@ def process_stream(st: Stream, inventory: Union[Inventory, None] = None,
             lat = coord_dict["latitude"]
             lon = coord_dict["longitude"]
 
+            # Add location to trace
+            tr.stats.latitude = lat
+            tr.stats.longitude = lon
+
             # Get distance to earthquake
             m2deg = 2*np.pi*6371000.0/360
             tr.stats.distance, tr.stats.back_azimuth, _ = gps2dist_azimuth(
                 event_latitude, event_longitude, lat, lon)
-            tr.stats.distance/m2deg
+            tr.stats.distance /= m2deg
 
     # rotate
     if rotate_flag:
