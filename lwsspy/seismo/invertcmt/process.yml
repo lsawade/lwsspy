@@ -1,4 +1,5 @@
 body:
+  weight: 1.0
   process:
     water_level: 100.0
     filter_flag: True

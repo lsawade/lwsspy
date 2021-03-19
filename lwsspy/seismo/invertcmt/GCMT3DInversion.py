@@ -20,7 +20,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 from itertools import repeat
 from obspy import read, read_events, Stream, Trace
 import multiprocessing.pool as mpp
-
+import _pickle as cPickle
 lpy.updaterc(rebuild=False)
 
 
@@ -231,22 +231,127 @@ class GCMT3DInversion:
                 for tr in st:
                     self.data_dict[_wtype].remove(tr)
 
-    def add_weights(self):
-        pass
-        # # Get station parameters
-        # stationlist = []  # for appending weights to the right channels
-        # latitudes = []
-        # longitudes = []
-        # for network in self.stations:
-        #     for station in network:
-        #         stationlist.append(network.code)
-        #         latitudes.append(station.latitude)
-        #         longitudes.append(station.longitude)
+    def __compute_weights__(self):
 
-        # azi_weights = lpy.azi_weights(
-        #     self.cmtsource.latitude,
-        #     self.cmtsource.longitude,
-        #     lon0, lat, lon, nbins=nbins, p=0.5)
+        # RTZ weights (for now), need to have a mean of 1.0
+        RTZ_dict = dict(R=1.0, T=1.00, Z=1.00)
+
+        # Weight dictionary
+        self.weights = dict()
+        self.weights["event"] = [
+            self.cmtsource.latitude, self.cmtsource.longitude]
+
+        waveweightdict = dict()
+        for _i, (_wtype, _stream) in enumerate(self.data_dict.items()):
+
+            # Dictionary to keep track of the sum in each wave type.
+            waveweightdict[_wtype] = 0
+
+            # Get wave type weight from process.yml
+            waveweight = self.processdict[_wtype]["weight"]
+            self.weights[_wtype]["weight"] = deepcopy(waveweight)
+
+            # Create dict to access traces
+            RTZ_traces = dict()
+            for _component, _cweight in RTZ_dict.items():
+
+                # Copy compnent weight to dictionary
+                self.weights[_wtype][_component]["weight"] = deepcopy(_cweight)
+
+                # Create reference
+                RTZ_traces[_component] = []
+
+                for _tr in _stream:
+                    if _tr.stats.component == _component:
+                        RTZ_traces[_component].append(_tr)
+
+                # Get locations
+                latitudes = []
+                longitudes = []
+                for _tr in RTZ_traces[_component]:
+                    coord_dict = self.stations.get_coordinates(_tr.get_id())
+                    latitudes.append(coord_dict["latitude"])
+                    longitudes.append(coord_dict["longitude"])
+
+                # Save locations into dict
+                self.weights[_wtype][_component]["lat"] = deepcopy(latitudes)
+                self.weights[_wtype][_component]["lon"] = deepcopy(longitudes)
+
+                # Get azimuthal weights for the traces of each component
+                azi_weights = lpy.azi_weights(
+                    self.cmtsource.latitude,
+                    self.cmtsource.longitude,
+                    latitudes, longitudes, nbins=12, p=0.5)
+
+                # Save azi weights into dict
+                self.weights[_wtype][_component]["azimuthal"] = deepcopy(
+                    azi_weights)
+
+                # Get Geographical weights
+                gw = lpy.GeoWeights(latitudes, longitudes)
+                _, _, ref, _ = gw.get_condition()
+                geo_weights = gw.get_weights(ref)
+
+                # Save geo weights into dict
+                self.weights[_wtype][_component]["geographical"] = deepcopy(
+                    geo_weights)
+
+                # Compute Combination weights.
+                weights = (azi_weights * geo_weights)
+                self.locationweights = np.sum(weights)/len(weights)
+
+                # Add weights to traces
+                for _tr in RTZ_traces[_component]:
+                    _tr.stats.weights = _cweight * weights
+                    waveweightdict[_wtype] += _cweight * weights
+
+        # Normalize by component and aximuthal weights
+        for _i, (_wtype, _) in enumerate(self.data_dict.items()):
+            # Create dict to access traces
+            RTZ_traces = dict()
+            for _component, _cweight in RTZ_dict.items():
+                for _tr in _stream:
+                    if _tr.stats.component == _component:
+                        RTZ_traces[_component].append(_tr)
+
+                self.weights[_wtype][_component]["final"] = []
+                for _tr in RTZ_traces[_component]:
+                    _tr.stats.weights /= waveweightdict[_wtype]
+
+                    self.weights[_wtype][_component]["final"].append(
+                        deepcopy(_tr.stats.weights))
+
+        with open(os.path.join(self.cmtdir, "weights.pkl", "wb")) as f:
+            cPickle.dump(deepcopy(self.weights), f)
+            #         # Get station parameters
+            # stationlist = []  # for appending weights to the right channels
+            # latitudes = []
+            # longitudes = []
+            # for network in self.stations:
+            #     for station in network:
+            #         stationlist.append(network.code)
+            #         latitudes.append(station.latitude)
+            #         longitudes.append(station.longitude)
+            # latitudes = np.array(latitudes)
+            # longitudes = np.array(longitudes)
+
+            # # Get Azimuthal Weights
+            # self.azi_weights = lpy.azi_weights(
+            #     self.cmtsource.latitude,
+            #     self.cmtsource.longitude,
+            #     latitudes, longitudes, nbins=12, p=0.5)
+
+            # # Get Geographical weights
+            # gw = lpy.GeoWeights(latitudes, longitudes)
+            # _, _, ref, _ = gw.get_condition()
+            # self.geo_weights = gw.get_weights(ref)
+
+            # # Compute Combination weights.
+            # weights = (self.azi_weights * self.geo_weights)
+            # self.locationweights = np.sum(weights)/len(weights)
+
+            # # Component weights
+            # self.RTZweights = dict(r=0.5,)
 
     def __remove_zero_window_traces__(self):
         """Removes the traces from the data_dict wavetype streams, and
