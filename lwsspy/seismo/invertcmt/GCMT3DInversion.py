@@ -231,6 +231,23 @@ class GCMT3DInversion:
                 for tr in st:
                     self.data_dict[_wtype].remove(tr)
 
+    def add_weights(self):
+        pass
+        # # Get station parameters
+        # stationlist = []  # for appending weights to the right channels
+        # latitudes = []
+        # longitudes = []
+        # for network in self.stations:
+        #     for station in network:
+        #         stationlist.append(network.code)
+        #         latitudes.append(station.latitude)
+        #         longitudes.append(station.longitude)
+
+        # azi_weights = lpy.azi_weights(
+        #     self.cmtsource.latitude,
+        #     self.cmtsource.longitude,
+        #     lon0, lat, lon, nbins=nbins, p=0.5)
+
     def __remove_zero_window_traces__(self):
         """Removes the traces from the data_dict wavetype streams, and
         creates list with stations for each trace to be used for removal
