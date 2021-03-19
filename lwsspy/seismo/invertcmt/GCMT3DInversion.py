@@ -454,7 +454,8 @@ class GCMT3DInversion:
             processdict.update(dict(
                 remove_response_flag=True,
                 event_latitude=self.cmtsource.latitude,
-                event_longitude=self.cmtsource.longitude)
+                event_longitude=self.cmtsource.longitude,
+                geodata=True)
             )
 
             if self.multiprocesses < 1:
@@ -529,7 +530,8 @@ class GCMT3DInversion:
             processdict.update(dict(
                 remove_response_flag=False,
                 event_latitude=self.cmtsource.latitude,
-                event_longitude=self.cmtsource.longitude)
+                event_longitude=self.cmtsource.longitude,
+                geodata=True)
             )
             print(f"Stream {_wtype}/synt: ",
                   len(self.synt_dict[_wtype]["synt"]))
@@ -579,7 +581,8 @@ class GCMT3DInversion:
             processdict.update(dict(
                 remove_response_flag=False,
                 event_latitude=self.cmtsource.latitude,
-                event_longitude=self.cmtsource.longitude)
+                event_longitude=self.cmtsource.longitude,
+                geodata=True)
             )
 
             # Process each wavetype.
