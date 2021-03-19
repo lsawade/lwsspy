@@ -245,15 +245,14 @@ class GCMT3DInversion:
             lpy.print_action(f"    for {_wtype}")
             zero_window_removal_dict[_wtype] = []
             for _tr in _stream:
-                print(_tr.id)
                 if len(_tr.stats.windows) == 0:
-                    print("Hello", _tr.id, )
                     net = _tr.stats.network
                     sta = _tr.stats.station
                     loc = _tr.stats.location
                     cha = _tr.stats.channel
                     zero_window_removal_dict[_wtype].append(
                         (net, sta, loc, cha))
+        print(zero_window_removal_dict)
 
         # Create list of all traces that do not have to be simulated anymore
         for _i, _wtype in enumerate(self.data_dict.keys()):
