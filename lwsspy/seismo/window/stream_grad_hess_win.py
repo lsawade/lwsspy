@@ -48,6 +48,9 @@ def stream_grad_and_hess_win(data: Stream, synt: Stream, dsyn: List[Stream],
                 dsdm.append(ds.select(network=network, station=station,
                                       component=component)[0].data)
 
+            gt = np.zeros(len(dsyn))
+            ht = np.zeros((len(dsyn), len(dsyn)))
+            fnorm = 0
             # Loop over windows
             for win, tap in zip(tr.stats.windows, tr.stats.tapers):
                 # Get data in windows
@@ -55,28 +58,25 @@ def stream_grad_and_hess_win(data: Stream, synt: Stream, dsyn: List[Stream],
                 wobs = d[win.left:win.right]
 
                 # Normalization factor on window
-                factor = np.sum(tap * wobs ** 2) * dt
+                fnorm += np.sum(tap * wobs ** 2) * dt
 
                 # Compute Gradient
                 for _i, _dsdm_i in enumerate(dsdm):
                     # Get derivate with respect to model parameter i
                     wdsdm_i = _dsdm_i[win.left:win.right]
-                    gw = np.sum(((wsyn - wobs) * tap) * wdsdm_i) * dt
-                    if normalize:
-                        gw /= factor
-                    g[_i] += gw
+                    gt[_i] += np.sum(((wsyn - wobs) * tap) * wdsdm_i) * dt
 
                     for _j, _dsdm_j in enumerate(dsdm):
                         # Get derivate with respect to model parameter j
                         wdsdm_j = _dsdm_j[win.left:win.right]
-                        hw = ((wdsdm_i * tap) @ (wdsdm_j * tap)) * dt
-                        if normalize:
-                            hw /= factor
-                        h[_i, _j] += hw
+                        ht[_i, _j] += ((wdsdm_i * tap) @ (wdsdm_j * tap)) * dt
+
+            g += gt/fnorm
+            h += ht/fnorm
 
         except Exception as e:
             if verbose:
                 print(f"When accessing {network}.{station}.{component}")
                 print(e)
 
-    return g, h
+    return g/len(data), h/len(data)
