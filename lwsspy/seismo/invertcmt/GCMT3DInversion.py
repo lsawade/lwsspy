@@ -313,6 +313,7 @@ class GCMT3DInversion:
             # Create dict to access traces
             RTZ_traces = dict()
             for _component, _cweight in RTZ_dict.items():
+                RTZ_traces[_component] = []
                 for _tr in _stream:
                     if _tr.stats.component == _component:
                         RTZ_traces[_component].append(_tr)
