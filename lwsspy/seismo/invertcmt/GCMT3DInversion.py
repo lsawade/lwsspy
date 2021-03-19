@@ -200,6 +200,36 @@ class GCMT3DInversion:
             self.__prep_simulations__()
         self.not_windowed_yet = False
 
+    def __remove_unrotatable__(self):
+        """Removes the traces from the data_dict wavetype streams and inventory
+        that are not rotatable for whatever reason.
+        """
+
+        lpy.print_action("Removing traces that couldn't be rotated ...")
+        checklist = ["1", "2", "N", "E"]
+        station_removal_list = []
+        for _wtype, _stream in self.data_dict.items():
+            for _tr in _stream:
+                net = _tr.stats.network
+                sta = _tr.stats.station
+                loc = _tr.stats.location
+                cha = _tr.stats.channel
+                if cha[-1] in checklist:
+                    station_removal_list.append((net, sta, loc, cha))
+        # Create set.
+        station_removal_list = set(station_removal_list)
+
+        # Remove stations
+        for _i, _wtype in enumerate(self.data_dict.keys()):
+            for (net, sta, loc, cha) in station_removal_list:
+                # Remove channels from inventory
+                self.stations.remove(
+                    network=net, station=sta, location=loc, channel=cha)
+
+                # Remove Traces from Streams
+                self.data_dict[_wtype].remove(
+                    network=net, station=sta, location=loc, channel=cha)
+
     def __remove_zero_window_traces__(self):
         """Removes the traces from the data_dict wavetype streams, and
         creates list with stations for each trace to be used for removal
@@ -214,6 +244,7 @@ class GCMT3DInversion:
             lpy.print_action(f"    for {_wtype}")
             zero_window_removal_dict[_wtype] = []
             for _tr in _stream:
+                print()
                 if len(_tr.stats.windows) == 0:
                     net = _tr.stats.network
                     sta = _tr.stats.station
