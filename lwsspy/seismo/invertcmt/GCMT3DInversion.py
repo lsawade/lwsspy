@@ -179,6 +179,7 @@ class GCMT3DInversion:
             self.__load_data__()
         with lpy.Timer():
             self.__process_data__()
+            self.__remove_unrotatable__()
 
     def process_synt(self):
         lpy.print_section("Loading and processing the modeled data")
@@ -201,39 +202,6 @@ class GCMT3DInversion:
             self.__remove_zero_window_traces__()
             self.__prep_simulations__()
         self.not_windowed_yet = False
-
-    def __remove_unrotatable__(self):
-        """Removes the traces from the data_dict wavetype streams and inventory
-        that are not rotatable for whatever reason.
-        """
-
-        lpy.print_action("Removing traces that couldn't be rotated ...")
-        checklist = ["1", "2", "N", "E"]
-        station_removal_list = []
-        for _wtype, _stream in self.data_dict.items():
-            for _tr in _stream:
-                net = _tr.stats.network
-                sta = _tr.stats.station
-                loc = _tr.stats.location
-                cha = _tr.stats.channel
-                if cha[-1] in checklist:
-                    station_removal_list.append((net, sta, loc, cha))
-
-        # Create set.
-        station_removal_list = set(station_removal_list)
-        print(station_removal_list)
-        # Remove stations
-        for _i, _wtype in enumerate(self.data_dict.keys()):
-            for (net, sta, loc, cha) in station_removal_list:
-                # Remove channels from inventory
-                self.stations = self.stations.remove(
-                    network=net, station=sta, location=loc, channel=cha)
-
-                # Remove Traces from Streams
-                st = self.data_dict[_wtype].select(
-                    network=net, station=sta, location=loc, channel=cha)
-                for tr in st:
-                    self.data_dict[_wtype].remove(tr)
 
     def __compute_weights__(self):
 
@@ -331,6 +299,39 @@ class GCMT3DInversion:
         with open(os.path.join(self.cmtdir, "weights.pkl"), "wb") as f:
             cPickle.dump(deepcopy(self.weights), f)
 
+    def __remove_unrotatable__(self):
+        """Removes the traces from the data_dict wavetype streams and inventory
+        that are not rotatable for whatever reason.
+        """
+
+        lpy.print_action("Removing traces that couldn't be rotated ...")
+        checklist = ["1", "2", "N", "E"]
+        rotate_removal_list = []
+        for _wtype, _stream in self.data_dict.items():
+            for _tr in _stream:
+                net = _tr.stats.network
+                sta = _tr.stats.station
+                loc = _tr.stats.location
+                cha = _tr.stats.channel
+                if cha[-1] in checklist:
+                    rotate_removal_list.append((net, sta, loc, cha))
+
+        # Create set.
+        self.rotate_removal_list = set(rotate_removal_list)
+
+        # Remove stations
+        for _i, _wtype in enumerate(self.data_dict.keys()):
+            for (net, sta, loc, cha) in self.rotate_removal_list:
+                # Remove channels from inventory
+                self.stations = self.stations.remove(
+                    network=net, station=sta, location=loc, channel=cha)
+
+                # Remove Traces from Streams
+                st = self.data_dict[_wtype].select(
+                    network=net, station=sta, location=loc, channel=cha)
+                for tr in st:
+                    self.data_dict[_wtype].remove(tr)
+
     def __remove_zero_window_traces__(self):
         """Removes the traces from the data_dict wavetype streams, and
         creates list with stations for each trace to be used for removal
@@ -387,8 +388,20 @@ class GCMT3DInversion:
             for _stream in _pardict.values():
                 for (net, sta, loc, cha) in self.zero_window_removal_dict[_wtype]:
                     tr = _stream.select(
-                        network=net, station=sta, location=loc, channel=cha)[0]
+                        network=net, station=sta, comp=cha[-1])[0]
                     _stream.remove(tr)
+
+    def __remove_unrotatable_synt__(self):
+
+        # Remove stations
+        for _i, (_wtype, _pardict) in enumerate(self.synt_dict.items()):
+            for _stream in _pardict.values():
+                for (net, sta, loc, cha) in self.rotate_removal_list:
+                    # Remove Traces from Streams
+                    st = _stream.select(
+                        network=net, station=sta, location=loc, channel=cha)
+                    for tr in st:
+                        self.data_dict[_wtype].remove(tr)
 
     def process_all_synt(self):
         lpy.print_section("Loading and processing all modeled data")
@@ -460,6 +473,7 @@ class GCMT3DInversion:
 
             self.zero_trace_array = np.array([1.0 if _par in checklist else 0.0
                                               for _par in self.pardict.keys()])
+            self.zero_trace_array.append(0.0)
 
         # Get the model vector given the parameters to invert for
         self.model = np.array(
@@ -753,6 +767,8 @@ class GCMT3DInversion:
     def optimize(self, optim: lpy.Optimization):
 
         try:
+            if self.zero_trace:
+                model = deepcopy(self.scaled_model).append(1.0)
             optim_out = optim.solve(optim, self.scaled_model)
             self.model = optim.model
             return optim_out
@@ -939,8 +955,11 @@ class GCMT3DInversion:
     def compute_cost_gradient_hessian(self, model):
 
         # Update model
-        self.model = model * self.scale
-        self.scaled_model = model
+        if self.zero_trace:
+            mu = model[-1]
+        else:
+            self.model = model[:-1] * self.scale
+            self.scaled_model = model[:-1]
 
         # Write sources for next iteration
         self.__write_sources__()
@@ -961,10 +980,6 @@ class GCMT3DInversion:
         cost = self.__compute_cost__()
         g, h = self.__compute_gradient_and_hessian__()
 
-        # Add zero trace condition
-        if self.zero_trace:
-            g += self.zero_trace_array
-
         if self.damping > 0.0:
             factor = self.damping * np.max(np.abs((np.diag(h))))
             modelres = self.model - self.init_model
@@ -975,6 +990,16 @@ class GCMT3DInversion:
         # Scaling of the cost function
         g *= self.scale
         h = np.diag(self.scale) @ h @ np.diag(self.scale)
+
+        # Add zero trace condition
+        if self.zero_trace:
+            m, n = h.shape
+            hz = np.zeros((m+1, n+1))
+            hz[:-1, :-1] = h
+            hz[:, -1] = self.zero_trace_array
+            hz[-1, :] = self.zero_trace_array
+            h = hz
+            g = g.append(0.0)
 
         return cost, g, h
 
@@ -1500,7 +1525,6 @@ def bin():
         optim_gn.nls_max = max_nls
         optim_gn.alpha = 1.0
         optim_gn.stopping_criterion = 9.5e-1
-        optim_gn.n = len(gcmt3d.model)
 
         # Run optimization
         with lpy.Timer():

@@ -92,6 +92,7 @@ def Solve_Optimisation_Problem(optim, model):
 
     optim.model_ini = deepcopy(model)
     optim.model = model
+    optim.n = len(model)
 
     if optim.compute_cost_and_grad_and_hess is not None:
         optim.fcost_ini, optim.grad_ini, optim.hess_ini = \
