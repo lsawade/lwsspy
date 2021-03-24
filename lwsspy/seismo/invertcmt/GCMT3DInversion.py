@@ -221,25 +221,25 @@ class GCMT3DInversion:
 
         # Create set.
         station_removal_list = set(station_removal_list)
-        print(station_removal_list))
+        print(station_removal_list)
         # Remove stations
         for _i, _wtype in enumerate(self.data_dict.keys()):
             for (net, sta, loc, cha) in station_removal_list:
                 # Remove channels from inventory
-                self.stations=self.stations.remove(
-                    network = net, station = sta, location = loc, channel = cha)
+                self.stations = self.stations.remove(
+                    network=net, station=sta, location=loc, channel=cha)
 
                 # Remove Traces from Streams
-                st=self.data_dict[_wtype].select(
-                    network = net, station = sta, location = loc, channel = cha)
+                st = self.data_dict[_wtype].select(
+                    network=net, station=sta, location=loc, channel=cha)
                 for tr in st:
                     self.data_dict[_wtype].remove(tr)
 
     def __compute_weights__(self):
 
         # Weight dictionary
-        self.weights=dict()
-        self.weights["event"]=[
+        self.weights = dict()
+        self.weights["event"] = [
             self.cmtsource.latitude, self.cmtsource.longitude]
 
         waveweightdict = dict()
