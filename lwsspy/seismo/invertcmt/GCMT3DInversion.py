@@ -214,7 +214,7 @@ class GCMT3DInversion:
             for _tr in _stream:
                 net = _tr.stats.network
                 sta = _tr.stats.station
-                loc = _tr.stats.station
+                loc = _tr.stats.location
                 cha = _tr.stats.channel
                 if cha[-1] in checklist:
                     station_removal_list.append((net, sta, loc, cha))
