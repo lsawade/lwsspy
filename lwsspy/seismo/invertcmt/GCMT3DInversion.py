@@ -356,30 +356,27 @@ class GCMT3DInversion:
                     zero_window_removal_dict[_wtype].append(
                         (net, sta, loc, cha))
 
-        # Create list of all traces that do not have to be simulated anymore
-        for _i, _wtype in enumerate(self.data_dict.keys()):
-            if _i == 0:
-                channel_removal_set = set(zero_window_removal_dict[_wtype])
-            else:
-                channel_removal_set.intersection(
-                    set(zero_window_removal_dict[_wtype]))
+        # # Create list of all traces that do not have to be simulated anymore
+        # for _i, _wtype in enumerate(self.data_dict.keys()):
+        #     if _i == 0:
+        #         channel_removal_set = set(zero_window_removal_dict[_wtype])
+        #     else:
+        #         channel_removal_set.intersection(
+        #             set(zero_window_removal_dict[_wtype]))
 
         # Remove the set from the window removal dicts
         for _i, _wtype in enumerate(self.data_dict.keys()):
-            self.zero_window_removal_dict[_wtype] = set(
-                zero_window_removal_dict[_wtype]) - channel_removal_set
-
             for (net, sta, loc, cha) in self.zero_window_removal_dict[_wtype]:
                 tr = self.data_dict[_wtype].select(
                     network=net, station=sta, location=loc, channel=cha)[0]
                 self.data_dict[_wtype].remove(tr)
 
         # Remove the set from the window removal dicts
-        for _i, _wtype in enumerate(self.data_dict.keys()):
-            for (net, sta, loc, cha) in channel_removal_set:
-                tr = self.data_dict[_wtype].select(
-                    network=net, station=sta, location=loc, channel=cha)[0]
-                self.data_dict[_wtype].remove(tr)
+        # for _i, _wtype in enumerate(self.data_dict.keys()):
+        #     for (net, sta, loc, cha) in channel_removal_set:
+        #         tr = self.data_dict[_wtype].select(
+        #             network=net, station=sta, location=loc, channel=cha)[0]
+        #         self.data_dict[_wtype].remove(tr)
 
     def __remove_zero_windows_on_synt__(self):
 
@@ -390,18 +387,6 @@ class GCMT3DInversion:
                     tr = _stream.select(
                         network=net, station=sta, comp=cha[-1])[0]
                     _stream.remove(tr)
-
-    def __remove_unrotatable_synt__(self):
-
-        # Remove stations
-        for _i, (_wtype, _pardict) in enumerate(self.synt_dict.items()):
-            for _stream in _pardict.values():
-                for (net, sta, loc, cha) in self.rotate_removal_list:
-                    # Remove Traces from Streams
-                    st = _stream.select(
-                        network=net, station=sta, location=loc, channel=cha)
-                    for tr in st:
-                        self.data_dict[_wtype].remove(tr)
 
     def process_all_synt(self):
         lpy.print_section("Loading and processing all modeled data")
