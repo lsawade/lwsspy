@@ -179,7 +179,6 @@ class GCMT3DInversion:
             self.__load_data__()
         with lpy.Timer():
             self.__process_data__()
-            self.__remove_unrotatable__()
 
     def process_synt(self):
         lpy.print_section("Loading and processing the modeled data")
