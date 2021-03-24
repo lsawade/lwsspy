@@ -242,8 +242,13 @@ class SphericalNN(object):
                 wsum = np.sum(w, axis=1)
                 datarows = (wsum != 0)
 
+                # Empty array
+                qdata = np.empty_like(wsum)
+                qdata[:] = np.nan
+
                 # interpolation using the weights
-                qdata[datarows] = np.sum(w * data[inds], axis=1) / wsum
+                qdata[datarows] = np.sum(
+                    w * data[inds[datarows]], axis=1) / wsum[datarows]
 
         return qdata.reshape(shp)
 

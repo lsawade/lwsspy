@@ -55,6 +55,11 @@ def plot_weightpickle(weightpickle: str):
     with open(weightpickle, "rb") as f:
         weights = cPickle.load(f)
 
+    plot_weights(weights)
+
+
+def plot_weights(weights: dict):
+
     # Weights to be plotted
     component_list = ["Z", "R", "T"]
     weightlist = ["geographical", "azimuthal", "combination", "final"]
@@ -78,8 +83,6 @@ def plot_weightpickle(weightpickle: str):
             longitudes = weights[_wtype][_component]["lon"]
 
             for _j, _weight in enumerate(weightlist):
-
-                print(len(latitudes))
 
                 # Create axes
                 ax = plt.subplot(gs[_i, _j], projection=AzimuthalEquidistant(

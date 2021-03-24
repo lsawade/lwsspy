@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import time
+from copy import deepcopy
 import inspect
 from typing import List, Union, Iterable
 from glob import glob
@@ -9,10 +10,13 @@ import _pickle as cPickle
 import numpy as np
 from obspy.core.event import Event
 from obspy import Catalog
+import matplotlib.pyplot as plt
 
 from .source import CMTSource
 from . import sourcedecomposition
 from ..utils.sec2hhmmss import sec2hhmmss
+from .plot_quakes import plot_quakes
+from ..plot_util.plot_label import plot_label
 
 
 class CMTCatalog:
@@ -202,7 +206,7 @@ class CMTCatalog:
                         f"popping is not supported.")
         else:
             raise ValueError(
-                f"Type {eventid} for popping is not supported.")
+                f"Type {eventname} for popping is not supported.")
 
         # Pop indeces in reverse order to not mess up the list.
         for _popindex in reversed(sorted(popindices)):
@@ -230,6 +234,43 @@ class CMTCatalog:
         else:
             raise ValueError("Index type not supported.")
 
+    def plot(self, ax=None, filename: Union[str, None] = None):
+        """Plots events on a map"""
+
+        # Get values
+        latitude = self.getvals("latitude")
+        longitude = self.getvals("longitude")
+        moment = self.getvals("moment_magnitude")
+        depth = self.getvals("depth_in_m")/1000.0
+        N = len(depth)
+
+        # Plot events
+        scatter, ax, l1, l2 = plot_quakes(
+            latitude, longitude, depth, moment,
+            ax=ax, yoffsetlegend2=0.02)
+        ax.set_global()
+        plot_label(ax, f"N: {N}", location=2, box=False, dist=0.0)
+
+        # Save or plot...
+        if filename is not None:
+            plt.savefig(filename)
+
+    def unique(self, ret: bool = False):
+        """Applies uniqueness condition depending on eventname or returns
+        catalog with unique entries. Default is application on self."""
+
+        # Get eventnames
+        eventnames = self.getvals("eventname")
+
+        # Get unique entries from eventnames
+        _, uniq = np.unique(eventnames, return_index=True)
+
+        # Return or apply on self
+        if ret:
+            return CMTCatalog(self[uniq].cmts)
+        else:
+            self.cmts = self[uniq].cmts
+
     def sort(self, key="origin_time"):
         """Sorts the loaded CMT solutions after key that is given.
 
@@ -252,6 +293,97 @@ class CMTCatalog:
             raise ValueError(
                 f"{key} is not a valid sorting value.\n"
                 f"Use {self.attributes}.")
+
+    def filter(self, maxdict: dict = dict(), mindict: dict = dict()):
+        """This uses two dictionaries as inputs. One dictionary for 
+        maximum values and one dictionary that contains min values of the
+        elements to filter. To do that we create a dictionary containing 
+        the attributes and properties of 
+        :class:``lwsspy.seismo.source.CMTSource``.
+
+        List of Attributes and Properties
+        -------------------------
+
+        .. literal::
+
+            origin_time
+            pde_latitude
+            pde_longitude
+            pde_depth_in_m
+            mb
+            ms
+            region_tag
+            eventname
+            cmt_time
+            half_duration
+            latitude
+            longitude
+            depth_in_m
+            m_rr
+            m_tt
+            m_pp
+            m_rt
+            m_rp
+            m_tp
+            M0
+            moment_magnitude
+            time_shift
+
+        Example
+        -------
+
+        Let's filter the catalog to only contain events with a maximum depth
+        of 20km.
+
+        >>> maxfilterdict = dict(depth_in_m=20000.0)
+        >>> cmtcat = CMTCatalog.from_files("CMTfiles/*")
+        >>> filtered_cat = cmtcat.filter(maxdict=maxfilterdict)
+
+        will returns a catalog with events shallower than 20.0 km.
+        """
+
+        # Create new list of cmts
+        newlist = deepcopy(self.cmts)
+
+        # First maxvalues
+        for key, value in maxdict.items():
+
+            # Create empty pop set
+            popset = set()
+
+            # Check CMTs that are below threshold for key
+            for _i, _cmt in enumerate(newlist):
+                if getattr(_cmt, key) > value:
+                    popset.add(_i)
+
+            # Convert set to list and sort
+            poplist = list(popset)
+            poplist.sort()
+
+            # Pop found indeces
+            for _i in poplist[::-1]:
+                newlist.pop(_i)
+
+        # First minvalues
+        for key, value in mindict.items():
+
+            # Create empty pop set
+            popset = set()
+
+            # Check CMTs that are above threshold for key
+            for _i, _cmt in enumerate(newlist):
+                if getattr(_cmt, key) < value:
+                    popset.add(_i)
+
+            # Convert set to list and sort
+            poplist = list(popset)
+            poplist.sort()
+
+            # Pop found indeces
+            for _i in poplist[::-1]:
+                newlist.pop(_i)
+
+        return CMTCatalog(newlist)
 
     def check_ids(self, other: CMTCatalog, verbose: bool = False):
         """Takes in another catalog and returns a tuple of self and other
@@ -294,40 +426,24 @@ class CMTCatalog:
         for _cmt in self.cmts:
             outfilename = os.path.join(outdir, _cmt.eventname)
             _cmt.write_CMTSOLUTION_file(outfilename)
-        
+
         # End print
         t1 = time.time()
         print(f"     Done. Elapsed Time: {sec2hhmmss(t1-t0)}")
 
     def cmts2file(self, outfile: str = "./catalog.txt"):
-        
+
         # Start print
         print(f"---> Writing cmts to {outfile}")
         t0 = time.time()
-        
+
         # Writing
         for _i, _cmt in enumerate(self.cmts):
             if _i == 0:
                 _cmt.write_CMTSOLUTION_file(outfile)
             else:
                 _cmt.write_CMTSOLUTION_file(outfile, mode="a")
-        
+
         # End print
         t1 = time.time()
         print(f"     Done. Elapsed Time: {sec2hhmmss(t1-t0)}")
-
-    def unique(self, ret: bool = False):
-        """Applies uniqueness condition depending on eventname or returns
-        catalog with unique entries. Default is application on self."""
-
-        # Get eventnames
-        eventnames = self.getvals("eventname")
-
-        # Get unique entries from eventnames
-        _, uniq = np.unique(eventnames, return_index=True)
-
-        # Return or apply on self
-        if ret:
-            return CMTCatalog(self[uniq].cmts)
-        else:
-            self.cmts = self[uniq].cmts

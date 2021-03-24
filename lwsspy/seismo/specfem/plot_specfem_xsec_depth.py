@@ -4,7 +4,8 @@ import numpy as np
 import lwsspy as lpy
 
 
-def plot_specfem_xsec_depth(infile, outfile, label):
+def plot_specfem_xsec_depth(infile, outfile=None, ax=None, cax=None,
+                            depth=None):
     """Takes in a Specfem depthslice and creates a map from it.
 
     Parameters
@@ -25,38 +26,39 @@ def plot_specfem_xsec_depth(infile, outfile, label):
 
     """
 
-    # Define title:
-    if label == 'rho':
-        cbartitle = r"$\rho$"
-    elif label == 'vpv':
-        cbartitle = r"$v_{P_v}$"
-    elif label == 'vsv':
-        cbartitle = r"$v_{S_v}$"
-    else:
-        raise ValueError(f"Label {label} is not implemented.")
-
     # Load data from file
-    llon, llat, rad, val, _, _, _ = lpy.read_specfem_xsec_depth(infile)
+    llon, llat, rad, val, _, _, _ = lpy.read_specfem_xsec_depth(
+        infile, res=0.25, no_weighting=False)
+    extent = [np.min(llon), np.max(llon), np.min(llat), np.max(llat)]
 
     # Get Depth of slice
-    depth = lpy.EARTH_RADIUS_KM - np.mean(rad)
+    if depth is None:
+        depth = lpy.EARTH_RADIUS_KM - np.mean(rad)
 
     # Create Figure
     lpy.updaterc()
-    plt.figure(figsize=(9, 4))
-    ax = plt.axes(projection=cartopy.crs.PlateCarree())
+
+    if ax is None:
+        plt.figure(figsize=(8, 6))
+        ax = plt.axes(projection=cartopy.crs.Mollweide())
+
     ax.set_rasterization_zorder(-10)
     lpy.plot_map(fill=False, zorder=1)
 
-    pmesh = plt.pcolormesh(llon, llat, val,
-                           transform=cartopy.crs.PlateCarree(), zorder=-15)
-    lpy.plot_label(ax, f"{depth:.1f} km", aspect=2.0,
-                   location=1, dist=0.025, box=True)
+    im = ax.imshow(val[::-1, :], extent=extent,
+                   transform=cartopy.crs.PlateCarree(), zorder=-15,
+                   cmap='rainbow_r', alpha=0.9)
 
-    c = plt.colorbar(pmesh, fraction=0.05, pad=0.075)
-    c.set_label(cbartitle, rotation=0, labelpad=10)
+    lpy.plot_label(ax, f"{depth:.1f} km", aspect=2.0,
+                   location=2, dist=0.0, box=False)
+    c = lpy.nice_colorbar(im, fraction=0.05, pad=0.075,
+                          orientation="horizontal", cax=cax)
     # plt.show()
-    plt.savefig(f"{outfile}_{int(depth):d}km.pdf", dpi=300)
+
+    if outfile is not None:
+        plt.savefig(f"{outfile}_{int(depth):d}km.pdf", dpi=300)
+    else:
+        return ax, c
 
 
 def bin():

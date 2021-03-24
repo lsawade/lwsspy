@@ -79,4 +79,4 @@ def stream_grad_and_hess_win(data: Stream, synt: Stream, dsyn: List[Stream],
                 print(f"When accessing {network}.{station}.{component}")
                 print(e)
 
-    return g/len(data), h/len(data)
+    return g, h
