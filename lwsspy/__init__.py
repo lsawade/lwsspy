@@ -118,6 +118,7 @@ if "-m" not in sys.argv:
     from .seismo.cmt2stationxml import cmt2stationxml  # noqa
     from .seismo.cmtdir2stationxmldir import cmtdir2stationxmldir  # noqa
     from .seismo.cmt_catalog import CMTCatalog
+    from .seismo.costgradhess import CostGradHess  # noqa
     from .seismo.download_data import download_data  # noqa
     from .seismo.download_gcmt_catalog import download_gcmt_catalog  # noqa
     from .seismo.download_waveforms_cmt2storage import download_waveforms_cmt2storage  # noqa
@@ -174,6 +175,7 @@ if "-m" not in sys.argv:
     # CMT3D
     from .seismo.invertcmt.GCMT3DInversion import GCMT3DInversion  # noqa
     from .seismo.invertcmt.plot_weights import plot_weightpickle  # noqa
+    from .seismo.invertcmt.plot_weights import plot_weights  # noqa
 
     # Shell
     from .shell.cat import cat  # noqa

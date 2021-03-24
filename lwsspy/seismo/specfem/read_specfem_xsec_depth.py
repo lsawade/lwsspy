@@ -7,7 +7,8 @@ import cartopy
 import lwsspy as lpy
 
 
-def read_specfem_xsec_depth(filename: str, res: float = 0.25) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def read_specfem_xsec_depth(filename: str, res: float = 0.25,
+                            no_weighting: bool = True, maximum_distance=2.0) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Reads in a specfem generated cross section and outputs a gridded version
     of it to map it out.
 
@@ -48,11 +49,16 @@ def read_specfem_xsec_depth(filename: str, res: float = 0.25) -> Tuple[np.ndarra
 
     # Interpolate the map
     SNN = lpy.SphericalNN(lat, lon)  # Creating a kdtree, and use it to interp
-    rad = SNN.interp(rad, llat, llon, no_weighting=True)
-    val = SNN.interp(val, llat, llon, no_weighting=True)
-    per = SNN.interp(per, llat, llon, no_weighting=True)
-    dif = SNN.interp(dif, llat, llon, no_weighting=True)
-    dis = SNN.interp(dis, llat, llon, no_weighting=True)
+    rad = SNN.interp(rad, llat, llon, no_weighting=no_weighting,
+                     maximum_distance=maximum_distance)
+    val = SNN.interp(val, llat, llon, no_weighting=no_weighting,
+                     maximum_distance=maximum_distance)
+    per = SNN.interp(per, llat, llon, no_weighting=no_weighting,
+                     maximum_distance=maximum_distance)
+    dif = SNN.interp(dif, llat, llon, no_weighting=no_weighting,
+                     maximum_distance=maximum_distance)
+    dis = SNN.interp(dis, llat, llon, no_weighting=no_weighting,
+                     maximum_distance=maximum_distance)
 
     return llon, llat, rad, val, per, dif, dis
 

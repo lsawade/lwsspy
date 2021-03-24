@@ -54,4 +54,4 @@ def stream_cost_win(data: Stream, synt: Stream, normalize: bool = True,
             if verbose:
                 print(f"Error at ({network}.{station}.{component}): {e}")
 
-    return x/len(data)
+    return x

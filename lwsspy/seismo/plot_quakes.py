@@ -14,7 +14,8 @@ def plot_quakes(latitude, longitude, depth, moment,
                 sizefunc: Callable = lambda x: (x-(np.min(x)-1))**2.5,
                 legend: bool = True,
                 xoffsetlegend: float = 0.0,
-                yoffsetlegend: float = 0.0) -> Tuple[
+                yoffsetlegend: float = 0.0,
+                yoffsetlegend2: float = 0.0) -> Tuple[
                     matplotlib.collections.PathCollection,
                     matplotlib.axes.Axes,
                     Union[None, matplotlib.legend.Legend],
@@ -89,8 +90,8 @@ def plot_quakes(latitude, longitude, depth, moment,
     if legend:
 
         # Set legend fontsizes
-        legendfontsize = "xx-small"
-        title_fontsize = "x-small"
+        legendfontsize = "x-small"
+        title_fontsize = "small"
 
         # Get depth legend
         handles, labels = scatter.legend_elements(num=levels)
@@ -119,7 +120,8 @@ def plot_quakes(latitude, longitude, depth, moment,
         # Plot Moment legend
         legend2 = ax.legend(
             handles, labels, loc="upper right", title="$M_w$", frameon=False,
-            bbox_to_anchor=(1.0 + xoffsetlegend, yoffsetlegend), ncol=2, handletextpad=0.2,
+            bbox_to_anchor=(1.0 + xoffsetlegend, yoffsetlegend+yoffsetlegend2),
+            ncol=1, handletextpad=0.2,
             fontsize=legendfontsize, title_fontsize=title_fontsize,
             bbox_transform=ax.transAxes)
         lpy.right_align_legend(legend2)

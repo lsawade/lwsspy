@@ -85,6 +85,7 @@ class GCMT3DInversion:
             bash_escape: str = bash_escape,
             download_dict: dict = download_dict,
             damping: float = 0.001,
+            weighting: bool = True,
             normalize: bool = True,
             overwrite: bool = False,
             launch_method: str = "srun -n6 --gpus-per-task=1",
@@ -147,6 +148,7 @@ class GCMT3DInversion:
         self.zero_trace = zero_trace
         self.damping = damping
         self.normalize = normalize
+        self.weights_rtz = dict(R=1.0, T=1.0, Z=1.0)
 
         # Initialize data dictionaries
         self.data_dict: dict = dict()
@@ -212,29 +214,27 @@ class GCMT3DInversion:
             for _tr in _stream:
                 net = _tr.stats.network
                 sta = _tr.stats.station
+                loc = _tr.stats.station
                 cha = _tr.stats.channel
                 if cha[-1] in checklist:
-                    station_removal_list.append((net, sta))
+                    station_removal_list.append((net, sta, loc, cha))
         # Create set.
         station_removal_list = set(station_removal_list)
 
         # Remove stations
         for _i, _wtype in enumerate(self.data_dict.keys()):
-            for (net, sta) in station_removal_list:
+            for (net, sta, loc, cha) in station_removal_list:
                 # Remove channels from inventory
                 self.stations = self.stations.remove(
-                    network=net, station=sta)
+                    network=net, station=sta, location=loc, channel=cha)
 
                 # Remove Traces from Streams
                 st = self.data_dict[_wtype].select(
-                    network=net, station=sta)
+                    network=net, station=sta, location=loc, channel=cha)
                 for tr in st:
                     self.data_dict[_wtype].remove(tr)
 
     def __compute_weights__(self):
-
-        # RTZ weights (for now), need to have a mean of 1.0
-        RTZ_dict = dict(R=1.0, T=1.00, Z=1.00)
 
         # Weight dictionary
         self.weights = dict()
@@ -254,7 +254,7 @@ class GCMT3DInversion:
 
             # Create dict to access traces
             RTZ_traces = dict()
-            for _component, _cweight in RTZ_dict.items():
+            for _component, _cweight in self.weights_rtz.items():
 
                 # Copy compnent weight to dictionary
                 self.weights[_wtype][_component] = dict()
@@ -314,7 +314,7 @@ class GCMT3DInversion:
         for _i, (_wtype, _) in enumerate(self.data_dict.items()):
             # Create dict to access traces
             RTZ_traces = dict()
-            for _component, _cweight in RTZ_dict.items():
+            for _component, _cweight in self.weights_rtz.items():
                 RTZ_traces[_component] = []
                 for _tr in _stream:
                     if _tr.stats.component == _component:
@@ -329,35 +329,6 @@ class GCMT3DInversion:
 
         with open(os.path.join(self.cmtdir, "weights.pkl"), "wb") as f:
             cPickle.dump(deepcopy(self.weights), f)
-            #         # Get station parameters
-            # stationlist = []  # for appending weights to the right channels
-            # latitudes = []
-            # longitudes = []
-            # for network in self.stations:
-            #     for station in network:
-            #         stationlist.append(network.code)
-            #         latitudes.append(station.latitude)
-            #         longitudes.append(station.longitude)
-            # latitudes = np.array(latitudes)
-            # longitudes = np.array(longitudes)
-
-            # # Get Azimuthal Weights
-            # self.azi_weights = lpy.azi_weights(
-            #     self.cmtsource.latitude,
-            #     self.cmtsource.longitude,
-            #     latitudes, longitudes, nbins=12, p=0.5)
-
-            # # Get Geographical weights
-            # gw = lpy.GeoWeights(latitudes, longitudes)
-            # _, _, ref, _ = gw.get_condition()
-            # self.geo_weights = gw.get_weights(ref)
-
-            # # Compute Combination weights.
-            # weights = (self.azi_weights * self.geo_weights)
-            # self.locationweights = np.sum(weights)/len(weights)
-
-            # # Component weights
-            # self.RTZweights = dict(r=0.5,)
 
     def __remove_zero_window_traces__(self):
         """Removes the traces from the data_dict wavetype streams, and
@@ -477,6 +448,17 @@ class GCMT3DInversion:
         # routine
 
     def __init_model_and_scale__(self):
+
+        # Check whether Mrr, Mtt, Mpp are there for zero trace condition
+        if self.zero_trace:
+            checklist = ["m_rr", "m_tt", "m_pp"]
+            if not all([_par in self.pardict for _par in checklist]):
+                raise ValueError(
+                    "For the Zero trace condition, parameters\n"
+                    "m_rr, m_tt, and m_pp are required.")
+
+            self.zero_trace_array = np.array([1.0 if _par in checklist else 0.0
+                                              for _par in self.pardict.keys()])
 
         # Get the model vector given the parameters to invert for
         self.model = np.array(
@@ -978,13 +960,9 @@ class GCMT3DInversion:
         cost = self.__compute_cost__()
         g, h = self.__compute_gradient_and_hessian__()
 
-        # Actually write zero trace routine yourself, this is to
-        # elaborate..
-        # if zero_trace:
-        #     bb[na - 1] = - np.sum(old_par[0:3])
-        #     AA[0:6, na - 1] = np.array([1, 1, 1, 0, 0, 0])
-        #     AA[na - 1, 0:6] = np.array([1, 1, 1, 0, 0, 0])
-        #     AA[na - 1, na - 1] = 0.0
+        # Add zero trace condition
+        if self.zero_trace:
+            g += self.zero_trace_array
 
         if self.damping > 0.0:
             factor = self.damping * np.max(np.abs((np.diag(h))))
@@ -1004,23 +982,35 @@ class GCMT3DInversion:
         cost = 0
         for _wtype in self.processdict.keys():
 
-            cost += lpy.stream_cost_win(self.data_dict[_wtype],
-                                        self.synt_dict[_wtype]["synt"],
-                                        verbose=self.debug,
-                                        normalize=self.normalize)
-
+            cgh = lpy.CostGradHess(
+                data=self.data_dict[_wtype],
+                synt=self.synt_dict[_wtype]["synt"],
+                verbose=self.debug,
+                normalize=self.normalize,
+                weighting=self.weighting)
+            cost += cgh.cost()
         return cost
 
     def __compute_gradient__(self):
 
         gradient = np.zeros_like(self.model)
 
-        for _i, _par in enumerate(self.pardict.keys()):
-            for _wtype in self.processdict.keys():
-                gradient[_i] += lpy.stream_grad_frechet_win(
-                    self.data_dict[_wtype], self.synt_dict[_wtype]["synt"],
-                    self.synt_dict[_wtype][_par], normalize=self.normalize,
-                    verbose=self.debug)
+        for _wtype in self.processdict.keys():
+            # Get all perturbations
+            dsyn = list()
+            for _i, _par in enumerate(self.pardict.keys()):
+                dsyn.append(self.synt_dict[_wtype][_par])
+
+            # Create costgradhess class to computte gradient
+            cgh = lpy.CostGradHess(
+                data=self.data_dict[_wtype],
+                synt=self.synt_dict[_wtype]["synt"],
+                dsyn=dsyn,
+                verbose=self.debug,
+                normalize=self.normalize,
+                weighting=self.weighting)
+
+            gradient += cgh.grad()
 
         return gradient
 
@@ -1030,12 +1020,25 @@ class GCMT3DInversion:
         hessian = np.zeros((len(self.model), len(self.model)))
 
         for _wtype in self.processdict.keys():
-            tmp_g, tmp_h = lpy.stream_grad_and_hess_win(
-                self.data_dict[_wtype], self.synt_dict[_wtype]["synt"],
-                [self.synt_dict[_wtype][_par] for _par in self.pardict.keys()],
-                verbose=self.debug, normalize=self.normalize)
+
+            # Get all perturbations
+            dsyn = list()
+            for _i, _par in enumerate(self.pardict.keys()):
+                dsyn.append(self.synt_dict[_wtype][_par])
+
+            # Create costgradhess class to computte gradient
+            cgh = lpy.CostGradHess(
+                data=self.data_dict[_wtype],
+                synt=self.synt_dict[_wtype]["synt"],
+                dsyn=dsyn,
+                verbose=self.debug,
+                normalize=self.normalize,
+                weighting=self.weighting)
+
+            tmp_g, tmp_h = cgh.grad_and_hess()
             gradient += tmp_g
             hessian += tmp_h
+
         return gradient, hessian
 
     def misfit_walk_depth(self):
