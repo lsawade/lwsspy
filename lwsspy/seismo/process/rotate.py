@@ -198,6 +198,7 @@ def rotate_12_rt_func(st, inv, back_azimuth, method="12->RT",
             # Rename the components
             i_1.stats.channel = i_1.stats.channel[:-1] + output_components[0]
             i_2.stats.channel = i_2.stats.channel[:-1] + output_components[1]
+            
             # Add the azimuth back to stats object
             for comp in (i_1, i_2):
                 comp.stats.back_azimuth = back_azimuth
