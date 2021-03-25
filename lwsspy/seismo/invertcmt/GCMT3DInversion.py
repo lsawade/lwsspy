@@ -743,6 +743,10 @@ class GCMT3DInversion:
                              self.processdict[_wtype]["window"],
                              station=self.stations, event=self.xml_event,
                              _verbose=self.debug)
+            for _tr in self.data_dict[_wtype]:
+                if "windows" not in _tr.stats:
+                    _tr.stats.windows = []
+
             lpy.add_tapers(self.data_dict[_wtype], taper_type="tukey",
                            alpha=0.25, verbose=self.debug)
 
