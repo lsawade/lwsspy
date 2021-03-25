@@ -341,19 +341,19 @@ class GCMT3DInversion:
         """
 
         # Process each wavetype.
-        zero_window_removal_dict = dict()
+        self.zero_window_removal_dict = dict()
         lpy.print_action("Removing traces without windows...")
         for _wtype, _stream in self.data_dict.items():
 
             lpy.print_action(f"    for {_wtype}")
-            zero_window_removal_dict[_wtype] = []
+            self.zero_window_removal_dict[_wtype] = []
             for _tr in _stream:
                 if len(_tr.stats.windows) == 0:
                     net = _tr.stats.network
                     sta = _tr.stats.station
                     loc = _tr.stats.location
                     cha = _tr.stats.channel
-                    zero_window_removal_dict[_wtype].append(
+                    self.zero_window_removal_dict[_wtype].append(
                         (net, sta, loc, cha))
 
         # # Create list of all traces that do not have to be simulated anymore
@@ -743,12 +743,11 @@ class GCMT3DInversion:
                              self.processdict[_wtype]["window"],
                              station=self.stations, event=self.xml_event,
                              _verbose=self.debug)
+            lpy.add_tapers(self.data_dict[_wtype], taper_type="tukey",
+                           alpha=0.25, verbose=self.debug)
             for _tr in self.data_dict[_wtype]:
                 if "windows" not in _tr.stats:
                     _tr.stats.windows = []
-
-            lpy.add_tapers(self.data_dict[_wtype], taper_type="tukey",
-                           alpha=0.25, verbose=self.debug)
 
     def forward(self):
         pass
