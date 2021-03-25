@@ -471,7 +471,7 @@ class GCMT3DInversion:
 
             self.zero_trace_array = np.array([1.0 if _par in checklist else 0.0
                                               for _par in self.pardict.keys()])
-            self.zero_trace_array.append(0.0)
+            self.zero_trace_array = np.append(self.zero_trace_array, 0.0)
 
         # Get the model vector given the parameters to invert for
         self.model = np.array(
@@ -769,7 +769,7 @@ class GCMT3DInversion:
 
         try:
             if self.zero_trace:
-                model = deepcopy(self.scaled_model).append(0.0)
+                model = np.append(deepcopy(self.scaled_model), 0.0)
             optim_out = optim.solve(optim, self.scaled_model)
             self.model = optim.model
             return optim_out
@@ -1000,7 +1000,7 @@ class GCMT3DInversion:
             hz[:, -1] = self.zero_trace_array
             hz[-1, :] = self.zero_trace_array
             h = hz
-            g = g.append(0.0)
+            g = np.append(g, 0.0)
             g[-1] = np.sum(self.scaled_model[self.zero_trace_array.astype(bool)])
 
         return cost, g, h
