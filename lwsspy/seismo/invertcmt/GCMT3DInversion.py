@@ -199,8 +199,8 @@ class GCMT3DInversion:
         with lpy.Timer():
             self.__window__()
         with lpy.Timer():
-            self.__remove_zero_window_traces__()
-            self.__remove_zero_windows_on_synt__()
+            # self.__remove_zero_window_traces__()
+            # self.__remove_zero_windows_on_synt__()
             self.__prep_simulations__()
         self.not_windowed_yet = False
 
@@ -300,96 +300,96 @@ class GCMT3DInversion:
         with open(os.path.join(self.cmtdir, "weights.pkl"), "wb") as f:
             cPickle.dump(deepcopy(self.weights), f)
 
-    def __remove_unrotatable__(self):
-        """Removes the traces from the data_dict wavetype streams and inventory
-        that are not rotatable for whatever reason.
-        """
+    # def __remove_unrotatable__(self):
+    #     """Removes the traces from the data_dict wavetype streams and inventory
+    #     that are not rotatable for whatever reason.
+    #     """
 
-        lpy.print_action("Removing traces that couldn't be rotated ...")
-        checklist = ["1", "2", "N", "E"]
-        rotate_removal_list = []
-        for _wtype, _stream in self.data_dict.items():
-            for _tr in _stream:
-                net = _tr.stats.network
-                sta = _tr.stats.station
-                loc = _tr.stats.location
-                cha = _tr.stats.channel
-                if cha[-1] in checklist:
-                    rotate_removal_list.append((net, sta, loc, cha))
+    #     lpy.print_action("Removing traces that couldn't be rotated ...")
+    #     checklist = ["1", "2", "N", "E"]
+    #     rotate_removal_list = []
+    #     for _wtype, _stream in self.data_dict.items():
+    #         for _tr in _stream:
+    #             net = _tr.stats.network
+    #             sta = _tr.stats.station
+    #             loc = _tr.stats.location
+    #             cha = _tr.stats.channel
+    #             if cha[-1] in checklist:
+    #                 rotate_removal_list.append((net, sta, loc, cha))
 
-        # Create set.
-        self.rotate_removal_list = set(rotate_removal_list)
+    #     # Create set.
+    #     self.rotate_removal_list = set(rotate_removal_list)
 
-        # Remove stations
-        for _i, _wtype in enumerate(self.data_dict.keys()):
-            for (net, sta, loc, cha) in self.rotate_removal_list:
-                # Remove channels from inventory
-                self.stations = self.stations.remove(
-                    network=net, station=sta, location=loc, channel=cha)
+    #     # Remove stations
+    #     for _i, _wtype in enumerate(self.data_dict.keys()):
+    #         for (net, sta, loc, cha) in self.rotate_removal_list:
+    #             # Remove channels from inventory
+    #             self.stations = self.stations.remove(
+    #                 network=net, station=sta, location=loc, channel=cha)
 
-                # Remove Traces from Streams
-                st = self.data_dict[_wtype].select(
-                    network=net, station=sta, location=loc, channel=cha)
-                for tr in st:
-                    self.data_dict[_wtype].remove(tr)
+    #             # Remove Traces from Streams
+    #             st = self.data_dict[_wtype].select(
+    #                 network=net, station=sta, location=loc, channel=cha)
+    #             for tr in st:
+    #                 self.data_dict[_wtype].remove(tr)
 
-    def __remove_zero_window_traces__(self):
-        """Removes the traces from the data_dict wavetype streams, and
-        creates list with stations for each trace to be used for removal
-        prior to processing of the synthetics.
+    # def __remove_zero_window_traces__(self):
+    #     """Removes the traces from the data_dict wavetype streams, and
+    #     creates list with stations for each trace to be used for removal
+    #     prior to processing of the synthetics.
 
-        Not removing stuff from inventory, because negligible
-        """
+    #     Not removing stuff from inventory, because negligible
+    #     """
 
-        # Process each wavetype.
-        self.zero_window_removal_dict = dict()
-        lpy.print_action("Removing traces without windows...")
-        for _wtype, _stream in self.data_dict.items():
+    #     # Process each wavetype.
+    #     self.zero_window_removal_dict = dict()
+    #     lpy.print_action("Removing traces without windows...")
+    #     for _wtype, _stream in self.data_dict.items():
 
-            lpy.print_action(f"    for {_wtype}")
-            self.zero_window_removal_dict[_wtype] = []
-            for _tr in _stream:
-                if len(_tr.stats.windows) == 0:
-                    net = _tr.stats.network
-                    sta = _tr.stats.station
-                    loc = _tr.stats.location
-                    cha = _tr.stats.channel
-                    self.zero_window_removal_dict[_wtype].append(
-                        (net, sta, loc, cha))
+    #         lpy.print_action(f"    for {_wtype}")
+    #         self.zero_window_removal_dict[_wtype] = []
+    #         for _tr in _stream:
+    #             if len(_tr.stats.windows) == 0:
+    #                 net = _tr.stats.network
+    #                 sta = _tr.stats.station
+    #                 loc = _tr.stats.location
+    #                 cha = _tr.stats.channel
+    #                 self.zero_window_removal_dict[_wtype].append(
+    #                     (net, sta, loc, cha))
 
-        # # Create list of all traces that do not have to be simulated anymore
-        # for _i, _wtype in enumerate(self.data_dict.keys()):
-        #     if _i == 0:
-        #         channel_removal_set = set(zero_window_removal_dict[_wtype])
-        #     else:
-        #         channel_removal_set.intersection(
-        #             set(zero_window_removal_dict[_wtype]))
+    #     # # Create list of all traces that do not have to be simulated anymore
+    #     # for _i, _wtype in enumerate(self.data_dict.keys()):
+    #     #     if _i == 0:
+    #     #         channel_removal_set = set(zero_window_removal_dict[_wtype])
+    #     #     else:
+    #     #         channel_removal_set.intersection(
+    #     #             set(zero_window_removal_dict[_wtype]))
 
-        # Remove the set from the window removal dicts
-        for _i, _wtype in enumerate(self.data_dict.keys()):
-            for (net, sta, loc, cha) in self.zero_window_removal_dict[_wtype]:
-                tr = self.data_dict[_wtype].select(
-                    network=net, station=sta, location=loc, channel=cha)[0]
-                self.data_dict[_wtype].remove(tr)
+    #     # Remove the set from the window removal dicts
+    #     for _i, _wtype in enumerate(self.data_dict.keys()):
+    #         for (net, sta, loc, cha) in self.zero_window_removal_dict[_wtype]:
+    #             tr = self.data_dict[_wtype].select(
+    #                 network=net, station=sta, location=loc, channel=cha)[0]
+    #             self.data_dict[_wtype].remove(tr)
 
-        # Remove the set from the window removal dicts
-        # for _i, _wtype in enumerate(self.data_dict.keys()):
-        #     for (net, sta, loc, cha) in channel_removal_set:
-        #         tr = self.data_dict[_wtype].select(
-        #             network=net, station=sta, location=loc, channel=cha)[0]
-        #         self.data_dict[_wtype].remove(tr)
+    #     # Remove the set from the window removal dicts
+    #     # for _i, _wtype in enumerate(self.data_dict.keys()):
+    #     #     for (net, sta, loc, cha) in channel_removal_set:
+    #     #         tr = self.data_dict[_wtype].select(
+    #     #             network=net, station=sta, location=loc, channel=cha)[0]
+    #     #         self.data_dict[_wtype].remove(tr)
 
-    def __remove_zero_windows_on_synt__(self):
+    # def __remove_zero_windows_on_synt__(self):
 
-        # Remove the set from the window removal dicts
-        for _i, (_wtype, _pardict) in enumerate(self.synt_dict.items()):
-            for _par, _stream in _pardict.items():
-                print(_par)
-                for (net, sta, loc, cha) in self.zero_window_removal_dict[_wtype]:
-                    print(net, sta, loc, cha)
-                    tr = _stream.select(
-                        network=net, station=sta, component=cha[-1])[0]
-                    _stream.remove(tr)
+    #     # Remove the set from the window removal dicts
+    #     for _i, (_wtype, _pardict) in enumerate(self.synt_dict.items()):
+    #         for _par, _stream in _pardict.items():
+    #             print(_par)
+    #             for (net, sta, loc, cha) in self.zero_window_removal_dict[_wtype]:
+    #                 print(net, sta, loc, cha)
+    #                 tr = _stream.select(
+    #                     network=net, station=sta, component=cha[-1])[0]
+    #                 _stream.remove(tr)
 
     def process_all_synt(self):
         lpy.print_section("Loading and processing all modeled data")
@@ -397,7 +397,7 @@ class GCMT3DInversion:
         with lpy.Timer():
             self.__load_synt__()
             self.__load_synt_par__()
-            self.__remove_zero_windows_on_synt__()
+            # self.__remove_zero_windows_on_synt__()
 
         with lpy.Timer():
             self.__process_synt__()
