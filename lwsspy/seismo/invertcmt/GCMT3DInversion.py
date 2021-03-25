@@ -54,7 +54,8 @@ download_dict = dict(
 conda_activation = "source /usr/licensed/anaconda3/2020.7/etc/profile.d/conda.sh && conda activate lwsspy"
 compute_node_login = "lsawade@traverse.princeton.edu"
 bash_escape = "source ~/.bash_profile"
-parameter_check_list = ['depth_in_m']
+parameter_check_list = ['depth_in_m', "m_rr",
+                        "m_tt", "m_pp", "m_rt", "m_rp", "m_tp"]
 nosimpars = ["time_shift", "half_duration"]
 pardict = dict(
     m_rr=dict(scale=1e24, pert=1e23),
