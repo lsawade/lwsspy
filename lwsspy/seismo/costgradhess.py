@@ -83,12 +83,10 @@ class CostGradHess:
                     costt += 0.5 * (np.sum(tap * (ws - wo) ** 2) * dt)
                     fnorm += np.sum(tap * wo ** 2) * dt
 
-                if np.isnan(fnorm) or fnorm == 0:
-                    print(fnorm)
                 if self.weight:
                     costt *= tr.stats.weights
 
-                if self.normalize:
+                if self.normalize and fnorm != 0:
                     costt /= fnorm
 
                 x += costt
