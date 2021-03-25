@@ -899,7 +899,7 @@ class GCMT3DInversion:
                     cmt_pert.write_CMTSOLUTION_file(os.path.join(
                         _pardir, "DATA", "CMTSOLUTION"))
                 else:
-                    cmt_pert.write_CMTSOLUTION_file(os.path.join(
+                    cmt.write_CMTSOLUTION_file(os.path.join(
                         _pardir, "DATA", "CMTSOLUTION"))
 
     def __run_simulations__(self):
