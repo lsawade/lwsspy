@@ -151,10 +151,6 @@ class CostGradHess:
                 for win, tap in zip(tr.stats.windows, tr.stats.tapers):
                     wsyn = s[win.left:win.right]
                     wobs = d[win.left:win.right]
-                    wdsdm = dsdm[win.left:win.right]
-                    fnorm += np.sum(tap * wobs ** 2) * dt
-
-                    # Normalization factor on window
                     fnorm += np.sum(tap * wobs ** 2) * dt
 
                     # Compute Gradient
@@ -220,6 +216,7 @@ class CostGradHess:
             try:
                 s = self.synt.select(network=network, station=station,
                                      component=component)[0].data
+
                 # Create trace list for the Frechet derivatives
                 dsdm = []
                 for ds in self.dsyn:
@@ -232,7 +229,6 @@ class CostGradHess:
 
                 # Loop over windows
                 for win, tap in zip(tr.stats.windows, tr.stats.tapers):
-                    # Get data in windows
                     wsyn = s[win.left:win.right]
                     wobs = d[win.left:win.right]
                     fnorm += np.sum(tap * wobs ** 2) * dt
@@ -249,12 +245,13 @@ class CostGradHess:
                             ht[_i, _j] += ((wdsdm_i * tap) @
                                            (wdsdm_j * tap)) * dt
 
-                if self.normalize and fnorm != 0:
-                    gt /= fnorm
-                    ht /= fnorm
                 if self.weight:
                     gt /= tr.stats.weights
                     ht /= tr.stats.weights
+
+                if self.normalize and fnorm != 0:
+                    gt /= fnorm
+                    ht /= fnorm
 
                 g += gt
                 h += ht

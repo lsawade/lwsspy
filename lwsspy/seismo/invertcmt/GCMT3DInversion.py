@@ -895,7 +895,7 @@ class GCMT3DInversion:
 
                         # Set the perturb
                         setattr(cmt_pert, _par, to_be_perturbed)
-
+    
                     cmt_pert.write_CMTSOLUTION_file(os.path.join(
                         _pardir, "DATA", "CMTSOLUTION"))
                 else:
