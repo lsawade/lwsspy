@@ -1004,7 +1004,7 @@ class GCMT3DInversion:
                 synt=self.synt_dict[_wtype]["synt"],
                 verbose=self.debug,
                 normalize=self.normalize,
-                weighting=self.weighting)
+                weight=self.weighting)
             cost += cgh.cost()
         return cost
 
@@ -1025,7 +1025,7 @@ class GCMT3DInversion:
                 dsyn=dsyn,
                 verbose=self.debug,
                 normalize=self.normalize,
-                weighting=self.weighting)
+                weight=self.weighting)
 
             gradient += cgh.grad()
 
@@ -1050,7 +1050,7 @@ class GCMT3DInversion:
                 dsyn=dsyn,
                 verbose=self.debug,
                 normalize=self.normalize,
-                weighting=self.weighting)
+                weight=self.weighting)
 
             tmp_g, tmp_h = cgh.grad_and_hess()
             gradient += tmp_g
