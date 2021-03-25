@@ -384,6 +384,7 @@ class GCMT3DInversion:
         for _i, (_wtype, _pardict) in enumerate(self.synt_dict.items()):
             for _stream in _pardict.values():
                 for (net, sta, loc, cha) in self.zero_window_removal_dict[_wtype]:
+                    print(net, sta, loc, cha)
                     tr = _stream.select(
                         network=net, station=sta, component=cha[-1])[0]
                     _stream.remove(tr)
