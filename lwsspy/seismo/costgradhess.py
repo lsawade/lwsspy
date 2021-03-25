@@ -71,7 +71,6 @@ class CostGradHess:
             d = tr.data
 
             try:
-                print(tr.id)
                 s = self.synt.select(network=network, station=station,
                                      component=component)[0].data
 
@@ -167,7 +166,7 @@ class CostGradHess:
                 if self.weight:
                     gt *= tr.stats.weights
 
-                if self.normalize:
+                if self.normalize and fnorm != 0:
                     gt /= fnorm
 
                 g += gt
@@ -250,7 +249,7 @@ class CostGradHess:
                             ht[_i, _j] += ((wdsdm_i * tap) @
                                            (wdsdm_j * tap)) * dt
 
-                if self.normalize:
+                if self.normalize and fnorm != 0:
                     gt /= fnorm
                     ht /= fnorm
                 if self.weight:
