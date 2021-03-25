@@ -237,6 +237,8 @@ class CostGradHess:
                     wobs = d[win.left:win.right]
 
                     # Normalization factor on window
+                    if np.isnan(np.sum(tap * wobs ** 2) * dt):
+                        print(tr.id)
                     fnorm += np.sum(tap * wobs ** 2) * dt
 
                     # Compute Gradient
