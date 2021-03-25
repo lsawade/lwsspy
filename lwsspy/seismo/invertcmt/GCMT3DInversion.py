@@ -874,15 +874,6 @@ class GCMT3DInversion:
                     # Perturb source at parameter
                     cmt_pert = deepcopy(cmt)
 
-                    # Get the parameter to be perturbed
-                    to_be_perturbed = getattr(cmt_pert, _par)
-
-                    # Perturb the parameter
-                    to_be_perturbed += self.pardict[_par]["pert"]
-
-                    # Set the perturb
-                    setattr(cmt_pert, _par, to_be_perturbed)
-
                     # If parameter a part of the tensor elements then set the
                     # rest of the parameters to 0.
                     tensorlist = ['m_rr', 'm_tt', 'm_pp',
@@ -891,6 +882,18 @@ class GCMT3DInversion:
                         for _tensor_el in tensorlist:
                             if _tensor_el != _par:
                                 setattr(cmt_pert, _tensor_el, 0.0)
+                            else:
+                                setattr(cmt_pert, _tensor_el,
+                                        self.pardict[_par]["pert"])
+                    else:
+                        # Get the parameter to be perturbed
+                        to_be_perturbed = getattr(cmt_pert, _par)
+
+                        # Perturb the parameter
+                        to_be_perturbed += self.pardict[_par]["pert"]
+
+                        # Set the perturb
+                        setattr(cmt_pert, _par, to_be_perturbed)
 
                 # Write source to the directory of simulation
                 lpy.print_action(f"Writing Frechet CMTSOLUTION for {_par}")
