@@ -1099,7 +1099,7 @@ class GCMT3DInversion:
             dsyn = list()
             for _i, _par in enumerate(self.pardict.keys()):
                 dsyn.append(self.synt_dict[_wtype][_par])
-
+            print(len(dsyn))
             # Create costgradhess class to computte gradient
             cgh = lpy.CostGradHess(
                 data=self.data_dict[_wtype],
