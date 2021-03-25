@@ -71,6 +71,7 @@ class CostGradHess:
             d = tr.data
 
             try:
+                print(tr.id)
                 s = self.synt.select(network=network, station=station,
                                      component=component)[0].data
 
@@ -82,6 +83,8 @@ class CostGradHess:
                     costt += 0.5 * (np.sum(tap * (ws - wo) ** 2) * dt)
                     fnorm += np.sum(tap * wo ** 2) * dt
 
+                if np.isnan(fnorm) of fnorm == 0:
+                    print(fnorm)
                 if self.weight:
                     costt *= tr.stats.weights
 
@@ -235,10 +238,6 @@ class CostGradHess:
                     # Get data in windows
                     wsyn = s[win.left:win.right]
                     wobs = d[win.left:win.right]
-
-                    # Normalization factor on window
-                    if np.isnan(np.sum(tap * wobs ** 2) * dt):
-                        print(tr.id)
                     fnorm += np.sum(tap * wobs ** 2) * dt
 
                     # Compute Gradient
