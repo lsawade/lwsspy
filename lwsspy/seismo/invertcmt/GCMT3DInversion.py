@@ -383,7 +383,7 @@ class GCMT3DInversion:
         # Remove the set from the window removal dicts
         for _i, (_wtype, _pardict) in enumerate(self.synt_dict.items()):
             for _par, _stream in _pardict.items():
-
+                print(_par)
                 for (net, sta, loc, cha) in self.zero_window_removal_dict[_wtype]:
                     print(net, sta, loc, cha)
                     tr = _stream.select(
