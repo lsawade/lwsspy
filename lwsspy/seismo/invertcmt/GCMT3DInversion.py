@@ -148,6 +148,7 @@ class GCMT3DInversion:
         self.zero_trace = zero_trace
         self.damping = damping
         self.normalize = normalize
+        self.weighting = weighting
         self.weights_rtz = dict(R=1.0, T=1.0, Z=1.0)
 
         # Initialize data dictionaries
