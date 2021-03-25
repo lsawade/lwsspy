@@ -56,6 +56,15 @@ compute_node_login = "lsawade@traverse.princeton.edu"
 bash_escape = "source ~/.bash_profile"
 parameter_check_list = ['depth_in_m']
 nosimpars = ["time_shift", "half_duration"]
+pardict = dict(
+    m_rr=dict(scale=1e24, pert=1e23),
+    m_tt=dict(scale=1e24, pert=1e23),
+    m_pp=dict(scale=1e24, pert=1e23),
+    m_rt=dict(scale=1e24, pert=1e23),
+    m_rp=dict(scale=1e24, pert=1e23),
+    m_tp=dict(scale=1e24, pert=1e23),
+    depth_in_m=dict(scale=1000.0, pert=None)
+)
 
 
 class GCMT3DInversion:
@@ -74,8 +83,8 @@ class GCMT3DInversion:
             databasedir: str,
             specfemdir: str,
             processdict: dict = processdict,
-            pardict: dict = dict(depth_in_m=dict(scale=1000.0, pert=None)),
-            zero_trace: bool = False,
+            pardict: dict = pardict,
+            zero_trace: bool = True,
             duration: float = 3600.0,
             starttime_offset: float = -50.0,
             endtime_offset: float = 50.0,
@@ -759,7 +768,7 @@ class GCMT3DInversion:
 
         try:
             if self.zero_trace:
-                model = deepcopy(self.scaled_model).append(1.0)
+                model = deepcopy(self.scaled_model).append(0.0)
             optim_out = optim.solve(optim, self.scaled_model)
             self.model = optim.model
             return optim_out
@@ -991,6 +1000,7 @@ class GCMT3DInversion:
             hz[-1, :] = self.zero_trace_array
             h = hz
             g = g.append(0.0)
+            g[-1] = np.sum(self.scaled_model[self.zero_trace_array.astype(bool)])
 
         return cost, g, h
 
