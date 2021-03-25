@@ -199,6 +199,7 @@ class GCMT3DInversion:
             self.__window__()
         with lpy.Timer():
             self.__remove_zero_window_traces__()
+            self.__remove_zero_windows_on_synt__()
             self.__prep_simulations__()
         self.not_windowed_yet = False
 

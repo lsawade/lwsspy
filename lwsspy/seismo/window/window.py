@@ -233,6 +233,7 @@ def window_on_stream(observed: obspy.Stream, synthetic: obspy.Stream,
                 if _verbose:
                     print("Couldn't find corresponding synt for obsd trace(%s):"
                           "%s" % (obs_tr.id, err))
+                obs_tr.stats.windows = []
                 continue
 
             # Station is the normal inventory, nothing fancy
