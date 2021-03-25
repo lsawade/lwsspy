@@ -991,8 +991,12 @@ class GCMT3DInversion:
 
         if self.damping > 0.0:
             factor = self.damping * np.max(np.abs((np.diag(h))))
+            print("f", factor)
             modelres = self.model - self.init_model
+            print("modelres:", modelres)
+            print("Costbef:", cost)
             cost += factor/2 * np.sum(modelres**2)
+            print("Costaft:", cost)
             g += factor * modelres
             h += factor * np.eye(len(self.model))
 
