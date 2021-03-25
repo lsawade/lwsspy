@@ -869,7 +869,8 @@ class GCMT3DInversion:
         for _par, _pardir in self.synt_pardirs.items():
 
             if _par not in ["time_shift", "half_duration"]:
-
+                # Write source to the directory of simulation
+                lpy.print_action(f"Writing Frechet CMTSOLUTION for {_par}")
                 if self.pardict[_par]["pert"] is not None:
                     # Perturb source at parameter
                     cmt_pert = deepcopy(cmt)
@@ -895,10 +896,11 @@ class GCMT3DInversion:
                         # Set the perturb
                         setattr(cmt_pert, _par, to_be_perturbed)
 
-                # Write source to the directory of simulation
-                lpy.print_action(f"Writing Frechet CMTSOLUTION for {_par}")
-                cmt_pert.write_CMTSOLUTION_file(os.path.join(
-                    _pardir, "DATA", "CMTSOLUTION"))
+                    cmt_pert.write_CMTSOLUTION_file(os.path.join(
+                        _pardir, "DATA", "CMTSOLUTION"))
+                else:
+                    cmt_pert.write_CMTSOLUTION_file(os.path.join(
+                        _pardir, "DATA", "CMTSOLUTION"))
 
     def __run_simulations__(self):
 
