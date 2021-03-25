@@ -161,7 +161,7 @@ class CostGradHess:
                     for _i, _dsdm in enumerate(dsdm):
                         # Get derivate with respect to model parameter i
                         wdsdm = _dsdm[win.left:win.right]
-                        gt[_i] += np.sum(((wsyn - wobs) * tap) * wdsdm_i) * dt
+                        gt[_i] += np.sum(((wsyn - wobs) * tap) * wdsdm) * dt
 
                 if self.weight:
                     gt *= tr.stats.weights
