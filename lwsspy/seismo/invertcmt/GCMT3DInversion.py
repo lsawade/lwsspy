@@ -989,7 +989,23 @@ class GCMT3DInversion:
         cost = self.__compute_cost__()
         g, h = self.__compute_gradient_and_hessian__()
 
-        print(cost, g, h)
+        print("Raw")
+        print("C:", cost)
+        print("G:")
+        print(g)
+        print("H")
+        print(h)
+        # Scaling of the cost function
+        g *= self.scale
+        h = np.diag(self.scale) @ h @ np.diag(self.scale)
+
+        print("Scaled")
+        print("C:", cost)
+        print("G:")
+        print(g)
+        print("H")
+        print(h)
+
         if self.damping > 0.0:
             factor = self.damping * np.max(np.abs((np.diag(h))))
             print("f", factor)
@@ -1001,11 +1017,13 @@ class GCMT3DInversion:
             g += factor * modelres
             h += factor * np.eye(len(self.model))
 
-        # Scaling of the cost function
-        g *= self.scale
-        h = np.diag(self.scale) @ h @ np.diag(self.scale)
+        print("Damped")
+        print("C:", cost)
+        print("G:")
+        print(g)
+        print("H")
+        print(h)
 
-        print(cost, g, h)
         # Add zero trace condition
         if self.zero_trace:
             m, n = h.shape
@@ -1017,7 +1035,12 @@ class GCMT3DInversion:
             g = np.append(g, 0.0)
             g[-1] = np.sum(self.scaled_model[self.zero_trace_index_array])
 
-        print(cost, g, h)
+        print("Zero_traced")
+        print("C:", cost)
+        print("G:")
+        print(g)
+        print("H")
+        print(h)
 
         return cost, g, h
 
