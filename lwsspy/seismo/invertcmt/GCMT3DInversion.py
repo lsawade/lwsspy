@@ -302,7 +302,8 @@ class GCMT3DInversion:
             for _component, _cweight in self.weights_rtz.items():
                 RTZ_traces[_component] = []
                 for _tr in _stream:
-                    if _tr.stats.component == _component:
+                    if _tr.stats.component == _component \
+                            and "weights" in _tr.stats:
                         RTZ_traces[_component].append(_tr)
 
                 self.weights[_wtype][_component]["final"] = []
