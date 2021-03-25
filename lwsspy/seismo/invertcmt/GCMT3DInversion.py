@@ -972,9 +972,11 @@ class GCMT3DInversion:
         # Update model
         if self.zero_trace:
             mu = model[-1]
-        else:
             self.model = model[:-1] * self.scale
             self.scaled_model = model[:-1]
+        else:
+            self.model = model * self.scale
+            self.scaled_model = model
 
         # Write sources for next iteration
         self.__write_sources__()
@@ -1041,6 +1043,7 @@ class GCMT3DInversion:
             h = hz
             g = np.append(g, 0.0)
             g[-1] = np.sum(self.scaled_model[self.zero_trace_index_array])
+            
 
         print("Zero_traced")
         print("C:", cost)
