@@ -1503,12 +1503,17 @@ def bin():
     specfemdir = "/gpfs/alpine/geo111/scratch/lsawade/SpecfemMagic/specfem3d_globe"
     launch_method = "jsrun -n 6 -a 4 -c 4 -g 1"
 
-    gcmt3d = GCMT3DInversion(event, database, specfemdir, download_data=False,
+    gcmt3d = GCMT3DInversion(event, database, specfemdir, pardict=pardict,
+
+                             download_data=False,
                              overwrite=False, launch_method=launch_method,
                              damping=0.000)
     gcmt3d.init()
     gcmt3d.process_data()
     gcmt3d.get_windows()
+    print(50 * "-", "Cost, Grad, Hess", 50 * "_")
+    print(gcmt3d.compute_cost_gradient_hessian())
+
     # gcmt3d.misfit_walk_depth()
     optim_list = []
 
