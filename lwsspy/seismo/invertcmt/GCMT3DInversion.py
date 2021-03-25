@@ -897,7 +897,7 @@ class GCMT3DInversion:
 
                 # Write source to the directory of simulation
                 lpy.print_action(f"Writing Frechet CMTSOLUTION for {_par}")
-                cmt.write_CMTSOLUTION_file(os.path.join(
+                cmt_pert.write_CMTSOLUTION_file(os.path.join(
                     _pardir, "DATA", "CMTSOLUTION"))
 
     def __run_simulations__(self):
