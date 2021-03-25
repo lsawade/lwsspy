@@ -83,7 +83,7 @@ class CostGradHess:
                     fnorm += np.sum(tap * wo ** 2) * dt
 
                 if self.weight:
-                    costt *= tr.stats.weight
+                    costt *= tr.stats.weights
 
                 if self.normalize:
                     costt /= fnorm
@@ -164,7 +164,7 @@ class CostGradHess:
                         gt[_i] += np.sum(((wsyn - wobs) * tap) * wdsdm_i) * dt
 
                 if self.weight:
-                    gt *= tr.stats.weight
+                    gt *= tr.stats.weights
 
                 if self.normalize:
                     gt /= fnorm
@@ -255,8 +255,8 @@ class CostGradHess:
                     gt /= fnorm
                     ht /= fnorm
                 if self.weight:
-                    gt /= tr.stats.weight
-                    ht /= tr.stats.weight
+                    gt /= tr.stats.weights
+                    ht /= tr.stats.weights
 
                 g += gt
                 h += ht
