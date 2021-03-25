@@ -471,6 +471,10 @@ class GCMT3DInversion:
 
             self.zero_trace_array = np.array([1.0 if _par in checklist else 0.0
                                               for _par in self.pardict.keys()])
+            self.zero_trace_index_array = [
+                _i if _par in checklist
+                for _i, _par in enumerate(self.pardict.keys())
+            ]
             self.zero_trace_array = np.append(self.zero_trace_array, 0.0)
 
         # Get the model vector given the parameters to invert for
@@ -895,7 +899,7 @@ class GCMT3DInversion:
 
                         # Set the perturb
                         setattr(cmt_pert, _par, to_be_perturbed)
-    
+
                     cmt_pert.write_CMTSOLUTION_file(os.path.join(
                         _pardir, "DATA", "CMTSOLUTION"))
                 else:
@@ -1006,7 +1010,7 @@ class GCMT3DInversion:
             hz[-1, :] = self.zero_trace_array
             h = hz
             g = np.append(g, 0.0)
-            g[-1] = np.sum(self.scaled_model[self.zero_trace_array.astype(bool)])
+            g[-1] = np.sum(self.scaled_model[self.zero_trace_index_array])
 
         return cost, g, h
 
