@@ -246,8 +246,8 @@ class CostGradHess:
                                            (wdsdm_j * tap)) * dt
 
                 if self.weight:
-                    gt /= tr.stats.weights
-                    ht /= tr.stats.weights
+                    gt *= tr.stats.weights
+                    ht *= tr.stats.weights
 
                 if self.normalize and fnorm != 0:
                     gt /= fnorm
