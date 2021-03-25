@@ -1092,7 +1092,9 @@ class GCMT3DInversion:
 
         gradient = np.zeros_like(self.model)
         hessian = np.zeros((len(self.model), len(self.model)))
-
+        print(self.model)
+        print(gradient)
+        print(hessian)
         for _wtype in self.processdict.keys():
 
             # Get all perturbations
@@ -1110,6 +1112,7 @@ class GCMT3DInversion:
                 weight=self.weighting)
 
             tmp_g, tmp_h = cgh.grad_and_hess()
+            print(tmp_g, tmp_h)
             gradient += tmp_g
             hessian += tmp_h
 
