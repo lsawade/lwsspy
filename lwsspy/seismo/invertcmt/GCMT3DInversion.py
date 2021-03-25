@@ -248,7 +248,8 @@ class GCMT3DInversion:
 
                 # Only add ttraces that have windows.
                 for _tr in _stream:
-                    if _tr.stats.component == _component and len(_tr.stats.windows) > 0:
+                    if _tr.stats.component == _component \
+                            and len(_tr.stats.windows) > 0:
                         RTZ_traces[_component].append(_tr)
 
                 # Get locations
