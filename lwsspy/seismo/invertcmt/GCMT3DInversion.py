@@ -57,13 +57,16 @@ bash_escape = "source ~/.bash_profile"
 parameter_check_list = ['depth_in_m', "m_rr",
                         "m_tt", "m_pp", "m_rt", "m_rp", "m_tp"]
 nosimpars = ["time_shift", "half_duration"]
+# pardict = dict(
+#     m_rr=dict(scale=1e24, pert=1e23),
+#     m_tt=dict(scale=1e24, pert=1e23),
+#     m_pp=dict(scale=1e24, pert=1e23),
+#     m_rt=dict(scale=1e24, pert=1e23),
+#     m_rp=dict(scale=1e24, pert=1e23),
+#     m_tp=dict(scale=1e24, pert=1e23),
+#     depth_in_m=dict(scale=1000.0, pert=None)
+# )
 pardict = dict(
-    m_rr=dict(scale=1e24, pert=1e23),
-    m_tt=dict(scale=1e24, pert=1e23),
-    m_pp=dict(scale=1e24, pert=1e23),
-    m_rt=dict(scale=1e24, pert=1e23),
-    m_rp=dict(scale=1e24, pert=1e23),
-    m_tp=dict(scale=1e24, pert=1e23),
     depth_in_m=dict(scale=1000.0, pert=None)
 )
 
@@ -85,7 +88,7 @@ class GCMT3DInversion:
             specfemdir: str,
             processdict: dict = processdict,
             pardict: dict = pardict,
-            zero_trace: bool = True,
+            zero_trace: bool = False,
             duration: float = 3600.0,
             starttime_offset: float = -50.0,
             endtime_offset: float = 50.0,
@@ -243,8 +246,9 @@ class GCMT3DInversion:
                 # Create reference
                 RTZ_traces[_component] = []
 
+                # Only add ttraces that have windows.
                 for _tr in _stream:
-                    if _tr.stats.component == _component:
+                    if _tr.stats.component == _component and len(_tr.stats.windows) > 0:
                         RTZ_traces[_component].append(_tr)
 
                 # Get locations
@@ -995,16 +999,6 @@ class GCMT3DInversion:
         print(g)
         print("H")
         print(h)
-        # Scaling of the cost function
-        g *= self.scale
-        h = np.diag(self.scale) @ h @ np.diag(self.scale)
-
-        print("Scaled")
-        print("C:", cost)
-        print("G:")
-        print(g)
-        print("H")
-        print(h)
 
         if self.damping > 0.0:
             factor = self.damping * np.max(np.abs((np.diag(h))))
@@ -1018,6 +1012,17 @@ class GCMT3DInversion:
             h += factor * np.eye(len(self.model))
 
         print("Damped")
+        print("C:", cost)
+        print("G:")
+        print(g)
+        print("H")
+        print(h)
+
+        # Scaling of the cost function
+        g *= self.scale
+        h = np.diag(self.scale) @ h @ np.diag(self.scale)
+
+        print("Scaled")
         print("C:", cost)
         print("G:")
         print(g)
