@@ -1085,7 +1085,7 @@ class GCMT3DInversion:
             residuals[_wtype] = cgh.residuals()
 
         with open(os.path.join(self.cmtdir, "residuals.pkl"), "wb") as f:
-            cPickle.dump(deepcopy(self.weights), f)
+            cPickle.dump(deepcopy(residuals), f)
 
         return residuals
 
