@@ -98,7 +98,7 @@ class CostGradHess:
                         print(
                             f"Error at ({network}.{station}.{component}): {e}")
 
-            return residuals
+        return residuals
 
     def cost(self) -> float:
         """Takes in data and synthetics stream and computes windowed least squares
