@@ -64,7 +64,6 @@ class CostGradHess:
         residuals = dict(R=[], T=[], Z=[])
 
         for _component, _complist in residuals.items():
-            print(_component)
             compstream = self.data.select(component=_component)
             for tr in compstream:
                 network, station, component = (
@@ -78,20 +77,20 @@ class CostGradHess:
                                          component=component)[0].data
 
                     fnorm = 0
-                    rest = []
+                    costt = []
                     for win, tap in zip(tr.stats.windows, tr.stats.tapers):
                         ws = s[win.left:win.right]
                         wo = d[win.left:win.right]
-                        rest.extend(np.sqrt(tap) * (ws - wo))
+                        costt.append(0.5 * (np.sum(tap * (ws - wo) ** 2) * dt))
                         fnorm += np.sum(tap * wo ** 2) * dt
 
-                    if self.weight:
-                        rest *= tr.stats.weights
+                    # if self.weight:
+                    #     costt *= tr.stats.weights
 
                     if self.normalize and fnorm != 0:
-                        rest /= np.sqrt(fnorm)
+                        costt = np.array(costt)/fnorm
 
-                    _complist.extend(rest)
+                    _complist.extend(costt)
 
                 except Exception as e:
                     if self.verbose:

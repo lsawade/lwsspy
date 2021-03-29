@@ -2,6 +2,15 @@ from copy import deepcopy
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 import lwsspy as lpy
+import _pickle as cPickle
+
+
+def plot_residual_pkl(residual_pickle: str):
+
+    with open(residual_pickle, "rb") as f:
+        residuals = cPickle.load(f)
+
+    plot_residuals(residuals)
 
 
 def plot_residuals(residuals: dict):
@@ -14,21 +23,24 @@ def plot_residuals(residuals: dict):
     # Create base figure
     fig = plt.figure(figsize=(10, 1+Nwaves*2))
     gs = GridSpec(Nwaves, 3, figure=fig)
-    plt.subplots_adjust(bottom=0.075, top=0.95,
-                        left=0.05, right=0.95, hspace=0.25)
+    # plt.subplots_adjust(bottom=0.075, top=0.95,
+    #                     left=0.05, right=0.95, hspace=0.25)
+    plt.subplots_adjust(bottom=0.2, top=0.9,
+                        left=0.1, right=0.9, hspace=0.25)
 
     # Create subplots
     counter = 0
+    components = ["Z", "R", "T"]
     for _i, (_wtype, _compdict) in enumerate(residuals.items()):
-        for _j, (_comp, _residuals) in enumerate(_compdict.items()):
-
+        for _j, _comp in enumerate(components):
+            _residuals = _compdict[_comp]
             # Set alpha color
             acolor = deepcopy(colors[counter, :])
             acolor[3] = 0.8
 
             # Create plot
             ax = plt.subplot(gs[_i, _j])
-            plt.hist(_residuals, bins=25, edgecolor=colors[counter, :],
+            plt.hist(_residuals, bins=2000, edgecolor=colors[counter, :],
                      facecolor=acolor, linewidth=0.75,
                      label='GCMT', histtype='stepfilled')
             lpy.plot_label(ax, lpy.abc[counter] + ")", location=6, box=False)
