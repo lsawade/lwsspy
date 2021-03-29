@@ -32,6 +32,7 @@ if "-m" not in sys.argv:
     from .constants import KM2DEG  # noqa
     from .constants import DEG2M  # noqa
     from .constants import M2DEG  # noqa
+    from .constants import abc  # noqa
 
     # -------- FUNCTIONS & CLASSES --------------------------------------------
 
@@ -176,6 +177,7 @@ if "-m" not in sys.argv:
     from .seismo.invertcmt.GCMT3DInversion import GCMT3DInversion  # noqa
     from .seismo.invertcmt.plot_weights import plot_weightpickle  # noqa
     from .seismo.invertcmt.plot_weights import plot_weights  # noqa
+    from .seismo.invertcmt.plot_residuals import plot_residuals  # noqa
 
     # Shell
     from .shell.cat import cat  # noqa

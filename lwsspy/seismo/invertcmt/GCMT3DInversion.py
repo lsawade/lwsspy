@@ -54,7 +54,7 @@ download_dict = dict(
 conda_activation = "source /usr/licensed/anaconda3/2020.7/etc/profile.d/conda.sh && conda activate lwsspy"
 compute_node_login = "lsawade@traverse.princeton.edu"
 bash_escape = "source ~/.bash_profile"
-parameter_check_list = ['depth_in_m', "m_rr",
+parameter_check_list = ['depth_in_m', "time_shift", "m_rr",
                         "m_tt", "m_pp", "m_rt", "m_rp", "m_tp"]
 nosimpars = ["time_shift", "half_duration"]
 # pardict = dict(
@@ -997,12 +997,13 @@ class GCMT3DInversion:
         cost = self.__compute_cost__()
         g, h = self.__compute_gradient_and_hessian__()
 
-        print("Raw")
-        print("C:", cost)
-        print("G:")
-        print(g)
-        print("H")
-        print(h)
+        if self.debug:
+            print("Raw")
+            print("C:", cost)
+            print("G:")
+            print(g)
+            print("H")
+            print(h)
 
         if self.damping > 0.0:
             factor = self.damping * np.max(np.abs((np.diag(h))))
@@ -1015,23 +1016,25 @@ class GCMT3DInversion:
             g += factor * modelres
             h += factor * np.eye(len(self.model))
 
-        print("Damped")
-        print("C:", cost)
-        print("G:")
-        print(g)
-        print("H")
-        print(h)
+        if self.debug:
+            print("Damped")
+            print("C:", cost)
+            print("G:")
+            print(g)
+            print("H")
+            print(h)
 
         # Scaling of the cost function
         g *= self.scale
         h = np.diag(self.scale) @ h @ np.diag(self.scale)
 
-        print("Scaled")
-        print("C:", cost)
-        print("G:")
-        print(g)
-        print("H")
-        print(h)
+        if self.debug:
+            print("Scaled")
+            print("C:", cost)
+            print("G:")
+            print(g)
+            print("H")
+            print(h)
 
         # Add zero trace condition
         if self.zero_trace:
@@ -1043,14 +1046,14 @@ class GCMT3DInversion:
             h = hz
             g = np.append(g, 0.0)
             g[-1] = np.sum(self.scaled_model[self.zero_trace_index_array])
-            
 
-        print("Zero_traced")
-        print("C:", cost)
-        print("G:")
-        print(g)
-        print("H")
-        print(h)
+        if self.debug:
+            print("Zero_traced")
+            print("C:", cost)
+            print("G:")
+            print(g)
+            print("H")
+            print(h)
 
         return cost, g, h
 
@@ -1067,6 +1070,20 @@ class GCMT3DInversion:
                 weight=self.weighting)
             cost += cgh.cost()
         return cost
+
+    def __compute_residuals__(self):
+
+        residuals = dict()
+        for _wtype in self.processdict.keys():
+
+            cgh = lpy.CostGradHess(
+                data=self.data_dict[_wtype],
+                synt=self.synt_dict[_wtype]["synt"],
+                verbose=self.debug,
+                normalize=self.normalize,
+                weight=False)
+            residuals[_wtype] = cgh.residuals()
+        return residuals
 
     def __compute_gradient__(self):
 

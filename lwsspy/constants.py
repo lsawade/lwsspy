@@ -16,3 +16,8 @@ KM2DEG = 1.0/DEG2KM
 
 # IRIS Earth Model collaboration
 EMC_DATABASE = "https://ds.iris.edu/files/products/emc/emc-files/"
+
+
+# ----------- Random ----------------------------------------------------------
+
+abc = 'abcdefghijklmnopqrstuvwxyz'
