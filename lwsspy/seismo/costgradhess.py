@@ -40,6 +40,65 @@ class CostGradHess:
         self.normalize = normalize
         self.verbose = verbose
 
+    def residuals(self) -> dict:
+        """Takes in data and synthetics stream and computes windowed least squares
+        cost. The stats object of the Traces in the stream _*must*_ contain both
+        `windows` and the `tapers` attributes!
+
+        Parameters
+        ----------
+        data : Stream
+            data
+        synt : Stream
+            synthetics
+
+        Returns
+        -------
+        float
+            cost of entire stream
+
+        Last modified: Lucas Sawade, 2020.09.28 19.00 (lsawade@princeton.edu)
+
+        """
+
+        residuals = dict(R=[], T=[], Z=[])
+
+        for _component, _complist in residuals:
+            compstream = self.data.select(component=_component)
+            for tr in compstream:
+                network, station, component = (
+                    tr.stats.network, tr.stats.station, tr.stats.component)
+                # Get the trace sampling time
+                dt = tr.stats.delta
+                d = tr.data
+
+                try:
+                    s = self.synt.select(network=network, station=station,
+                                         component=component)[0].data
+
+                    fnorm = 0
+                    rest = []
+                    for win, tap in zip(tr.stats.windows, tr.stats.tapers):
+                        ws = s[win.left:win.right]
+                        wo = d[win.left:win.right]
+                        rest.extend(np.sqrt(tap) * (ws - wo))
+                        fnorm += np.sum(tap * wo ** 2) * dt
+
+                    if self.weight:
+                        rest *= tr.stats.weights
+
+                    if self.normalize and fnorm != 0:
+                        rest /= np.sqrt(fnorm)
+
+                    _complist.extend(rest)
+
+                except Exception as e:
+                    if self.verbose:
+                        print(
+                            f"Error at ({network}.{station}.{component}): {e}")
+
+            return residuals
+
     def cost(self) -> float:
         """Takes in data and synthetics stream and computes windowed least squares
         cost. The stats object of the Traces in the stream _*must*_ contain both
