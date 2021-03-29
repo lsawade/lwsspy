@@ -1083,6 +1083,10 @@ class GCMT3DInversion:
                 normalize=self.normalize,
                 weight=False)
             residuals[_wtype] = cgh.residuals()
+
+        with open(os.path.join(self.cmtdir, "residuals.pkl"), "wb") as f:
+            cPickle.dump(deepcopy(self.weights), f)
+
         return residuals
 
     def __compute_gradient__(self):
