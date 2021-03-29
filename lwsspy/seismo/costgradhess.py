@@ -64,6 +64,7 @@ class CostGradHess:
         residuals = dict(R=[], T=[], Z=[])
 
         for _component, _complist in residuals.items():
+            print(_component)
             compstream = self.data.select(component=_component)
             for tr in compstream:
                 network, station, component = (
