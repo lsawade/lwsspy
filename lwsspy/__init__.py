@@ -197,6 +197,11 @@ if "-m" not in sys.argv:
     from .shell.ungzip import ungzip  # noqa
     from .shell.writefile import writefile  # noqa
 
+    # Simple Signal processing functions
+    from .signal.dlna import dlna  # noqa
+    from .signal.xcorr import xcorr  # noqa
+    from .signal.lsq import lsq  # noqa
+
     # Statistics
     from .statistics.clm import clm  # noqa
     from .statistics.distlist import distlist  # noqa

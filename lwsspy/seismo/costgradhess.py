@@ -1,6 +1,7 @@
 from typing import Union, List, Tuple
 from obspy import Stream, Trace
 import numpy as np
+import lwsspy as lpy
 
 
 class CostGradHess:
@@ -40,10 +41,9 @@ class CostGradHess:
         self.normalize = normalize
         self.verbose = verbose
 
-    def residuals(self) -> dict:
-        """Takes in data and synthetics stream and computes windowed least squares
-        cost. The stats object of the Traces in the stream _*must*_ contain both
-        `windows` and the `tapers` attributes!
+    def misfits(self, method) -> dict:
+        """Takes in data and synthetics stream and computes a list of
+        windowed least squares costs.
 
         Parameters
         ----------
@@ -54,10 +54,17 @@ class CostGradHess:
 
         Returns
         -------
-        float
-            cost of entire stream
+        dict
+            dictionary over components of the data trace
 
-        Last modified: Lucas Sawade, 2020.09.28 19.00 (lsawade@princeton.edu)
+        Notes
+        -----
+
+        :Author:
+            Lucas Sawade (lsawade@princeton.edu)
+
+        :Last Modified:
+            2021.03.29 16.30
 
         """
 

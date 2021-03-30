@@ -31,16 +31,17 @@ def plot_residuals(residuals: dict):
     # Create subplots
     counter = 0
     components = ["Z", "R", "T"]
+    component_bins = [50, 20, 10]
     for _i, (_wtype, _compdict) in enumerate(residuals.items()):
-        for _j, _comp in enumerate(components):
+        for _j, (_comp, _bins) in enumerate(zip(components, component_bins)):
             _residuals = _compdict[_comp]
             # Set alpha color
             acolor = deepcopy(colors[counter, :])
-            acolor[3] = 0.8
+            acolor[3] = 0.5
 
             # Create plot
             ax = plt.subplot(gs[_i, _j])
-            plt.hist(_residuals, bins=2000, edgecolor=colors[counter, :],
+            plt.hist(_residuals, bins=_bins, edgecolor=colors[counter, :],
                      facecolor=acolor, linewidth=0.75,
                      label='GCMT', histtype='stepfilled')
             lpy.plot_label(ax, lpy.abc[counter] + ")", location=6, box=False)
