@@ -904,6 +904,110 @@ to <code class="docutils literal notranslate"><span class="pre">plt.colorbar(*ar
 </dd></dl>
 
 <dl class="py function">
+<dt id="lwsspy.plot_util.pick_data_from_image.pick_data_from_image">
+<code class="sig-prename descclassname">lwsspy.plot_util.pick_data_from_image.</code><code class="sig-name descname">pick_data_from_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">infile</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">outfile</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">extent</span><span class="o">=</span><span class="default_value">[0, 1, 0, 1]</span></em>, <em class="sig-param"><span class="n">logx</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">logy</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">]</span><a class="reference internal" href="../_modules/lwsspy/plot_util/pick_data_from_image.html#pick_data_from_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.plot_util.pick_data_from_image.pick_data_from_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function’s purpose is the replication of previously published data.
+The function ttakes in an image filename containing a graph that is
+cropped to axes boundaries and the data extent. One can then pick the data
+from the graph in the image and it will automatically rescale the picked
+pixel values to data domain.</p>
+<p>Optionally the data can be save to either npy or csv depending on
+extension. If the oufile’s extension is <code class="docutils literal notranslate"><span class="pre">.npy</span></code>, the data will be saved
+as a single <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> with two columns for the(x, y) vectors.
+If the file ending is <code class="docutils literal notranslate"><span class="pre">.csv</span></code>, the <code class="docutils literal notranslate"><span class="pre">csv</span></code> file would be have the format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span>
+<span class="n">x1</span><span class="p">,</span> <span class="n">y1</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>infile: str</strong></dt><dd><p>Image file name to be loaded by the function. The image should be
+cropped to the axes edges.</p>
+</dd>
+<dt><strong>outfile: Union[str, None], optional</strong></dt><dd><p>Optional output file name depending on filename ending either a
+npy array with two columns(x, y) will be stored or a csv file,
+by default None</p>
+</dd>
+<dt><strong>extent: list, optional</strong></dt><dd><p>extent of the cropped axes in data units. Format: [xi, xf, yi, yf],
+by default[0, 1, 0, 1]</p>
+</dd>
+<dt><strong>logx: bool, optional</strong></dt><dd><p>Flag to say whether the x axis in the image is in logarithmic scale,
+by default False</p>
+</dd>
+<dt><strong>logy: bool, optional</strong></dt><dd><p>Flag to say whether the y axis in the image is in logarithmic scale,
+by default False</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tuple[np.ndarray, np.ndarray]</dt><dd><p>x, y vectors of the picked data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>if file ending is not <code class="docutils literal notranslate"><span class="pre">.csv</span></code> or <code class="docutils literal notranslate"><span class="pre">.npy</span></code></p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#lwsspy.utils.pixels2data.pixels2data" title="lwsspy.utils.pixels2data.pixels2data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lwsspy.utils.pixels2data.pixels2data</span></code></a></dt><dd><p>Scaling from pixels to dataunits</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Picking Controls</p>
+<ul class="simple">
+<li><p>Click to add points</p></li>
+<li><p>Press Delete or Backspace to delete points</p></li>
+<li><p>Press Enter to finish</p></li>
+</ul>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>For semilog conversions, the extent of the axis cannot be  0 !!
+(log(0) issue)</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note for further development: A better way of doing this would be to 
+actually integrate the picker and the zoom window. Meaning, a while loop
+for ginput until an enter is recorded.
+Connect callbacks for backspace, enter, and mouseclicks</p>
+<p>Backspace - pops the last item and removes the last scatter point as long
+as the point list is not empty</p>
+<p>Enter - Finishes the selection</p>
+<p>Mouse - Click adds points</p>
+<p>This way one can plot the selected points in both the zoom window AND
+and the main window.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Authors</dt>
+<dd class="field-odd"><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd>
+<dt class="field-even">Last Modified</dt>
+<dd class="field-even"><p>2020.01.06 11.00</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>For an image with data in linearscale and axes data axis limits of 
+<code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0,</span> <span class="pre">1]</span></code> <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> can be picked and saved as follows.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">lwsspy</span> <span class="k">as</span> <span class="nn">lpy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">lpy</span><span class="o">.</span><span class="n">pick_data_from_image</span><span class="p">(</span><span class="s1">&#39;test.png&#39;</span><span class="p">,</span> <span class="s1">&#39;testdata.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Change <code class="docutils literal notranslate"><span class="pre">.csv</span></code> to  <code class="docutils literal notranslate"><span class="pre">.npy</span></code> to save numpy binary file.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="lwsspy.plot_util.plot_label.plot_label">
 <code class="sig-prename descclassname">lwsspy.plot_util.plot_label.</code><code class="sig-name descname">plot_label</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib.axes._axes.Axes</span></em>, <em class="sig-param"><span class="n">label</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">aspect</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">location</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">dist</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.025</span></em>, <em class="sig-param"><span class="n">box</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>bool<span class="p">, </span>dict<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">fontdict</span><span class="p">:</span> <span class="n">dict</span> <span class="o">=</span> <span class="default_value">{}</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/plot_util/plot_label.html#plot_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.plot_util.plot_label.plot_label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots label one of the corners of the plot.</p>
@@ -2150,20 +2254,185 @@ station files in the stationsdir.</p>
 </div>
 <div class="section" id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="lwsspy.statistics.fakerelation.fakerelation">
+<code class="sig-prename descclassname">lwsspy.statistics.fakerelation.</code><code class="sig-name descname">fakerelation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">C12</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">[1.0, 0.5, 1.0]</span></em>, <em class="sig-param"><span class="n">N</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">25</span></em>, <em class="sig-param"><span class="n">distro</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'normal'</span></em>, <em class="sig-param"><span class="n">pars</span><span class="p">:</span> <span class="n">dict</span> <span class="o">=</span> <span class="default_value">{'loc': 0.0, 'scale': 1.0}</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/statistics/fakerelation.html#fakerelation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.statistics.fakerelation.fakerelation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates data pairs with a particular relation.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>C12 (list, optional):</dt><dd><p>Covariance vector [CXX, CXY, CYY]. Defaults to [1, 0.5, 1].</p>
+</dd>
+<dt>N (int, optional):</dt><dd><p>Number of values. Defaults to 100.</p>
+</dd>
+<dt>distro (str, optional):</dt><dd><p>Name of desired distribution. Defaults to ‘norm’.</p>
+</dd>
+<dt>pars (dict, optional):</dt><dd><p>Distribution Parameters must match distribution input parameter.
+Check <cite>numpy.random.&lt;dist&gt;</cite></p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>(X,Y, R, CXY) (<code class="docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>):</dt><dd><p>Two variables with correlation and their correlation and covariance
+matrices.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.14 23.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
 <div class="figure align-default" id="id6">
 <img alt="../_images/modelled_covarying_dataset.svg" src="../_images/modelled_covarying_dataset.svg" /><p class="caption"><span class="caption-text">Modeled covarying data sets.</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
 </div>
+<dl class="py function">
+<dt id="lwsspy.statistics.errorellipse.errorellipse">
+<code class="sig-prename descclassname">lwsspy.statistics.errorellipse.</code><code class="sig-name descname">errorellipse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">nstd</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">ax</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>None<span class="p">, </span>matplotlib.axes._axes.Axes<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/statistics/errorellipse.html#errorellipse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.statistics.errorellipse.errorellipse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots error ellipse</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>x (np.ndarray or list):</dt><dd><p>N element list</p>
+</dd>
+<dt>y (np.ndarray or list):</dt><dd><p>N element list</p>
+</dd>
+<dt>kwargs:</dt><dd><p>parsed to matplotlibs Ellipse function</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>ellipse handle</p>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.15 15.30 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
 <div class="figure align-default" id="id7">
 <img alt="../_images/error_ellipse.svg" src="../_images/error_ellipse.svg" /><p class="caption"><span class="caption-text">Generating the error ellipse for a covarying dataset.</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
 </div>
+<dl class="py function">
+<dt id="lwsspy.statistics.gaussian2d.gaussian2d">
+<code class="sig-prename descclassname">lwsspy.statistics.gaussian2d.</code><code class="sig-name descname">gaussian2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xdata</span></em>, <em class="sig-param"><span class="n">amplitude</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">xo</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">yo</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">sigma_x</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">sigma_y</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">theta</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">offset</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/statistics/gaussian2d.html#gaussian2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.statistics.gaussian2d.gaussian2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates arbitrary gaussian distribution for the corresponding arrays
+x and, at expected value (xo, yo), and standard deviations
+(sigma_x, sigma_y). To ensure a possibilty of angled distributions
+and offset distributions model parameters theta and offset are included.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>x (np.ndarray):</dt><dd><p>x coordinates</p>
+</dd>
+<dt>y (np.ndarray):</dt><dd><p>y coordinates</p>
+</dd>
+<dt>amplitude (float):</dt><dd><p>amplitude of the Gaussian function</p>
+</dd>
+<dt>xo (float):</dt><dd><p>center in x direction</p>
+</dd>
+<dt>yo (float):</dt><dd><p>center in y direction</p>
+</dd>
+<dt>sigma_x ():</dt><dd><p>std in x direction</p>
+</dd>
+<dt>sigma_y (float):</dt><dd><p>std in y direction</p>
+</dd>
+<dt>theta (float):</dt><dd><p>angle of the distribution</p>
+</dd>
+<dt>offset (float):</dt><dd><p>offset of the distribution (could be gaussian + offset)</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>G(x, y) as np.ndarray</p>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.15 19.44 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
 <div class="figure align-default" id="id8">
 <img alt="../_images/gaussian2d.svg" src="../_images/gaussian2d.svg" /><p class="caption"><span class="caption-text">Forward modelling a 2D Gaussian distribution.</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
 </div>
+<dl class="py function">
+<dt id="lwsspy.statistics.fitgaussian2d.fitgaussian2d">
+<code class="sig-prename descclassname">lwsspy.statistics.fitgaussian2d.</code><code class="sig-name descname">fitgaussian2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">p0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/statistics/fitgaussian2d.html#fitgaussian2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.statistics.fitgaussian2d.fitgaussian2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in x and y and corresponding data as well as an initial
+guess of the Gaussian parameters and invertes for optttimized parameters.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>x (numpy.ndarray):</dt><dd><p>x part of a meshgrid</p>
+</dd>
+<dt>y (numpy.ndarray):</dt><dd><p>y part of a meshgrid</p>
+</dd>
+<dt>data (numpy.ndarray):</dt><dd><p>corresponding data</p>
+</dd>
+<dt>p0 (numpy.ndarray or list or tuple):</dt><dd><p>intitial guess for gaussian2d((x,y), ), parameters</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>optimal p, covariance matrix of model parameters</dt><dd><dl class="simple">
+<dt>(<cite>perr = np.sqrt(np.diag(pcov))</cite> gives standard deviation error</dt><dd><p>in each parameter)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.21 21.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
 <div class="figure align-default">
 <img alt="../_images/fitgaussian2d.svg" src="../_images/fitgaussian2d.svg" /></div>
+<dl class="py function">
+<dt id="lwsspy.statistics.distlist.distlist">
+<code class="sig-prename descclassname">lwsspy.statistics.distlist.</code><code class="sig-name descname">distlist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">N</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>None<span class="p">, </span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">plot</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>numpy.ndarray<span class="p">, </span>List<span class="p">[</span>numpy.ndarray<span class="p">]</span><span class="p">]</span><a class="reference internal" href="../_modules/lwsspy/statistics/distlist.html#distlist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.statistics.distlist.distlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates list of some distributions</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>N (Union[None, int], optional):</dt><dd><p>Number of convolutions to be done. Defaults to None.</p>
+</dd>
+<dt>plot (bool, optional):</dt><dd><p>Plotting flag. Defaults to True.</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>Tuple[np.ndarray, List[np.ndarray]]: x vector, list of distributions</p>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.30 11.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
 <div class="figure align-default" id="id9">
 <img alt="../_images/distlist.svg" src="../_images/distlist.svg" /><p class="caption"><span class="caption-text">Creating a list of distributions.</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
 </div>
+<dl class="py function">
+<dt id="lwsspy.statistics.clm.clm">
+<code class="sig-prename descclassname">lwsspy.statistics.clm.</code><code class="sig-name descname">clm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">distr</span><span class="p">:</span> <span class="n">List<span class="p">[</span>numpy.ndarray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">N</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">plot</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>float<span class="p">, </span>float<span class="p">, </span>float<span class="p">]</span><a class="reference internal" href="../_modules/lwsspy/statistics/clm.html#clm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.statistics.clm.clm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function that takes a list of distributions of length N and shows that
+the central limit theorem holds.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>x (np.ndarray):</dt><dd><p>x location of the distributions</p>
+</dd>
+<dt>distr (List[np.ndarray]):</dt><dd><p>List of discrete PDFs</p>
+</dd>
+<dt>N (int, optional):</dt><dd><p>Number of convolutions to be performed by iteration over
+the list of distributions. Defaults to 1.</p>
+</dd>
+<dt>plot (bool, optional):</dt><dd><p>plotting flag. Defaults to True.</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>ValueError: Raised of list of distributions only contains one</dt><dd><p>distribution.</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>Tuple[float, float, float]: </dt><dd><p>Expected Value, Variance, cost sum of squares compared to Normal D.</p>
+</dd>
+</dl>
+</dd>
+<dt><strong>Note</strong>:</dt><dd><p>The model plot below is not technically correct, as marked in the
+code, it is just for illustration of the shape. The correct
+implementation of the convolution operation is commented.</p>
+</dd>
+</dl>
+<p>Last modified: Lucas Sawade, 2020.09.30 11.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
 <div class="figure align-default" id="id10">
 <img alt="../_images/clm.svg" src="../_images/clm.svg" /><p class="caption"><span class="caption-text">Showing that the central limit theorem holds. Note that the convolution
 limits are not actually correct, and this plot is solely for illustration.</span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
@@ -2387,7 +2656,7 @@ by default False</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">lwsspy.plot_util.pick_data_from_image.pick_data_from_image</span></code></dt><dd><p>For usage of the function</p>
+<dt><a class="reference internal" href="#lwsspy.plot_util.pick_data_from_image.pick_data_from_image" title="lwsspy.plot_util.pick_data_from_image.pick_data_from_image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lwsspy.plot_util.pick_data_from_image.pick_data_from_image</span></code></a></dt><dd><p>For usage of the function</p>
 </dd>
 </dl>
 </div>
@@ -2408,10 +2677,87 @@ simple to invert for the scaling by computing slope and intercept.</p>
 </dl>
 </dd></dl>
 
+<span class="target" id="module-lwsspy.utils.threadwork"></span><dl class="py function">
+<dt id="lwsspy.utils.threadwork.function">
+<code class="sig-prename descclassname">lwsspy.utils.threadwork.</code><code class="sig-name descname">function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">k</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/threadwork.html#function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.utils.threadwork.function" title="Permalink to this definition">¶</a></dt>
+<dd><p>function to increment global variable x</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.utils.threadwork.threadfunc">
+<code class="sig-prename descclassname">lwsspy.utils.threadwork.</code><code class="sig-name descname">threadfunc</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">results</span></em>, <em class="sig-param"><span class="n">it</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/threadwork.html#threadfunc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.utils.threadwork.threadfunc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thread function wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>function</strong><span class="classifier">[type]</span></dt><dd><p>[description]</p>
+</dd>
+<dt><strong>results</strong><span class="classifier">[type]</span></dt><dd><p>[description]</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.utils.threadwork.threadwork">
+<code class="sig-prename descclassname">lwsspy.utils.threadwork.</code><code class="sig-name descname">threadwork</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">args</span><span class="p">:</span> <span class="n">list</span></em>, <em class="sig-param"><span class="n">kwargs</span><span class="p">:</span> <span class="n">dict</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">nargout</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/threadwork.html#threadwork"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.utils.threadwork.threadwork" title="Permalink to this definition">¶</a></dt>
+<dd><p>Embarassingly Parallel multithreading</p>
+</dd></dl>
+
 </div>
 </div>
 <div class="section" id="weather">
 <h2>Weather<a class="headerlink" href="#weather" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="lwsspy.weather.drop2pickle.drop2pickle">
+<code class="sig-prename descclassname">lwsspy.weather.drop2pickle.</code><code class="sig-name descname">drop2pickle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">outfilename</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default_run</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/weather/drop2pickle.html#drop2pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.weather.drop2pickle.drop2pickle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in an exported Kestrel file and converts it to a weather object.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>filename (Union[str, None], optional):</dt><dd><p>exported kestrel file. Defaults to None.</p>
+</dd>
+<dt>outfilename (Union[str, None], optional):</dt><dd><p>outputfilename. Defaults to None, then
+&lt;filename&gt;.csv –&gt; &lt;filename&gt;.p</p>
+</dd>
+<dt>default_run (bool, optional):</dt><dd><p>Default file is called from <code class="docutils literal notranslate"><span class="pre">data</span></code> dir. Defaults to False.</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>weather object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="lwsspy.weather.requestweather.requestweather">
+<em class="property">class </em><code class="sig-prename descclassname">lwsspy.weather.requestweather.</code><code class="sig-name descname">requestweather</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lat</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">40.351978</span></em>, <em class="sig-param"><span class="n">lon</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">- 74.660744</span></em>, <em class="sig-param"><span class="n">apikey</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'x0UHCli9qKjkJzxHRDwRa9FWmn4XW31h'</span></em>, <em class="sig-param"><span class="n">locationkey</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'339523'</span></em>, <em class="sig-param"><span class="n">historical</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">city</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'Princeton'</span></em>, <em class="sig-param"><span class="n">countrycode</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'US'</span></em>, <em class="sig-param"><span class="n">forecast</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="#lwsspy.weather.weather.weather" title="lwsspy.weather.weather.weather">lwsspy.weather.weather.weather</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default_run</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/weather/requestweather.html#requestweather"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.weather.requestweather.requestweather" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class requires a bit of a setup. To make this work you will have to</p>
+<ol class="arabic simple">
+<li><p>Setup an Accuweather Developer account (Limited Trial, which let’s you
+request data 50 times a day for free.)</p></li>
+<li><dl class="simple">
+<dt>Setup an app under the <cite>My Apps</cite> tab.</dt><dd><ol class="loweralpha simple">
+<li><p>Choose limited trial</p></li>
+<li><p>Weather app and</p></li>
+<li><p>Python as language</p></li>
+<li><p>after creating the app get the API key that is displayed when
+clicking on the app.</p></li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><p>Then you can use the class to get both the location key for your lat
+lon (it will provide you the closets station) and get the forecast.</p></li>
+</ol>
+<p>Last modified: Lucas Sawade, 2020.09.22 12.00 (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="lwsspy.weather.weather.weather">
+<em class="property">class </em><code class="sig-prename descclassname">lwsspy.weather.weather.</code><code class="sig-name descname">weather</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dates</span><span class="p">:</span> <span class="n">list</span> <span class="o">=</span> <span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">temperature</span><span class="p">:</span> <span class="n">numpy.ndarray</span> <span class="o">=</span> <span class="default_value">array([], dtype=float64)</span></em>, <em class="sig-param"><span class="n">relativeHumidity</span><span class="p">:</span> <span class="n">numpy.ndarray</span> <span class="o">=</span> <span class="default_value">array([], dtype=float64)</span></em>, <em class="sig-param"><span class="n">heatStressIndex</span><span class="p">:</span> <span class="n">numpy.ndarray</span> <span class="o">=</span> <span class="default_value">array([], dtype=float64)</span></em>, <em class="sig-param"><span class="n">dewPoint</span><span class="p">:</span> <span class="n">numpy.ndarray</span> <span class="o">=</span> <span class="default_value">array([], dtype=float64)</span></em>, <em class="sig-param"><span class="n">wetBulbTemperature</span><span class="p">:</span> <span class="n">numpy.ndarray</span> <span class="o">=</span> <span class="default_value">array([], dtype=float64)</span></em>, <em class="sig-param"><span class="n">stationPressure</span><span class="p">:</span> <span class="n">numpy.ndarray</span> <span class="o">=</span> <span class="default_value">array([], dtype=float64)</span></em>, <em class="sig-param"><span class="n">rain</span><span class="p">:</span> <span class="n">numpy.ndarray</span> <span class="o">=</span> <span class="default_value">array([], dtype=float64)</span></em>, <em class="sig-param"><span class="n">deviceName</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">''</span></em>, <em class="sig-param"><span class="n">deviceModel</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">''</span></em>, <em class="sig-param"><span class="n">serialNumber</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">''</span></em>, <em class="sig-param"><span class="n">unitTemp</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'$^\\circ C$'</span></em>, <em class="sig-param"><span class="n">unitRelativeHumidity</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'%'</span></em>, <em class="sig-param"><span class="n">unitHeatStressIndex</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'$^\\circ C$'</span></em>, <em class="sig-param"><span class="n">unitRain</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'mm'</span></em>, <em class="sig-param"><span class="n">unitDew</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'$^\\circ C$'</span></em>, <em class="sig-param"><span class="n">unitWetBulbTemp</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'$^\\circ C$'</span></em>, <em class="sig-param"><span class="n">unitStationPressure</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'mb'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/weather/weather.html#weather"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.weather.weather.weather" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 </div>
 
