@@ -30,12 +30,14 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="One-liners to Remember" href="one-liners-to-remember.html" />
     <link rel="prev" title="Paraview" href="paraview.html" /> 
 </head>
 
@@ -85,6 +87,8 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="matplotlibtips.html">Tips And Tricks for Matplotlib</a></li>
 <li class="toctree-l1"><a class="reference internal" href="numpydoctips.html">NumpyDoc Tips</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seismology.html">Seismology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hpc-installations.html">High-Performance-Computing Installations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="paraview.html">Paraview</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Aaaalll the functions!</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#inversion">Inversion</a></li>
@@ -110,6 +114,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#weather">Weather</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="one-liners-to-remember.html">One-liners to Remember</a></li>
 </ul>
 
             
@@ -181,10 +186,10 @@
 <h2>Inversion<a class="headerlink" href="#inversion" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="lwsspy.inversion.optimizer.Optimization">
-<em class="property">class </em><code class="sig-prename descclassname">lwsspy.inversion.optimizer.</code><code class="sig-name descname">Optimization</code><span class="sig-paren">(</span><em class="sig-param">otype: str = 'bfgs'</em>, <em class="sig-param">fcost_init: float = 0.0</em>, <em class="sig-param">fcost: float = 0.0</em>, <em class="sig-param">norm_grad_init: float = 0.0</em>, <em class="sig-param">norm_grad: float = 0.0</em>, <em class="sig-param">stopping_criterion: float = 1e-10</em>, <em class="sig-param">niter_max: int = 50</em>, <em class="sig-param">qk: float = 0.0</em>, <em class="sig-param">q: float = 0.0</em>, <em class="sig-param">is_preco: bool = True</em>, <em class="sig-param">alpha: float = 0.0</em>, <em class="sig-param">n: int = 0</em>, <em class="sig-param">model: numpy.ndarray = array([]</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">grad: numpy.ndarray = array([]</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">hess: numpy.ndarray = array([]</em>, <em class="sig-param">shape=(1</em>, <em class="sig-param">0)</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">descent: numpy.ndarray = array([]</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">nsave: int = 0</em>, <em class="sig-param">perc: float = 0.025</em>, <em class="sig-param">damping: float = 1.0</em>, <em class="sig-param">fcost_hist: list = []</em>, <em class="sig-param">flag: str = 'suceed'</em>, <em class="sig-param">nls_max: int = 20</em>, <em class="sig-param">c1: float = 0.0001</em>, <em class="sig-param">c2: float = 0.9</em>, <em class="sig-param">al: float = 0.0</em>, <em class="sig-param">ar: float = 0.0</em>, <em class="sig-param">strong: bool = False</em>, <em class="sig-param">factor: float = 10.0</em>, <em class="sig-param">gsave: list = []</em>, <em class="sig-param">msave: list = []</em>, <em class="sig-param">compute_cost: callable = &lt;function NOP&gt;</em>, <em class="sig-param">compute_gradient: callable = &lt;function NOP&gt;</em>, <em class="sig-param">compute_cost_and_gradient: callable = None</em>, <em class="sig-param">compute_cost_and_grad_and_hess: callable = None</em>, <em class="sig-param">descent_direction: callable = &lt;function NOP&gt;</em>, <em class="sig-param">apply_preconditioner: callable = &lt;function NOP&gt;</em>, <em class="sig-param">save_model_to_disk: callable = &lt;function NOP&gt;</em>, <em class="sig-param">save_model_and_gradient: callable = &lt;function store_grad_and_model&gt;</em>, <em class="sig-param">solve: callable = &lt;function Solve_Optimisation_Problem&gt;</em>, <em class="sig-param">get_optim_si_yi: callable = &lt;function get_optim_si_yi&gt;</em>, <em class="sig-param">compute_beta: callable = &lt;function fletcher_reeves&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/inversion/optimizer.html#Optimization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.inversion.optimizer.Optimization" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">lwsspy.inversion.optimizer.</code><code class="sig-name descname">Optimization</code><span class="sig-paren">(</span><em class="sig-param">otype: str = 'bfgs'</em>, <em class="sig-param">fcost_init: float = 0.0</em>, <em class="sig-param">fcost: float = 0.0</em>, <em class="sig-param">norm_grad_init: float = 0.0</em>, <em class="sig-param">norm_grad: float = 0.0</em>, <em class="sig-param">stopping_criterion: float = 1e-10</em>, <em class="sig-param">stopping_criterion_model: float = 0.001</em>, <em class="sig-param">niter_max: int = 50</em>, <em class="sig-param">qk: float = 0.0</em>, <em class="sig-param">q: float = 0.0</em>, <em class="sig-param">is_preco: bool = True</em>, <em class="sig-param">alpha: float = 0.0</em>, <em class="sig-param">n: int = 0</em>, <em class="sig-param">model: numpy.ndarray = array([]</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">grad: numpy.ndarray = array([]</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">hess: numpy.ndarray = array([]</em>, <em class="sig-param">shape=(1</em>, <em class="sig-param">0)</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">descent: numpy.ndarray = array([]</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">nsave: int = 0</em>, <em class="sig-param">perc: float = 0.025</em>, <em class="sig-param">damping: float = 0.0</em>, <em class="sig-param">fcost_hist: list = []</em>, <em class="sig-param">flag: str = 'suceed'</em>, <em class="sig-param">nls_max: int = 20</em>, <em class="sig-param">c1: float = 0.0001</em>, <em class="sig-param">c2: float = 0.9</em>, <em class="sig-param">al: float = 0.0</em>, <em class="sig-param">ar: float = 0.0</em>, <em class="sig-param">strong: bool = False</em>, <em class="sig-param">factor: float = 10.0</em>, <em class="sig-param">gsave: list = []</em>, <em class="sig-param">msave: list = []</em>, <em class="sig-param">compute_cost: callable = &lt;function NOP&gt;</em>, <em class="sig-param">compute_gradient: callable = &lt;function NOP&gt;</em>, <em class="sig-param">compute_cost_and_gradient: callable = None</em>, <em class="sig-param">compute_cost_and_grad_and_hess: callable = None</em>, <em class="sig-param">descent_direction: callable = &lt;function NOP&gt;</em>, <em class="sig-param">apply_preconditioner: callable = &lt;function NOP&gt;</em>, <em class="sig-param">save_model_to_disk: callable = &lt;function NOP&gt;</em>, <em class="sig-param">save_model_and_gradient: callable = &lt;function store_grad_and_model&gt;</em>, <em class="sig-param">solve: callable = &lt;function Solve_Optimisation_Problem&gt;</em>, <em class="sig-param">get_optim_si_yi: callable = &lt;function get_optim_si_yi&gt;</em>, <em class="sig-param">compute_beta: callable = &lt;function fletcher_reeves&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/inversion/optimizer.html#Optimization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.inversion.optimizer.Optimization" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="py method">
 <dt id="lwsspy.inversion.optimizer.Optimization.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">otype: str = 'bfgs'</em>, <em class="sig-param">fcost_init: float = 0.0</em>, <em class="sig-param">fcost: float = 0.0</em>, <em class="sig-param">norm_grad_init: float = 0.0</em>, <em class="sig-param">norm_grad: float = 0.0</em>, <em class="sig-param">stopping_criterion: float = 1e-10</em>, <em class="sig-param">niter_max: int = 50</em>, <em class="sig-param">qk: float = 0.0</em>, <em class="sig-param">q: float = 0.0</em>, <em class="sig-param">is_preco: bool = True</em>, <em class="sig-param">alpha: float = 0.0</em>, <em class="sig-param">n: int = 0</em>, <em class="sig-param">model: numpy.ndarray = array([]</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">grad: numpy.ndarray = array([]</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">hess: numpy.ndarray = array([]</em>, <em class="sig-param">shape=(1</em>, <em class="sig-param">0)</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">descent: numpy.ndarray = array([]</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">nsave: int = 0</em>, <em class="sig-param">perc: float = 0.025</em>, <em class="sig-param">damping: float = 1.0</em>, <em class="sig-param">fcost_hist: list = []</em>, <em class="sig-param">flag: str = 'suceed'</em>, <em class="sig-param">nls_max: int = 20</em>, <em class="sig-param">c1: float = 0.0001</em>, <em class="sig-param">c2: float = 0.9</em>, <em class="sig-param">al: float = 0.0</em>, <em class="sig-param">ar: float = 0.0</em>, <em class="sig-param">strong: bool = False</em>, <em class="sig-param">factor: float = 10.0</em>, <em class="sig-param">gsave: list = []</em>, <em class="sig-param">msave: list = []</em>, <em class="sig-param">compute_cost: callable = &lt;function NOP&gt;</em>, <em class="sig-param">compute_gradient: callable = &lt;function NOP&gt;</em>, <em class="sig-param">compute_cost_and_gradient: callable = None</em>, <em class="sig-param">compute_cost_and_grad_and_hess: callable = None</em>, <em class="sig-param">descent_direction: callable = &lt;function NOP&gt;</em>, <em class="sig-param">apply_preconditioner: callable = &lt;function NOP&gt;</em>, <em class="sig-param">save_model_to_disk: callable = &lt;function NOP&gt;</em>, <em class="sig-param">save_model_and_gradient: callable = &lt;function store_grad_and_model&gt;</em>, <em class="sig-param">solve: callable = &lt;function Solve_Optimisation_Problem&gt;</em>, <em class="sig-param">get_optim_si_yi: callable = &lt;function get_optim_si_yi&gt;</em>, <em class="sig-param">compute_beta: callable = &lt;function fletcher_reeves&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/inversion/optimizer.html#Optimization.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.inversion.optimizer.Optimization.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">otype: str = 'bfgs'</em>, <em class="sig-param">fcost_init: float = 0.0</em>, <em class="sig-param">fcost: float = 0.0</em>, <em class="sig-param">norm_grad_init: float = 0.0</em>, <em class="sig-param">norm_grad: float = 0.0</em>, <em class="sig-param">stopping_criterion: float = 1e-10</em>, <em class="sig-param">stopping_criterion_model: float = 0.001</em>, <em class="sig-param">niter_max: int = 50</em>, <em class="sig-param">qk: float = 0.0</em>, <em class="sig-param">q: float = 0.0</em>, <em class="sig-param">is_preco: bool = True</em>, <em class="sig-param">alpha: float = 0.0</em>, <em class="sig-param">n: int = 0</em>, <em class="sig-param">model: numpy.ndarray = array([]</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">grad: numpy.ndarray = array([]</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">hess: numpy.ndarray = array([]</em>, <em class="sig-param">shape=(1</em>, <em class="sig-param">0)</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">descent: numpy.ndarray = array([]</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">nsave: int = 0</em>, <em class="sig-param">perc: float = 0.025</em>, <em class="sig-param">damping: float = 0.0</em>, <em class="sig-param">fcost_hist: list = []</em>, <em class="sig-param">flag: str = 'suceed'</em>, <em class="sig-param">nls_max: int = 20</em>, <em class="sig-param">c1: float = 0.0001</em>, <em class="sig-param">c2: float = 0.9</em>, <em class="sig-param">al: float = 0.0</em>, <em class="sig-param">ar: float = 0.0</em>, <em class="sig-param">strong: bool = False</em>, <em class="sig-param">factor: float = 10.0</em>, <em class="sig-param">gsave: list = []</em>, <em class="sig-param">msave: list = []</em>, <em class="sig-param">compute_cost: callable = &lt;function NOP&gt;</em>, <em class="sig-param">compute_gradient: callable = &lt;function NOP&gt;</em>, <em class="sig-param">compute_cost_and_gradient: callable = None</em>, <em class="sig-param">compute_cost_and_grad_and_hess: callable = None</em>, <em class="sig-param">descent_direction: callable = &lt;function NOP&gt;</em>, <em class="sig-param">apply_preconditioner: callable = &lt;function NOP&gt;</em>, <em class="sig-param">save_model_to_disk: callable = &lt;function NOP&gt;</em>, <em class="sig-param">save_model_and_gradient: callable = &lt;function store_grad_and_model&gt;</em>, <em class="sig-param">solve: callable = &lt;function Solve_Optimisation_Problem&gt;</em>, <em class="sig-param">get_optim_si_yi: callable = &lt;function get_optim_si_yi&gt;</em>, <em class="sig-param">compute_beta: callable = &lt;function fletcher_reeves&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/inversion/optimizer.html#Optimization.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.inversion.optimizer.Optimization.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Optimization class to run optimize a problem with given cost function
 and cost function gradient.</p>
 <dl class="field-list simple">
@@ -201,6 +206,8 @@ and cost function gradient.</p>
 <dt><strong>norm_grad</strong><span class="classifier">float, optional</span></dt><dd><p>current norm of the gradient, by default 0.0</p>
 </dd>
 <dt><strong>stopping_criterion</strong><span class="classifier">float, optional</span></dt><dd><p>value to cost function has to reach, by default 1e-10</p>
+</dd>
+<dt><strong>stopping_criterion_model</strong><span class="classifier">float, optional</span></dt><dd><p>value to stop at if model isn’t updating enough anymore</p>
 </dd>
 <dt><strong>niter_max</strong><span class="classifier">int, optional</span></dt><dd><p>max iteration (excluding the linesearch), by default 50</p>
 </dd>
@@ -300,7 +307,7 @@ minima which of course is a problem for local minimization schemes.</span><a cla
 
 <dl class="py function">
 <dt id="lwsspy.maps.plot_map.plot_map">
-<code class="sig-prename descclassname">lwsspy.maps.plot_map.</code><code class="sig-name descname">plot_map</code><span class="sig-paren">(</span><em class="sig-param">fill=True</em>, <em class="sig-param">zorder=-10</em>, <em class="sig-param">projection=&lt;cartopy.crs.PlateCarree object&gt;</em>, <em class="sig-param">labelstopright: bool = True</em>, <em class="sig-param">labelsbottomleft: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/maps/plot_map.html#plot_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.maps.plot_map.plot_map" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">lwsspy.maps.plot_map.</code><code class="sig-name descname">plot_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fill</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">zorder</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">labelstopright</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">labelsbottomleft</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">borders</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">rivers</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">lakes</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/maps/plot_map.html#plot_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.maps.plot_map.plot_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots map into existing axes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -314,6 +321,12 @@ minima which of course is a problem for local minimization schemes.</span><a cla
 <dt><strong>labelstopright</strong><span class="classifier">bool, optional</span></dt><dd><p>flag to turn on or off the ticks</p>
 </dd>
 <dt><strong>labelsbottomleft</strong><span class="classifier">bool, optional</span></dt><dd><p>flag to turn on or off the ticks</p>
+</dd>
+<dt><strong>borders</strong><span class="classifier">bool</span></dt><dd><p>plot borders. Default True</p>
+</dd>
+<dt><strong>rivers</strong><span class="classifier">bool</span></dt><dd><p>plot rivers. Default False</p>
+</dd>
+<dt><strong>lakes</strong><span class="classifier">bool</span></dt><dd><p>plot lakes. Default True</p>
 </dd>
 </dl>
 </dd>
@@ -771,12 +784,39 @@ for the interpolation weighting.</p>
 
 <dl class="py method">
 <dt id="lwsspy.math.SphericalNN.SphericalNN.query_pairs">
-<code class="sig-name descname">query_pairs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">maximum_distance</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/SphericalNN.html#SphericalNN.query_pairs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.SphericalNN.SphericalNN.query_pairs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">query_pairs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">maximum_distance</span><span class="o">=</span><span class="default_value">180.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/SphericalNN.html#SphericalNN.query_pairs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.SphericalNN.SphericalNN.query_pairs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Query pairs within the kdtree</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>maximum_distance</strong><span class="classifier">[type]</span></dt><dd><p>[description]</p>
+<dt><strong>maximum_distance</strong><span class="classifier">float</span></dt><dd><p>Maximum query distance in deg</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>set or ndarray</dt><dd><p>Set of pairs (i, j) where i &lt; j</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="lwsspy.math.SphericalNN.SphericalNN.sparse_distance_matrix">
+<code class="sig-name descname">sparse_distance_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="#lwsspy.math.SphericalNN.SphericalNN" title="lwsspy.math.SphericalNN.SphericalNN">lwsspy.math.SphericalNN.SphericalNN</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">maximum_distance</span><span class="o">=</span><span class="default_value">180.0</span></em>, <em class="sig-param"><span class="n">sparse</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">km</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/SphericalNN.html#SphericalNN.sparse_distance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.math.SphericalNN.SphericalNN.sparse_distance_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the sparse distance matrix between two kdtree. if no other 
+kdtree is provided, this kdtree is used</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>other</strong><span class="classifier">SphericalNN</span></dt><dd><p>other SphericalNN tree</p>
+</dd>
+<dt><strong>maximum_distance</strong><span class="classifier">float</span></dt><dd><p>Maximum query distance in deg</p>
+</dd>
+<dt><strong>sparse: bool</strong></dt><dd><p>Flag to output sparse array for memory. Default False</p>
+</dd>
+<dt><strong>km: bool</strong></dt><dd><p>flag to output distances in kilometers. Default False</p>
 </dd>
 </dl>
 </dd>
@@ -841,7 +881,7 @@ to a color in the blue/turquise range.</p>
 
 <dl class="py function">
 <dt id="lwsspy.plot_util.nice_colorbar.nice_colorbar">
-<code class="sig-prename descclassname">lwsspy.plot_util.nice_colorbar.</code><code class="sig-name descname">nice_colorbar</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; matplotlib.colorbar.Colorbar<a class="reference internal" href="../_modules/lwsspy/plot_util/nice_colorbar.html#nice_colorbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.plot_util.nice_colorbar.nice_colorbar" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">lwsspy.plot_util.nice_colorbar.</code><code class="sig-name descname">nice_colorbar</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">fig</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; matplotlib.colorbar.Colorbar<a class="reference internal" href="../_modules/lwsspy/plot_util/nice_colorbar.html#nice_colorbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.plot_util.nice_colorbar.nice_colorbar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates nicely formatted colorbar. <code class="docutils literal notranslate"><span class="pre">*args</span></code> and <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> are parsed 
 to <code class="docutils literal notranslate"><span class="pre">plt.colorbar(*args,</span> <span class="pre">**kwargs)</span></code></p>
 <dl class="field-list simple">
@@ -858,7 +898,7 @@ to <code class="docutils literal notranslate"><span class="pre">plt.colorbar(*ar
 <dd class="field-odd"><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
 </dd>
 <dt class="field-even">Last Modified</dt>
-<dd class="field-even"><p>2020.01.06 11.00</p>
+<dd class="field-even"><p>2021.01.06 11.00d</p>
 </dd>
 </dl>
 </dd></dl>
@@ -969,11 +1009,16 @@ and the main window.</p>
 
 <dl class="py function">
 <dt id="lwsspy.plot_util.plot_label.plot_label">
-<code class="sig-prename descclassname">lwsspy.plot_util.plot_label.</code><code class="sig-name descname">plot_label</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib.axes._axes.Axes</span></em>, <em class="sig-param"><span class="n">label</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">aspect</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">location</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">dist</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.025</span></em>, <em class="sig-param"><span class="n">box</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">fontdict</span><span class="p">:</span> <span class="n">dict</span> <span class="o">=</span> <span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/plot_util/plot_label.html#plot_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.plot_util.plot_label.plot_label" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">lwsspy.plot_util.plot_label.</code><code class="sig-name descname">plot_label</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib.axes._axes.Axes</span></em>, <em class="sig-param"><span class="n">label</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">aspect</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">location</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">dist</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.025</span></em>, <em class="sig-param"><span class="n">box</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>bool<span class="p">, </span>dict<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">fontdict</span><span class="p">:</span> <span class="n">dict</span> <span class="o">=</span> <span class="default_value">{}</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/plot_util/plot_label.html#plot_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.plot_util.plot_label.plot_label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots label one of the corners of the plot.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span><span class="o">-----</span><span class="mi">2</span>
-<span class="o">|</span>     <span class="o">|</span>
-<span class="mi">3</span><span class="o">-----</span><span class="mi">4</span>
+<p>Plot locations are set as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   <span class="mi">6</span>   <span class="mi">14</span>   <span class="mi">7</span> 
+    <span class="o">--------</span>
+ <span class="mi">5</span> <span class="o">|</span><span class="mi">1</span>      <span class="mi">2</span><span class="o">|</span>  <span class="mi">8</span>
+<span class="mi">13</span> <span class="o">|</span>        <span class="o">|</span> <span class="mi">15</span>
+<span class="mi">12</span> <span class="o">|</span><span class="mi">3</span>      <span class="mi">4</span><span class="o">|</span>  <span class="mi">9</span>
+    <span class="o">--------</span>
+  <span class="mi">11</span>   <span class="mi">16</span>  <span class="mi">10</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -990,6 +1035,15 @@ and the main window.</p>
 <dt><strong>box</strong><span class="classifier">bool</span></dt><dd><p>plots bounding box st. the label is on a background, default true</p>
 </dd>
 </dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd>
+<dt class="field-even">Last Modified</dt>
+<dd class="field-even"><p>2021.01.26 18.30</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1124,6 +1178,72 @@ that contain</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="lwsspy.seismo.gaussiant.gaussiant">
+<code class="sig-prename descclassname">lwsspy.seismo.gaussiant.</code><code class="sig-name descname">gaussiant</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">t</span></em>, <em class="sig-param"><span class="n">t0</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">f0</span><span class="o">=</span><span class="default_value">20.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/gaussiant.html#gaussiant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.gaussiant.gaussiant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gaussian curve with dominant frequency and time-shift</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>t</strong><span class="classifier">Array-like</span></dt><dd><p>time vector</p>
+</dd>
+<dt><strong>t0</strong><span class="classifier">float, optional</span></dt><dd><p>timeshift, by default 0.0</p>
+</dd>
+<dt><strong>f0</strong><span class="classifier">float, optional</span></dt><dd><p>dominant frequenncy in Hz, by default 20.0</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>Arraylike</dt><dd><p>output gaussian</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd>
+<dt class="field-even">Last Modified</dt>
+<dd class="field-even"><p>2021.03.02 23.30</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="lwsspy.seismo.gaussiant.dgaussiant">
+<code class="sig-prename descclassname">lwsspy.seismo.gaussiant.</code><code class="sig-name descname">dgaussiant</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">t</span></em>, <em class="sig-param"><span class="n">t0</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">f0</span><span class="o">=</span><span class="default_value">20.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/gaussiant.html#dgaussiant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.gaussiant.dgaussiant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Derivative of gaussian curve with dominant frequency and time-shift</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>t</strong><span class="classifier">Array-like</span></dt><dd><p>time vector</p>
+</dd>
+<dt><strong>t0</strong><span class="classifier">float, optional</span></dt><dd><p>timeshift, by default 0.0</p>
+</dd>
+<dt><strong>f0</strong><span class="classifier">float, optional</span></dt><dd><p>dominant frequenncy in Hz, by default 20.0</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>Arraylike</dt><dd><p>output gaussian</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd>
+<dt class="field-even">Last Modified</dt>
+<dd class="field-even"><p>2021.03.02 23.30</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="lwsspy.seismo.inv2stationxml.inv2stationxml">
 <code class="sig-prename descclassname">lwsspy.seismo.inv2stationxml.</code><code class="sig-name descname">inv2stationxml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inv</span><span class="p">:</span> <span class="n">obspy.core.inventory.inventory.Inventory</span></em>, <em class="sig-param"><span class="n">outputfilename</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'station.xml'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/inv2stationxml.html#inv2stationxml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.inv2stationxml.inv2stationxml" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tankes in inv and writes stationxml.</p>
@@ -1168,7 +1288,7 @@ Defaults to “.”.</p>
 
 <dl class="py class">
 <dt id="lwsspy.seismo.source.CMTSource">
-<em class="property">class </em><code class="sig-prename descclassname">lwsspy.seismo.source.</code><code class="sig-name descname">CMTSource</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">origin_time</span><span class="o">=</span><span class="default_value">UTCDateTime(1970, 1, 1, 0, 0)</span></em>, <em class="sig-param"><span class="n">pde_latitude</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">pde_longitude</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">mb</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">ms</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">pde_depth_in_m</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">region_tag</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">eventname</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cmt_time</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">half_duration</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">latitude</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">longitude</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">depth_in_m</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">m_rr</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">m_tt</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">m_pp</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">m_rt</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">m_rp</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">m_tp</span><span class="o">=</span><span class="default_value">0.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/source.html#CMTSource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.source.CMTSource" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">lwsspy.seismo.source.</code><code class="sig-name descname">CMTSource</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">origin_time</span><span class="o">=</span><span class="default_value">UTCDateTime(1970, 1, 1, 0, 0)</span></em>, <em class="sig-param"><span class="n">pde_latitude</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">pde_longitude</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">mb</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">ms</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">pde_depth_in_m</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">region_tag</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">eventname</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cmt_time</span><span class="o">=</span><span class="default_value">UTCDateTime(1970, 1, 1, 0, 0)</span></em>, <em class="sig-param"><span class="n">half_duration</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">latitude</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">longitude</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">depth_in_m</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">m_rr</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">m_tt</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">m_pp</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">m_rt</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">m_rp</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">m_tp</span><span class="o">=</span><span class="default_value">1.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/source.html#CMTSource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.source.CMTSource" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to handle a seismic moment tensor source including a source time
 function.</p>
 </dd></dl>
@@ -2026,7 +2146,7 @@ depending on depth of the slice.</p>
 
 <dl class="py function">
 <dt id="lwsspy.seismo.specfem.plot_specfem_xsec_depth.plot_specfem_xsec_depth">
-<code class="sig-prename descclassname">lwsspy.seismo.specfem.plot_specfem_xsec_depth.</code><code class="sig-name descname">plot_specfem_xsec_depth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">infile</span></em>, <em class="sig-param"><span class="n">outfile</span></em>, <em class="sig-param"><span class="n">label</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/specfem/plot_specfem_xsec_depth.html#plot_specfem_xsec_depth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.specfem.plot_specfem_xsec_depth.plot_specfem_xsec_depth" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">lwsspy.seismo.specfem.plot_specfem_xsec_depth.</code><code class="sig-name descname">plot_specfem_xsec_depth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">infile</span></em>, <em class="sig-param"><span class="n">outfile</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ax</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cax</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">depth</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/seismo/specfem/plot_specfem_xsec_depth.html#plot_specfem_xsec_depth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.specfem.plot_specfem_xsec_depth.plot_specfem_xsec_depth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes in a Specfem depthslice and creates a map from it.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2063,7 +2183,7 @@ parameters.</p>
 
 <dl class="py function">
 <dt id="lwsspy.seismo.specfem.read_specfem_xsec_depth.read_specfem_xsec_depth">
-<code class="sig-prename descclassname">lwsspy.seismo.specfem.read_specfem_xsec_depth.</code><code class="sig-name descname">read_specfem_xsec_depth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">res</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.25</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">]</span><a class="reference internal" href="../_modules/lwsspy/seismo/specfem/read_specfem_xsec_depth.html#read_specfem_xsec_depth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.specfem.read_specfem_xsec_depth.read_specfem_xsec_depth" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">lwsspy.seismo.specfem.read_specfem_xsec_depth.</code><code class="sig-name descname">read_specfem_xsec_depth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">res</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.25</span></em>, <em class="sig-param"><span class="n">no_weighting</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">maximum_distance</span><span class="o">=</span><span class="default_value">2.0</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">]</span><a class="reference internal" href="../_modules/lwsspy/seismo/specfem/read_specfem_xsec_depth.html#read_specfem_xsec_depth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.seismo.specfem.read_specfem_xsec_depth.read_specfem_xsec_depth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads in a specfem generated cross section and outputs a gridded version
 of it to map it out.</p>
 <dl class="field-list simple">
@@ -2370,6 +2490,41 @@ first/only waveform tag from the dataset</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="lwsspy.utils.io.loadmat">
+<code class="sig-prename descclassname">lwsspy.utils.io.</code><code class="sig-name descname">loadmat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/io.html#loadmat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.utils.io.loadmat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses <code class="docutils literal notranslate"><span class="pre">scipy.io.loadmat()</span></code> and loads <code class="docutils literal notranslate"><span class="pre">.mat</span></code> file created in matlab of 
+version <code class="docutils literal notranslate"><span class="pre">-v7</span></code>. Note the this is only necessary, because matlab saves
+structs to the HDF5 files incredible complicated in <code class="docutils literal notranslate"><span class="pre">-v7.3</span></code>, which makes
+them almost unreadable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>matlab file description</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>dictionary containing the <code class="docutils literal notranslate"><span class="pre">.mat</span></code> file content as a nested
+dictionary</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>User mergen’s answer, modified by user jcbsv
+Taken from: <a class="reference external" href="https://stackoverflow.com/questions/7008608/scipy-io-loadmat-nested-structures-i-e-dictionaries">https://stackoverflow.com/questions/7008608/scipy-io-loadmat-nested-structures-i-e-dictionaries</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd>
+<dt class="field-even">Last Modified</dt>
+<dd class="field-even"><p>2021.01.26 22.30</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="lwsspy.utils.io.smart_read_yaml">
 <code class="sig-prename descclassname">lwsspy.utils.io.</code><code class="sig-name descname">smart_read_yaml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">yaml_file</span></em>, <em class="sig-param"><span class="n">mpi_mode</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">comm</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/io.html#smart_read_yaml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lwsspy.utils.io.smart_read_yaml" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read yaml file into python dict, in mpi_mode or not</p>
@@ -2613,6 +2768,8 @@ lon (it will provide you the closets station) and get the forecast.</p></li>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="one-liners-to-remember.html" class="btn btn-neutral float-right" title="One-liners to Remember" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="paraview.html" class="btn btn-neutral float-left" title="Paraview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

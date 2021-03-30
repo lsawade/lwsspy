@@ -30,6 +30,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -84,8 +85,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/matplotlibtips.html">Tips And Tricks for Matplotlib</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/numpydoctips.html">NumpyDoc Tips</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/seismology.html">Seismology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/hpc-installations.html">High-Performance-Computing Installations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/paraview.html">Paraview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/functions.html">Aaaalll the functions!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/one-liners-to-remember.html">One-liners to Remember</a></li>
 </ul>
 
             
@@ -156,8 +160,9 @@
 <span class="kn">from</span> <span class="nn">cartopy.crs</span> <span class="kn">import</span> <span class="n">PlateCarree</span><span class="p">,</span> <span class="n">Mollweide</span>
 
 
-<div class="viewcode-block" id="plot_map"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.maps.plot_map.plot_map">[docs]</a><span class="k">def</span> <span class="nf">plot_map</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=-</span><span class="mi">10</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">PlateCarree</span><span class="p">(),</span>
-             <span class="n">labelstopright</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">labelsbottomleft</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="plot_map"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.maps.plot_map.plot_map">[docs]</a><span class="k">def</span> <span class="nf">plot_map</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labelstopright</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+             <span class="n">labelsbottomleft</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">borders</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+             <span class="n">rivers</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">lakes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Plots map into existing axes.</span>
 
 <span class="sd">    Parameters</span>
@@ -172,6 +177,12 @@
 <span class="sd">        flag to turn on or off the ticks</span>
 <span class="sd">    labelsbottomleft : bool, optional</span>
 <span class="sd">        flag to turn on or off the ticks</span>
+<span class="sd">    borders : bool</span>
+<span class="sd">        plot borders. Default True</span>
+<span class="sd">    rivers : bool</span>
+<span class="sd">        plot rivers. Default False</span>
+<span class="sd">    lakes : bool </span>
+<span class="sd">        plot lakes. Default True</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -192,13 +203,13 @@
 
     <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
 
-    <span class="c1"># Set xticks Should be automated, but I just don&#39;t know how rn</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="o">-</span><span class="mi">150</span><span class="p">,</span> <span class="o">-</span><span class="mi">120</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">60</span><span class="p">,</span> <span class="o">-</span><span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span>
-                   <span class="mi">60</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">180</span><span class="p">],</span> <span class="n">crs</span><span class="o">=</span><span class="n">projection</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">60</span><span class="p">,</span> <span class="o">-</span><span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span> <span class="n">crs</span><span class="o">=</span><span class="n">projection</span><span class="p">)</span>
-
     <span class="c1"># Put lables all around</span>
-    <span class="k">if</span> <span class="n">projection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Mollweide</span><span class="p">():</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">projection</span><span class="p">,</span> <span class="n">cartopy</span><span class="o">.</span><span class="n">crs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">):</span>
+
+        <span class="c1"># Set xticks Should be automated, but I just don&#39;t know how rn</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="o">-</span><span class="mi">135</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">45</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span>
+                       <span class="mi">90</span><span class="p">,</span> <span class="mi">135</span><span class="p">,</span> <span class="mi">180</span><span class="p">],</span> <span class="n">crs</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">projection</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">45</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">45</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span> <span class="n">crs</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">projection</span><span class="p">)</span>
 
         <span class="c1"># Set label formatter</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">cartopy</span><span class="o">.</span><span class="n">mpl</span><span class="o">.</span><span class="n">ticker</span><span class="o">.</span><span class="n">LongitudeFormatter</span><span class="p">())</span>
@@ -221,6 +232,22 @@
         <span class="n">ax</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span><span class="n">cartopy</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">LAND</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="n">zorder</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
                        <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 
+    <span class="k">if</span> <span class="n">borders</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span><span class="n">cartopy</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">BORDERS</span><span class="p">,</span>
+                       <span class="n">zorder</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">zorder</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">zorder</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                       <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
+                       <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">rivers</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span><span class="n">cartopy</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">RIVERS</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="n">zorder</span><span class="p">,</span>
+                       <span class="n">edgecolor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">),)</span>
+        <span class="c1">#    edgecolor=(0.5, 0.5, 0.7) )</span>
+
+    <span class="k">if</span> <span class="n">lakes</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span><span class="n">cartopy</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">LAKES</span><span class="p">,</span>
+                       <span class="n">zorder</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">zorder</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">zorder</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                       <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                       <span class="n">facecolor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">ax</span></div>
 </pre></div>
 

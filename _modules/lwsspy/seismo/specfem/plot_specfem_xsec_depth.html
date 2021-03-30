@@ -30,6 +30,7 @@
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
         <script src="../../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -84,8 +85,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/matplotlibtips.html">Tips And Tricks for Matplotlib</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/numpydoctips.html">NumpyDoc Tips</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/seismology.html">Seismology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/hpc-installations.html">High-Performance-Computing Installations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/paraview.html">Paraview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/functions.html">Aaaalll the functions!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/one-liners-to-remember.html">One-liners to Remember</a></li>
 </ul>
 
             
@@ -156,7 +160,8 @@
 <span class="kn">import</span> <span class="nn">lwsspy</span> <span class="k">as</span> <span class="nn">lpy</span>
 
 
-<div class="viewcode-block" id="plot_specfem_xsec_depth"><a class="viewcode-back" href="../../../../chapters/functions.html#lwsspy.seismo.specfem.plot_specfem_xsec_depth.plot_specfem_xsec_depth">[docs]</a><span class="k">def</span> <span class="nf">plot_specfem_xsec_depth</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+<div class="viewcode-block" id="plot_specfem_xsec_depth"><a class="viewcode-back" href="../../../../chapters/functions.html#lwsspy.seismo.specfem.plot_specfem_xsec_depth.plot_specfem_xsec_depth">[docs]</a><span class="k">def</span> <span class="nf">plot_specfem_xsec_depth</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Takes in a Specfem depthslice and creates a map from it.</span>
 
 <span class="sd">    Parameters</span>
@@ -177,36 +182,39 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># Define title:</span>
-    <span class="k">if</span> <span class="n">label</span> <span class="o">==</span> <span class="s1">&#39;rho&#39;</span><span class="p">:</span>
-        <span class="n">cbartitle</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;$\rho$&quot;</span>
-    <span class="k">if</span> <span class="n">label</span> <span class="o">==</span> <span class="s1">&#39;vpv&#39;</span><span class="p">:</span>
-        <span class="n">cbartitle</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;$v_</span><span class="si">{P_v}</span><span class="s2">$&quot;</span>
-    <span class="k">if</span> <span class="n">label</span> <span class="o">==</span> <span class="s1">&#39;vsv&#39;</span><span class="p">:</span>
-        <span class="n">cbartitle</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;$v_</span><span class="si">{S_v}</span><span class="s2">$&quot;</span>
-
     <span class="c1"># Load data from file</span>
-    <span class="n">llon</span><span class="p">,</span> <span class="n">llat</span><span class="p">,</span> <span class="n">rad</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">lpy</span><span class="o">.</span><span class="n">read_specfem_xsec_depth</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
+    <span class="n">llon</span><span class="p">,</span> <span class="n">llat</span><span class="p">,</span> <span class="n">rad</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">lpy</span><span class="o">.</span><span class="n">read_specfem_xsec_depth</span><span class="p">(</span>
+        <span class="n">infile</span><span class="p">,</span> <span class="n">res</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">no_weighting</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">extent</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">llon</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">llon</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">llat</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">llat</span><span class="p">)]</span>
 
     <span class="c1"># Get Depth of slice</span>
-    <span class="n">depth</span> <span class="o">=</span> <span class="n">lpy</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rad</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">depth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">depth</span> <span class="o">=</span> <span class="n">lpy</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rad</span><span class="p">)</span>
 
     <span class="c1"># Create Figure</span>
     <span class="n">lpy</span><span class="o">.</span><span class="n">updaterc</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">cartopy</span><span class="o">.</span><span class="n">crs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">cartopy</span><span class="o">.</span><span class="n">crs</span><span class="o">.</span><span class="n">Mollweide</span><span class="p">())</span>
+
     <span class="n">ax</span><span class="o">.</span><span class="n">set_rasterization_zorder</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">)</span>
     <span class="n">lpy</span><span class="o">.</span><span class="n">plot_map</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="n">pmesh</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">llon</span><span class="p">,</span> <span class="n">llat</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span>
-                           <span class="n">transform</span><span class="o">=</span><span class="n">cartopy</span><span class="o">.</span><span class="n">crs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">(),</span> <span class="n">zorder</span><span class="o">=-</span><span class="mi">15</span><span class="p">)</span>
-    <span class="n">lpy</span><span class="o">.</span><span class="n">plot_label</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">depth</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> km&quot;</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
-                   <span class="n">location</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="mf">0.025</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">val</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">,</span>
+                   <span class="n">transform</span><span class="o">=</span><span class="n">cartopy</span><span class="o">.</span><span class="n">crs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">(),</span> <span class="n">zorder</span><span class="o">=-</span><span class="mi">15</span><span class="p">,</span>
+                   <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;rainbow_r&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
 
-    <span class="n">c</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">pmesh</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.075</span><span class="p">)</span>
-    <span class="n">c</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">cbartitle</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">lpy</span><span class="o">.</span><span class="n">plot_label</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">depth</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> km&quot;</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+                   <span class="n">location</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">lpy</span><span class="o">.</span><span class="n">nice_colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.075</span><span class="p">,</span>
+                          <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">)</span>
     <span class="c1"># plt.show()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">outfile</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">depth</span><span class="p">)</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">km.pdf&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span></div>
+
+    <span class="k">if</span> <span class="n">outfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">outfile</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">depth</span><span class="p">)</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">km.pdf&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ax</span><span class="p">,</span> <span class="n">c</span></div>
 
 
 <span class="k">def</span> <span class="nf">bin</span><span class="p">():</span>

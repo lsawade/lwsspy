@@ -5,6 +5,8 @@ This page is not really a part of the documentation of the package, but rather
 some tips and tricks I have gathered over time.
 
 
+.. _partial-rasterize:
+
 Partially rasterizing your PDF output
 +++++++++++++++++++++++++++++++++++++
 
@@ -44,3 +46,24 @@ labels if the plots share the axes!
   :language: python
 
 .. image:: figures/remove_labels.svg
+
+
+Make the figure background transparent when exporting
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+``matplotlib.pyplot.savefig`` has a keyword ``transparent`` which makes the 
+background of figures when exported to formats, such as ``png`` or ``svg``,
+transparent. Simply save your figure using
+
+.. code:: python
+
+    import matplotlib.pyplot as plt
+    
+    # your figure code goes here
+    
+    plt.savefig(<output_filename>, transparent=True)
+
+
+See :ref:`station-map` for a use of the figure. Note that the rtd-themes 
+background is not white, but off white, if the figure background would be 
+visible, you would see it. For a converse example, see :ref:`partial-rasterize`.

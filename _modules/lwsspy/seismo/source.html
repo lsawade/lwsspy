@@ -30,6 +30,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -84,8 +85,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/matplotlibtips.html">Tips And Tricks for Matplotlib</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/numpydoctips.html">NumpyDoc Tips</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/seismology.html">Seismology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/hpc-installations.html">High-Performance-Computing Installations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/paraview.html">Paraview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/functions.html">Aaaalll the functions!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/one-liners-to-remember.html">One-liners to Remember</a></li>
 </ul>
 
             
@@ -171,7 +175,10 @@
                         <span class="n">unicode_literals</span><span class="p">)</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">UTCDateTime</span><span class="p">,</span> <span class="n">read_events</span>
+<span class="kn">from</span> <span class="nn">obspy.core.event</span> <span class="kn">import</span> <span class="n">Event</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">sourcedecomposition</span>
+<span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">getmembers</span><span class="p">,</span> <span class="n">isfunction</span>
 
 
 <div class="viewcode-block" id="CMTSource"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.seismo.source.CMTSource">[docs]</a><span class="k">class</span> <span class="nc">CMTSource</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -179,12 +186,13 @@
 <span class="sd">    Class to handle a seismic moment tensor source including a source time</span>
 <span class="sd">    function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin_time</span><span class="o">=</span><span class="n">UTCDateTime</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
                  <span class="n">pde_latitude</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">pde_longitude</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">mb</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
                  <span class="n">pde_depth_in_m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">region_tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eventname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">cmt_time</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">half_duration</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">latitude</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
-                 <span class="n">depth_in_m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">m_rr</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">m_tt</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">m_pp</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">m_rt</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
-                 <span class="n">m_rp</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">m_tp</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+                 <span class="n">cmt_time</span><span class="o">=</span><span class="n">UTCDateTime</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">half_duration</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">latitude</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                 <span class="n">longitude</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">depth_in_m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">m_rr</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">m_tt</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">m_pp</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">m_rt</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                 <span class="n">m_rp</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">m_tp</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param latitude: latitude of the source in degree</span>
 <span class="sd">        :param longitude: longitude of the source in degree</span>
@@ -275,13 +283,19 @@
                    <span class="n">m_rp</span><span class="o">=</span><span class="n">m_rp</span><span class="p">,</span> <span class="n">m_tp</span><span class="o">=</span><span class="n">m_tp</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_quakeml_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">from_quakeml_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialiaze a source object from a quakeml file</span>
 <span class="sd">        :param filename: path to a quakeml file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cat</span> <span class="o">=</span> <span class="n">read_events</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="n">event</span> <span class="o">=</span> <span class="n">cat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_event</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">Event</span><span class="p">):</span>
+
         <span class="k">for</span> <span class="n">origin</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">origins</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">origin</span><span class="o">.</span><span class="n">origin_type</span> <span class="o">==</span> <span class="s1">&#39;centroid&#39;</span><span class="p">:</span>
                 <span class="n">cmtsolution</span> <span class="o">=</span> <span class="n">origin</span>
@@ -377,12 +391,12 @@
                    <span class="n">m_rr</span><span class="o">=</span><span class="n">m_rr</span><span class="p">,</span> <span class="n">m_tt</span><span class="o">=</span><span class="n">m_tt</span><span class="p">,</span> <span class="n">m_pp</span><span class="o">=</span><span class="n">m_pp</span><span class="p">,</span> <span class="n">m_rt</span><span class="o">=</span><span class="n">m_rt</span><span class="p">,</span>
                    <span class="n">m_rp</span><span class="o">=</span><span class="n">m_rp</span><span class="p">,</span> <span class="n">m_tp</span><span class="o">=</span><span class="n">m_tp</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">write_CMTSOLUTION_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">write_CMTSOLUTION_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a source object from a CMTSOLUTION file.</span>
 <span class="sd">        :param filename: path to the CMTSOLUTION file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="c1"># Reconstruct the first line as well as possible. All</span>
             <span class="c1"># hypocentral information is missing.</span>
             <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
@@ -428,7 +442,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Moment magnitude M_w</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="mf">3.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">M0</span><span class="p">)</span> <span class="o">-</span> <span class="mf">7.0</span><span class="p">)</span> <span class="o">-</span> <span class="mf">6.0</span>
+        <span class="k">return</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">7</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">M0</span><span class="p">)</span> <span class="o">-</span> <span class="mf">10.73</span>  <span class="c1"># =  (log Mo - 9.1) / 1.5 = (2/3) * (log Mo - 9.1)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">time_shift</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -436,6 +450,10 @@
 <span class="sd">        Time shift between cmtsolution and pdesolution</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmt_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin_time</span>
+
+    <span class="nd">@time_shift</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">time_shift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_shift</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmt_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin_time</span> <span class="o">+</span> <span class="n">time_shift</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">tensor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -446,23 +464,90 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">m_rr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_tt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_pp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_rt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_rp</span><span class="p">,</span>
                          <span class="bp">self</span><span class="o">.</span><span class="n">m_tp</span><span class="p">])</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fulltensor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ndarray of full moment tensor components in r, theta, phi coordinates:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="bp">self</span><span class="o">.</span><span class="n">m_rr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_rt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_rp</span><span class="p">],</span>
+                         <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">m_rt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_tt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_tp</span><span class="p">],</span>
+                         <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">m_rp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_tp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m_pp</span><span class="p">]])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tbp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns tension (t), null (b), and pressure (p) axis and</span>
+<span class="sd">        corresponding eigenvalues.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple</span>
+<span class="sd">            matrix with tbp column vectors, corresponding eigenvalues</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get eigenvalues and eigenvectors</span>
+        <span class="n">lb</span><span class="p">,</span> <span class="n">ev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fulltensor</span><span class="p">)</span>
+
+        <span class="n">order</span> <span class="o">=</span> <span class="n">lb</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># in decreasing order -&gt; tpb</span>
+
+        <span class="k">return</span> <span class="n">lb</span><span class="p">[</span><span class="n">order</span><span class="p">],</span> <span class="n">ev</span><span class="p">[:,</span> <span class="n">order</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tbp_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the same as tpb, but eigenvalues are normalized</span>
+<span class="sd">        by the scalar moment.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lb</span><span class="p">,</span> <span class="n">ev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tbp</span>
+        <span class="k">return</span> <span class="n">lb</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">M0</span><span class="p">,</span> <span class="n">ev</span>
+
+    <span class="k">def</span> <span class="nf">decomp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;eps_nu&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns decomposition based on eignevalues of the moment tensor</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dtype : str, optional</span>
+<span class="sd">            type of decomposition. implement new decomposition by adding</span>
+<span class="sd">            function to sourcedecomposition module, by default &quot;eps_nu&quot;</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        arraylike</span>
+<span class="sd">            decomposed source, output depends on function output.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If dtype is not implemented an error will be raised.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get possible decompositions</span>
+        <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">func</span> <span class="k">for</span> <span class="n">func</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">getmembers</span><span class="p">(</span>
+            <span class="n">sourcedecomposition</span><span class="p">,</span> <span class="n">isfunction</span><span class="p">)]</span>
+
+        <span class="k">if</span> <span class="n">dtype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dtypes</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dtype</span><span class="si">}</span><span class="s2"> not implemented. Possible dtypes are: </span><span class="si">{</span><span class="n">dtypes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Get function from the module</span>
+        <span class="n">decompfunc</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sourcedecomposition</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">M1</span><span class="p">,</span> <span class="n">M2</span><span class="p">,</span> <span class="n">M3</span><span class="p">),</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tbp</span>
+
+        <span class="k">return</span> <span class="n">decompfunc</span><span class="p">(</span><span class="n">M1</span><span class="p">,</span> <span class="n">M2</span><span class="p">,</span> <span class="n">M3</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">return_str</span> <span class="o">=</span> <span class="s1">&#39;CMT Source -- </span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">eventname</span>
         <span class="n">return_str</span> <span class="o">+=</span> <span class="s1">&#39;origin time(pde): </span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin_time</span>
-        <span class="n">return_str</span> <span class="o">+=</span> <span class="s1">&#39;pde location(lat, lon): </span><span class="si">%f</span><span class="s1">, </span><span class="si">%f</span><span class="s1"> deg</span><span class="se">\n</span><span class="s1">&#39;</span> \
-            <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pde_latitude</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pde_longitude</span><span class="p">)</span>
+        <span class="n">return_str</span> <span class="o">+=</span> <span class="s1">&#39;pde location(lat, lon): </span><span class="si">%f</span><span class="s1">, </span><span class="si">%f</span><span class="s1"> deg</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pde_latitude</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pde_longitude</span><span class="p">)</span>
         <span class="n">return_str</span> <span class="o">+=</span> <span class="s1">&#39;pde depth: </span><span class="si">%f</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">pde_depth_in_m</span>
         <span class="n">return_str</span> <span class="o">+=</span> <span class="s1">&#39;CMT time: </span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmt_time</span>
-        <span class="n">return_str</span> <span class="o">+=</span> <span class="s1">&#39;CMT location(lat, lon): </span><span class="si">%f</span><span class="s1">, </span><span class="si">%f</span><span class="s1"> deg</span><span class="se">\n</span><span class="s1">&#39;</span> \
-            <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">longitude</span><span class="p">)</span>
-        <span class="n">return_str</span> <span class="o">+=</span> <span class="s1">&#39;CMT depth: </span><span class="si">%6.1e</span><span class="s1"> km</span><span class="se">\n</span><span class="s1">&#39;</span> \
-                      <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">depth_in_m</span> <span class="o">/</span> <span class="mf">1e3</span><span class="p">,)</span>
+        <span class="n">return_str</span> <span class="o">+=</span> <span class="s1">&#39;CMT location(lat, lon): </span><span class="si">%f</span><span class="s1">, </span><span class="si">%f</span><span class="s1"> deg</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">longitude</span><span class="p">)</span>
+        <span class="n">return_str</span> <span class="o">+=</span> <span class="s1">&#39;CMT depth: </span><span class="si">%6.1e</span><span class="s1"> km</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">depth_in_m</span> <span class="o">/</span> <span class="mf">1e3</span><span class="p">,)</span>
         <span class="n">return_str</span> <span class="o">+=</span> <span class="s1">&#39;half duration: </span><span class="si">%f</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">half_duration</span>
         <span class="n">return_str</span> <span class="o">+=</span> <span class="s1">&#39;Moment Tensor [Mrr, Mtt, Mpp, Mrt, Mrp, Mtp]: </span><span class="se">\n</span><span class="s1">&#39;</span>
-        <span class="n">return_str</span> <span class="o">+=</span> <span class="s1">&#39;              </span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> \
-            <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">tensor</span>
-        <span class="n">return_str</span> <span class="o">+=</span> <span class="s1">&#39;Magnitude: </span><span class="si">%4.2f</span><span class="s1">(mw), </span><span class="si">%4.2f</span><span class="s1">(mb), </span><span class="si">%4.2f</span><span class="s1">(ms)</span><span class="se">\n</span><span class="s1">&#39;</span> \
-                      <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">moment_magnitude</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mb</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
+        <span class="n">return_str</span> <span class="o">+=</span> <span class="s1">&#39;              </span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">tensor</span>
+        <span class="n">return_str</span> <span class="o">+=</span> <span class="s1">&#39;Magnitude: </span><span class="si">%4.2f</span><span class="s1">(mw), </span><span class="si">%4.2f</span><span class="s1">(mb), </span><span class="si">%4.2f</span><span class="s1">(ms)</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">moment_magnitude</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mb</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
         <span class="n">return_str</span> <span class="o">+=</span> <span class="s1">&#39;region tag: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">region_tag</span>
 
         <span class="k">return</span> <span class="n">return_str</span>

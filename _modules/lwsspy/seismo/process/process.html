@@ -30,6 +30,7 @@
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
         <script src="../../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -84,8 +85,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/matplotlibtips.html">Tips And Tricks for Matplotlib</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/numpydoctips.html">NumpyDoc Tips</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/seismology.html">Seismology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/hpc-installations.html">High-Performance-Computing Installations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/paraview.html">Paraview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/functions.html">Aaaalll the functions!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/one-liners-to-remember.html">One-liners to Remember</a></li>
 </ul>
 
             
@@ -462,12 +466,6 @@
             <span class="c1"># just cut</span>
             <span class="n">st</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="n">starttime</span><span class="p">,</span> <span class="n">endtime</span><span class="p">)</span>
 
-    <span class="c1"># rotate</span>
-    <span class="k">if</span> <span class="n">rotate_flag</span><span class="p">:</span>
-        <span class="n">st</span> <span class="o">=</span> <span class="n">rotate_stream</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">event_latitude</span><span class="p">,</span> <span class="n">event_longitude</span><span class="p">,</span>
-                           <span class="n">inventory</span><span class="o">=</span><span class="n">inventory</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;ALL-&gt;RT&quot;</span><span class="p">,</span>
-                           <span class="n">sanity_check</span><span class="o">=</span><span class="n">sanity_check</span><span class="p">)</span>
-
     <span class="c1"># Attach the epicentral distance to trace</span>
     <span class="k">if</span> <span class="n">geodata</span> <span class="ow">and</span> <span class="p">(</span><span class="n">inventory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">event_latitude</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> \
             <span class="ow">and</span> <span class="p">(</span><span class="n">event_longitude</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
@@ -481,12 +479,21 @@
             <span class="n">lat</span> <span class="o">=</span> <span class="n">coord_dict</span><span class="p">[</span><span class="s2">&quot;latitude&quot;</span><span class="p">]</span>
             <span class="n">lon</span> <span class="o">=</span> <span class="n">coord_dict</span><span class="p">[</span><span class="s2">&quot;longitude&quot;</span><span class="p">]</span>
 
+            <span class="c1"># Add location to trace</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">latitude</span> <span class="o">=</span> <span class="n">lat</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">longitude</span> <span class="o">=</span> <span class="n">lon</span>
+
             <span class="c1"># Get distance to earthquake</span>
             <span class="n">m2deg</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="mf">6371000.0</span><span class="o">/</span><span class="mi">360</span>
-            <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">distance</span> <span class="o">=</span> <span class="n">gps2dist_azimuth</span><span class="p">(</span>
-                <span class="n">event_latitude</span><span class="p">,</span> <span class="n">event_longitude</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">m2deg</span>
-            <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">back_azimuth</span> <span class="o">=</span> <span class="n">gps2dist_azimuth</span><span class="p">(</span>
-                <span class="n">event_latitude</span><span class="p">,</span> <span class="n">event_longitude</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">distance</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">back_azimuth</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">gps2dist_azimuth</span><span class="p">(</span>
+                <span class="n">event_latitude</span><span class="p">,</span> <span class="n">event_longitude</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">distance</span> <span class="o">/=</span> <span class="n">m2deg</span>
+
+    <span class="c1"># rotate</span>
+    <span class="k">if</span> <span class="n">rotate_flag</span><span class="p">:</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">rotate_stream</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">event_latitude</span><span class="p">,</span> <span class="n">event_longitude</span><span class="p">,</span>
+                           <span class="n">inventory</span><span class="o">=</span><span class="n">inventory</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;ALL-&gt;RT&quot;</span><span class="p">,</span>
+                           <span class="n">sanity_check</span><span class="o">=</span><span class="n">sanity_check</span><span class="p">)</span>
 
     <span class="c1"># Convert to single precision to save space.</span>
     <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">st</span><span class="p">:</span>

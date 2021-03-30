@@ -30,6 +30,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -84,8 +85,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/matplotlibtips.html">Tips And Tricks for Matplotlib</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/numpydoctips.html">NumpyDoc Tips</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/seismology.html">Seismology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/hpc-installations.html">High-Performance-Computing Installations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/paraview.html">Paraview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/functions.html">Aaaalll the functions!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/one-liners-to-remember.html">One-liners to Remember</a></li>
 </ul>
 
             
@@ -150,7 +154,17 @@
            <div itemprop="articleBody">
             
   <h1>Source code for lwsspy.plot_util.remove_ticklabels</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">matplotlib.axes</span> <span class="kn">import</span> <span class="n">Axes</span>
+<span></span><span class="sd">&quot;&quot;&quot;Set of functions that remove ticks and labels in axes locations</span>
+
+<span class="sd">:Author:</span>
+<span class="sd">    Lucas Sawade (lsawade@princeton.edu)</span>
+
+<span class="sd">:Last Modified:</span>
+<span class="sd">    2020.01.13 14.30</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">matplotlib.axes</span> <span class="kn">import</span> <span class="n">Axes</span>
 
 
 <div class="viewcode-block" id="remove_xticklabels"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.plot_util.remove_ticklabels.remove_xticklabels">[docs]</a><span class="k">def</span> <span class="nf">remove_xticklabels</span><span class="p">(</span><span class="n">ax</span><span class="p">:</span> <span class="n">Axes</span><span class="p">):</span>
@@ -189,6 +203,24 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                    <span class="n">left</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">remove_ticklabels_topright</span><span class="p">(</span><span class="n">ax</span><span class="p">:</span> <span class="n">Axes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Removes top and right ticklabels of an axes</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ax (Axes): Axes handles</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labeltop</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">labelright</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">remove_ticklabels_bottomleft</span><span class="p">(</span><span class="n">ax</span><span class="p">:</span> <span class="n">Axes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Removes bottom and left ticklabels of an axes</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ax (Axes): Axes handles</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelbottom</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                   <span class="n">labelleft</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
            </div>

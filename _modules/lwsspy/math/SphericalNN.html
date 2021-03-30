@@ -30,6 +30,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -84,8 +85,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/matplotlibtips.html">Tips And Tricks for Matplotlib</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/numpydoctips.html">NumpyDoc Tips</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/seismology.html">Seismology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/hpc-installations.html">High-Performance-Computing Installations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/paraview.html">Paraview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/functions.html">Aaaalll the functions!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/one-liners-to-remember.html">One-liners to Remember</a></li>
 </ul>
 
             
@@ -155,7 +159,9 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="c1"># External</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">cKDTree</span>
 <span class="kn">from</span> <span class="nn">obspy.core.inventory</span> <span class="kn">import</span> <span class="n">Station</span>
@@ -235,20 +241,69 @@
         <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">d</span><span class="p">[</span><span class="n">m</span><span class="p">],</span> <span class="n">i</span><span class="p">[</span><span class="n">m</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="SphericalNN.query_pairs"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.math.SphericalNN.SphericalNN.query_pairs">[docs]</a>    <span class="k">def</span> <span class="nf">query_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">maximum_distance</span><span class="p">):</span>
+<div class="viewcode-block" id="SphericalNN.query_pairs"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.math.SphericalNN.SphericalNN.query_pairs">[docs]</a>    <span class="k">def</span> <span class="nf">query_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">maximum_distance</span><span class="o">=</span><span class="mf">180.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Query pairs within the kdtree</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        maximum_distance : [type]</span>
-<span class="sd">            [description]</span>
+<span class="sd">        maximum_distance : float</span>
+<span class="sd">            Maximum query distance in deg</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        set or ndarray</span>
 <span class="sd">            Set of pairs (i, j) where i &lt; j</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kd_tree</span><span class="o">.</span><span class="n">query_pairs</span><span class="p">(</span><span class="n">maximum_distance</span><span class="p">)</span></div>
+        <span class="n">distkm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">maximum_distance</span><span class="o">/</span><span class="mf">2.0</span> <span class="o">/</span>
+                                   <span class="mf">180.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span> <span class="o">*</span> <span class="n">lpy</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kd_tree</span><span class="o">.</span><span class="n">query_pairs</span><span class="p">(</span><span class="n">distkm</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s1">&#39;ndarray&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SphericalNN.sparse_distance_matrix"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.math.SphericalNN.SphericalNN.sparse_distance_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">sparse_distance_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SphericalNN</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                               <span class="n">maximum_distance</span><span class="o">=</span><span class="mf">180.0</span><span class="p">,</span> <span class="n">sparse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                               <span class="n">km</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Computes the sparse distance matrix between two kdtree. if no other </span>
+<span class="sd">        kdtree is provided, this kdtree is used</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other : SphericalNN</span>
+<span class="sd">            other SphericalNN tree</span>
+<span class="sd">        maximum_distance : float</span>
+<span class="sd">            Maximum query distance in deg</span>
+<span class="sd">        sparse: bool</span>
+<span class="sd">            Flag to output sparse array for memory. Default False</span>
+<span class="sd">        km: bool</span>
+<span class="sd">            flag to output distances in kilometers. Default False</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        set or ndarray</span>
+<span class="sd">            Set of pairs (i, j) where i &lt; j</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get distance</span>
+        <span class="n">distkm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">maximum_distance</span><span class="o">/</span><span class="mf">2.0</span> <span class="o">/</span>
+                                   <span class="mf">180.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span> <span class="o">*</span> <span class="n">lpy</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span>
+
+        <span class="c1"># Get tree</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">SphericalNN</span><span class="p">):</span>
+            <span class="n">other</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">kd_tree</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">other</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">kd_tree</span>
+
+        <span class="c1"># Compute dense or sparse distance matrix</span>
+        <span class="k">if</span> <span class="n">sparse</span><span class="p">:</span>
+            <span class="n">output_mat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kd_tree</span><span class="o">.</span><span class="n">sparse_distance_matrix</span><span class="p">(</span>
+                <span class="n">other</span><span class="p">,</span> <span class="n">distkm</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">output_mat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kd_tree</span><span class="o">.</span><span class="n">sparse_distance_matrix</span><span class="p">(</span>
+                <span class="n">other</span><span class="p">,</span> <span class="n">distkm</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+
+        <span class="c1"># Convert form kilometers to degrees.</span>
+        <span class="k">if</span> <span class="n">km</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">output_mat</span> <span class="o">*=</span> <span class="n">lpy</span><span class="o">.</span><span class="n">KM2DEG</span>
+
+        <span class="k">return</span> <span class="n">output_mat</span></div>
 
 <div class="viewcode-block" id="SphericalNN.interp"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.math.SphericalNN.SphericalNN.interp">[docs]</a>    <span class="k">def</span> <span class="nf">interp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">qlat</span><span class="p">,</span> <span class="n">qlon</span><span class="p">,</span> <span class="n">maximum_distance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                <span class="n">no_weighting</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">):</span>
@@ -300,13 +355,10 @@
             <span class="c1"># Assign the interpolation data.</span>
             <span class="n">qdata</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span>
 
-            <span class="c1"># Double check distance</span>
-            <span class="n">mind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
             <span class="c1"># Filter out distances too far out.</span>
             <span class="k">if</span> <span class="n">maximum_distance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">qdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-                    <span class="n">mind</span> <span class="o">&lt;=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">maximum_distance</span><span class="o">/</span><span class="mf">2.0</span><span class="o">/</span><span class="mf">180.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+                    <span class="n">d</span> <span class="o">&lt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">maximum_distance</span><span class="o">/</span><span class="mf">2.0</span><span class="o">/</span><span class="mf">180.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
                     <span class="o">*</span> <span class="n">lpy</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span><span class="p">,</span>
                     <span class="n">qdata</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
 
@@ -323,8 +375,8 @@
             <span class="c1"># Modified Shepard&#39;s method</span>
             <span class="k">if</span> <span class="n">maximum_distance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># Get cartesian distance</span>
-                <span class="n">cartd</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">maximum_distance</span><span class="o">/</span><span class="mf">2.0</span><span class="o">/</span><span class="mf">180.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> \
-                    <span class="o">*</span> <span class="n">lpy</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span>
+                <span class="n">cartd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">maximum_distance</span><span class="o">/</span><span class="mf">2.0</span><span class="o">/</span><span class="mf">180.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+                               <span class="o">*</span> <span class="n">lpy</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span><span class="p">)</span>
 
                 <span class="c1"># Compute the weights using modified shepard</span>
                 <span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">cartd</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="n">cartd</span> <span class="o">*</span> <span class="n">d</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
@@ -346,8 +398,13 @@
                 <span class="n">wsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
                 <span class="n">datarows</span> <span class="o">=</span> <span class="p">(</span><span class="n">wsum</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
 
+                <span class="c1"># Empty array</span>
+                <span class="n">qdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">wsum</span><span class="p">)</span>
+                <span class="n">qdata</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
                 <span class="c1"># interpolation using the weights</span>
-                <span class="n">qdata</span><span class="p">[</span><span class="n">datarows</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="n">inds</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">wsum</span>
+                <span class="n">qdata</span><span class="p">[</span><span class="n">datarows</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+                    <span class="n">w</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="n">inds</span><span class="p">[</span><span class="n">datarows</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">wsum</span><span class="p">[</span><span class="n">datarows</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="n">qdata</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shp</span><span class="p">)</span></div>
 

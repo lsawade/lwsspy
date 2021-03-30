@@ -30,6 +30,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -84,8 +85,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/matplotlibtips.html">Tips And Tricks for Matplotlib</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/numpydoctips.html">NumpyDoc Tips</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/seismology.html">Seismology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/hpc-installations.html">High-Performance-Computing Installations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/paraview.html">Paraview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/functions.html">Aaaalll the functions!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/one-liners-to-remember.html">One-liners to Remember</a></li>
 </ul>
 
             
@@ -174,8 +178,92 @@
 <span class="kn">from</span> <span class="nn">pyasdf</span> <span class="kn">import</span> <span class="n">ASDFDataSet</span>
 <span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">Stream</span><span class="p">,</span> <span class="n">Inventory</span>
 <span class="kn">from</span> <span class="nn">obspy</span> <span class="kn">import</span> <span class="n">read_inventory</span>
+<span class="kn">import</span> <span class="nn">scipy.io</span> <span class="k">as</span> <span class="nn">spio</span>
 
 <span class="c1"># Internal imports</span>
+
+
+<div class="viewcode-block" id="loadmat"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.utils.io.loadmat">[docs]</a><span class="k">def</span> <span class="nf">loadmat</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Uses ``scipy.io.loadmat()`` and loads ``.mat`` file created in matlab of </span>
+<span class="sd">    version ``-v7``. Note the this is only necessary, because matlab saves</span>
+<span class="sd">    structs to the HDF5 files incredible complicated in ``-v7.3``, which makes</span>
+<span class="sd">    them almost unreadable.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        matlab file description</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        dictionary containing the ``.mat`` file content as a nested</span>
+<span class="sd">        dictionary</span>
+
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    User mergen&#39;s answer, modified by user jcbsv</span>
+<span class="sd">    Taken from: https://stackoverflow.com/questions/7008608/scipy-io-loadmat-nested-structures-i-e-dictionaries</span>
+
+
+<span class="sd">    :Author:</span>
+<span class="sd">        Lucas Sawade (lsawade@princeton.edu)</span>
+
+<span class="sd">    :Last Modified:</span>
+<span class="sd">        2021.01.26 22.30</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_check_keys</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        checks if entries in dictionary are mat-objects. If yes</span>
+<span class="sd">        todict is called to change them to nested dictionaries</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">spio</span><span class="o">.</span><span class="n">matlab</span><span class="o">.</span><span class="n">mio5_params</span><span class="o">.</span><span class="n">mat_struct</span><span class="p">):</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_todict</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">d</span>
+
+    <span class="k">def</span> <span class="nf">_has_struct</span><span class="p">(</span><span class="n">elem</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determine if elem is an array and if any array item is a struct&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">e</span><span class="p">,</span> <span class="n">spio</span><span class="o">.</span><span class="n">matlab</span><span class="o">.</span><span class="n">mio5_params</span><span class="o">.</span><span class="n">mat_struct</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">elem</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_todict</span><span class="p">(</span><span class="n">matobj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A recursive function which constructs from matobjects nested </span>
+<span class="sd">        dictionaries</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">strg</span> <span class="ow">in</span> <span class="n">matobj</span><span class="o">.</span><span class="n">_fieldnames</span><span class="p">:</span>
+            <span class="n">elem</span> <span class="o">=</span> <span class="n">matobj</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">strg</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">spio</span><span class="o">.</span><span class="n">matlab</span><span class="o">.</span><span class="n">mio5_params</span><span class="o">.</span><span class="n">mat_struct</span><span class="p">):</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">strg</span><span class="p">]</span> <span class="o">=</span> <span class="n">_todict</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">_has_struct</span><span class="p">(</span><span class="n">elem</span><span class="p">):</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">strg</span><span class="p">]</span> <span class="o">=</span> <span class="n">_tolist</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">strg</span><span class="p">]</span> <span class="o">=</span> <span class="n">elem</span>
+        <span class="k">return</span> <span class="n">d</span>
+
+    <span class="k">def</span> <span class="nf">_tolist</span><span class="p">(</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A recursive function which constructs lists from cellarrays</span>
+<span class="sd">        (which are loaded as numpy ndarrays), recursing into the elements</span>
+<span class="sd">        if they contain matobjects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">elem_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">sub_elem</span> <span class="ow">in</span> <span class="n">ndarray</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sub_elem</span><span class="p">,</span> <span class="n">spio</span><span class="o">.</span><span class="n">matlab</span><span class="o">.</span><span class="n">mio5_params</span><span class="o">.</span><span class="n">mat_struct</span><span class="p">):</span>
+                <span class="n">elem_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_todict</span><span class="p">(</span><span class="n">sub_elem</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">_has_struct</span><span class="p">(</span><span class="n">sub_elem</span><span class="p">):</span>
+                <span class="n">elem_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_tolist</span><span class="p">(</span><span class="n">sub_elem</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">elem_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sub_elem</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">elem_list</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">spio</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">struct_as_record</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">squeeze_me</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_check_keys</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">loadxy_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
