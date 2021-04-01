@@ -185,7 +185,9 @@ class GCMT3DInversion:
                                  "Update you pardict")
 
             else:
-                self.moment_tensor_inv
+                self.moment_tensor_inv = True
+        else:
+            self.moment_tensor_inv = False
 
         # Check zero trace condition
         if self.zero_trace:
