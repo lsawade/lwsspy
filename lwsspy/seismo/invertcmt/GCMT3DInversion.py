@@ -69,7 +69,7 @@ mt_params = ["m_rr", "m_tt", "m_pp", "m_rt", "m_rp", "mtp"]
 # )
 pardict = dict(
     depth_in_m=dict(scale=1000.0, pert=None),
-    cmt_time=dict(scale=1.0, pert=None)
+    time_shift=dict(scale=1.0, pert=None)
 )
 
 
