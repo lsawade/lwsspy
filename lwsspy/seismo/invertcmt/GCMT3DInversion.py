@@ -1239,10 +1239,10 @@ class GCMT3DInversion:
         # depths = np.arange(self.cmtsource.depth_in_m - 10000,
         #                    self.cmtsource.depth_in_m + 10100, 1000)
         # times = np.arange(-10.0, 10.1, 1.0)
-        depths = np.arange(self.cmtsource.depth_in_m - 1000,
-                           self.cmtsource.depth_in_m + 1100, 1000)
-        times = np.arange(self.cmtsource.time_shift - 1.0,
-                          self.cmtsource.time_shift + 1.1, 1.0)
+        depths = np.arange(self.cmtsource.depth_in_m - 10000,
+                           self.cmtsource.depth_in_m + 10100, 1000)
+        times = np.arange(self.cmtsource.time_shift - 10.0,
+                          self.cmtsource.time_shift + 10.1, 1.0)
         t, z = np.meshgrid(times, depths)
         cost = np.zeros(z.shape)
         grad = np.zeros((*z.shape, 2))
@@ -1257,7 +1257,8 @@ class GCMT3DInversion:
                 grad[_i, _j, :] = g
                 hess[_i, _j, :, :] = h
 
-        damp = 0.0001
+        damp = 0.001
+
         # Get the Gauss newton step
         for _i in range(z.shape[0]):
             for _j in range(z.shape[1]):
@@ -1267,10 +1268,15 @@ class GCMT3DInversion:
         extent = [np.min(t), np.max(t), np.min(z), np.max(z)]
         aspect = (np.max(t) - np.min(t))/(np.max(z) - np.min(z))
         plt.figure(figsize=(11, 6.5))
+
+        # Get minimum
+        ind = np.unravel_index(np.argmin(cost, axis=None), cost.shape)
+
         # Cost
         ax1 = plt.subplot(3, 4, 9)
         plt.imshow(cost, interpolation=None, extent=extent, aspect=aspect)
         lpy.plot_label(ax1, r"$\mathcal{C}$", dist=0)
+        plt.plot(times[ind[0]], depths[ind[1]], "*")
         c1 = plt.colorbar()
         c1.ax.tick_params(labelsize=7)
         c1.ax.yaxis.offsetText.set_fontsize(7)
