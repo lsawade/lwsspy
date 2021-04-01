@@ -254,8 +254,9 @@ class GCMT3DInversion:
         # Update the scale parameter for the moment tensor inversion
         # depending on the original size of the moment tensor
         if self.moment_tensor_inv:
-            for _, _dict in self.pardict.items():
-                _dict["scale"] = self.cmtsource.M0
+            for _par, _dict in self.pardict.items():
+                if _par in mt_params:
+                    _dict["scale"] = self.cmtsource.M0
 
         # Check whether Mrr, Mtt, Mpp are there for zero trace condition
         if self.zero_trace:
