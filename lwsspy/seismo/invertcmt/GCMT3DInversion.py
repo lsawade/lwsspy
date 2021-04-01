@@ -168,6 +168,8 @@ class GCMT3DInversion:
         self.debug = debug
 
         # Basic Checks
+        self.__basic_check__()
+
     def __basic_check__(self):
 
         # Check Parameter dict for wrong parameters
