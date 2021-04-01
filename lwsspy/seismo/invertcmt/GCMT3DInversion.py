@@ -59,16 +59,17 @@ parameter_check_list = ['depth_in_m', "time_shift", "m_rr",
 nosimpars = ["time_shift", "half_duration"]
 mt_params = ["m_rr", "m_tt", "m_pp", "m_rt", "m_rp", "mtp"]
 # pardict = dict(
-#     m_rr=dict(scale=1e24, pert=1e23),
-#     m_tt=dict(scale=1e24, pert=1e23),
-#     m_pp=dict(scale=1e24, pert=1e23),
-#     m_rt=dict(scale=1e24, pert=1e23),
-#     m_rp=dict(scale=1e24, pert=1e23),
-#     m_tp=dict(scale=1e24, pert=1e23),
+#     m_rr=dict(scale=None, pert=1e23),
+#     m_tt=dict(scale=None, pert=1e23),
+#     m_pp=dict(scale=None, pert=1e23),
+#     m_rt=dict(scale=None, pert=1e23),
+#     m_rp=dict(scale=None, pert=1e23),
+#     m_tp=dict(scale=None, pert=1e23),
 #     depth_in_m=dict(scale=1000.0, pert=None)
 # )
 pardict = dict(
-    depth_in_m=dict(scale=1000.0, pert=None)
+    depth_in_m=dict(scale=1000.0, pert=None),
+    cmt_time=dict(scale=1.0, pert=None)
 )
 
 
@@ -181,7 +182,17 @@ class GCMT3DInversion:
             if not all([_par in self.pardict for _par in mt_params]):
                 raise ValueError("If one moment tensor parameter is to be "
                                  "inverted. All must be inverted.\n"
-                                 "Update you Par dict")
+                                 "Update you pardict")
+
+            else:
+                self.moment_tensor_inv
+
+        # Check zero trace condition
+        if self.zero_trace:
+            if self.moment_tensor_inv is False:
+                raise ValueError("Can only use Zero Trace condition "
+                                 "if inverting for Moment Tensor.\n"
+                                 "Update you pardict.")
 
     def init(self):
 
@@ -235,13 +246,14 @@ class GCMT3DInversion:
 
     def __init_model_and_scale__(self):
 
+        # Update the scale parameter for the moment tensor inversion
+        # depending on the original size of the moment tensor
+        if self.moment_tensor_inv:
+            for _, _dict in self.pardict.items():
+                _dict["scale"] = self.cmtsource.M0
+
         # Check whether Mrr, Mtt, Mpp are there for zero trace condition
         if self.zero_trace:
-
-            if not all([_par in self.pardict for _par in mt_params]):
-                raise ValueError(
-                    "For the Zero trace condition, parameters\n"
-                    "moment tensor parameters are required.")
 
             self.zero_trace_array = np.array([1.0 if _par in mt_params else 0.0
                                               for _par in self.pardict.keys()])
