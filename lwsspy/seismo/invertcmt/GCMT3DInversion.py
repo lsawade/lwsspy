@@ -181,22 +181,23 @@ class GCMT3DInversion:
 
         # If one moment tensor parameter is given all must be given.
         if any([_par in self.pardict for _par in mt_params]):
-            if not all([_par in self.pardict for _par in mt_params]):
+            checklist = [_par if _par in self.pardict for _par in mt_params]]
+            if not all([_par in checklist for _par in mt_params]):
                 raise ValueError("If one moment tensor parameter is to be "
                                  "inverted. All must be inverted.\n"
-                                 "Update you pardict")
+                                 "Update your pardict")
 
             else:
-                self.moment_tensor_inv = True
+                self.moment_tensor_inv=True
         else:
-            self.moment_tensor_inv = False
+            self.moment_tensor_inv=False
 
         # Check zero trace condition
         if self.zero_trace:
             if self.moment_tensor_inv is False:
                 raise ValueError("Can only use Zero Trace condition "
                                  "if inverting for Moment Tensor.\n"
-                                 "Update you pardict.")
+                                 "Update your pardict.")
 
     def init(self):
 
@@ -215,29 +216,29 @@ class GCMT3DInversion:
     def __initialize_dir__(self):
 
         # Subdirectories
-        self.datadir = os.path.join(self.cmtdir, "data")
-        self.waveformdir = os.path.join(self.datadir, "waveforms")
-        self.stationdir = os.path.join(self.datadir, "stations")
-        self.syntdir = os.path.join(self.cmtdir, "synt")
-        self.windows = os.path.join(self.cmtdir, "windows")
+        self.datadir=os.path.join(self.cmtdir, "data")
+        self.waveformdir=os.path.join(self.datadir, "waveforms")
+        self.stationdir=os.path.join(self.datadir, "stations")
+        self.syntdir=os.path.join(self.cmtdir, "synt")
+        self.windows=os.path.join(self.cmtdir, "windows")
 
         # Create subsynthetic directories
-        self.synt_syntdir = os.path.join(self.syntdir, "cmt")
-        self.synt_pardirs = dict()
+        self.synt_syntdir=os.path.join(self.syntdir, "cmt")
+        self.synt_pardirs=dict()
         for _par in self.pardict.keys():
-            self.synt_pardirs[_par] = os.path.join(self.syntdir, _par)
+            self.synt_pardirs[_par]=os.path.join(self.syntdir, _par)
 
         # Create database directory if doesn't exist
         self.__create_dir__(self.databasedir)
 
         # Create entry directory
-        self.__create_dir__(self.cmtdir, overwrite=self.overwrite)
+        self.__create_dir__(self.cmtdir, overwrite = self.overwrite)
 
         # Create CMT solution
         if os.path.exists(self.cmt_in_db) is False:
             self.cmtsource.write_CMTSOLUTION_file(self.cmt_in_db)
         else:
-            check_cmt = lpy.CMTSource.from_CMTSOLUTION_file(self.cmt_in_db)
+            check_cmt=lpy.CMTSource.from_CMTSOLUTION_file(self.cmt_in_db)
             if check_cmt != self.cmtsource:
                 raise ValueError('Already have a CMTSOLUTION, '
                                  'but it is different from the input one.')
@@ -254,14 +255,14 @@ class GCMT3DInversion:
         # depending on the original size of the moment tensor
         if self.moment_tensor_inv:
             for _, _dict in self.pardict.items():
-                _dict["scale"] = self.cmtsource.M0
+                _dict["scale"]=self.cmtsource.M0
 
         # Check whether Mrr, Mtt, Mpp are there for zero trace condition
         if self.zero_trace:
 
-            self.zero_trace_array = np.array([1.0 if _par in mt_params else 0.0
+            self.zero_trace_array=np.array([1.0 if _par in mt_params else 0.0
                                               for _par in self.pardict.keys()])
-            self.zero_trace_index_array = [
+            self.zero_trace_index_array=[
                 _i for _i, _par in enumerate(self.pardict.keys())
                 if _par in mt_params]
             self.zero_trace_array = np.append(self.zero_trace_array, 0.0)
