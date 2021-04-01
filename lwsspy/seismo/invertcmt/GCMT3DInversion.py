@@ -182,6 +182,7 @@ class GCMT3DInversion:
         # If one moment tensor parameter is given all must be given.
         if any([_par in self.pardict for _par in mt_params]):
             checklist = [_par for _par in mt_params if _par in self.pardict]
+            print(checklist)
             if not all([_par in checklist for _par in mt_params]):
                 raise ValueError("If one moment tensor parameter is to be "
                                  "inverted. All must be inverted.\n"
