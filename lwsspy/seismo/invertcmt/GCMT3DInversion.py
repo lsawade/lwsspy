@@ -57,6 +57,7 @@ bash_escape = "source ~/.bash_profile"
 parameter_check_list = ['depth_in_m', "time_shift", "m_rr",
                         "m_tt", "m_pp", "m_rt", "m_rp", "m_tp"]
 nosimpars = ["time_shift", "half_duration"]
+mt_params = ["m_rr", "m_tt", "m_pp", "m_rt", "m_rp", "mtp"]
 # pardict = dict(
 #     m_rr=dict(scale=1e24, pert=1e23),
 #     m_tt=dict(scale=1e24, pert=1e23),
@@ -93,7 +94,7 @@ class GCMT3DInversion:
             starttime_offset: float = -50.0,
             endtime_offset: float = 50.0,
             download_data: bool = False,
-            node_login: Union[str, None] = None,
+            node_login: Optional[str] = None,
             conda_activation: str = conda_activation,
             bash_escape: str = bash_escape,
             download_dict: dict = download_dict,
@@ -137,13 +138,6 @@ class GCMT3DInversion:
         # Inversion dictionary
         self.pardict = pardict
 
-        # Check Parameter dict for wrong parameters
-        for _par in self.pardict.keys():
-            if _par not in self.parameter_check_list:
-                raise ValueError(
-                    f"{_par} not supported at this point. \n"
-                    f"Available parameters are {self.parameter_check_list}")
-
         # Download parameters
         self.starttime_offset = starttime_offset
         self.endtime_offset = endtime_offset
@@ -172,6 +166,23 @@ class GCMT3DInversion:
         # Other
         self.debug = debug
 
+        # Basic Checks
+    def __basic_check__(self):
+
+        # Check Parameter dict for wrong parameters
+        for _par in self.pardict.keys():
+            if _par not in self.parameter_check_list:
+                raise ValueError(
+                    f"{_par} not supported at this point. \n"
+                    f"Available parameters are {self.parameter_check_list}")
+
+        # If one moment tensor parameter is given all must be given.
+        if any([_par in self.pardict for _par in mt_params]):
+            if not all([_par in self.pardict for _par in mt_params]):
+                raise ValueError("If one moment tensor parameter is to be "
+                                 "inverted. All must be inverted.\n"
+                                 "Update you Par dict")
+
     def init(self):
 
         # Initialize directory
@@ -185,6 +196,82 @@ class GCMT3DInversion:
 
         # Initialize model vector
         self.__init_model_and_scale__()
+
+    def __initialize_dir__(self):
+
+        # Subdirectories
+        self.datadir = os.path.join(self.cmtdir, "data")
+        self.waveformdir = os.path.join(self.datadir, "waveforms")
+        self.stationdir = os.path.join(self.datadir, "stations")
+        self.syntdir = os.path.join(self.cmtdir, "synt")
+        self.windows = os.path.join(self.cmtdir, "windows")
+
+        # Create subsynthetic directories
+        self.synt_syntdir = os.path.join(self.syntdir, "cmt")
+        self.synt_pardirs = dict()
+        for _par in self.pardict.keys():
+            self.synt_pardirs[_par] = os.path.join(self.syntdir, _par)
+
+        # Create database directory if doesn't exist
+        self.__create_dir__(self.databasedir)
+
+        # Create entry directory
+        self.__create_dir__(self.cmtdir, overwrite=self.overwrite)
+
+        # Create CMT solution
+        if os.path.exists(self.cmt_in_db) is False:
+            self.cmtsource.write_CMTSOLUTION_file(self.cmt_in_db)
+        else:
+            check_cmt = lpy.CMTSource.from_CMTSOLUTION_file(self.cmt_in_db)
+            if check_cmt != self.cmtsource:
+                raise ValueError('Already have a CMTSOLUTION, '
+                                 'but it is different from the input one.')
+
+        # Create data directory
+        self.__create_dir__(self.datadir)
+
+        # Simulation directory are created as part of the prep simulations
+        # routine
+
+    def __init_model_and_scale__(self):
+
+        # Check whether Mrr, Mtt, Mpp are there for zero trace condition
+        if self.zero_trace:
+
+            if not all([_par in self.pardict for _par in mt_params]):
+                raise ValueError(
+                    "For the Zero trace condition, parameters\n"
+                    "moment tensor parameters are required.")
+
+            self.zero_trace_array = np.array([1.0 if _par in mt_params else 0.0
+                                              for _par in self.pardict.keys()])
+            self.zero_trace_index_array = [
+                _i for _i, _par in enumerate(self.pardict.keys())
+                if _par in mt_params]
+            self.zero_trace_array = np.append(self.zero_trace_array, 0.0)
+
+        # Get the model vector given the parameters to invert for
+        self.model = np.array(
+            [getattr(self.cmtsource, _par) for _par in self.pardict.keys()])
+        self.init_model = 1.0 * self.model
+        self.pars = [_par for _par in self.pardict.keys()]
+
+        # Create scaling vector
+        self.scale = np.array([_dict["scale"]
+                               for _, _dict in self.pardict.items()])
+
+        self.scaled_model = self.model/self.scale
+        self.init_scaled_model = 1.0 * self.scaled_model
+
+    def __initialize_waveform_dictionaries__(self):
+
+        for _wtype in self.processdict.keys():
+            self.data_dict[_wtype] = Stream()
+            self.synt_dict[_wtype] = dict()
+            self.synt_dict[_wtype]["synt"] = Stream()
+
+            for _par in self.pardict.keys():
+                self.synt_dict[_wtype][_par] = Stream()
 
     def process_data(self):
         lpy.print_section("Loading and processing the data")
@@ -428,82 +515,6 @@ class GCMT3DInversion:
         for _par in self.pardict.keys():
             if _par not in self.nosimpars:
                 self.nsim += 1
-
-    def __initialize_dir__(self):
-
-        # Subdirectories
-        self.datadir = os.path.join(self.cmtdir, "data")
-        self.waveformdir = os.path.join(self.datadir, "waveforms")
-        self.stationdir = os.path.join(self.datadir, "stations")
-        self.syntdir = os.path.join(self.cmtdir, "synt")
-        self.windows = os.path.join(self.cmtdir, "windows")
-
-        # Create subsynthetic directories
-        self.synt_syntdir = os.path.join(self.syntdir, "cmt")
-        self.synt_pardirs = dict()
-        for _par in self.pardict.keys():
-            self.synt_pardirs[_par] = os.path.join(self.syntdir, _par)
-
-        # Create database directory if doesn't exist
-        self.__create_dir__(self.databasedir)
-
-        # Create entry directory
-        self.__create_dir__(self.cmtdir, overwrite=self.overwrite)
-
-        # Create CMT solution
-        if os.path.exists(self.cmt_in_db) is False:
-            self.cmtsource.write_CMTSOLUTION_file(self.cmt_in_db)
-        else:
-            check_cmt = lpy.CMTSource.from_CMTSOLUTION_file(self.cmt_in_db)
-            if check_cmt != self.cmtsource:
-                raise ValueError('Already have a CMTSOLUTION, '
-                                 'but it is different from the input one.')
-
-        # Create data directory
-        self.__create_dir__(self.datadir)
-
-        # Simulation directory are created as part of the prep simulations
-        # routine
-
-    def __init_model_and_scale__(self):
-
-        # Check whether Mrr, Mtt, Mpp are there for zero trace condition
-        if self.zero_trace:
-            checklist = ["m_rr", "m_tt", "m_pp"]
-            if not all([_par in self.pardict for _par in checklist]):
-                raise ValueError(
-                    "For the Zero trace condition, parameters\n"
-                    "m_rr, m_tt, and m_pp are required.")
-
-            self.zero_trace_array = np.array([1.0 if _par in checklist else 0.0
-                                              for _par in self.pardict.keys()])
-            self.zero_trace_index_array = [
-                _i for _i, _par in enumerate(self.pardict.keys())
-                if _par in checklist]
-            self.zero_trace_array = np.append(self.zero_trace_array, 0.0)
-
-        # Get the model vector given the parameters to invert for
-        self.model = np.array(
-            [getattr(self.cmtsource, _par) for _par in self.pardict.keys()])
-        self.init_model = 1.0 * self.model
-        self.pars = [_par for _par in self.pardict.keys()]
-
-        # Create scaling vector
-        self.scale = np.array([_dict["scale"]
-                               for _, _dict in self.pardict.items()])
-
-        self.scaled_model = self.model/self.scale
-        self.init_scaled_model = 1.0 * self.scaled_model
-
-    def __initialize_waveform_dictionaries__(self):
-
-        for _wtype in self.processdict.keys():
-            self.data_dict[_wtype] = Stream()
-            self.synt_dict[_wtype] = dict()
-            self.synt_dict[_wtype]["synt"] = Stream()
-
-            for _par in self.pardict.keys():
-                self.synt_dict[_wtype][_par] = Stream()
 
     def __download_data__(self):
 
