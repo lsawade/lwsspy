@@ -57,7 +57,7 @@ bash_escape = "source ~/.bash_profile"
 parameter_check_list = ['depth_in_m', "time_shift", "m_rr",
                         "m_tt", "m_pp", "m_rt", "m_rp", "m_tp"]
 nosimpars = ["time_shift", "half_duration"]
-mt_params = ["m_rr", "m_tt", "m_pp", "m_rt", "m_rp", "mtp"]
+mt_params = ["m_rr", "m_tt", "m_pp", "m_rt", "m_rp", "m_tp"]
 pardict = dict(
     m_rr=dict(scale=None, pert=1e23),
     m_tt=dict(scale=None, pert=1e23),
