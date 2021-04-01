@@ -5,7 +5,6 @@ CMTSOLUTTION depth.
 # %% Create inversion directory
 
 # Internal
-import asyncio
 import lwsspy as lpy
 
 # External
@@ -995,7 +994,7 @@ class GCMT3DInversion:
 
         return self.__compute_cost__(), self.__compute_gradient__() * self.scale
 
-    async def compute_cost_gradient_hessian(self, model):
+    def compute_cost_gradient_hessian(self, model):
 
         # Update model
         if self.zero_trace:
@@ -1240,40 +1239,27 @@ class GCMT3DInversion:
         # depths = np.arange(self.cmtsource.depth_in_m - 10000,
         #                    self.cmtsource.depth_in_m + 10100, 1000)
         # times = np.arange(-10.0, 10.1, 1.0)
-        depths = np.arange(self.cmtsource.depth_in_m - 1000,
-                           self.cmtsource.depth_in_m + 1100, 1000)
-        times = np.arange(self.cmtsource.time_shift - 1.0,
-                          self.cmtsource.time_shift + 1.1, 1.0)
+        depths = np.arange(self.cmtsource.depth_in_m - 5000,
+                           self.cmtsource.depth_in_m + 5100, 1000)
+        times = np.arange(self.cmtsource.time_shift - 5.0,
+                          self.cmtsource.time_shift + 5.1, 1.0)
         t, z = np.meshgrid(times, depths)
         cost = np.zeros(z.shape)
         grad = np.zeros((*z.shape, 2))
         hess = np.zeros((*z.shape, 2, 2))
         dm = np.zeros((*z.shape, 2))
 
-        loop = asyncio.get_event_loop()
-
-        tasks = []
         for _i, _dep in enumerate(depths):
             for _j, _time in enumerate(times):
 
-                tasks.append(loop.create_task(
-                    self.compute_cost_gradient_hessian(
-                        np.array([_dep, _time]))))
-
-        results = loop.run_until_complete(asyncio.gather(*tasks))
-        loop.close()
-
-        counter = 0
-        for _i, _dep in enumerate(depths):
-            for _j, _time in enumerate(times):
-                cost[_i, _j] = results[counter][0]
-                grad[_i, _j, :] = results[counter][1]
-                hess[_i, _j, :, :] = results[counter][2]
-                counter += 1
-
-        damp = 0.001
+                c, g, h = self.compute_cost_gradient_hessian(
+                    np.array([_dep, _time]))
+                cost[_i, _j] = c
+                grad[_i, _j, :] = g
+                hess[_i, _j, :, :] = h
 
         # Get the Gauss newton step
+        damp = 0.001
         for _i in range(z.shape[0]):
             for _j in range(z.shape[1]):
                 dm[_i, _j, :] = np.linalg.solve(
