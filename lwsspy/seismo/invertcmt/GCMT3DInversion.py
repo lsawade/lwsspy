@@ -58,19 +58,19 @@ parameter_check_list = ['depth_in_m', "time_shift", "m_rr",
                         "m_tt", "m_pp", "m_rt", "m_rp", "m_tp"]
 nosimpars = ["time_shift", "half_duration"]
 mt_params = ["m_rr", "m_tt", "m_pp", "m_rt", "m_rp", "mtp"]
-# pardict = dict(
-#     m_rr=dict(scale=None, pert=1e23),
-#     m_tt=dict(scale=None, pert=1e23),
-#     m_pp=dict(scale=None, pert=1e23),
-#     m_rt=dict(scale=None, pert=1e23),
-#     m_rp=dict(scale=None, pert=1e23),
-#     m_tp=dict(scale=None, pert=1e23),
-#     depth_in_m=dict(scale=1000.0, pert=None)
-# )
 pardict = dict(
-    depth_in_m=dict(scale=1000.0, pert=None),
-    time_shift=dict(scale=1.0, pert=None)
+    m_rr=dict(scale=None, pert=1e23),
+    m_tt=dict(scale=None, pert=1e23),
+    m_pp=dict(scale=None, pert=1e23),
+    m_rt=dict(scale=None, pert=1e23),
+    m_rp=dict(scale=None, pert=1e23),
+    m_tp=dict(scale=None, pert=1e23),
+    depth_in_m=dict(scale=1000.0, pert=None)
 )
+# pardict = dict(
+#     depth_in_m=dict(scale=1000.0, pert=None),
+#     time_shift=dict(scale=1.0, pert=None)
+# )
 
 
 class GCMT3DInversion:
