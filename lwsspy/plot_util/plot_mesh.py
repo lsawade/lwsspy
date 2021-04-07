@@ -119,7 +119,7 @@ class MeshPlot():
                  rotlat: float or None = None,
                  rotlon: float or None = None,
                  get_mean: bool = True,
-                 opacity: bool = True,
+                 opacity: bool = False,
                  meshname: str = 'RF',
                  cmapname: str = "seismic",
                  debug: bool = True):
@@ -147,9 +147,11 @@ class MeshPlot():
             self.mesh.bounds
 
         # Get min/max radius
-        self.r = np.sum(deepcopy(self.mesh.points)**2, axis=1)
+        self.r = np.sqrt(np.sum(deepcopy(self.mesh.points)**2, axis=1))
         self.rmin = np.min(self.r)
         self.rmax = np.max(self.r)
+        self.dmin = self.rmax - self.rmax
+        self.dmax = self.rmax - self.rmin
 
         # Get colorbounds
         self.minM, self.maxM = self.mesh.get_data_range()
@@ -191,7 +193,7 @@ class MeshPlot():
                            normal=[0, 1, 0], origin=[0, 0, 0])
         self.Rslice = dict(name="Rslice", name2D="Rslice2D", slc=None,
                            slc3D=None, slc2D=None,
-                           radius=(self.rmin+self.rmax)/2, origin=[0, 0, 0])
+                           radius=(self.rmin+self.rmax)/2, center=[0, 0, 0])
 
         # Get initial rotation matrix
         self.rotate_lat(self.latitude, update_mat_only=True)
@@ -273,9 +275,9 @@ class MeshPlot():
             self.rotate_lat, value=self.latitude, title='Lat', rng=[-90, 90],
             pointa=(.025, .4), pointb=(.975, .4))
         self.p.subplot(1)
-        self.z_slider = self.p.add_slider_widget(
-            self.rotate_slice, value=(self.rmin+self.rmax)/2, title='Z',
-            rng=[self.rmin, self.rmax], pointa=(.025, .55), pointb=(.975, .55))
+        self.r_slider = self.p.add_slider_widget(
+            self.update_r, value=(self.dmin+self.dmax)/2, title='Z',
+            rng=[self.dmin, self.dmax], pointa=(.025, .55), pointb=(.975, .55))
 
         # Actors
         self.add_slice_actors()
@@ -376,7 +378,7 @@ class MeshPlot():
                                                  opacity=self.opacity)
 
         self.p.subplot(0)
-        self.Zslice['actor3D'] = self.p.add_mesh(self.Zslice['slc'],
+        self.Rslice['actor3D'] = self.p.add_mesh(self.Rslice['slc'],
                                                  stitle=self.meshname,
                                                  clim=self.clim,
                                                  cmap=self.cmap,
@@ -401,9 +403,9 @@ class MeshPlot():
         sphere = generate_sphere(self.Rslice['radius'], self.Rslice['center'])
 
         # the cutter to use the plane we made
-        self.Yslice['alg'].SetCutFunction(sphere)
-        self.Yslice['alg'].Update()  # Perform the Cut
-        self.Yslice['slc'].shallow_copy(self.Rslice['alg'].GetOutput())
+        self.Rslice['alg'].SetCutFunction(sphere)
+        self.Rslice['alg'].Update()  # Perform the Cut
+        self.Rslice['slc'].shallow_copy(self.Rslice['alg'].GetOutput())
 
         # Update view in 2D plot
         # self.p.subplot(2)
@@ -542,10 +544,10 @@ class MeshPlot():
         if update_mat_only is False:
             self.update()
 
-    def update_r(self, r):
+    def update_r(self, d):
 
-        self.
-        self.update()
+        self.Rslice['radius'] = self.rmax - d
+        self.r_slice_update()
 
     def update(self):
         print("Getting the matrices")

@@ -1055,7 +1055,9 @@ class GCMT3DInversion:
             cost += factor/2 * np.sum(modelres**2)
             print("Costaft:", cost)
             g += factor * modelres * self.scale
-            h += factor * self.scale @ np.eye(len(self.model)) @ self.scale 
+            h += factor * \
+                np.diag(self.scale) @ np.eye(len(self.model)
+                                             ) @ np.diag(self.scale)
 
         if self.debug:
             print("Damped")
