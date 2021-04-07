@@ -145,8 +145,11 @@ class MeshPlot():
         # Get bounds
         self.xmin, self.xmax, self.ymin, self.ymax, self.zmin, self.zmax = \
             self.mesh.bounds
+
         # Get min/max radius
-        self.mesh.points
+        self.r = np.sum(deepcopy(self.mesh.points)**2, axis=1)
+        self.rmin = np.min(self.r)
+        self.rmax = np.max(self.r)
 
         # Get colorbounds
         self.minM, self.maxM = self.mesh.get_data_range()
@@ -188,7 +191,7 @@ class MeshPlot():
                            normal=[0, 1, 0], origin=[0, 0, 0])
         self.Rslice = dict(name="Rslice", name2D="Rslice2D", slc=None,
                            slc3D=None, slc2D=None,
-                           radius=, origin=[0, 0, 0])
+                           radius=(self.rmin+self.rmax)/2, origin=[0, 0, 0])
 
         # Get initial rotation matrix
         self.rotate_lat(self.latitude, update_mat_only=True)
@@ -258,18 +261,21 @@ class MeshPlot():
         self.get_slices()
         # Rotation Widgets
         self.p.subplot(1)
-        self.rotlat_slider = self.p.add_slider_widget(
-            self.rotate_lat, value=self.latitude, title='Lat', rng=[-90, 90],
-            pointa=(.025, .4), pointb=(.975, .4))  # , event_type='always')
-
+        self.rotate_slider = self.p.add_slider_widget(
+            self.rotate_slice, value=self.rotangle, title='Rot', rng=[0, 90],
+            pointa=(.025, .1), pointb=(.975, .1))  # , event_type='always')  # This makes the slider an activae listener
         self.p.subplot(1)
         self.rotlon_slider = self.p.add_slider_widget(
             self.rotate_lon, value=self.longitude, title='Lon', rng=[-180, 180],
             pointa=(.025, .25), pointb=(.975, .25))  # , event_type='always')
         self.p.subplot(1)
-        self.rotate_slider = self.p.add_slider_widget(
-            self.rotate_slice, value=self.rotangle, title='Rot', rng=[0, 90],
-            pointa=(.025, .1), pointb=(.975, .1))  # , event_type='always')
+        self.rotlat_slider = self.p.add_slider_widget(
+            self.rotate_lat, value=self.latitude, title='Lat', rng=[-90, 90],
+            pointa=(.025, .4), pointb=(.975, .4))
+        self.p.subplot(1)
+        self.z_slider = self.p.add_slider_widget(
+            self.rotate_slice, value=(self.rmin+self.rmax)/2, title='Z',
+            rng=[self.rmin, self.rmax], pointa=(.025, .55), pointb=(.975, .55))
 
         # Actors
         self.add_slice_actors()
@@ -391,19 +397,17 @@ class MeshPlot():
 
     def r_slice_update(self):
 
-        
         # create the plane for clipping
-        plane = generate_plane(self.Yslice['normal'], self.Yslice['origin'])
+        sphere = generate_sphere(self.Rslice['radius'], self.Rslice['center'])
 
         # the cutter to use the plane we made
-        self.Yslice['alg'].SetCutFunction(plane)
+        self.Yslice['alg'].SetCutFunction(sphere)
         self.Yslice['alg'].Update()  # Perform the Cut
-        self.Yslice['slc'].shallow_copy(self.Yslice['alg'].GetOutput())
+        self.Yslice['slc'].shallow_copy(self.Rslice['alg'].GetOutput())
 
         # Update view in 2D plot
-        self.p.subplot(2)
-        self.p.view_vector(-self.Yslice['normal'], viewup=self.normalup)
-
+        # self.p.subplot(2)
+        # self.p.view_vector(-self.Yslice['normal'], viewup=self.normalup)
 
     def y_slice_update(self):
         # Rotation matrix of the normal
@@ -539,7 +543,7 @@ class MeshPlot():
             self.update()
 
     def update_r(self, r):
-        
+
         self.
         self.update()
 
