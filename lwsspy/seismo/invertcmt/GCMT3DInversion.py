@@ -1034,10 +1034,22 @@ class GCMT3DInversion:
             print("H")
             print(h)
 
+        # Scaling of the cost function
+        g *= self.scale
+        h = np.diag(self.scale) @ h @ np.diag(self.scale)
+
+        if self.debug:
+            print("Scaled")
+            print("C:", cost)
+            print("G:")
+            print(g)
+            print("H")
+            print(h)
+
         if self.damping > 0.0:
             factor = self.damping * np.max(np.abs((np.diag(h))))
             print("f", factor)
-            modelres = self.model - self.init_model
+            modelres = self.scaled_model - self.init_scaled_model
             print("modelres:", modelres)
             print("Costbef:", cost)
             cost += factor/2 * np.sum(modelres**2)
@@ -1047,18 +1059,6 @@ class GCMT3DInversion:
 
         if self.debug:
             print("Damped")
-            print("C:", cost)
-            print("G:")
-            print(g)
-            print("H")
-            print(h)
-
-        # Scaling of the cost function
-        g *= self.scale
-        h = np.diag(self.scale) @ h @ np.diag(self.scale)
-
-        if self.debug:
-            print("Scaled")
             print("C:", cost)
             print("G:")
             print(g)
