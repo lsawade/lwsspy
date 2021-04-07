@@ -1,11 +1,13 @@
 import numpy as np
 import pyvista as pv
 import vtkmodules
-import math
 import lwsspy as lpy
 import matplotlib.pyplot as plt
 from matplotlib.tri import Triangulation, LinearTriInterpolator
 from copy import deepcopy
+from pyvista import _vtk
+from pyvista.utilities.helpers import generate_plane
+import pyvista
 
 
 def plot_mesh(mesh: pv,
@@ -74,10 +76,9 @@ def rotation_matrix(axis, theta):
     Return the rotation matrix associated with counterclockwise rotation about
     the given axis by theta radians.
     """
-    axis = np.asarray(axis)
-    axis = axis / math.sqrt(np.dot(axis, axis))
-    a = math.cos(theta / 2.0)
-    b, c, d = -axis * math.sin(theta / 2.0)
+    axis = axis / np.sqrt(np.dot(axis, axis))
+    a = np.cos(theta / 2.0)
+    b, c, d = -axis * np.sin(theta / 2.0)
     aa, bb, cc, dd = a * a, b * b, c * c, d * d
     bc, ad, ac, ab, bd, cd = b * c, a * d, a * c, a * b, b * d, c * d
     return np.array([[aa + bb - cc - dd, 2 * (bc + ad), 2 * (bd - ac)],
@@ -102,6 +103,14 @@ class SetVisibilityCallback:
                 _actor.SetVisibility(state)
 
 
+def generate_sphere(radius, origin):
+    """Return a _vtk.vtkSphere."""
+    sphere = vtkmodules.vtkCommonDataModel.vtkSphere()
+    sphere.SetRadius(radius)
+    sphere.SetCenter(origin)
+    return sphere
+
+
 class MeshPlot():
 
     def __init__(self, mesh,
@@ -110,15 +119,20 @@ class MeshPlot():
                  rotlat: float or None = None,
                  rotlon: float or None = None,
                  get_mean: bool = True,
-                 opacity: bool = True):
+                 opacity: bool = True,
+                 meshname: str = 'RF',
+                 cmapname: str = "seismic",
+                 debug: bool = True):
         # Init state
         self.not_init_state = False
+        self.debug = debug
 
         # Copy to not modify original mesh when rotating
         self.mesh = mesh.copy(deep=True)
 
         # Function to get activae scalar
-        self.meshname = 'RF'
+        self.meshname = meshname
+        # self.meshname = 'illumination'
 
         # To rotate data set
         if rotlon is not None:
@@ -131,6 +145,8 @@ class MeshPlot():
         # Get bounds
         self.xmin, self.xmax, self.ymin, self.ymax, self.zmin, self.zmax = \
             self.mesh.bounds
+        # Get min/max radius
+        self.mesh.points
 
         # Get colorbounds
         self.minM, self.maxM = self.mesh.get_data_range()
@@ -158,6 +174,11 @@ class MeshPlot():
         self.rotmat_slice = np.eye(3)
         self.rotangle = 0.0
 
+        # Unrotated
+        self.xfirst = True
+        self.yfirst = True
+        self.zfirst = True
+
         # Empty slice parameters
         self.Yslice = dict(name="Yslice", name2D="Yslice2D", slc=None,
                            slc3D=None, slc2D=None,
@@ -165,6 +186,9 @@ class MeshPlot():
         self.Zslice = dict(name="Zslice", name2D="Zslice2D", slc=None,
                            slc3D=None, slc2D=None,
                            normal=[0, 1, 0], origin=[0, 0, 0])
+        self.Rslice = dict(name="Rslice", name2D="Rslice2D", slc=None,
+                           slc3D=None, slc2D=None,
+                           radius=, origin=[0, 0, 0])
 
         # Get initial rotation matrix
         self.rotate_lat(self.latitude, update_mat_only=True)
@@ -174,9 +198,10 @@ class MeshPlot():
         # Initiate Plotter
         pv.rcParams['multi_rendering_splitting_position'] = 0.750
         self.p = pv.Plotter(shape='1|3', window_size=(1600, 900))
+        # self.enable_depth_peeling()
 
         # Colorbar title
-        self.cmapname = "seismic"
+        self.cmapname = cmapname
         self.cmap = plt.cm.get_cmap(self.cmapname, 256)
         self.cmapsym = True
         if self.cmapsym:
@@ -208,6 +233,14 @@ class MeshPlot():
                 self.mesh['illumination'] >= self.init_illum, 1.0,
                 self.mesh['illumination']/self.init_illum)
             self.mesh.set_active_scalars(self.meshname)
+
+            # Opacity
+            self.mesh['opacity'] = np.ones_like(self.mesh['illumination'])
+            self.opacity_slider = self.p.add_slider_widget(
+                self.opacity_function, value=self.init_illum,
+                title='Illumination', rng=[0.0, 500.0],
+                pointa=(.525, .75), pointb=(.975, .75))
+
         else:
             self.opacity = 1.0
 
@@ -221,11 +254,14 @@ class MeshPlot():
 
         self.p.add_orientation_widget(self.mesh)
 
+        # Get slices
+        self.get_slices()
         # Rotation Widgets
         self.p.subplot(1)
         self.rotlat_slider = self.p.add_slider_widget(
             self.rotate_lat, value=self.latitude, title='Lat', rng=[-90, 90],
             pointa=(.025, .4), pointb=(.975, .4))  # , event_type='always')
+
         self.p.subplot(1)
         self.rotlon_slider = self.p.add_slider_widget(
             self.rotate_lon, value=self.longitude, title='Lon', rng=[-180, 180],
@@ -234,6 +270,9 @@ class MeshPlot():
         self.rotate_slider = self.p.add_slider_widget(
             self.rotate_slice, value=self.rotangle, title='Rot', rng=[0, 90],
             pointa=(.025, .1), pointb=(.975, .1))  # , event_type='always')
+
+        # Actors
+        self.add_slice_actors()
 
         self.p.subplot(1)
         callback = SetVisibilityCallback(self.volume)
@@ -253,12 +292,7 @@ class MeshPlot():
             rng=self.cmaxrange,
             pointa=(.525, .9), pointb=(.975, .9), event_type='always')
 
-        # Opacity
-        if self.mesh['illumination'] is not None and opacity is True:
-            self.opacity_slider = self.p.add_slider_widget(
-                self.opacity_function, value=self.init_illum,
-                title='Illumination', rng=[1., 500.0],
-                pointa=(.525, .75), pointb=(.975, .75))  # , event_type='always')
+        # , event_type='always')
 
         # self.cmax_slider.GetRepresentation().SetValue(9.0)
         # widget_visibility_callback = SetVisibilityCallback(
@@ -294,72 +328,155 @@ class MeshPlot():
         self.not_init_state = True
         self.p.show(use_ipyvtk=True, return_viewer=True)
 
-    def my_plane_funcy(self):
+    def get_slices(self):
 
-        # Rotation matrix of the normal
-        self.normalup = self.rotmat @ self.normalx
-        self.Yslice['normal'] = self.rotmat @ self.normaly
+        if not hasattr(self, "plane_sliced_meshes"):
+            self.p.plane_sliced_meshes = []
 
-        # Compute Slice
-        self.Yslice['slc'] = self.mesh.slice(
-            normal=self.Yslice['normal'], origin=self.Yslice['origin'])
+        self.Yslice['alg'] = _vtk.vtkCutter()  # Construct the cutter object
+        # Use the grid as the data we desire to cut
+        self.Yslice['alg'].SetInputDataObject(self.mesh)
+        self.Yslice['alg'].GenerateTrianglesOff()
+        self.Yslice['slc'] = pyvista.wrap(self.Yslice['alg'].GetOutput())
+        self.p.plane_sliced_meshes.append(self.Yslice['slc'])
 
-        # 3D slice
+        self.Zslice['alg'] = _vtk.vtkCutter()  # Construct the cutter object
+        # Use the grid as the data we desire to cut
+        self.Zslice['alg'].SetInputDataObject(self.mesh)
+        self.Zslice['alg'].GenerateTrianglesOff()
+        self.Zslice['slc'] = pyvista.wrap(self.Zslice['alg'].GetOutput())
+        self.p.plane_sliced_meshes.append(self.Zslice['slc'])
+
+        self.Rslice['alg'] = _vtk.vtkCutter()  # Construct the cutter object
+        # Use the grid as the data we desire to cut
+        self.Rslice['alg'].SetInputDataObject(self.mesh)
+        self.Rslice['alg'].GenerateTrianglesOff()
+        self.Rslice['slc'] = pyvista.wrap(self.Rslice['alg'].GetOutput())
+        self.p.plane_sliced_meshes.append(self.Rslice['slc'])
+
+    def add_slice_actors(self):
+
         self.p.subplot(0)
-        self.Yslice['slc3D'] = self.p.add_mesh(
-            self.Yslice['slc'], name=self.Yslice['name'],
-            stitle=self.meshname,
-            clim=self.clim,
-            cmap=self.cmap,
-            opacity=self.opacity)
+        self.Yslice['actor3D'] = self.p.add_mesh(self.Yslice['slc'],
+                                                 stitle=self.meshname,
+                                                 clim=self.clim,
+                                                 cmap=self.cmap,
+                                                 opacity=self.opacity)
+        self.p.subplot(0)
+        self.Zslice['actor3D'] = self.p.add_mesh(self.Zslice['slc'],
+                                                 stitle=self.meshname,
+                                                 clim=self.clim,
+                                                 cmap=self.cmap,
+                                                 opacity=self.opacity)
 
-        # 2D slice
+        self.p.subplot(0)
+        self.Zslice['actor3D'] = self.p.add_mesh(self.Zslice['slc'],
+                                                 stitle=self.meshname,
+                                                 clim=self.clim,
+                                                 cmap=self.cmap,
+                                                 opacity=self.opacity)
+
         self.p.subplot(2)
-        self.Yslice['slc2D'] = self.p.add_mesh(
-            self.Yslice['slc'], name=self.Yslice['name2D'],
-            stitle=self.meshname,
-            clim=self.clim,
-            cmap=self.cmap,
-            opacity=self.opacity),
+        self.Yslice['actor2D'] = self.p.add_mesh(self.Yslice['slc'],
+                                                 stitle=self.meshname,
+                                                 clim=self.clim,
+                                                 cmap=self.cmap,
+                                                 opacity=self.opacity)
+        self.p.subplot(3)
+        self.Zslice['actor2D'] = self.p.add_mesh(self.Zslice['slc'],
+                                                 stitle=self.meshname,
+                                                 clim=self.clim,
+                                                 cmap=self.cmap,
+                                                 opacity=self.opacity)
+
+    def r_slice_update(self):
+
+        
+        # create the plane for clipping
+        plane = generate_plane(self.Yslice['normal'], self.Yslice['origin'])
+
+        # the cutter to use the plane we made
+        self.Yslice['alg'].SetCutFunction(plane)
+        self.Yslice['alg'].Update()  # Perform the Cut
+        self.Yslice['slc'].shallow_copy(self.Yslice['alg'].GetOutput())
+
+        # Update view in 2D plot
+        self.p.subplot(2)
         self.p.view_vector(-self.Yslice['normal'], viewup=self.normalup)
 
-    def my_plane_funcz(self):
 
+    def y_slice_update(self):
         # Rotation matrix of the normal
+        if self.debug:
+            print("  Getting Normal up")
         self.normalup = self.rotmat @ self.normalx
-        self.Zslice["normal"] = self.rotmat @ self.normalz
 
-        # Get slice
-        self.Zslice["slc"] = self.mesh.slice(
-            normal=self.Zslice['normal'], origin=self.Zslice['origin'])
+        if self.debug:
+            print("  Getting Slice normal")
+        self.Yslice['normal'] = self.rotmat @ self.normaly
 
-        # Render 3D slice
-        self.p.subplot(0)
-        self.Zslice["slc3D"] = self.p.add_mesh(
-            self.Zslice['slc'], name=self.Zslice['name'],
-            stitle=self.meshname,
-            clim=self.clim,
-            cmap=self.cmap,
-            opacity=self.opacity)
+        # create the plane for clipping
+        plane = generate_plane(self.Yslice['normal'], self.Yslice['origin'])
 
-        # Render 2D slice
+        # the cutter to use the plane we made
+        self.Yslice['alg'].SetCutFunction(plane)
+        self.Yslice['alg'].Update()  # Perform the Cut
+        self.Yslice['slc'].shallow_copy(self.Yslice['alg'].GetOutput())
+
+        # Update view in 2D plot
+        self.p.subplot(2)
+        self.p.view_vector(-self.Yslice['normal'], viewup=self.normalup)
+
+    def z_slice_update(self):
+        # Rotation matrix of the normal
+        if self.debug:
+            print("  Getting Normal up")
+        self.normalup = self.rotmat @ self.normalx
+
+        if self.debug:
+            print("  Getting Slice normal")
+        self.Zslice['normal'] = self.rotmat @ self.normalz
+
+        # create the plane for clipping
+        plane = generate_plane(self.Zslice['normal'], self.Zslice['origin'])
+
+        # the cutter to use the plane we made
+        self.Zslice['alg'].SetCutFunction(plane)
+        self.Zslice['alg'].Update()  # Perform the Cut
+        self.Zslice['slc'].shallow_copy(self.Zslice['alg'].GetOutput())
+
+        # Update view in 2D plot
         self.p.subplot(3)
-        self.Zslice["slc2D"] = self.p.add_mesh(
-            self.Zslice['slc'], name=self.Zslice['name2D'],
-            stitle=self.meshname,
-            clim=self.clim,
-            cmap=self.cmap,
-            opacity=self.opacity)
-
         self.p.view_vector(-self.Zslice['normal'], viewup=self.normalup)
 
     def opacity_function(self, val):
 
-        self.mesh['opacity'] = np.where(
-            self.mesh['illumination'] >= val, 1.0,
-            self.mesh['illumination']/val)
+        if val == 0.0:
+            self.mesh['opacity'] = np.ones_like(self.mesh['illumination'])
+        else:
+            self.mesh['opacity'] = np.where(
+                self.mesh['illumination'] >= val, 1.0,
+                self.mesh['illumination']/val)
+            self.mesh['opacity'] = np.ones_like(self.mesh['illumination'])
+        print("Opacity")
+        print("Mean", np.mean(self.mesh['opacity']))
+        print("Median", np.median(self.mesh['opacity']))
+        print("Max", np.max(self.mesh['opacity']))
+        print("Min", np.min(self.mesh['opacity']))
+        print("Ones:", np.sum(self.mesh['opacity'] == 1.0))
+        print("Not Ones:", np.sum(self.mesh['opacity'] != 1.0))
+        print("Illumintation")
+        print("Mean", np.mean(self.mesh['illumination']))
+        print("Median", np.median(self.mesh['illumination']))
+        print("Max", np.max(self.mesh['illumination']))
+        print("Min", np.min(self.mesh['illumination']))
+        print("zero:", np.sum(self.mesh['illumination'] == 0.0))
+        print("Not zero:", np.sum(self.mesh['illumination'] != 0.0))
+
         self.mesh.set_active_scalars(self.meshname)
-        self.update()
+        # self.Yslice['slc'].set_active_scalars(self.meshname)
+        # self.Zslice['slc'].set_active_scalars(self.meshname)
+        # self.update()
 
     def cmin_callback(self, val):
         if self.cmapsym:
@@ -397,7 +514,7 @@ class MeshPlot():
         self.latitude = latitude
         self.center = lpy.geo2cart(1.0, self.latitude, self.longitude)
         self.rotmat_lat = rotation_matrix(
-            [0, 1, 0], -self.latitude/180.0*np.pi)
+            np.array([0, 1, 0]), -self.latitude/180.0*np.pi)
         # Doesn't actually use rotangle in when update mat only is true!
         self.rotate_slice(self.rotangle, update_mat_only=True)
         if update_mat_only is False:
@@ -407,7 +524,7 @@ class MeshPlot():
         self.longitude = longitude
         self.center = lpy.geo2cart(1.0, self.latitude, self.longitude)
         self.rotmat_lon = rotation_matrix(
-            [0, 0, 1], self.longitude/180.0*np.pi)
+            np.array([0, 0, 1]), self.longitude/180.0*np.pi)
         # Doesn't actually use rotangle in when update mat only is true!
         self.rotate_slice(self.rotangle, update_mat_only=True)
 
@@ -417,15 +534,23 @@ class MeshPlot():
     def rotate_slice(self, angle, update_mat_only=False):
         if update_mat_only is False:
             self.rotangle = angle/180.0*np.pi
-        self.rotmat_slice = rotation_matrix(list(self.center), self.rotangle)
+        self.rotmat_slice = rotation_matrix(self.center, self.rotangle)
         if update_mat_only is False:
             self.update()
 
+    def update_r(self, r):
+        
+        self.
+        self.update()
+
     def update(self):
+        print("Getting the matrices")
         self.rotmat = self.rotmat_slice @ self.rotmat_lon @ self.rotmat_lat
-        self.my_plane_funcy()
-        self.my_plane_funcz()
-        self.p.update_scalar_bar_range(self.clim, name=self.meshname)
+        print("Update Y")
+        # self.my_plane_funcy()
+        self.y_slice_update()
+        print("Update Z")
+        self.z_slice_update()
 
     def reset(self):
 
@@ -494,7 +619,7 @@ class MeshPlot():
              np.zeros_like(slctemp.points[:, 2]))).T
         pc = pv.PolyData(points)
         mesh = pc.delaunay_2d(alpha=0.5*1.5*lpy.DEG2KM)
-        mesh['RF'] = slctemp['RF']
+        mesh[self.meshname] = slctemp[self.meshname]
 
         #  Get triangles
         xy = np.array(mesh.points[:, 0:2])
@@ -509,8 +634,8 @@ class MeshPlot():
 
         print(xy.shape)
         print(triangles.shape)
-        print(len(slctemp['RF']))
-        print(len(mesh['RF']))
+        print(len(slctemp[self.meshname]))
+        print(len(mesh[self.meshname]))
 
         # Set maximum slice length (makes no sense otherwise)
         if mint < -11.25:
@@ -520,22 +645,22 @@ class MeshPlot():
 
         plt.figure(figsize=(6.0, 8.0))
 
-        ax = plt.subplot(111, projection='polar')
-        ax.set_theta_zero_location("N")
-        ax.set_rlim(bottom=np.min(lpy.EARTH_RADIUS_KM - r),
-                    top=np.max(lpy.EARTH_RADIUS_KM - r))
-        ax.set_rorigin(lpy.EARTH_RADIUS_KM)
-        ax.set_thetamin(mint/np.pi*180.0)
-        ax.set_thetamax(maxt/np.pi*180.0)
-        ax.tick_params(labelbottom=False, labeltop=True,
-                       labelleft=True, labelright=True,
-                       left=True, right=True,
-                       top=True, bottom=True)
-        ax.tick_params(axis="x", direction="in", pad=-18)
-        caxbound = ax.inset_axes([0.125, 0.01, 0.75, 0.1])
-        lpy.remove_ticklabels(caxbound)
-        lpy.remove_ticks(caxbound)
-        cax = ax.inset_axes([0.15, 0.07, 0.7, 0.025])
+        # ax = plt.subplot(111, projection='polar')
+        # ax.set_theta_zero_location("N")
+        # ax.set_rlim(bottom=np.min(lpy.EARTH_RADIUS_KM - r),
+        #             top=np.max(lpy.EARTH_RADIUS_KM - r))
+        # ax.set_rorigin(lpy.EARTH_RADIUS_KM)
+        # ax.set_thetamin(mint/np.pi*180.0)
+        # ax.set_thetamax(maxt/np.pi*180.0)
+        # ax.tick_params(labelbottom=False, labeltop=True,
+        #                labelleft=True, labelright=True,
+        #                left=True, right=True,
+        #                top=True, bottom=True)
+        # ax.tick_params(axis="x", direction="in", pad=-18)
+        # caxbound = ax.inset_axes([0.125, 0.01, 0.75, 0.1])
+        # lpy.remove_ticklabels(caxbound)
+        # lpy.remove_ticks(caxbound)
+        # cax = ax.inset_axes([0.15, 0.07, 0.7, 0.025])
 
         # ax.tick_params()
 
@@ -551,21 +676,32 @@ class MeshPlot():
         triObj = Triangulation(t, r, triangles=triangles)
 
         # linear interpolation
-        fz = LinearTriInterpolator(triObj, mesh['RF'])
+        fz = LinearTriInterpolator(triObj, mesh[self.meshname])
         Z = fz(tt, lpy.EARTH_RADIUS_KM - dd)
+        print(Z)
+        # x = mesh.points
+        # tri = data.faces.reshape((-1, 4))[:, 1:]
+        # u = data.active_scalar
+        xy[:, 0], xy[:, 1]
 
+        plt.imshow(Z[:, ::-1], extent=[mint, maxt, dmax, dmin], cmap=self.cmapname,
+                   aspect='auto', vmin=self.clim[0], vmax=self.clim[1])
+        # plt.tricontourf(xy[:, 0], xy[:, 1], triangles, mesh['RF'])
+        # plt.gca().set_aspect('equal')
         # plt.scatter(t, lpy.EARTH_RADIUS_KM - r)
-        mesh = plt.pcolormesh(tt, dd, Z, cmap='seismic',
-                              vmin=self.clim[0], vmax=self.clim[1])
+
+        # mesh = plt.pcolormesh(tt, dd, Z, cmap=self.cmapname, edgecolor=
+        #                       vmin=self.clim[0], vmax=self.clim[1]
+        #                       shading='auto')
         # plt.tripcolor(t/np.pi*180.0, lpy.EARTH_RADIUS_KM - r, mesh['RF'],
         #               triangles=triangles,
         #               cmap='seismic',
         #               vmin=self.clim[0], vmax=self.clim[1])
         # ax.set_xlim(mint, maxt)
         # ax.invert_yaxis()
-        plt.colorbar(mesh, cax=cax, orientation='horizontal')
+        # plt.colorbar(mesh, cax=cax, orientation='horizontal')
         plt.title(rf"$\leftarrow$ N{360-self.rotangle}$^\circ$")
-        plt.show()
+        plt.show(block=False)
         # x = np.linspace(slc.bounds[0], slc.bounds[1], ni)
         # z = np.linspace(slc.bounds[2], slc.bounds[3], nj)
 
@@ -581,8 +717,8 @@ class MeshPlot():
 
         # resample the data
         # sampled = plane.sample(slc, tolerance=slc.length*0.5)
-        self.p.subplot(0)
-        self.p.add_mesh(slctemp)
+        # self.p.subplot(0)
+        # self.p.add_mesh(slctemp)
         # print(sampled)
         # Fill bad data
         # sampled[name][~sampled["vtkValidPointMask"].view(bool)] = np.nan
