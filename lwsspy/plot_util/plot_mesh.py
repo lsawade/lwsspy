@@ -1,3 +1,6 @@
+
+import os
+from typing import Optional, List
 import numpy as np
 import pyvista as pv
 import vtkmodules
@@ -114,15 +117,23 @@ def generate_sphere(radius, origin):
 class MeshPlot():
 
     def __init__(self, mesh,
-                 lat: float or None = None,
-                 lon: float or None = None,
-                 rotlat: float or None = None,
-                 rotlon: float or None = None,
+                 lat: Optional[float] = None,
+                 lon: Optional[float] = None,
+                 rotangle: float = 0.0,
+                 depth: Optional[float] = None,
+                 rotlat: Optional[float] = None,
+                 rotlon: Optional[float] = None,
                  get_mean: bool = True,
                  opacity: bool = False,
                  meshname: str = 'RF',
                  cmapname: str = "seismic",
-                 debug: bool = True):
+                 cmapsym: bool = True,
+                 clim: Optional[List[float]] = None,
+                 debug: bool = True,
+                 outputdir: str = '.',
+                 use_ipyvtk: bool = False,
+                 figures_only: bool = True):
+
         # Init state
         self.not_init_state = False
         self.debug = debug
@@ -132,7 +143,7 @@ class MeshPlot():
 
         # Function to get activae scalar
         self.meshname = meshname
-        # self.meshname = 'illumination'
+        self.mesh.set_active_scalars(self.meshname)
 
         # To rotate data set
         if rotlon is not None:
@@ -146,25 +157,38 @@ class MeshPlot():
         self.xmin, self.xmax, self.ymin, self.ymax, self.zmin, self.zmax = \
             self.mesh.bounds
 
-        # Get min/max radius
+        # Get min/max radius, depth
         self.r = np.sqrt(np.sum(deepcopy(self.mesh.points)**2, axis=1))
         self.rmin = np.min(self.r)
         self.rmax = np.max(self.r)
         self.dmin = self.rmax - self.rmax
         self.dmax = self.rmax - self.rmin
 
+        # Get the depth
+        if depth is not None:
+            self.depth = depth
+        else:
+            self.depth = (self.dmin+self.dmax)/2
+
         # Get colorbounds
         self.minM, self.maxM = self.mesh.get_data_range()
 
-        # Get the vector meanposition of your dataset
-        if get_mean:
-            self.initpos = np.mean(self.mesh.points, axis=0)
-        else:
-            # Set initial position and normal
-            self.initpos = np.array([1, 0, 0])
+        # Get initial position depending on inputt position or point mean
+        if lat is not None and lon is not None:
+            # Get location
+            self.latitude, self.longitude = lat, lon
 
-        # Get starting latitude and longitude values
-        _, self.latitude, self.longitude = lpy.cart2geo(*self.initpos)
+            # Convert to vector
+            self.initpos = lpy.geo2cart(1.0, self.latitude, self.longitude)
+
+        else:
+            # Get mean vector
+            self.initpos = np.mean(self.mesh.points, axis=0)
+
+            # Get convert to geo location.
+            _, self.latitude, self.longitude = lpy.cart2geo(*self.initpos)
+
+        # Set center of the slice to be the init
         self.center = self.initpos
 
         # Only set so that it doesn't have to be redefined
@@ -172,66 +196,87 @@ class MeshPlot():
         self.normaly = np.array([0, 1, 0])
         self.normalz = np.array([0, 0, 1])
 
-        # default parameters
+        # Starting parameters
         self.rotmat = np.eye(3)
         self.rotmat_lat = np.eye(3)
         self.rotmat_lon = np.eye(3)
         self.rotmat_slice = np.eye(3)
-        self.rotangle = 0.0
+        self.rotangle = rotangle
+        self.init_rotangle = rotangle
+        self.radius = (self.rmin+self.rmax)/2
 
-        # Unrotated
-        self.xfirst = True
-        self.yfirst = True
-        self.zfirst = True
+        # Empty slice parameters to be populated
+        self.Yslice = dict(
+            slc=None,
+            actor2D=None,
+            actor3D=None,
+            normal=[0, 1, 0],
+            origin=[0, 0, 0])
+        self.Zslice = dict(
+            slc=None,
+            actor2D=None,
+            actor3D=None,
+            normal=[0, 1, 0],
+            origin=[0, 0, 0])
+        self.Rslice = dict(
+            slc=None,
+            actor2D=None,
+            actor3D=None,
+            radius=self.radius,
+            center=[0, 0, 0])
 
-        # Empty slice parameters
-        self.Yslice = dict(name="Yslice", name2D="Yslice2D", slc=None,
-                           slc3D=None, slc2D=None,
-                           normal=[0, 1, 0], origin=[0, 0, 0])
-        self.Zslice = dict(name="Zslice", name2D="Zslice2D", slc=None,
-                           slc3D=None, slc2D=None,
-                           normal=[0, 1, 0], origin=[0, 0, 0])
-        self.Rslice = dict(name="Rslice", name2D="Rslice2D", slc=None,
-                           slc3D=None, slc2D=None,
-                           radius=(self.rmin+self.rmax)/2, center=[0, 0, 0])
-
-        # Get initial rotation matrix
-        self.rotate_lat(self.latitude, update_mat_only=True)
-        self.rotate_lon(self.longitude, update_mat_only=True)
-        self.rotate_slice(self.rotangle, update_mat_only=True)
-
-        # Initiate Plotter
-        pv.rcParams['multi_rendering_splitting_position'] = 0.750
-        self.p = pv.Plotter(shape='1|3', window_size=(1600, 900))
-        # self.enable_depth_peeling()
-
-        # Colorbar title
         self.cmapname = cmapname
         self.cmap = plt.cm.get_cmap(self.cmapname, 256)
-        self.cmapsym = True
+
+        # Set up colorbar
+        if clim is not None:
+            self.clim = clim
+            if -self.clim[0] == self.clim[1]:
+                self.cmapsym = True
+            else:
+                self.cmapsym = False
+        else:
+            self.clim = clim
+            self.cmapsym = cmapsym
+
+        # Find scalar bar max and min
+        self.cabsmax = np.max(np.abs([self.minM, self.maxM]))
+        self.minM, self.maxM = [-self.cabsmax, self.cabsmax]
+
+        # Find colorbar bounds depending on symmetry
         if self.cmapsym:
-            self.cabsmax = np.max(np.abs([self.minM, self.maxM]))
-            self.minM, self.maxM = [-self.cabsmax, self.cabsmax]
-            self.clim = [-0.5*self.cabsmax, 0.5*self.cabsmax]
-            self.initclim = [-0.5*self.cabsmax, 0.5*self.cabsmax]
-            # print(self.cabsmax)
-            # print(self.minM, self.maxM)
-            # print(self.clim)
-            # print(self.initclim)
-            self.cminrange = [self.clim[0], 0.0]
-            self.cmaxrange = [0, self.clim[1]]
+
+            # If clim is defined get it
+            if self.clim is not None:
+                self.initclim = deepcopy(self.clim)
+            else:
+                self.clim = [-0.5*self.cabsmax, 0.5*self.cabsmax]
+                self.initclim = [-0.5*self.cabsmax, 0.5*self.cabsmax]
+
+            # Set slider ranges
+            self.cminrange = [self.minM, 0.0]
+            self.cmaxrange = [0, self.maxM]
 
         else:
-            self.clim = [self.minM, self.maxM]
-            self.initclim = [self.minM, self.maxM]
+            # If clim is defined get it
+            if self.clim is not None:
+                self.initclim = deepcopy(self.clim)
+            else:
+                self.clim = [self.minM, self.maxM]
+                self.initclim = [self.minM, self.maxM]
+
+            # Set slider ranges
             self.cminrange = [self.minM, self.maxM]
             self.cmaxrange = [self.minM, self.maxM]
 
         self.scalar_bar_args = dict(
             width=0.4, height=0.05, position_x=0.3, position_y=0.05)
 
-        # Add surrounding volume
+        # Check for illumination and plot it if possible.
         if self.mesh['illumination'] is not None and opacity is True:
+
+            raise ValueError("Not working/not correcly implemented")
+
             self.init_illum = 50
             self.opacity = 'opacity'
             self.mesh['opacity'] = np.where(
@@ -247,94 +292,238 @@ class MeshPlot():
                 pointa=(.525, .75), pointb=(.975, .75))
 
         else:
-            self.opacity = 1.0
+            self.opacity: float = 1.0
 
+        # Initiate Plotter
+        pv.rcParams['multi_rendering_splitting_position'] = 0.7
+        self.p = pv.Plotter(shape='1|4', window_size=(1600, 900))
+
+        # Start first subplot
         self.p.subplot(0)
-        self.volume = self.p.add_mesh(self.mesh, opacity=0.1,
-                                      stitle=self.meshname, clim=self.clim,
-                                      cmap=self.cmap,
-                                      show_scalar_bar=False)
+
+        # Plot background volume
+        self.volume = self.p.add_mesh(
+            self.mesh,
+            opacity=0.1,
+            stitle=self.meshname,
+            clim=self.clim,
+            cmap=self.cmap,
+            show_scalar_bar=False)
+
+        # Plot colorbar
         self.p.add_scalar_bar(
             title=self.meshname, **self.scalar_bar_args)
 
+        # Add orientation widget
         self.p.add_orientation_widget(self.mesh)
 
         # Get slices
         self.get_slices()
-        # Rotation Widgets
+
+        # Rotation
         self.p.subplot(1)
         self.rotate_slider = self.p.add_slider_widget(
-            self.rotate_slice, value=self.rotangle, title='Rot', rng=[0, 90],
-            pointa=(.025, .1), pointb=(.975, .1))  # , event_type='always')  # This makes the slider an activae listener
+            self.rotate_slice,
+            value=self.rotangle,
+            title='Rot',
+            rng=[0, 90],
+            pointa=(.025, .1),
+            pointb=(.975, .1))  # , event_type='always')  # This makes the slider an activae listener
+
+        # Longitude value
         self.p.subplot(1)
         self.rotlon_slider = self.p.add_slider_widget(
-            self.rotate_lon, value=self.longitude, title='Lon', rng=[-180, 180],
-            pointa=(.025, .25), pointb=(.975, .25))  # , event_type='always')
+            self.rotate_lon,
+            value=self.longitude,
+            title='Lon',
+            rng=[-180, 180],
+            pointa=(.025, .25),
+            pointb=(.975, .25))
+
+        # Longitude value
         self.p.subplot(1)
         self.rotlat_slider = self.p.add_slider_widget(
-            self.rotate_lat, value=self.latitude, title='Lat', rng=[-90, 90],
-            pointa=(.025, .4), pointb=(.975, .4))
+            self.rotate_lat,
+            value=self.latitude,
+            title='Lat',
+            rng=[-90, 90],
+            pointa=(.025, .4),
+            pointb=(.975, .4))
+
+        # Depth slice
         self.p.subplot(1)
         self.r_slider = self.p.add_slider_widget(
-            self.update_r, value=(self.dmin+self.dmax)/2, title='Z',
-            rng=[self.dmin, self.dmax], pointa=(.025, .55), pointb=(.975, .55))
+            self.update_r,
+            value=self.depth,
+            title='Z',
+            rng=[self.dmin, self.dmax],
+            pointa=(.025, .55),
+            pointb=(.975, .55),
+            event_type='always')
 
-        # Actors
+        # Add slice actors
         self.add_slice_actors()
 
-        self.p.subplot(1)
-        callback = SetVisibilityCallback(self.volume)
-        self.p.add_checkbox_button_widget(
-            callback, value=True, size=25, position=(10, 10),
-            color_on='white', color_off='grey', background_color='grey')
-
         # Colorbar/Scalar Widget
-        pv.rcParams['slider_style']['classic'].update(
+        self.p.subplot(1)
+
+        # Update slider rcParams
+        pv.rcParams['slider_style']['modern'].update(
             dict(slider_width=0.01, cap_width=0.01, tube_width=0.001))
+
+        # Update minimum cmap value slider
+        self.p.subplot(1)
         self.cmin_slider = self.p.add_slider_widget(
-            self.cmin_callback, value=self.clim[0], title='cmin',
+            self.cmin_callback,
+            value=self.clim[0],
+            title='cmin',
             rng=self.cminrange,
-            pointa=(.025, .9), pointb=(.475, .9), event_type='always')
+            pointa=(.025, .9),
+            pointb=(.475, .9),
+            event_type='always')
+
+        # Update maximum cmap value slider
+        self.p.subplot(1)
         self.cmax_slider = self.p.add_slider_widget(
-            self.cmax_callback, value=self.clim[1], title='cmax',
+            self.cmax_callback,
+            value=self.clim[1],
+            title='cmax',
             rng=self.cmaxrange,
-            pointa=(.525, .9), pointb=(.975, .9), event_type='always')
-
-        # , event_type='always')
-
-        # self.cmax_slider.GetRepresentation().SetValue(9.0)
-        # widget_visibility_callback = SetVisibilityCallback(
-        #     [self.rotlat_slider, self.rotlon_slider,
-        #      self.rotate_slider, self.cmin_slider,
-        #      self.cmax_slider])
-
-        # self.p.add_checkbox_button_widget(
-        #     widget_visibility_callback, value=True, size=25,
-        #     position=(40, 10), color_on='white', color_off='grey',
-        #     background_color='grey')
-
-        # p.add_slider_widget(
-        #     self.my_plane_funcy, value=0, title='Z', rng=[ymin, ymax],
-        #     pointa=(.68, .1), pointb=(.93, .1))
+            pointa=(.525, .9),
+            pointb=(.975, .9),
+            event_type='always')
 
         # Actually plot bounds
         self.p.subplot(0)
         bounds = self.p.show_bounds(bounds=mesh.bounds, location='back')
-        bounds_callback = SetVisibilityCallback(bounds)
 
-        # bounds control button
-        self.p.subplot(1)
-        self.p.add_checkbox_button_widget(
-            bounds_callback, value=True, size=25, position=(40, 10),
-            color_on='white', color_off='grey', background_color='grey')
+        # Define button and text positions
+        font_size = 14
+        x_offset = 80
+        y_offset = 50
+        size = 40
+        checkbox_pos = [30, 30]
+        text_pos = [x_offset, 30]
 
+        # Volume visibiliy
+        self.p.subplot(2)
+        self.p.add_text("Volume", position=text_pos, font_size=font_size)
         self.p.add_checkbox_button_widget(
-            self.plot_y_slice, value=True, size=25, position=(70, 10),
-            color_on='white', color_off='grey', background_color='grey')
+            SetVisibilityCallback(self.volume),
+            value=True,
+            size=size,
+            position=checkbox_pos,
+            color_on='white',
+            color_off='grey',
+            background_color='grey')
+        checkbox_pos[1] += y_offset
+        text_pos[1] += y_offset
+
+        # Turn on/off bounds
+        self.p.subplot(2)
+        self.p.add_text("Bounds", position=text_pos, font_size=font_size)
+        self.p.add_checkbox_button_widget(
+            SetVisibilityCallback(bounds),
+            value=True,
+            size=size,
+            position=checkbox_pos,
+            color_on='white',
+            color_off='grey',
+            background_color='grey')
+        for i in range(2):
+            checkbox_pos[1] += y_offset
+            text_pos[1] += y_offset
+
+        # Colormap symmetric on/off button.
+        self.p.subplot(2)
+        self.p.add_text("Symmetric cmap", position=text_pos,
+                        font_size=font_size)
+        self.p.add_checkbox_button_widget(
+            self.csym_callback,
+            value=self.cmapsym,
+            size=size,
+            position=checkbox_pos,
+            color_on='white',
+            color_off='grey',
+            background_color='grey')
+
+        for i in range(2):
+            checkbox_pos[1] += y_offset
+            text_pos[1] += y_offset
+
+        # Export button for Y Slice
+        self.p.subplot(2)
+        self.p.add_text("Export Y-Slice", position=text_pos,
+                        font_size=font_size)
+        self.p.add_checkbox_button_widget(
+            self.plot_y_slice,
+            value=True,
+            size=size,
+            position=checkbox_pos,
+            color_on='white',
+            color_off='white',
+            background_color='grey')
+        checkbox_pos[1] += y_offset
+        text_pos[1] += y_offset
+
+        # Export button for Y Slice
+        self.p.subplot(2)
+        self.p.add_text("Export Z-Slice", position=text_pos,
+                        font_size=font_size)
+        self.p.add_checkbox_button_widget(
+            self.plot_z_slice,
+            value=True,
+            size=size,
+            position=checkbox_pos,
+            color_on='white',
+            color_off='white',
+            background_color='grey')
+        checkbox_pos[1] += y_offset
+        text_pos[1] += y_offset
+
+        # Export button for depth slice
+        self.p.subplot(2)
+        self.p.add_text("Export Depth Slice", position=text_pos,
+                        font_size=font_size)
+        self.p.add_checkbox_button_widget(
+            self.depth_slice_to_map,
+            value=True,
+            size=size,
+            position=checkbox_pos,
+            color_on='white',
+            color_off='white',
+            background_color='grey')
 
         # Init state
+        self.outputdir = outputdir
+
+        # Finalize Window creation
         self.not_init_state = True
-        self.p.show(use_ipyvtk=True, return_viewer=True)
+
+        # Necessary for first update of all plots
+        self.Rslice['slc'].shallow_copy(self.Rslice['alg'].GetOutput())
+        self.Yslice['slc'].shallow_copy(self.Yslice['alg'].GetOutput())
+        self.Zslice['slc'].shallow_copy(self.Zslice['alg'].GetOutput())
+
+        # Set view (Updates subplots)
+        self.p.subplot(3)
+        self.p.view_vector(-self.Yslice['normal'], viewup=self.normalup)
+        self.p.subplot(4)
+        self.p.view_vector(-self.Zslice['normal'], viewup=self.normalup)
+
+        # Do general update
+        self.p.update()
+
+        # Finally show the damn thing
+        if figures_only:
+            self.figures_only = figures_only
+            self.depth_slice_to_map(1.0)
+            self.plot_y_slice(1.0)
+            self.plot_z_slice(1.0)
+            self.p.close()
+            plt.close('all')
+        else:
+            self.p.show(return_viewer=True, use_ipyvtk=use_ipyvtk)
 
     def get_slices(self):
 
@@ -384,13 +573,15 @@ class MeshPlot():
                                                  cmap=self.cmap,
                                                  opacity=self.opacity)
 
-        self.p.subplot(2)
+        self.p.subplot(3)
+        self.p.add_text("Y", position='upper_left', font_size=16)
         self.Yslice['actor2D'] = self.p.add_mesh(self.Yslice['slc'],
                                                  stitle=self.meshname,
                                                  clim=self.clim,
                                                  cmap=self.cmap,
                                                  opacity=self.opacity)
-        self.p.subplot(3)
+        self.p.subplot(4)
+        self.p.add_text("Z", position='upper_left', font_size=16)
         self.Zslice['actor2D'] = self.p.add_mesh(self.Zslice['slc'],
                                                  stitle=self.meshname,
                                                  clim=self.clim,
@@ -407,10 +598,6 @@ class MeshPlot():
         self.Rslice['alg'].Update()  # Perform the Cut
         self.Rslice['slc'].shallow_copy(self.Rslice['alg'].GetOutput())
 
-        # Update view in 2D plot
-        # self.p.subplot(2)
-        # self.p.view_vector(-self.Yslice['normal'], viewup=self.normalup)
-
     def y_slice_update(self):
         # Rotation matrix of the normal
         if self.debug:
@@ -424,13 +611,13 @@ class MeshPlot():
         # create the plane for clipping
         plane = generate_plane(self.Yslice['normal'], self.Yslice['origin'])
 
-        # the cutter to use the plane we made
+        # Update cut function
         self.Yslice['alg'].SetCutFunction(plane)
         self.Yslice['alg'].Update()  # Perform the Cut
         self.Yslice['slc'].shallow_copy(self.Yslice['alg'].GetOutput())
 
         # Update view in 2D plot
-        self.p.subplot(2)
+        self.p.subplot(3)
         self.p.view_vector(-self.Yslice['normal'], viewup=self.normalup)
 
     def z_slice_update(self):
@@ -446,16 +633,18 @@ class MeshPlot():
         # create the plane for clipping
         plane = generate_plane(self.Zslice['normal'], self.Zslice['origin'])
 
-        # the cutter to use the plane we made
+        # Update cut function
         self.Zslice['alg'].SetCutFunction(plane)
         self.Zslice['alg'].Update()  # Perform the Cut
         self.Zslice['slc'].shallow_copy(self.Zslice['alg'].GetOutput())
 
         # Update view in 2D plot
-        self.p.subplot(3)
+        self.p.subplot(4)
         self.p.view_vector(-self.Zslice['normal'], viewup=self.normalup)
 
     def opacity_function(self, val):
+
+        raise ValueError("Not working/not correcly implemented")
 
         if val == 0.0:
             self.mesh['opacity'] = np.ones_like(self.mesh['illumination'])
@@ -464,119 +653,270 @@ class MeshPlot():
                 self.mesh['illumination'] >= val, 1.0,
                 self.mesh['illumination']/val)
             self.mesh['opacity'] = np.ones_like(self.mesh['illumination'])
-        print("Opacity")
-        print("Mean", np.mean(self.mesh['opacity']))
-        print("Median", np.median(self.mesh['opacity']))
-        print("Max", np.max(self.mesh['opacity']))
-        print("Min", np.min(self.mesh['opacity']))
-        print("Ones:", np.sum(self.mesh['opacity'] == 1.0))
-        print("Not Ones:", np.sum(self.mesh['opacity'] != 1.0))
-        print("Illumintation")
-        print("Mean", np.mean(self.mesh['illumination']))
-        print("Median", np.median(self.mesh['illumination']))
-        print("Max", np.max(self.mesh['illumination']))
-        print("Min", np.min(self.mesh['illumination']))
-        print("zero:", np.sum(self.mesh['illumination'] == 0.0))
-        print("Not zero:", np.sum(self.mesh['illumination'] != 0.0))
 
+        # Update
         self.mesh.set_active_scalars(self.meshname)
-        # self.Yslice['slc'].set_active_scalars(self.meshname)
-        # self.Zslice['slc'].set_active_scalars(self.meshname)
-        # self.update()
+
+    def csym_callback(self, val):
+
+        # Check whether cmap symmetrical or not
+        self.cmapsym = val
+
+        # if cmap symmetric find new values and update the colormap
+        if self.cmapsym:
+            averageclim = np.sum(np.abs(self.clim))/2
+            self.clim = [-averageclim, averageclim]
+
+        # Reset colorslider bounds
+        self.set_colorslider_bounds()
+        self.set_colorslider_values()
+        self.p.update_scalar_bar_range(self.clim, name=self.meshname)
+        self.p.render()
 
     def cmin_callback(self, val):
+
+        # Get clims depending on cmap symmetry
         if self.cmapsym:
             self.clim = [val, -val]
         else:
             self.clim = [val, self.clim[1]]
 
+        # Update colormap
         self.p.update_scalar_bar_range(self.clim, name=self.meshname)
 
+        # If not init state, change the value of the opoosit slider
         if self.not_init_state:
+
+            # If symmetric update the slider location on the opposite side
             if self.cmapsym:
                 self.cmax_slider.GetRepresentation(
                 ).SetValue(-val)
+
+            # Don't do anything if val is equal to the maximum of the
+            # maximum slider
             else:
-                self.cmax_slider.GetRepresentation(
-                ).SetMinimumValue(self.clim[0])
+                if val > self.clim[1]:
+                    pass
+                else:
+                    self.cmax_slider.GetRepresentation(
+                    ).SetMinimumValue(self.clim[0])
 
     def cmax_callback(self, val):
+
+        # Get clims depending on cmap symmetry
         if self.cmapsym:
             self.clim = [-val, val]
         else:
             self.clim = [self.clim[0], val]
 
+        # Update colormap
         self.p.update_scalar_bar_range(self.clim, name=self.meshname)
 
+        # If not init state, change the value of the opoosit slider
         if self.not_init_state:
+
+            # If symmetric update the slider location on the opposite side
             if self.cmapsym:
                 self.cmin_slider.GetRepresentation(
                 ).SetValue(-val)
+
+            # If not make maximum of minimum slider the minimum
             else:
-                self.cmin_slider.GetRepresentation(
-                ).SetMaximumValue(self.clim[1])
+
+                # Don't do anything if val is equal to the minimum of the
+                # minimum slider
+                if val < self.clim[0]:
+                    pass
+                else:
+                    self.cmin_slider.GetRepresentation(
+                    ).SetMaximumValue(self.clim[1])
 
     def rotate_lat(self, latitude, update_mat_only=False):
+
+        # Get latitude
         self.latitude = latitude
+
+        # Compute the center
         self.center = lpy.geo2cart(1.0, self.latitude, self.longitude)
+
+        # Compute new rotation matrix using the latitude
         self.rotmat_lat = rotation_matrix(
             np.array([0, 1, 0]), -self.latitude/180.0*np.pi)
-        # Doesn't actually use rotangle in when update mat only is true!
+
+        # Update slice rotation matrix, since center has changed
         self.rotate_slice(self.rotangle, update_mat_only=True)
+
+        # Update
         if update_mat_only is False:
             self.update()
 
     def rotate_lon(self, longitude, update_mat_only=False):
+
+        # Get longitude
         self.longitude = longitude
+
+        # Compute center
         self.center = lpy.geo2cart(1.0, self.latitude, self.longitude)
+
+        # Compute rotation matrix
         self.rotmat_lon = rotation_matrix(
             np.array([0, 0, 1]), self.longitude/180.0*np.pi)
-        # Doesn't actually use rotangle in when update mat only is true!
+
+        # Update slice rotation matrix, since center has changed
         self.rotate_slice(self.rotangle, update_mat_only=True)
 
+        # Update the slices
         if update_mat_only is False:
             self.update()
 
     def rotate_slice(self, angle, update_mat_only=False):
+
+        # Compute rotangle in radians
         if update_mat_only is False:
-            self.rotangle = angle/180.0*np.pi
+            self.rotangle = -angle/180.0*np.pi
+
+        # Update slice rotation matrix
         self.rotmat_slice = rotation_matrix(self.center, self.rotangle)
+
+        # Update slices
         if update_mat_only is False:
             self.update()
 
     def update_r(self, d):
 
+        # Get radius from depth input
+        self.depth = d
         self.Rslice['radius'] = self.rmax - d
+
+        # Update tthe radial slice
         self.r_slice_update()
 
     def update(self):
-        print("Getting the matrices")
+
+        # Compute the total rotation matrix
+        if self.debug:
+            print("Computing total rotation matrix")
         self.rotmat = self.rotmat_slice @ self.rotmat_lon @ self.rotmat_lat
-        print("Update Y")
-        # self.my_plane_funcy()
+
+        # Update the Y slice
+        if self.debug:
+            print("Update Y slice")
         self.y_slice_update()
-        print("Update Z")
+
+        # Update the Z slice
+        if self.debug:
+            print("Update Z slice")
         self.z_slice_update()
 
-    def reset(self):
+    def set_colorslider_values(self):
+        # Set cmap sliders:
+        self.cmax_slider.GetRepresentation().SetValue(self.clim[0])
+        self.cmax_slider.GetRepresentation().SetValue(self.clim[1])
 
-        self.clim = [self.minM, self.maxM]
+    def set_colorslider_bounds(self):
+        # Set cmap sliders:
+        if self.cmapsym:
+            self.cmin_slider.GetRepresentation().SetMinimumValue(self.minM)
+            self.cmin_slider.GetRepresentation().SetMaximumValue(0.0)
+            self.cmax_slider.GetRepresentation().SetMinimumValue(0.0)
+            self.cmax_slider.GetRepresentation().SetMaximumValue(self.maxM)
+        else:
+            self.cmin_slider.GetRepresentation().SetMinimumValue(self.minM)
+            self.cmin_slider.GetRepresentation().SetMaximumValue(self.maxM)
+            self.cmin_slider.GetRepresentation().SetMinimumValue(self.minM)
+            self.cmax_slider.GetRepresentation().SetMaximumValue(self.maxM)
+
+    def reset(self, val):
+
+        #  Get starting values
+        self.clim = self.initclim
         self.center = self.initpos
+        _, self.latitude, self.longitude = lpy.cart2geo(*self.initpos)
+
+        # Reset colorbar boundaries
+        self.set_colorslider_bounds()
+        self.set_colorslider_values()
+
+        # Reset rotationsliders
+        self.rotlat_slider.GetRepresentation().SetValue(self.latitude)
+        self.rotlon_slider.GetRepresentation().SetValue(self.longitude)
+        self.rotate_slider.GetRepresentation().SetValue(self.init_rotangle)
+
+        # Update matrices
+        self.rotate_lat(self.latitude, update_mat_only=True)
+        self.rotate_lon(self.latitude, update_mat_only=True)
+        self.rotate_slice(self.latitude, update_mat_only=True)
+
+        # Update plot
+        self.p.update_scalar_bar_range(self.clim, name=self.meshname)
+        self.update()
+        self.p.render()
+
+    def depth_slice_to_map(self, val):
+
+        # Depth slice to geo
+        slctemp = self.Rslice["slc"].copy(deep=True)
+
+        # Get the geographical points
+        _, lat, lon = lpy.cart2geo(
+            slctemp.points[:, 0], slctemp.points[:, 1], slctemp.points[:, 2])
+
+        # Get bounds
+        latmin, latmax = np.min(lat), np.max(lat)
+        lonmin, lonmax = np.min(lon), np.max(lon)
+
+        # Get data
+        data = deepcopy(slctemp[self.meshname])
+
+        # Set up interpolation
+        snn = lpy.SphericalNN(lat, lon)
+        res = 0.25
+        llon, llat = np.meshgrid(
+            np.arange(lonmin, lonmax+res, res),
+            np.arange(latmin, latmax+res, res))
+
+        # Get the interpolated data using weighted spherical nearest neighbour
+        # interpolation
+        d = snn.interp(data, llat, llon, no_weighting=False,
+                       k=10, maximum_distance=res*2.0)
+
+        # Create Map
+        fig = plt.figure()
+        ax = lpy.map_axes(proj='carr')
+        lpy.plot_map(zorder=1, borders=False, fill=False)
+        ax.set_xlim(lonmin, lonmax)
+        ax.set_ylim(latmin, latmax)
+
+        # Plot data onto map
+        plt.imshow(d[::-1, :], extent=[lonmin, lonmax, latmin,
+                                       latmax], cmap=self.cmapname,
+                   zorder=-1, vmin=self.clim[0], vmax=self.clim[1])
+        cbar = lpy.nice_colorbar(orientation='horizontal', aspect=40)
+        label = 'Hitcounts' if self.meshname == 'illumination' else "Amplitude"
+        cbar.set_label(label)
+        plt.title(f"Z = {int(self.depth):d} km")
+        if not self.figures_only:
+            plt.show(block=False)
+        plt.savefig(os.path.join(self.outputdir,
+                                 f"depthslice{int(self.depth):d}_{self.meshname}.pdf"))
 
     def plot_y_slice(self, val):
 
-        array = self.slice_to_array(
+        self.slice_to_array(
             self.Yslice["slc"],
-            self.Yslice["normal"],
-            self.Yslice["origin"],
-            self.meshname,
         )
-        print(array)
-        # plt.figure()
-        # plt.matshow(array)
-        # plt.show()
 
-    def slice_to_array(self, slc, normal, origin, name, ni=500, nj=500):
+    def plot_z_slice(self, val):
+
+        if self.debug:
+            print("Plotting Z slice")
+        self.slice_to_array(
+            self.Zslice["slc"],
+            offset=90.0,
+            name="Z"
+        )
+
+    def slice_to_array(self, slc, offset: float = 0.0, name: str = "Y"):
         """Converts a PolyData slice to a 2D NumPy array.
 
         It is crucial to have the true normal and origin of
@@ -585,63 +925,50 @@ class MeshPlot():
         Parameters
         ----------
         slc : PolyData
-            The slice to convert.
-        normal : tuple(float)
-            the normal of the original slice
-        origin : tuple(float)
-            the origin of the original slice
-        name : str
-            The scalar array to fetch from the slice
-        ni : int
-            The resolution of the array in the i-direction
-        nj : int
-            The resolution of the array in the j-direction
+            Slice as slice through a mesh.
 
         """
-        # # Make structured grid
-        # for out in np.meshgrid(x, y, z):
-        #     print(out.shape)
-        # plane = pv.StructuredGrid(*np.meshgrid(x, y, z))
 
+        # Get slice
+        if self.debug:
+            print("   Getting Slice")
         slctemp = slc.copy(deep=True)
-
         slctemp.points = (self.rotmat.T @ slctemp.points.T).T
-        sliceup = self.rotmat.T @ self.normalup
 
-        # Get angles
-        # u = sliceup
-        # v = [1, 0, 0]
-        # c = np.dot(u, v)/np.linalg.norm(u) / np.linalg.norm(v)
-        # -> cosine of the angle
-        # angle = np.arccos(np.clip(c, -1, 1))  # if you really want the angle
-        # print(angle)
-        # print(slctemp.bounds)
-        # print(slctemp.points)
+        # Interpolate slices
+        if self.debug:
+            print("   Creating polydata")
 
-        # Yet another triangulation
-        points = np.vstack(
-            (slctemp.points[:, 0],
-             slctemp.points[:, 2],
-             np.zeros_like(slctemp.points[:, 2]))).T
+        # Depending on the slice, column 1 or 2 will contain the points
+        if offset == 0.0:
+            points = np.vstack(
+                (slctemp.points[:, 0],
+                 slctemp.points[:, 2],
+                 np.zeros_like(slctemp.points[:, 2]))).T
+        else:
+            points = np.vstack(
+                (slctemp.points[:, 0],
+                 slctemp.points[:, 1],
+                 np.zeros_like(slctemp.points[:, 1]))).T
+
         pc = pv.PolyData(points)
+
+        if self.debug:
+            print("   Triangulate")
         mesh = pc.delaunay_2d(alpha=0.5*1.5*lpy.DEG2KM)
         mesh[self.meshname] = slctemp[self.meshname]
 
-        #  Get triangles
+        # Get triangles from delauney triangulation to be
+        # used for interpolation
+        if self.debug:
+            print("   Reshape Triangles")
         xy = np.array(mesh.points[:, 0:2])
         r, t = lpy.cart2pol(xy[:, 0], xy[:, 1])
-        # t = np.where(t < 0, t + 2*np.pi, t)
-        # t += 2 * np.pi
         findlimt = t + 4 * np.pi
         mint = np.min(findlimt) - 4 * np.pi
         maxt = np.max(findlimt) - 4 * np.pi
         cells = mesh.faces.reshape(mesh.n_cells, 4)
         triangles = np.array(cells[:, 1:4])
-
-        print(xy.shape)
-        print(triangles.shape)
-        print(len(slctemp[self.meshname]))
-        print(len(mesh[self.meshname]))
 
         # Set maximum slice length (makes no sense otherwise)
         if mint < -11.25:
@@ -649,28 +976,7 @@ class MeshPlot():
         if maxt > 11.25:
             maxt = 11.25
 
-        plt.figure(figsize=(6.0, 8.0))
-
-        # ax = plt.subplot(111, projection='polar')
-        # ax.set_theta_zero_location("N")
-        # ax.set_rlim(bottom=np.min(lpy.EARTH_RADIUS_KM - r),
-        #             top=np.max(lpy.EARTH_RADIUS_KM - r))
-        # ax.set_rorigin(lpy.EARTH_RADIUS_KM)
-        # ax.set_thetamin(mint/np.pi*180.0)
-        # ax.set_thetamax(maxt/np.pi*180.0)
-        # ax.tick_params(labelbottom=False, labeltop=True,
-        #                labelleft=True, labelright=True,
-        #                left=True, right=True,
-        #                top=True, bottom=True)
-        # ax.tick_params(axis="x", direction="in", pad=-18)
-        # caxbound = ax.inset_axes([0.125, 0.01, 0.75, 0.1])
-        # lpy.remove_ticklabels(caxbound)
-        # lpy.remove_ticks(caxbound)
-        # cax = ax.inset_axes([0.15, 0.07, 0.7, 0.025])
-
-        # ax.tick_params()
-
-        #
+        # Set up intterpolation values
         dmin = np.min(lpy.EARTH_RADIUS_KM - r)
         dmax = np.max(lpy.EARTH_RADIUS_KM - r)
         dsamp = np.linspace(dmin, dmax, 1000)
@@ -679,93 +985,47 @@ class MeshPlot():
 
         # you can add keyword triangles here if you have the triangle array,
         # size [Ntri,3]
+        if self.debug:
+            print("   Triangulation 2")
         triObj = Triangulation(t, r, triangles=triangles)
 
         # linear interpolation
         fz = LinearTriInterpolator(triObj, mesh[self.meshname])
         Z = fz(tt, lpy.EARTH_RADIUS_KM - dd)
-        print(Z)
-        # x = mesh.points
-        # tri = data.faces.reshape((-1, 4))[:, 1:]
-        # u = data.active_scalar
-        xy[:, 0], xy[:, 1]
 
-        plt.imshow(Z[:, ::-1], extent=[mint, maxt, dmax, dmin], cmap=self.cmapname,
-                   aspect='auto', vmin=self.clim[0], vmax=self.clim[1])
-        # plt.tricontourf(xy[:, 0], xy[:, 1], triangles, mesh['RF'])
-        # plt.gca().set_aspect('equal')
-        # plt.scatter(t, lpy.EARTH_RADIUS_KM - r)
+        # Get aspect of the figure
+        aspect = ((maxt - mint)*180/np.pi*lpy.DEG2KM) / (dmax - dmin)
+        height = 4.0
+        width = height * aspect
 
-        # mesh = plt.pcolormesh(tt, dd, Z, cmap=self.cmapname, edgecolor=
-        #                       vmin=self.clim[0], vmax=self.clim[1]
-        #                       shading='auto')
-        # plt.tripcolor(t/np.pi*180.0, lpy.EARTH_RADIUS_KM - r, mesh['RF'],
-        #               triangles=triangles,
-        #               cmap='seismic',
-        #               vmin=self.clim[0], vmax=self.clim[1])
-        # ax.set_xlim(mint, maxt)
-        # ax.invert_yaxis()
-        # plt.colorbar(mesh, cax=cax, orientation='horizontal')
-        plt.title(rf"$\leftarrow$ N{360-self.rotangle}$^\circ$")
-        plt.show(block=False)
-        # x = np.linspace(slc.bounds[0], slc.bounds[1], ni)
-        # z = np.linspace(slc.bounds[2], slc.bounds[3], nj)
+        if self.debug:
+            print("   Plotting")
 
-        # rotate and translate grid to be ontop of the slice
-        # direction = normal / np.linalg.norm(normal)
-        # vx -= vx.dot(direction) * direction
-        # vx /= np.linalg.norm(vx)
-        # vy = np.cross(direction, vx)
-        # rmtx = np.array([vx, vy, direction])
-        # plane.points = plane.points.dot(self.rotmat)
-        # plane.points -= plane.center
-        # plane.points += origin
+        # Create figure
+        plt.figure(figsize=(width, height))
 
-        # resample the data
-        # sampled = plane.sample(slc, tolerance=slc.length*0.5)
-        # self.p.subplot(0)
-        # self.p.add_mesh(slctemp)
-        # print(sampled)
-        # Fill bad data
-        # sampled[name][~sampled["vtkValidPointMask"].view(bool)] = np.nan
+        plt.imshow(
+            Z,
+            extent=[mint*180/np.pi*lpy.DEG2KM, maxt*180/np.pi*lpy.DEG2KM,
+                    dmax, dmin],
+            cmap=self.cmapname, vmin=self.clim[0], vmax=self.clim[1],
+            rasterized=True)
 
-        # plot the 2D array
-        # array = sampled[name].reshape(sampled.dimensions[1:3])
-        array = None
-        return array
+        from_north = np.abs(self.rotangle*180/np.pi) + offset
+        plt.title(rf"$N{from_north:6.2f}^\circ \rightarrow$")
+        plt.xlabel('Offset [km]')
+        plt.ylabel('Depth [km]')
+
+        if not self.figures_only:
+            plt.show(block=False)
+
+        plt.savefig(os.path.join(self.outputdir,
+                                 f"slice_{name}_"
+                                 f"lat{int(self.latitude+90.0)}_"
+                                 f"lon{int(self.longitude+180.0)}_"
+                                 f"N{int(from_north)}_{self.meshname}.pdf"))
 
         """
-        colorbar slider
-        sargs = dict(height=0.25, vertical=True,
-                     position_x=0.05, position_y=0.05,
-                     interactive=True
-                     title_font_size=20,
-                    label_font_size=16,
-                    shadow=True,
-                    n_labels=3,
-                    italic=True,
-                    fmt="%.1f",
-                    font_family="arial",)
-        annotations = {
-            2300: "High",
-            805.3: "Cutoff value",
-        }
-        addmesh(mesh, clim=[1000, 2000],
-                below_color='blue',
-                above_color='red',
-                scalar_bar_args=sargs,
-                annotations=annotations)
-
-        update_scalar_bar_range(clim, name=None)
-
-        view vector
-        Change the range of a slider!
-        widget.GetRepresentation().SetMinimumValue(-1)
-        widget.GetRepresentation().SetMaximumValue(2)
-
-        # Reset button
-
-        #
         # SET CAMERA VIEW
         pos = grid_from_sph_coords([180], [90-30], [RADIUS * 10])
         p.set_position(pos.points)
