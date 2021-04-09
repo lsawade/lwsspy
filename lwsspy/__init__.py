@@ -37,8 +37,8 @@ if "-m" not in sys.argv:
     # -------- FUNCTIONS & CLASSES --------------------------------------------
 
     # Geographical things
-    from .geo.geo_weights import GeoWeights
-    from .geo.azi_weights import azi_weights
+    from .geo.geo_weights import GeoWeights  # noqa
+    from .geo.azi_weights import azi_weights  # noqa
 
     # Inversion
     from .inversion.optimizer import Optimization  # noqa
@@ -91,15 +91,12 @@ if "-m" not in sys.argv:
     from .plot_util.hudsondiamondaxes import hdaxes  # noqa
     from .plot_util.midpointcolornorm import MidpointNormalize  # noqa
     from .plot_util.midpointlognorm import MidPointLogNorm  # noqa
+    from .plot_util.multiple_formatter import multiple_formatter  # noqa
+    from .plot_util.multiple_formatter import Multiple  # noqa
     from .plot_util.nice_colorbar import nice_colorbar  # noqa
     from .plot_util.pick_colors_from_cmap import pick_colors_from_cmap  # noqa
     from .plot_util.plot_label import plot_label  # noqa
-    # Pyvista is not easily installed automatically.
-    # Using this to avoid import
-    if platform.machine() != 'ppc64le':
-        from .plot_util.plot_mesh import plot_mesh  # noqa
-        from .plot_util.plot_mesh import MeshPlot  # noqa
-        from .plot_util.read_mesh import read_mesh  # noqa
+    from .plot_util.plot_xyz_line import plot_xyz_line  # noqa
     from .plot_util.remove_ticklabels import remove_xticklabels  # noqa
     from .plot_util.remove_ticklabels import remove_yticklabels  # noqa
     from .plot_util.remove_ticklabels import remove_ticklabels  # noqa

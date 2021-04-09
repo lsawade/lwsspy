@@ -1,6 +1,5 @@
 import matplotlib
 import matplotlib.pyplot as plt
-import numpy as np
 import lwsspy as lpy
 
 
@@ -21,7 +20,7 @@ def nice_colorbar(*args, fig: bool = False, **kwargs) -> matplotlib.colorbar.Col
         Lucas Sawade (lsawade@princeton.edu)
 
     :Last Modified:
-        2021.01.06 11.00d
+        2021.01.06 11.00
     """
 
     # Get normal axes labelsize

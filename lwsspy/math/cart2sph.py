@@ -21,7 +21,7 @@ def cart2sph(x: float or np.ndarray or list,
     Returns
     -------
     float or np.ndarray or list, float or np.ndarray or list, float or np.ndarray or list
-        (x, y, z)
+        (r, theta, phi)
     """
 
     if type(x) is list:

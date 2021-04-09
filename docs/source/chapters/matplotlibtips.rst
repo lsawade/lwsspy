@@ -67,3 +67,33 @@ transparent. Simply save your figure using
 See :ref:`station-map` for a use of the figure. Note that the rtd-themes 
 background is not white, but off white, if the figure background would be 
 visible, you would see it. For a converse example, see :ref:`partial-rasterize`.
+
+
+Multiple Locator for the Axes
++++++++++++++++++++++++++++++
+
+Sometimes it is convenient to show things as multiples of a certain values. 
+A good example are radians, often times cyclical motions are easier 
+illustrated as multiples of pi instead of it's value in radians. 
+Using functions from ``lwsspy`` this can be done two ways, where the second 
+one is arguably more elegant.
+
+.. literalinclude:: figures/scripts/multiple_locator.py
+  :language: python
+
+.. image:: figures/multiple_locator.svg
+
+
+Plotting a Line with Variable Color and Width
++++++++++++++++++++++++++++++++++++++++++++++
+
+Below shown the usage of a convenience function included in ``lwsspy`` which 
+makes it easy to plot lines with variable color and width. It takes
+in ``x``, ``y``, and ``z`` and parses all other ``*args`` and ``**kwargs`` to 
+a ``LineCollection`` and returns the ``LineCollection`` as well as a 
+``ScalarMappable`` to enable simple colorbar creation.
+
+.. literalinclude:: figures/scripts/plot_xyz_line.py
+  :language: python
+
+.. image:: figures/xyz_line.svg
