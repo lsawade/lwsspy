@@ -15,5 +15,4 @@ def magnitude(x: float):
     """
 
     def magnitude(value):
-        print(value)
-        return np.where(value == 0, 0, np.floor(np.log10(np.abs(value)))).astype(int)
+        return np.floor(np.log10(np.abs(value))).astype(int)
