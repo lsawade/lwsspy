@@ -13,6 +13,15 @@ def magnitude(x: float):
             Magnitude of x
 
     """
+    if type(x) is list or type(x) is tuple:
+        x = np.array(x)
 
-    def magnitude(value):
-        return np.floor(np.log10(np.abs(value))).astype(int)
+    if type(x) != np.ndarray:
+        if x != 0:
+            return np.floor(np.log10(np.abs(x)))
+        else:
+            return 0
+    else:
+        out = np.zeros_like(x)
+        out[x != 0] = np.floor(np.log10(np.abs(x[x != 0])))
+        return out.astype(int)
