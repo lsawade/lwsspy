@@ -88,6 +88,8 @@ if "-m" not in sys.argv:
     from .plot_util.fixedpointcolornorm import FixedPointColorNorm  # noqa
     from .plot_util.get_aspect import get_aspect  # noqa
     from .plot_util.get_stats_label_length import get_stats_label_length  # noqa
+    from .plot_util.get_continuous_cmap import get_continuous_cmap  # noqa
+    from .plot_util.hex2rgb import hex_to_rgb  # noqa
     from .plot_util.hudsondiamondaxes import hdaxes  # noqa
     from .plot_util.midpointcolornorm import MidpointNormalize  # noqa
     from .plot_util.midpointlognorm import MidPointLogNorm  # noqa
@@ -103,6 +105,7 @@ if "-m" not in sys.argv:
     from .plot_util.remove_ticklabels import remove_ticks  # noqa
     from .plot_util.remove_ticklabels import remove_ticklabels_bottomleft  # noqa
     from .plot_util.remove_ticklabels import remove_ticklabels_topright  # noqa
+    from .plot_util.rgb2dec import rgb_to_dec  # noqa
     from .plot_util.right_align_legend import right_align_legend  # noqa
     from .plot_util.smooth_nan_image import smooth_nan_image  # noqa
     from .plot_util.updaterc import updaterc  # noqa

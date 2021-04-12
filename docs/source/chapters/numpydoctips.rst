@@ -98,7 +98,7 @@ Usage:
 - ``Notes`` section for notes and possible author info
 
 
-Documeting Classes
+Documenting Classes
 ------------------
 
 Documenting class is very similar to documenting functions, but there are
