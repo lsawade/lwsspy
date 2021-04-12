@@ -46,7 +46,9 @@ def remove_ticks(ax: Axes):
         ax (Axes): Axes handles
     """
     ax.tick_params(bottom=False, top=False,
-                   left=False, right=False)
+                   left=False, right=False,
+                   axis='both', which='both')
+
 
 def remove_ticklabels_topright(ax: Axes):
     """Removes top and right ticklabels of an axes

@@ -1,4 +1,4 @@
-from numpy import log10
+import numpy as np
 
 
 def magnitude(x: float):
@@ -13,4 +13,7 @@ def magnitude(x: float):
             Magnitude of x
 
     """
-    return int(log10(x))
+
+    def magnitude(value):
+        print(value)
+        return np.where(value == 0, 0, np.floor(np.log10(np.abs(value)))).astype(int)

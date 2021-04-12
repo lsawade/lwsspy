@@ -54,8 +54,8 @@ download_dict = dict(
 conda_activation = "source /usr/licensed/anaconda3/2020.7/etc/profile.d/conda.sh && conda activate lwsspy"
 compute_node_login = "lsawade@traverse.princeton.edu"
 bash_escape = "source ~/.bash_profile"
-parameter_check_list = ['depth_in_m', "time_shift", "m_rr",
-                        "m_tt", "m_pp", "m_rt", "m_rp", "m_tp"]
+parameter_check_list = ['depth_in_m', "time_shift",
+                        "m_rr", "m_tt", "m_pp", "m_rt", "m_rp", "m_tp"]
 nosimpars = ["time_shift", "half_duration"]
 mt_params = ["m_rr", "m_tt", "m_pp", "m_rt", "m_rp", "m_tp"]
 pardict = dict(
@@ -65,6 +65,7 @@ pardict = dict(
     m_rt=dict(scale=None, pert=1e23),
     m_rp=dict(scale=None, pert=1e23),
     m_tp=dict(scale=None, pert=1e23),
+    time_shift=dict(scale=1.0, pert=None),
     depth_in_m=dict(scale=1000.0, pert=None)
 )
 # pardict = dict(
@@ -808,8 +809,10 @@ class GCMT3DInversion:
         try:
             if self.zero_trace:
                 model = np.append(deepcopy(self.scaled_model), 0.0)
-            optim_out = optim.solve(optim, self.scaled_model)
-            self.model = optim.model
+            else:
+                model = deepcopy(self.scaled_model)
+            optim_out = optim.solve(optim, model)
+            self.model = deepcopy(optim.model)
             return optim_out
         except Exception as e:
             print(e)
@@ -1052,7 +1055,7 @@ class GCMT3DInversion:
             modelres = self.scaled_model - self.init_scaled_model
             print("modelres:", modelres)
             print("Costbef:", cost)
-            cost += factor/2 * np.sum(modelres**2)
+            # cost += factor/2 * np.sum(modelres**2)
             print("Costaft:", cost)
             g += factor * modelres
             h += factor * np.eye(len(self.model))
@@ -1067,14 +1070,14 @@ class GCMT3DInversion:
 
         # Add zero trace condition
         if self.zero_trace:
-            m, n=h.shape
-            hz=np.zeros((m+1, n+1))
-            hz[:-1, :-1]=h
-            hz[:, -1]=self.zero_trace_array
-            hz[-1, :]=self.zero_trace_array
-            h=hz
-            g=np.append(g, 0.0)
-            g[-1]=np.sum(self.scaled_model[self.zero_trace_index_array])
+            m, n = h.shape
+            hz = np.zeros((m+1, n+1))
+            hz[:-1, :-1] = h
+            hz[:, -1] = self.zero_trace_array
+            hz[-1, :] = self.zero_trace_array
+            h = hz
+            g = np.append(g, 0.0)
+            g[-1] = np.sum(self.scaled_model[self.zero_trace_index_array])
 
         if self.debug:
             print("Zero_traced")
@@ -1088,10 +1091,10 @@ class GCMT3DInversion:
 
     def __compute_cost__(self):
 
-        cost=0
+        cost = 0
         for _wtype in self.processdict.keys():
 
-            cgh=lpy.CostGradHess(
+            cgh = lpy.CostGradHess(
                 data=self.data_dict[_wtype],
                 synt=self.synt_dict[_wtype]["synt"],
                 verbose=self.debug,
@@ -1102,16 +1105,16 @@ class GCMT3DInversion:
 
     def __compute_residuals__(self):
 
-        residuals=dict()
+        residuals = dict()
         for _wtype in self.processdict.keys():
 
-            cgh=lpy.CostGradHess(
+            cgh = lpy.CostGradHess(
                 data=self.data_dict[_wtype],
                 synt=self.synt_dict[_wtype]["synt"],
                 verbose=self.debug,
                 normalize=self.normalize,
                 weight=False)
-            residuals[_wtype]=cgh.residuals()
+            residuals[_wtype] = cgh.residuals()
 
         with open(os.path.join(self.cmtdir, "residuals.pkl"), "wb") as f:
             cPickle.dump(deepcopy(residuals), f)
@@ -1120,16 +1123,16 @@ class GCMT3DInversion:
 
     def __compute_gradient__(self):
 
-        gradient=np.zeros_like(self.model)
+        gradient = np.zeros_like(self.model)
 
         for _wtype in self.processdict.keys():
             # Get all perturbations
-            dsyn=list()
+            dsyn = list()
             for _i, _par in enumerate(self.pardict.keys()):
                 dsyn.append(self.synt_dict[_wtype][_par])
 
             # Create costgradhess class to computte gradient
-            cgh=lpy.CostGradHess(
+            cgh = lpy.CostGradHess(
                 data=self.data_dict[_wtype],
                 synt=self.synt_dict[_wtype]["synt"],
                 dsyn=dsyn,
@@ -1143,20 +1146,20 @@ class GCMT3DInversion:
 
     def __compute_gradient_and_hessian__(self):
 
-        gradient=np.zeros_like(self.model)
-        hessian=np.zeros((len(self.model), len(self.model)))
+        gradient = np.zeros_like(self.model)
+        hessian = np.zeros((len(self.model), len(self.model)))
         print(self.model)
         print(gradient)
         print(hessian)
         for _wtype in self.processdict.keys():
 
             # Get all perturbations
-            dsyn=list()
+            dsyn = list()
             for _i, _par in enumerate(self.pardict.keys()):
                 dsyn.append(self.synt_dict[_wtype][_par])
             print(len(dsyn))
             # Create costgradhess class to computte gradient
-            cgh=lpy.CostGradHess(
+            cgh = lpy.CostGradHess(
                 data=self.data_dict[_wtype],
                 synt=self.synt_dict[_wtype]["synt"],
                 dsyn=dsyn,
@@ -1164,7 +1167,7 @@ class GCMT3DInversion:
                 normalize=self.normalize,
                 weight=self.weighting)
 
-            tmp_g, tmp_h=cgh.grad_and_hess()
+            tmp_g, tmp_h = cgh.grad_and_hess()
             print(tmp_g, tmp_h)
             gradient += tmp_g
             hessian += tmp_h
@@ -1176,51 +1179,51 @@ class GCMT3DInversion:
         # Start the walk
         lpy.print_bar("Misfit walk: Depth")
 
-        scaled_depths=np.arange(self.cmtsource.depth_in_m - 10000,
+        scaled_depths = np.arange(self.cmtsource.depth_in_m - 10000,
                                   self.cmtsource.depth_in_m + 10100, 1000)/1000.0
-        cost=np.zeros_like(scaled_depths)
-        grad=np.zeros((*scaled_depths.shape, 1))
-        hess=np.zeros((*scaled_depths.shape, 1, 1))
-        dm=np.zeros((*scaled_depths.shape, 1))
+        cost = np.zeros_like(scaled_depths)
+        grad = np.zeros((*scaled_depths.shape, 1))
+        hess = np.zeros((*scaled_depths.shape, 1, 1))
+        dm = np.zeros((*scaled_depths.shape, 1))
 
         for _i, _dep in enumerate(scaled_depths):
 
             lpy.print_section(f"Computing CgH for: {_dep} km")
             with lpy.Timer():
-                c, g, h=self.compute_cost_gradient_hessian(
+                c, g, h = self.compute_cost_gradient_hessian(
                     np.array([_dep]))
                 print(f"\n     Iteration for {_dep} km done.")
-            cost[_i]=c
-            grad[_i, :]=g
-            hess[_i, :, :]=h
+            cost[_i] = c
+            grad[_i, :] = g
+            hess[_i, :, :] = h
 
         # Get the Gauss newton step
         for _i in range(len(scaled_depths)):
-            dm[_i, :]=np.linalg.solve(
+            dm[_i, :] = np.linalg.solve(
                 hess[_i, :, :], -grad[_i, :])
 
         plt.switch_backend("pdf")
         plt.figure(figsize=(12, 4))
         # Cost function
-        ax=plt.subplot(141)
+        ax = plt.subplot(141)
         plt.plot(cost, scaled_depths, label="Cost")
         plt.legend(frameon=False, loc='upper right')
         plt.xlabel("Cost")
         plt.ylabel("Depth [km]")
 
-        ax=plt.subplot(142, sharey=ax)
+        ax = plt.subplot(142, sharey=ax)
         plt.plot(np.squeeze(grad), scaled_depths, label="Grad")
         plt.legend(frameon=False, loc='upper right')
         plt.xlabel("Gradient")
         ax.tick_params(labelleft=False, labelright=False)
 
-        ax=plt.subplot(143, sharey=ax)
+        ax = plt.subplot(143, sharey=ax)
         plt.plot(np.squeeze(hess), scaled_depths, label="Hess")
         plt.legend(frameon=False, loc='upper right')
         plt.xlabel("G.-N. Hessian")
         ax.tick_params(labelleft=False, labelright=False)
 
-        ax=plt.subplot(144, sharey=ax)
+        ax = plt.subplot(144, sharey=ax)
         plt.plot(np.squeeze(dm), scaled_depths, label="Step")
         plt.legend(frameon=False, loc='upper right')
         plt.xlabel("$\Delta$m [km]")
@@ -1241,45 +1244,45 @@ class GCMT3DInversion:
         # depths = np.arange(self.cmtsource.depth_in_m - 10000,
         #                    self.cmtsource.depth_in_m + 10100, 1000)
         # times = np.arange(-10.0, 10.1, 1.0)
-        depths=np.arange(self.cmtsource.depth_in_m - 5000,
+        depths = np.arange(self.cmtsource.depth_in_m - 5000,
                            self.cmtsource.depth_in_m + 5100, 1000)
-        times=np.arange(self.cmtsource.time_shift - 5.0,
+        times = np.arange(self.cmtsource.time_shift - 5.0,
                           self.cmtsource.time_shift + 5.1, 1.0)
-        t, z=np.meshgrid(times, depths)
-        cost=np.zeros(z.shape)
-        grad=np.zeros((*z.shape, 2))
-        hess=np.zeros((*z.shape, 2, 2))
-        dm=np.zeros((*z.shape, 2))
+        t, z = np.meshgrid(times, depths)
+        cost = np.zeros(z.shape)
+        grad = np.zeros((*z.shape, 2))
+        hess = np.zeros((*z.shape, 2, 2))
+        dm = np.zeros((*z.shape, 2))
 
         for _i, _dep in enumerate(depths):
             for _j, _time in enumerate(times):
 
-                c, g, h=self.compute_cost_gradient_hessian(
+                c, g, h = self.compute_cost_gradient_hessian(
                     np.array([_dep, _time]))
-                cost[_i, _j]=c
-                grad[_i, _j, :]=g
-                hess[_i, _j, :, :]=h
+                cost[_i, _j] = c
+                grad[_i, _j, :] = g
+                hess[_i, _j, :, :] = h
 
         # Get the Gauss newton step
-        damp=0.001
+        damp = 0.001
         for _i in range(z.shape[0]):
             for _j in range(z.shape[1]):
-                dm[_i, _j, :]=np.linalg.solve(
+                dm[_i, _j, :] = np.linalg.solve(
                     hess[_i, _j, :, :] + damp * np.diag(np.ones(2)), - grad[_i, _j, :])
         plt.switch_backend("pdf")
-        extent=[np.min(t), np.max(t), np.min(z), np.max(z)]
-        aspect=(np.max(t) - np.min(t))/(np.max(z) - np.min(z))
+        extent = [np.min(t), np.max(t), np.min(z), np.max(z)]
+        aspect = (np.max(t) - np.min(t))/(np.max(z) - np.min(z))
         plt.figure(figsize=(11, 6.5))
 
         # Get minimum
-        ind=np.unravel_index(np.argmin(cost, axis=None), cost.shape)
+        ind = np.unravel_index(np.argmin(cost, axis=None), cost.shape)
 
         # Cost
-        ax1=plt.subplot(3, 4, 9)
+        ax1 = plt.subplot(3, 4, 9)
         plt.imshow(cost, interpolation=None, extent=extent, aspect=aspect)
         lpy.plot_label(ax1, r"$\mathcal{C}$", dist=0)
         plt.plot(times[ind[0]], depths[ind[1]], "*")
-        c1=plt.colorbar()
+        c1 = plt.colorbar()
         c1.ax.tick_params(labelsize=7)
         c1.ax.yaxis.offsetText.set_fontsize(7)
         ax1.axes.invert_yaxis()
@@ -1287,19 +1290,19 @@ class GCMT3DInversion:
         plt.xlabel(r'$t$')
 
         # Gradient
-        ax2=plt.subplot(3, 4, 6, sharey=ax1)
+        ax2 = plt.subplot(3, 4, 6, sharey=ax1)
         plt.imshow(grad[:, :, 1], interpolation=None,
                    extent=extent, aspect=aspect)
-        c2=plt.colorbar()
+        c2 = plt.colorbar()
         c2.ax.tick_params(labelsize=7)
         c2.ax.yaxis.offsetText.set_fontsize(7)
         ax2.tick_params(labelbottom=False)
         lpy.plot_label(ax2, r"$g_{\Delta t}$", dist=0)
 
-        ax3=plt.subplot(3, 4, 10, sharey=ax1)
+        ax3 = plt.subplot(3, 4, 10, sharey=ax1)
         plt.imshow(grad[:, :, 0], interpolation=None,
                    extent=extent, aspect=aspect)
-        c3=plt.colorbar()
+        c3 = plt.colorbar()
         c3.ax.tick_params(labelsize=7)
         c3.ax.yaxis.offsetText.set_fontsize(7)
         ax3.tick_params(labelleft=False)
@@ -1307,28 +1310,28 @@ class GCMT3DInversion:
         plt.xlabel(r'$\Delta t$')
 
         # Hessian
-        ax4=plt.subplot(3, 4, 3, sharey=ax1)
+        ax4 = plt.subplot(3, 4, 3, sharey=ax1)
         plt.imshow(hess[:, :, 0, 1], interpolation=None,
                    extent=extent, aspect=aspect)
-        c4=plt.colorbar()
+        c4 = plt.colorbar()
         c4.ax.tick_params(labelsize=7)
         c4.ax.yaxis.offsetText.set_fontsize(7)
         ax4.tick_params(labelbottom=False)
         lpy.plot_label(ax4, r"$\mathcal{H}_{z,\Delta t}$", dist=0)
 
-        ax5=plt.subplot(3, 4, 7, sharey=ax1)
+        ax5 = plt.subplot(3, 4, 7, sharey=ax1)
         plt.imshow(hess[:, :, 1, 1], interpolation=None,
                    extent=extent, aspect=aspect)
-        c5=plt.colorbar()
+        c5 = plt.colorbar()
         c5.ax.tick_params(labelsize=7)
         c5.ax.yaxis.offsetText.set_fontsize(7)
         ax5.tick_params(labelleft=False, labelbottom=False)
         lpy.plot_label(ax5, r"$\mathcal{H}_{\Delta t,\Delta t}$", dist=0)
 
-        ax6=plt.subplot(3, 4, 11, sharey=ax1)
+        ax6 = plt.subplot(3, 4, 11, sharey=ax1)
         plt.imshow(hess[:, :, 0, 0], interpolation=None,
                    extent=extent, aspect=aspect)
-        c6=plt.colorbar()
+        c6 = plt.colorbar()
         c6.ax.tick_params(labelsize=7)
         c6.ax.yaxis.offsetText.set_fontsize(7)
         ax6.tick_params(labelleft=False)
@@ -1336,19 +1339,19 @@ class GCMT3DInversion:
         plt.xlabel(r'$\Delta t$')
 
         # Gradient/Hessian
-        ax7=plt.subplot(3, 4, 8, sharey=ax1)
+        ax7 = plt.subplot(3, 4, 8, sharey=ax1)
         plt.imshow(dm[:, :, 1], interpolation=None,
                    extent=extent, aspect=aspect)
-        c7=plt.colorbar()
+        c7 = plt.colorbar()
         c7.ax.tick_params(labelsize=7)
         c7.ax.yaxis.offsetText.set_fontsize(7)
         ax7.tick_params(labelleft=False, labelbottom=False)
         lpy.plot_label(ax7, r"$\mathrm{d}\Delta$", dist=0)
 
-        ax8=plt.subplot(3, 4, 12, sharey=ax1)
+        ax8 = plt.subplot(3, 4, 12, sharey=ax1)
         plt.imshow(dm[:, :, 0], interpolation=None,
                    extent=extent, aspect=aspect)
-        c8=plt.colorbar()
+        c8 = plt.colorbar()
         c8.ax.tick_params(labelsize=7)
         c8.ax.yaxis.offsetText.set_fontsize(7)
         ax8.tick_params(labelleft=False)
@@ -1363,19 +1366,19 @@ class GCMT3DInversion:
         for _wtype in self.processdict.keys():
             with PdfPages(os.path.join(outputdir, f"data_{_wtype}.pdf")) as pdf:
                 for obsd_tr in self.data_dict[_wtype]:
-                    fig=plot_seismograms(obsd_tr, cmtsource=self.cmtsource,
+                    fig = plot_seismograms(obsd_tr, cmtsource=self.cmtsource,
                                            tag=_wtype)
                     pdf.savefig()  # saves the current figure into a pdf page
                     plt.close(fig)
 
                     # We can also set the file's metadata via the PdfPages object:
-                d=pdf.infodict()
-                d['Title']=f"{_wtype.capitalize()}-Wave-Data-PDF"
-                d['Author']='Lucas Sawade'
-                d['Subject']='Trace comparison in one pdf'
-                d['Keywords']='seismology, moment tensor inversion'
-                d['CreationDate']=datetime.datetime.today()
-                d['ModDate']=datetime.datetime.today()
+                d = pdf.infodict()
+                d['Title'] = f"{_wtype.capitalize()}-Wave-Data-PDF"
+                d['Author'] = 'Lucas Sawade'
+                d['Subject'] = 'Trace comparison in one pdf'
+                d['Keywords'] = 'seismology, moment tensor inversion'
+                d['CreationDate'] = datetime.datetime.today()
+                d['ModDate'] = datetime.datetime.today()
 
     def plot_windows(self, outputdir="."):
         plt.switch_backend("pdf")
@@ -1383,7 +1386,7 @@ class GCMT3DInversion:
             with PdfPages(os.path.join(outputdir, f"windows_{_wtype}.pdf")) as pdf:
                 for obsd_tr in self.data_dict[_wtype]:
                     try:
-                        synt_tr=self.synt_dict[_wtype]["synt"].select(
+                        synt_tr = self.synt_dict[_wtype]["synt"].select(
                             station=obsd_tr.stats.station,
                             network=obsd_tr.stats.network,
                             component=obsd_tr.stats.channel[-1])[0]
@@ -1392,28 +1395,28 @@ class GCMT3DInversion:
                               "%s" % (obsd_tr.id, err))
                         continue
 
-                    fig=plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
+                    fig = plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
                                            tag=_wtype)
                     pdf.savefig()  # saves the current figure into a pdf page
                     plt.close(fig)
 
                     # We can also set the file's metadata via the PdfPages object:
-                d=pdf.infodict()
-                d['Title']=f"{_wtype.capitalize()}-Wave-PDF"
-                d['Author']='Lucas Sawade'
-                d['Subject']='Trace comparison in one pdf'
-                d['Keywords']='seismology, moment tensor inversion'
-                d['CreationDate']=datetime.datetime.today()
-                d['ModDate']=datetime.datetime.today()
+                d = pdf.infodict()
+                d['Title'] = f"{_wtype.capitalize()}-Wave-PDF"
+                d['Author'] = 'Lucas Sawade'
+                d['Subject'] = 'Trace comparison in one pdf'
+                d['Keywords'] = 'seismology, moment tensor inversion'
+                d['CreationDate'] = datetime.datetime.today()
+                d['ModDate'] = datetime.datetime.today()
 
     def plot_station(self, network: str, station: str, outputdir="."):
         plt.switch_backend("pdf")
         # Get station data
         for _wtype in self.processdict.keys():
             try:
-                obsd=self.data_dict[_wtype].select(
+                obsd = self.data_dict[_wtype].select(
                     network=network, station=station)
-                synt=self.synt_dict[_wtype]["synt"].select(
+                synt = self.synt_dict[_wtype]["synt"].select(
                     network=network, station=station)
             except Exception as e:
                 print(f"Could load station {network}{station} -- {e}")
@@ -1421,10 +1424,10 @@ class GCMT3DInversion:
             with PdfPages(os.path.join(outputdir, f"{network}.{station}_{_wtype}.pdf")) as pdf:
                 for component in ["Z", "R", "T"]:
                     try:
-                        obsd_tr=obsd.select(
+                        obsd_tr = obsd.select(
                             station=station, network=network,
                             component=component)[0]
-                        synt_tr=synt.select(
+                        synt_tr = synt.select(
                             station=station, network=network,
                             component=component)[0]
                     except Exception as err:
@@ -1432,19 +1435,19 @@ class GCMT3DInversion:
                               f" {network}.{station}.{component} -- {err}")
                         continue
 
-                    fig=plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
+                    fig = plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
                                            tag=_wtype)
                     pdf.savefig()  # saves the current figure into a pdf page
                     plt.close(fig)
 
                     # We can also set the file's metadata via the PdfPages object:
-                d=pdf.infodict()
-                d['Title']=f"{_wtype.capitalize()}-Wave-PDF"
-                d['Author']='Lucas Sawade'
-                d['Subject']='Trace comparison in one pdf'
-                d['Keywords']='seismology, moment tensor inversion'
-                d['CreationDate']=datetime.datetime.today()
-                d['ModDate']=datetime.datetime.today()
+                d = pdf.infodict()
+                d['Title'] = f"{_wtype.capitalize()}-Wave-PDF"
+                d['Author'] = 'Lucas Sawade'
+                d['Subject'] = 'Trace comparison in one pdf'
+                d['Keywords'] = 'seismology, moment tensor inversion'
+                d['CreationDate'] = datetime.datetime.today()
+                d['ModDate'] = datetime.datetime.today()
 
     def plot_station_der(self, network: str, station: str, outputdir="."):
         plt.switch_backend("pdf")
@@ -1457,14 +1460,14 @@ class GCMT3DInversion:
                 for _par in self.synt_dict[_wtype].keys():
                     if _par != "synt":
                         try:
-                            synt=self.synt_dict[_wtype][_par].select(
+                            synt = self.synt_dict[_wtype][_par].select(
                                 network=network, station=station)
                         except Exception as e:
                             print(f"Could load station "
                                   f"{network}{station} -- {e}")
                         for component in ["Z", "R", "T"]:
                             try:
-                                synt_tr=synt.select(
+                                synt_tr = synt.select(
                                     station=station, network=network,
                                     component=component)[0]
                             except Exception as err:
@@ -1474,20 +1477,20 @@ class GCMT3DInversion:
                                       f"-- {err}")
                                 continue
 
-                            fig=plot_seismograms(
+                            fig = plot_seismograms(
                                 synt_tr, cmtsource=self.cmtsource,
                                 tag=f"{_wtype.capitalize()}-{_par.capitalize()}")
                             pdf.savefig()  # saves the current figure into a pdf page
                             plt.close(fig)
 
                     # We can also set the file's metadata via the PdfPages object:
-                d=pdf.infodict()
-                d['Title']=f"{_wtype.capitalize()}-Wave-PDF"
-                d['Author']='Lucas Sawade'
-                d['Subject']='Trace comparison in one pdf'
-                d['Keywords']='seismology, moment tensor inversion'
-                d['CreationDate']=datetime.datetime.today()
-                d['ModDate']=datetime.datetime.today()
+                d = pdf.infodict()
+                d['Title'] = f"{_wtype.capitalize()}-Wave-PDF"
+                d['Author'] = 'Lucas Sawade'
+                d['Subject'] = 'Trace comparison in one pdf'
+                d['Keywords'] = 'seismology, moment tensor inversion'
+                d['CreationDate'] = datetime.datetime.today()
+                d['ModDate'] = datetime.datetime.today()
 
     def plot_windows(self, outputdir="."):
         plt.switch_backend("pdf")
@@ -1495,7 +1498,7 @@ class GCMT3DInversion:
             with PdfPages(os.path.join(outputdir, f"windows_{_wtype}.pdf")) as pdf:
                 for obsd_tr in self.data_dict[_wtype]:
                     try:
-                        synt_tr=self.synt_dict[_wtype]["synt"].select(
+                        synt_tr = self.synt_dict[_wtype]["synt"].select(
                             station=obsd_tr.stats.station,
                             network=obsd_tr.stats.network,
                             component=obsd_tr.stats.channel[-1])[0]
@@ -1504,19 +1507,19 @@ class GCMT3DInversion:
                               "%s" % (obsd_tr.id, err))
                         continue
 
-                    fig=plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
+                    fig = plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
                                            tag=_wtype)
                     pdf.savefig()  # saves the current figure into a pdf page
                     plt.close(fig)
 
                     # We can also set the file's metadata via the PdfPages object:
-                d=pdf.infodict()
-                d['Title']=f"{_wtype.capitalize()}-Wave-PDF"
-                d['Author']='Lucas Sawade'
-                d['Subject']='Trace comparison in one pdf'
-                d['Keywords']='seismology, moment tensor inversion'
-                d['CreationDate']=datetime.datetime.today()
-                d['ModDate']=datetime.datetime.today()
+                d = pdf.infodict()
+                d['Title'] = f"{_wtype.capitalize()}-Wave-PDF"
+                d['Author'] = 'Lucas Sawade'
+                d['Subject'] = 'Trace comparison in one pdf'
+                d['Keywords'] = 'seismology, moment tensor inversion'
+                d['CreationDate'] = datetime.datetime.today()
+                d['ModDate'] = datetime.datetime.today()
 
     @ staticmethod
     def __create_dir__(dir, overwrite=False):
@@ -1530,33 +1533,33 @@ class GCMT3DInversion:
                 pass
 
 
-def plot_seismograms(obsd: Trace, synt: Union[Trace, None]=None,
-                     cmtsource: Union[lpy.CMTSource, None]=None,
-                     tag: Union[str, None]=None):
-    station=obsd.stats.station
-    network=obsd.stats.network
-    channel=obsd.stats.channel
-    location=obsd.stats.location
+def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
+                     cmtsource: Union[lpy.CMTSource, None] = None,
+                     tag: Union[str, None] = None):
+    station = obsd.stats.station
+    network = obsd.stats.network
+    channel = obsd.stats.channel
+    location = obsd.stats.location
 
-    trace_id=f"{network}.{station}.{location}.{channel}"
+    trace_id = f"{network}.{station}.{location}.{channel}"
 
     # Times and offsets computed individually, since the grid search applies
     # a timeshift which changes the times of the traces.
     if cmtsource is None:
-        offset=0
+        offset = 0
     else:
-        offset=obsd.stats.starttime - cmtsource.cmt_time
+        offset = obsd.stats.starttime - cmtsource.cmt_time
         if isinstance(synt, Trace):
-            offset_synt=synt.stats.starttime - cmtsource.cmt_time
+            offset_synt = synt.stats.starttime - cmtsource.cmt_time
 
-    times=[offset + obsd.stats.delta * i for i in range(obsd.stats.npts)]
+    times = [offset + obsd.stats.delta * i for i in range(obsd.stats.npts)]
     if isinstance(synt, Trace):
-        times_synt=[offset_synt + synt.stats.delta * i
+        times_synt = [offset_synt + synt.stats.delta * i
                       for i in range(synt.stats.npts)]
 
     # Figure Setup
-    fig=plt.figure(figsize=(15, 5))
-    ax1=plt.subplot(211)
+    fig = plt.figure(figsize=(15, 5))
+    ax1 = plt.subplot(211)
     plt.subplots_adjust(left=0.03, right=0.97, top=0.95)
 
     ax1.plot(times, obsd.data, color="black", linewidth=0.75,
@@ -1570,13 +1573,13 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None]=None,
 
     # Setting top left corner text manually
     if isinstance(tag, str):
-        label=f"{trace_id}\n{tag.capitalize()}"
+        label = f"{trace_id}\n{tag.capitalize()}"
     else:
-        label=f"{trace_id}"
+        label = f"{trace_id}"
     lpy.plot_label(ax1, label, location=1, dist=0.005, box=False)
 
     # plot envelope
-    ax2=plt.subplot(212)
+    ax2 = plt.subplot(212)
     ax2.plot(times, lpy.envelope(obsd.data), color="black",
              linewidth=1.0, label="Observed")
     if isinstance(synt, Trace):
@@ -1588,13 +1591,13 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None]=None,
     if isinstance(synt, Trace):
         try:
             for win in obsd.stats.windows:
-                left=times[win.left]
-                right=times[win.right]
-                re1=Rectangle((left, ax1.get_ylim()[0]), right - left,
+                left = times[win.left]
+                right = times[win.right]
+                re1 = Rectangle((left, ax1.get_ylim()[0]), right - left,
                                 ax1.get_ylim()[1] - ax1.get_ylim()[0],
                                 color="blue", alpha=0.25, zorder=-1)
                 ax1.add_patch(re1)
-                re2=Rectangle((left, ax2.get_ylim()[0]), right - left,
+                re2 = Rectangle((left, ax2.get_ylim()[0]), right - left,
                                 ax2.get_ylim()[1] - ax2.get_ylim()[0],
                                 color="blue", alpha=0.25, zorder=-1)
                 ax2.add_patch(re2)
@@ -1607,12 +1610,12 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None]=None,
 def bin():
 
     # Inputs
-    event="C200811240902A"
-    database="/gpfs/alpine/geo111/scratch/lsawade/testdatabase"
-    specfemdir="/gpfs/alpine/geo111/scratch/lsawade/SpecfemMagic/specfem3d_globe"
-    launch_method="jsrun -n 6 -a 4 -c 4 -g 1"
+    event = "C200811240902A"
+    database = "/gpfs/alpine/geo111/scratch/lsawade/testdatabase"
+    specfemdir = "/gpfs/alpine/geo111/scratch/lsawade/SpecfemMagic/specfem3d_globe"
+    launch_method = "jsrun -n 6 -a 4 -c 4 -g 1"
 
-    gcmt3d=GCMT3DInversion(event, database, specfemdir, pardict=pardict,
+    gcmt3d = GCMT3DInversion(event, database, specfemdir, pardict=pardict,
                              download_data=False,
                              overwrite=False, launch_method=launch_method,
                              damping=0.001)
@@ -1624,26 +1627,26 @@ def bin():
     # print(50 * "-", "Cost, Grad, Hess", 50 * "_")
 
     # # gcmt3d.misfit_walk_depth()
-    optim_list=[]
+    optim_list = []
 
-    max_iter=5
-    max_nls=4
+    max_iter = 5
+    max_nls = 4
 
     with lpy.Timer():
 
         # Gauss Newton Optimization Structure
         lpy.print_bar("GN")
-        optim_gn=lpy.Optimization("gn")
-        optim_gn.compute_cost_and_grad_and_hess=gcmt3d.compute_cost_gradient_hessian
-        optim_gn.is_preco=False
-        optim_gn.niter_max=max_iter
-        optim_gn.nls_max=max_nls
-        optim_gn.alpha=1.0
-        optim_gn.stopping_criterion=9.5e-1
+        optim_gn = lpy.Optimization("gn")
+        optim_gn.compute_cost_and_grad_and_hess = gcmt3d.compute_cost_gradient_hessian
+        optim_gn.is_preco = False
+        optim_gn.niter_max = max_iter
+        optim_gn.nls_max = max_nls
+        optim_gn.alpha = 1.0
+        optim_gn.stopping_criterion = 9.5e-1
 
         # Run optimization
         with lpy.Timer():
-            optim_out=gcmt3d.optimize(optim_gn)
+            optim_out = gcmt3d.optimize(optim_gn)
             lpy.print_action("DONE with Gauss-Newton.")
 
         # Update model and write model
@@ -1656,16 +1659,16 @@ def bin():
         # BFGS
         gcmt3d.__init_model_and_scale__()
         lpy.print_bar("BFGS")
-        optim_bfgs=lpy.Optimization("bfgs")
-        optim_bfgs.compute_cost_and_gradient=gcmt3d.compute_cost_gradient
-        optim_bfgs.is_preco=False
-        optim_bfgs.niter_max=max_iter
-        optim_bfgs.nls_max=max_nls
-        optim_bfgs.stopping_criterion=9.5e-1
-        optim_bfgs.n=len(gcmt3d.model)
+        optim_bfgs = lpy.Optimization("bfgs")
+        optim_bfgs.compute_cost_and_gradient = gcmt3d.compute_cost_gradient
+        optim_bfgs.is_preco = False
+        optim_bfgs.niter_max = max_iter
+        optim_bfgs.nls_max = max_nls
+        optim_bfgs.stopping_criterion = 9.5e-1
+        optim_bfgs.n = len(gcmt3d.model)
 
         # Run optimization
-        optim_out=gcmt3d.optimize(optim_bfgs)
+        optim_out = gcmt3d.optimize(optim_bfgs)
 
         # Update model and write model
         gcmt3d.__update_cmt__(optim_out.model)
