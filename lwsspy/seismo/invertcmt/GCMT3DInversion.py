@@ -810,7 +810,7 @@ class GCMT3DInversion:
 
         try:
             if self.zero_trace:
-                model = np.append(deepcopy(self.scaled_model), 0.0)
+                model = np.append(deepcopy(self.scaled_model), 1.0)
             else:
                 model = deepcopy(self.scaled_model)
             optim_out = optim.solve(optim, model)
@@ -1006,7 +1006,7 @@ class GCMT3DInversion:
         # Update model
         if self.zero_trace:
             mu = model[-1]
-            self.model = model[:-1] * self.scale
+            self.model = model[:-1]
             self.scaled_model = model[:-1]
         else:
             self.model = model * self.scale
