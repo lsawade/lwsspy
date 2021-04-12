@@ -54,7 +54,7 @@ download_dict = dict(
 conda_activation = "source /usr/licensed/anaconda3/2020.7/etc/profile.d/conda.sh && conda activate lwsspy"
 compute_node_login = "lsawade@traverse.princeton.edu"
 bash_escape = "source ~/.bash_profile"
-parameter_check_list = ['depth_in_m', "time_shift",
+parameter_check_list = ['depth_in_m', "time_shift", 'latitude', 'longitude',
                         "m_rr", "m_tt", "m_pp", "m_rt", "m_rp", "m_tp"]
 nosimpars = ["time_shift", "half_duration"]
 mt_params = ["m_rr", "m_tt", "m_pp", "m_rt", "m_rp", "m_tp"]
@@ -65,6 +65,8 @@ pardict = dict(
     m_rt=dict(scale=None, pert=1e23),
     m_rp=dict(scale=None, pert=1e23),
     m_tp=dict(scale=None, pert=1e23),
+    latitude=dict(scale=1.0, pert=None),
+    longitude=dict(scale=1.0, pert=None),
     time_shift=dict(scale=1.0, pert=None),
     depth_in_m=dict(scale=1000.0, pert=None)
 )
@@ -275,8 +277,9 @@ class GCMT3DInversion:
         self.pars = [_par for _par in self.pardict.keys()]
 
         # Create scaling vector
-        self.scale = np.array([_dict["scale"]
-                               for _, _dict in self.pardict.items()])
+        self.scale = np.array([10**lpy.magnitude(getattr(self.cmtsource, _par))
+                               if _par not in mt_params else _dict['scale']
+                               for _par, _dict in self.pardict.items()])
 
         self.scaled_model = self.model/self.scale
         self.init_scaled_model = 1.0 * self.scaled_model
