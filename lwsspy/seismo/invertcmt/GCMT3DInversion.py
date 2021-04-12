@@ -262,7 +262,7 @@ class GCMT3DInversion:
         # Check whether Mrr, Mtt, Mpp are there for zero trace condition
         if self.zero_trace:
 
-            self.zero_trace_array = np.array([1.0 if _par in mt_params else 0.0
+            self.zero_trace_array = np.array([1.0 if _par in ['m_rr', 'm_tt', 'm_pp'] else 0.0
                                               for _par in self.pardict.keys()])
             self.zero_trace_index_array = [
                 _i for _i, _par in enumerate(self.pardict.keys())
