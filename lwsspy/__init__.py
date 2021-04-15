@@ -2,22 +2,22 @@ import sys
 import os
 import platform
 
-DOCFIGURES = os.path.join(
+DOCFIGURES: str = os.path.join(
     os.path.dirname(
         os.path.dirname(
             os.path.abspath(__file__))),
     'docs', 'source', 'chapters', 'figures')
-DOCFIGURESCRIPTDATA = os.path.join(DOCFIGURES, 'scripts', 'data')
+DOCFIGURESCRIPTDATA: str = os.path.join(DOCFIGURES, 'scripts', 'data')
 
-DOWNLOAD_CACHE = os.path.join(
+DOWNLOAD_CACHE: str = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
     'download_cache')
 
-CONSTANT_DATA = os.path.join(
+CONSTANT_DATA: str = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
     'constant_data')
 
-GCMT_DATA = os.path.join(CONSTANT_DATA, 'gcmt')
+GCMT_DATA: str = os.path.join(CONSTANT_DATA, 'gcmt')
 
 # Global imports when running the modules for testing
 if "-m" not in sys.argv:
@@ -97,8 +97,10 @@ if "-m" not in sys.argv:
     from .plot_util.multiple_formatter import Multiple  # noqa
     from .plot_util.nice_colorbar import nice_colorbar  # noqa
     from .plot_util.pick_colors_from_cmap import pick_colors_from_cmap  # noqa
+    from .plot_util.pick_data_from_image import pick_data_from_image  # noqa
     from .plot_util.plot_label import plot_label  # noqa
     from .plot_util.plot_xyz_line import plot_xyz_line  # noqa
+    from .plot_util.pz_figure import pz_figure  # noqa
     from .plot_util.remove_ticklabels import remove_xticklabels  # noqa
     from .plot_util.remove_ticklabels import remove_yticklabels  # noqa
     from .plot_util.remove_ticklabels import remove_ticklabels  # noqa
@@ -243,4 +245,5 @@ if "-m" not in sys.argv:
     # Weather
     from .weather.requestweather import requestweather  # noqa
     from .weather.weather import weather  # noqa
+    from .weather.river import River  # noqa
     from .weather.drop2pickle import drop2pickle  # noqa

@@ -1,11 +1,10 @@
 import numpy as np
-from numpy.typing import ArrayLike
 import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
 from matplotlib.cm import ScalarMappable
 
 
-def plot_xyz_line(x: ArrayLike, y: ArrayLike, z: ArrayLike, *args, **kwargs):
+def plot_xyz_line(x, y, z, *args, **kwargs):
     """Plot multicolored lines by passing norm and cmap to a LineCollection/
 
     Mosly taken from matplotlib tutorial on multicolored lines (`MPL`_), just
