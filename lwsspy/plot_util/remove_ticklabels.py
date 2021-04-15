@@ -8,6 +8,7 @@
 
 """
 
+import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 
 
@@ -67,3 +68,19 @@ def remove_ticklabels_bottomleft(ax: Axes):
     """
     ax.tick_params(labelbottom=False,
                    labelleft=False)
+
+
+def remove_topright(ax=None):
+    """Removes top and right border and ticks from input axes."""
+
+    # Get current axis if none given.
+    if ax is None:
+        ax = plt.gca()
+
+    # Hide the right and top spines
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+
+    # Only show ticks on the left and bottom spines
+    ax.yaxis.set_ticks_position('left')
+    ax.xaxis.set_ticks_position('bottom')

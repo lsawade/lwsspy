@@ -108,6 +108,7 @@ if "-m" not in sys.argv:
     from .plot_util.rgb2dec import rgb_to_dec  # noqa
     from .plot_util.right_align_legend import right_align_legend  # noqa
     from .plot_util.smooth_nan_image import smooth_nan_image  # noqa
+    from .plot_util.trendline import Trendline  # noqa
     from .plot_util.updaterc import updaterc  # noqa
     from .plot_util.updaterc import updaterc_pres  # noqa
     from .plot_util.update_colorcycler import update_colorcycler  # noqa
@@ -118,7 +119,8 @@ if "-m" not in sys.argv:
     from .seismo.cmt2inv import cmt2inv  # noqa
     from .seismo.cmt2stationxml import cmt2stationxml  # noqa
     from .seismo.cmtdir2stationxmldir import cmtdir2stationxmldir  # noqa
-    from .seismo.cmt_catalog import CMTCatalog
+    from .seismo.cmt_catalog import CMTCatalog  # noqa
+    from .seismo.compare_catalogs import CompareCatalogs  # noqa
     from .seismo.costgradhess import CostGradHess  # noqa
     from .seismo.download_data import download_data  # noqa
     from .seismo.download_gcmt_catalog import download_gcmt_catalog  # noqa
