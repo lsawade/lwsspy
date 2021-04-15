@@ -127,5 +127,10 @@ def plot_label(ax: matplotlib.axes.Axes, label: str, aspect: float = 1,
         plt.text(0.5, -dist * aspect, label, horizontalalignment='center',
                  verticalalignment='top', transform=ax.transAxes,
                  bbox=boxdict, fontdict=fontdict, **kwargs)
+    elif location == 17:
+        plt.text(- dist, 1.0 + dist * aspect, label,
+                 horizontalalignment='right', verticalalignment='bottom',
+                 transform=ax.transAxes, bbox=boxdict,
+                 fontdict=fontdict, **kwargs)
     else:
         raise ValueError("Other corners not defined.")

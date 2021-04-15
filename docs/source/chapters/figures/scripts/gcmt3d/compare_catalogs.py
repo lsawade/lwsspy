@@ -1,6 +1,12 @@
+import lwsspy as lpy
 # Load Catalogs
-initcat = CMTCatalog.load("initcat.pkl")
-g3dcat = CMTCatalog.load("g3dcat.pkl")
+initcat = lpy.CMTCatalog.load("initcat.pkl")
+g3dcat = lpy.CMTCatalog.load("g3dcat.pkl")
+
+# Create comparison class
+C = lpy.CompareCatalogs(initcat, g3dcat, oldlabel='GCMT', newlabel='GCMT3D+')
+Cfilt = C.filter(maxdict=dict(depth_in_m=30000.0, M0=.5))
+C.plot_eps_nu()
 
 # Make sure base is unique
 unicat = initcat.unique(ret=True)
@@ -36,18 +42,18 @@ ax = subplot(121)
 bins = arange(-0.5, 0.50001, 0.01)
 hist(old_eps_nu[:, 0], bins=bins, edgecolor='k',
      facecolor=(0.3, 0.3, 0.8, 0.75), linewidth=0.75,
-     label='GCMT', histtype='stepfilled')
+     label=self.oldlabel, histtype='stepfilled')
 # Plot histogram GCMT3D+
 hist(new_eps_nu[:, 0], bins=bins, edgecolor='k',
      facecolor=(0.3, 0.8, 0.3, 0.75), linewidth=0.75,
-     label='GCMT3D+', histtype='stepfilled')
+     label=self.newlabel, histtype='stepfilled')
 legend(loc='upper left', frameon=False, fancybox=False,
        numpoints=1, scatterpoints=1, fontsize='x-small',
        borderaxespad=0.0, borderpad=0.5, handletextpad=0.2,
        labelspacing=0.2, handlelength=1.0,
        bbox_to_anchor=(0.0, 1.0))
 
-plot_label(ax, f"GCMT\n$\\mu$ = {np.mean(old_eps_nu[:,0]):7.4f}\n"
+plot_label(ax, f"\n$\\mu$ = {np.mean(old_eps_nu[:,0]):7.4f}\n"
                f"$\\sigma$ = {np.std(old_eps_nu[:,0]):7.4f}\n"
                f"GCMT3D+\n$\\mu$ = {np.mean(new_eps_nu[:,0]):7.4f}\n"
                f"$\\sigma$ = {np.std(new_eps_nu[:,0]):7.4f}\n",
@@ -67,6 +73,3 @@ xlabel(r"$\Delta\epsilon$")
 plot_label(ax, f"$\\mu$ = {np.mean(deps):7.4f}\n"
                f"$\\sigma$ = {np.std(deps):7.4f}\n",
                location=2, box=False, fontdict=dict(fontsize='small', fontfamily="monospace"))
-
-
-subplots_adjust(bottom=0.2)
