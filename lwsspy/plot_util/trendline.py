@@ -1,5 +1,4 @@
 import numpy as np
-from numpy.typing import ArrayLike
 import re
 from matplotlib.dates import datestr2num
 from matplotlib.patches import Polygon

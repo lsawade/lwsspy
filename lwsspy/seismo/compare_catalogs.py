@@ -1,6 +1,5 @@
 from copy import deepcopy
 import numpy as np
-from numpy.typing import ArrayLike
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from obspy import Inventory
@@ -18,16 +17,16 @@ from ..plot_util.remove_ticklabels import remove_topright
 class CompareCatalogs:
 
     # Old and new parameters
-    olat: ArrayLike
-    nlat: ArrayLike
-    olon: ArrayLike
-    nlon: ArrayLike
-    omoment: ArrayLike
-    nmoment: ArrayLike
-    odepth: ArrayLike
-    ndepth: ArrayLike
-    oeps_nu: ArrayLike
-    neps_nu: ArrayLike
+    olat: np.ndarray
+    nlat: np.ndarray
+    olon: np.ndarray
+    nlon: np.ndarray
+    omoment: np.ndarray
+    nmoment: np.ndarray
+    odepth: np.ndarray
+    ndepth: np.ndarray
+    oeps_nu: np.ndarray
+    neps_nu: np.ndarray
 
     # Map parameters
     central_longitude = 180.0
