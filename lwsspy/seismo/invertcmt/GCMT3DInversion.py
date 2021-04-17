@@ -1006,7 +1006,7 @@ class GCMT3DInversion:
         # Update model
         if self.zero_trace:
             mu = model[-1]
-            self.model = model[:-1]
+            self.model = model[:-1] * self.scale
             self.scaled_model = model[:-1]
         else:
             self.model = model * self.scale

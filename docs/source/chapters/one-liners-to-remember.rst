@@ -59,4 +59,29 @@ While this is super simple, I assume I haven't used bash enough to have had a ne
 
 Here, more on accessing parameters etc. in BASH from IBM https://developer.ibm.com/tutorials/l-bash-parameters/#N10171
 
-<https://teams.microsoft.com/l/message/19:b8c61f8b029b4aa8859776a073f2b12a@thread.tacv2/1615141061566?tenantId=2ff60116-7431-425d-b5af-077d7791bda4&amp;groupId=261db3c5-ac46-4990-a8f4-f4cd774e358f&amp;parentMessageId=1615141061566&amp;teamName=GuyotPhysics&amp;channelName=productivity&amp;createdTime=1615141061566>
+
+Create MP4 or GIF from images using ``ffmpeg``
+----------------------------------------------
+
+The one-liner
+
+.. code:: bash
+
+    ffmpeg -framerate 60 -r 30 -pattern_type glob -i '*.png' -vf scale=1920:-1 -pix_fmt yuv420p -vcodec libx264 hello.mp4
+
+Decode the one-liner 
+
+.. code:: bash
+
+    ffmpeg \
+        -framerate 60 \       # Define Framerate for Movie 
+        -r 30 \               # Define Adjust frames to be displayed during s
+        -pattern_type glob \  # Use glob pattern to get files
+        -i '*.png' \          # Provide patter
+        -vf scale=1920:-1 \   # rescale width of the video
+        -pix_fmt yuv420p \    # Make it available for quicktime to play
+        -vcodec libx264 \     #  --- == ---
+        hello.mp4             # Provide file name
+
+
+
