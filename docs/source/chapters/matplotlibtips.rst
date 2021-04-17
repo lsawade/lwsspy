@@ -97,3 +97,17 @@ a ``LineCollection`` and returns the ``LineCollection`` as well as a
   :language: python
 
 .. image:: figures/xyz_line.svg
+
+
+An example using the ``lwsspy.plot_xyz_line`` of ancient reef topography 
+in Nevada.
+
+.. image:: figures/nevada_dem.png
+
+
+rotational view.
+
+
+.. raw:: html
+
+    <video width="100%" height="auto" controls src="../_static/hello.mp4" type="video/mp4" autoplay loop></video>
