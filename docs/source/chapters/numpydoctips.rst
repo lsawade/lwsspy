@@ -99,7 +99,7 @@ Usage:
 
 
 Documenting Classes
-------------------
+-------------------
 
 Documenting class is very similar to documenting functions, but there are
 some extra directives you want for the ``class`` description, which are 

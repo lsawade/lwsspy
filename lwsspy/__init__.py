@@ -66,6 +66,7 @@ if "-m" not in sys.argv:
     from .maps.read_etopo import read_etopo  # noqa
     from .maps.read_litho import read_litho  # noqa
     from .maps.topocolormap import topocolormap  # noqa
+    from .maps.topography_design import TopographyDesign  # noqa
 
     # Math
     from .math.cart2sph import cart2sph  # noqa
