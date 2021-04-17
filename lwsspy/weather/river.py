@@ -21,6 +21,18 @@ def naninfmax(a):
 
 
 class River:
+    """Class to download and plot data from USGS river data.
+
+    Notes
+    -----
+
+    :Author:
+        Lucas Sawade (lsawade@princeton.edu)
+
+    :Last Modified:
+        2021.04.16 10.00
+
+    """
     name: str
     site: str
     dates: np.ndarray
@@ -35,7 +47,42 @@ class River:
                  starttime: datetime = datetime(1900, 1, 1),
                  endtime: datetime = datetime.now(),
                  parameterdict: dict = dict(stage="00065", discharge="00060")):
+        """Creates a river class using a stationnumber. The calls can populate
+        itself by downloading and reading the tab separated file of USGS river 
+        and ocean stations
 
+        Parameters
+        ----------
+        stationnumber : str
+            station or site no
+        flood_stage : float, optional
+            A number in feet the , by default None
+        datadir : str, optional
+            directory where to save the river files, by default os.path.join(lpy.DOCFIGURESCRIPTDATA)
+        figuredir : str, optional
+            directory where to save output figures, by default os.path.join(lpy.DOCFIGURES)
+        pre_title : str, optional
+            Plotted in bold without , by default None
+        peak : bool, optional
+            If True the file for Peak Annual discharge is downloaded, if False
+            the parameterdict has to be populated. Currently supported 
+            parameters are the stage="00065", and the discharge="00060",
+            by default True
+        save : bool, optional
+            flag to set whether figures should be saved to a directory,
+            by default False
+        starttime : datetime, optional
+            starttime for the data download, by default datetime(1900, 1, 1)
+        endtime : datetime, optional
+            endtime for the data download, by default datetime.now()
+        parameterdict : dict, optional
+            which parameters to download if peak is False, the default
+            parameter are also the only ones supported right now.
+            by default dict(stage="00065", discharge="00060")
+
+        """
+
+        # Download/station parameters
         self.site = stationnumber.zfill(8)
         self.flood_stage = flood_stage
         self.parameterdict = parameterdict  # Only relevant if peak is False
@@ -45,8 +92,11 @@ class River:
         self.starttime = starttime
         self.endtime = endtime
 
+        # Storage parameters
         self.datadir = datadir
         self.figuredir = figuredir
+
+        # Plot parameters
         self.save = save
         self.pre_title = pre_title
 
@@ -57,12 +107,18 @@ class River:
         self.populate()
 
     def construct_url(self):
+        """Constructs the URL to request the data for the given station"""
+
+        # Base URL
         self.url = 'https://nwis.waterdata.usgs.gov/nwis/'
+
+        # Decide whether to get parameters or just the peak annual discharge
         if self.peak:
             self.url += f"peak?"
         else:
             self.url += f"dv?"
 
+            # Add each parameter
             for _, _parval in self.parameterdict.items():
                 self.url += f"cb_{_parval}=on&"
 
@@ -75,19 +131,28 @@ class River:
         self.url += f"&end_date={self.endtime.strftime(datefmt)}"
 
     def populate(self):
+        """Main data population function. Downloads the data, saves it to
+        the directory and loads the containing table and poulates the arrays.
+        """
 
         # River file
         riverdir = os.path.join(self.datadir, "rivers")
+
+        # Create data dir if it doesnt exist
         if os.path.exists(riverdir) is False:
             os.makedirs(riverdir)
+
+        # File qualifier
         if self.peak:
             postfix = "peak"
         else:
             postfix = "dv"
+
+        # Construct filename
         riverfile = os.path.join(
             riverdir, f"river_{self.site}_{postfix}.txt")
 
-        # Download if I don't have it
+        # Download if I don't have it --> add overwrite flag file?
         if os.path.exists(riverfile) is False:
             lpy.downloadfile(self.url, riverfile)
 
@@ -98,7 +163,11 @@ class River:
                 raise ValueError(
                     "Double Check your site number, no data for the current one")
 
+            # Get the name of the River
             self.name = self.get_station_name(riverstr)
+
+            # Get the head of the station important, because the columns
+            # are not in the same order as the URL
             self.header = self.get_station_header(riverstr)
 
         if self.peak:
@@ -106,16 +175,19 @@ class River:
             _, dates, discharge, stage = self.get_station_table_peak(
                 riverfile)
 
-            # Fix gaps
-            def fix_gaps(x, pos):
-                x = x.astype(float)
-                return np.hstack(
-                    (x[0], np.insert(x[1:], pos, np.nan)))
+            # Remove dates inbetween start and endtime
+            datepos = np.where((self.starttime <= dates)
+                               & (dates <= self.endtime))
+            dates = dates[datepos]
+            discharge = discharge[datepos]
+            stage = stage[datepos]
 
-            # Create vector of years
+            # Create vector of years (want to add NaNs between years that
+            # are )
             years = np.array([d.year for d in dates])
             pos = np.where(np.diff(years) > 1.0)[0]
 
+            # Fix data gaps using the years with gaps
             if len(pos) > 0:
                 self.dates = self.fix_date_gaps(dates, pos, date=True)
                 self.discharge = self.fix_date_gaps(discharge, pos)
@@ -124,8 +196,8 @@ class River:
                 self.dates = dates
                 self.discharge = discharge.astype(float)
                 self.stage = stage.astype(float)
-        else:
 
+        else:
             cols = self.get_data_columns()
             self.get_station_table_params(riverfile, cols)
 
@@ -187,19 +259,8 @@ class River:
         return datetime.fromisoformat(f"{x[0]}-{x[1]}-{x[2]}")
 
     def get_station_table_params(self, riverfile, cols):
-        """Takes in the location of the tab-separated river data file and outputs
-        tuple of arrays containing the.
-        (siteno, year, discharge, stage)
-
-        Parameters
-        ----------
-        riverfile : str
-            TAB-sparated USGS River gage/discharge file
-
-        Returns
-        -------
-        tuple
-            (siteno, year, discharge, stage)
+        """Takes in the location of the tab-separated river data file and
+        outputs and populates the corresponding attributes of the river class.
         """
 
         # Read file
@@ -219,16 +280,6 @@ class River:
         """Takes in the location of the tab-separated river data file and outputs
         tuple of arrays containing the.
         (siteno, year, discharge, stage)
-
-        Parameters
-        ----------
-        riverfile : str
-            TAB-sparated USGS River discharge file
-
-        Returns
-        -------
-        tuple
-            (siteno, year, discharge, stage)
         """
 
         # Read file
@@ -315,6 +366,11 @@ class River:
         sc = ax.scatter(self.stage[pos], self.discharge[pos],
                         c=self.mdates[pos],
                         s=5, cmap='rainbow', **kwargs)
+
+        # Set axis limits
+        ax.set_ylim(bottom=0)
+        ax.set_xlim(left=0)
+
         plt.xlabel("Gage Height [f]")
         plt.ylabel("Discharge [f$^3$]")
         plt.title(
@@ -358,7 +414,7 @@ class River:
                                ec='none', fc='lightgrey', zorder=0)
 
         # Plot identifier
-        plt.plot((100, 100), (0, 1.25*discharge_predict_100),
+        plt.plot((100, 100), (0, 1.25 * discharge_predict_100),
                  'k', linewidth=0.75)
         plt.plot((0, 125), (discharge_predict_100, discharge_predict_100),
                  'k', linewidth=0.75)
@@ -380,7 +436,7 @@ class River:
 
         # Change limits
         ax.set_xlim((1, 125))
-        # ax.set_ylim((0, 1.25*discharge_predict_100))
+        ax.set_ylim(bottom=0, top=1.25 * discharge_predict_100)
 
     def plot_summary(self):
 
@@ -450,6 +506,15 @@ class River:
             print(date)
         # Conversion of the dates to matplotlib dates for plotting
         self.mdates = np.array([mdates.date2num(_i) for _i in self.dates])
+
+    def pop(self, i):
+        """Pop single index from the arrays. Useful to get rid of outliers.
+        Santa Ana example."""
+
+        self.dates = np.delete(self.dates, i)
+        self.mdates = np.delete(self.mdates, i)
+        self.discharge = np.delete(self.discharge, i)
+        self.stage = np.delete(self.stage, i)
 
     def __repr__(self):
         return self.__str__()
