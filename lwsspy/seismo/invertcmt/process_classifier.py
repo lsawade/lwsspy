@@ -136,9 +136,9 @@ class ProcessParams(object):
         # to clarify which ones are actual necessary.
         outdict = dict()
         normalization = \
-            self.bodywave_weight \
-            + self.surfacewave_weight \
-            + self.mantlewave_weight
+            self.bodywave_weight if not None else 0 \
+            + self.surfacewave_weight if not None else 0 \
+            + self.mantlewave_weight if not None else 0
 
         if self.bodywave_weight is not None \
                 and self.bodywave_weight != 0.0:

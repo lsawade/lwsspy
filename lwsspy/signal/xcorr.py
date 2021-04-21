@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def xcorr(d, s):
     cc = np.correlate(d, s, mode="full")
     time_shift = cc.argmax() - len(d) + 1

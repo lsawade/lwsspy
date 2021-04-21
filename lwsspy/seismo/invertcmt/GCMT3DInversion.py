@@ -97,10 +97,10 @@ class GCMT3DInversion:
             processdict: dict = processdict,
             pardict: dict = pardict,
             zero_trace: bool = False,
-            duration: float = 3600.0,
+            duration: float = 11000.0,
             starttime_offset: float = -50.0,
             endtime_offset: float = 50.0,
-            download_data: bool = False,
+            download_data: bool = True,
             node_login: Optional[str] = None,
             conda_activation: str = conda_activation,
             bash_escape: str = bash_escape,
@@ -108,11 +108,11 @@ class GCMT3DInversion:
             damping: float = 0.001,
             weighting: bool = True,
             normalize: bool = True,
-            overwrite: bool = False,
+            overwrite: bool = True,
             launch_method: str = "srun -n6 --gpus-per-task=1",
             process_func: Callable = lpy.process_stream,
             window_func: Callable = lpy.window_on_stream,
-            multiprocesses: int = 0,
+            multiprocesses: int = 20,
             debug: bool = False):
 
         # CMTSource
@@ -1765,4 +1765,6 @@ def bin():
         optim_list,
         list(pardict.keys()),  # "BFGS-R" "BFGS",
         outfile=f"{gcmt3d.cmtdir}/InversionHistory_8params.pdf")
-    lpy.plot_optimization([optim_list], outfile="misfit_reduction_history.pdf")
+    lpy.plot_optimization(
+        [optim_list], 
+        outfile=f"{gcmt3d.cmtdir}/misfit_reduction_history.pdf")

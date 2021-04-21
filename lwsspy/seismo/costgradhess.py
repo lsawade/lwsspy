@@ -41,7 +41,7 @@ class CostGradHess:
         self.normalize = normalize
         self.verbose = verbose
 
-    def misfits(self, method, location=True) -> dict:
+    def misfits(self, location=True) -> dict:
         """Takes in data and synthetics stream and computes a list of
         windowed least squares costs.
 
@@ -69,15 +69,15 @@ class CostGradHess:
         """
         if location:
             residuals = dict(
-                R=dict(res=[], lat=[], lon=[], az=[]),
-                T=dict(res=[], lat=[], lon=[]),
-                Z=dict(res=[], lat=[], lon=[])
+                R=dict(res=[], dlnA=[],  dt=[], lat=[], lon=[], az=[]),
+                T=dict(res=[], dlnA=[],  dt=[], lat=[], lon=[]),
+                Z=dict(res=[], dlnA=[],  dt=[], lat=[], lon=[])
             )
         else:
             residuals = dict(
-                R=dict(res=[]),
-                T=dict(res=[]),
-                Z=dict(res=[])
+                R=dict(res=[], dlnA=[],  dt=[]),
+                T=dict(res=[], dlnA=[],  dt=[]),
+                Z=dict(res=[], dlnA=[],  dt=[])
             )
 
         for _component, _compdict in residuals.items():
