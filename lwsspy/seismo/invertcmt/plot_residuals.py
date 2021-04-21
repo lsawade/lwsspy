@@ -20,6 +20,7 @@ def plot_residuals(residuals: dict):
 
     # Get the amount of colors
     colors = lpy.pick_colors_from_cmap(Nwaves*3, cmap='rainbow')
+
     # Create base figure
     fig = plt.figure(figsize=(10, 1+Nwaves*2))
     gs = GridSpec(Nwaves, 3, figure=fig)
@@ -34,7 +35,8 @@ def plot_residuals(residuals: dict):
     component_bins = [50, 20, 10]
     for _i, (_wtype, _compdict) in enumerate(residuals.items()):
         for _j, (_comp, _bins) in enumerate(zip(components, component_bins)):
-            _residuals = _compdict[_comp]
+            _residuals = _compdict[_comp]["res"]
+
             # Set alpha color
             acolor = deepcopy(colors[counter, :])
             acolor[3] = 0.5
