@@ -53,10 +53,10 @@ else:
     llat = np.linspace(-90, 90, 361)
     llon = np.linspace(-180, 180, 721)
     qlat, qlon = np.meshgrid(llat, llon)
-    qdepth = snn.interp(depth, qlat, qlon,
-                        maximum_distance=1.25, k=200)
-    qmoment = snn.interp(moment, qlat, qlon,
-                         maximum_distance=1.25, k=200)
+    gcmt_interpolator = snn.interpolator(
+        qlat, qlon, maximum_distance=1.25, k=200)
+    qdepth = gcmt_interpolator(depth)
+    qmoment = gcmt_interpolator(moment)
 
     # Save data to npz
     np.savez(

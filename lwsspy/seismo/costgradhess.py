@@ -41,7 +41,7 @@ class CostGradHess:
         self.normalize = normalize
         self.verbose = verbose
 
-    def misfits(self, method) -> dict:
+    def misfits(self, method, location=True) -> dict:
         """Takes in data and synthetics stream and computes a list of
         windowed least squares costs.
 
@@ -67,10 +67,20 @@ class CostGradHess:
             2021.03.29 16.30
 
         """
+        if location:
+            residuals = dict(
+                R=dict(res=[], lat=[], lon=[], az=[]),
+                T=dict(res=[], lat=[], lon=[]),
+                Z=dict(res=[], lat=[], lon=[])
+            )
+        else:
+            residuals = dict(
+                R=dict(res=[]),
+                T=dict(res=[]),
+                Z=dict(res=[])
+            )
 
-        residuals = dict(R=[], T=[], Z=[])
-
-        for _component, _complist in residuals.items():
+        for _component, _compdict in residuals.items():
             compstream = self.data.select(component=_component)
             for tr in compstream:
                 network, station, component = (
@@ -97,7 +107,13 @@ class CostGradHess:
                     if self.normalize and fnorm != 0:
                         costt = np.array(costt)/fnorm
 
-                    _complist.extend(costt)
+                    _compdict['res'].extend(costt)
+                    _compdict['lat'].extend(
+                        np.ones_like(costt) * tr.stats.latitude)
+                    _compdict['lon'].extend(
+                        np.ones_like(costt) * tr.stats.longitude)
+                    _compdict['az'].extend(
+                        np.ones_like(costt) * tr.stats.az)
 
                 except Exception as e:
                     if self.verbose:

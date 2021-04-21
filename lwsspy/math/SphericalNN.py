@@ -4,11 +4,10 @@ Taken from ObsPy originally, but heavily modified.
 """
 # External
 from __future__ import annotations
+from typing import Optional
 from copy import deepcopy
-from typing import List, Union
 import numpy as np
 from scipy.spatial import cKDTree
-from obspy.core.inventory import Station
 
 # Internal
 import lwsspy as lpy
@@ -149,14 +148,15 @@ class SphericalNN(object):
 
         return output_mat
 
-    def interp(self, data, qlat, qlon, maximum_distance=None,
-               no_weighting=False, k: int = 10, p: float = 2.0):
+    def interpolator(self, qlat, qlon, maximum_distance=None,
+                     no_weighting=False, k: Optional[int] = None, p: float = 2.0):
         """Spherical interpolation function using the ``SphericalNN`` object.
+        Returns an interpolator that can be used for interpolating the same 
+        set of locations based on the KDTree. The only input the interpolator 
+        takes are the data corresponding to the points in the KDTree.
 
         Parameters
         ----------
-        data : numpy.ndarray
-            data
         qlat : numpy.ndarray
             query latitudes
         qlon : numpy.ndarray
@@ -170,9 +170,11 @@ class SphericalNN(object):
             interpolation
         k : int, optional
             Define maximum number of neighbors to be used for the weighted
-            interpolation. Not used if ``no_weighting = True``. Default 10
+            interpolation. Not used if ``no_weighting = True``. Default None
         p : float, optional
-            only used if maximum_distance is None. Default is 2
+            Exponent to compute the inverse distance weights. Note that in 
+            the limit ``p->inf`` is just a nearest neighbor interpolation. 
+            Default is 2
 
 
         Notes
@@ -196,25 +198,36 @@ class SphericalNN(object):
             # Get distances and indeces
             d, inds = self.kd_tree.query(points)
 
-            # Assign the interpolation data.
-            qdata = data[inds]
+            def interpolator(data):
 
-            # Filter out distances too far out.
-            if maximum_distance is not None:
-                qdata = np.where(
-                    d <= np.abs(2 * np.sin(maximum_distance/2.0/180.0*np.pi))
-                    * lpy.EARTH_RADIUS_KM,
-                    qdata, np.nan)
+                # Assign the interpolation data.
+                qdata = data[inds]
+
+                # Filter out distances too far out.
+                if maximum_distance is not None:
+                    qdata = np.where(
+                        d <= np.abs(
+                            2 * np.sin(maximum_distance/2.0/180.0*np.pi))
+                        * lpy.EARTH_RADIUS_KM,
+                        qdata, np.nan)
+
+                return data[inds].reshape(shp)
 
         else:
 
-            # Set K to the max number of poitns if not given
+            # Set K to the max number of points if not given
             if k is None:
-                k = points.shape[0]
+                k = self.kd_tree.n
+            else:
+                if k > self.kd_tree.n:
+                    k = self.kd_tree.n
 
             # Get multiple distances and indeces
             d, inds = self.kd_tree.query(points, k=k)
 
+            if d.shape == (1,):
+                d = d.reshape((1, 1))
+                inds = inds.reshape((1, 1))
             # Filter out distances too far out.
             # Modified Shepard's method
             if maximum_distance is not None:
@@ -227,12 +240,20 @@ class SphericalNN(object):
                 wsum = np.sum(w, axis=1)
                 datarows = (wsum != 0)
 
-                # interpolation using the weights
-                qdata = np.empty_like(wsum)
-                qdata[:] = np.nan
-                qdata[datarows] = np.nansum(
-                    w[datarows, :] * data[inds[datarows, :]], axis=1) \
-                    / wsum[datarows]
+                def interpolator(data):
+                    """Using the weights and indices, we can return an interpolator
+                    """
+
+                    # Empty array
+                    qdata = np.empty_like(wsum)
+                    qdata[:] = np.nan
+
+                    # interpolation using the weights
+                    qdata[datarows] = np.nansum(
+                        w[datarows, :] * data[inds[datarows]], axis=1) \
+                        / wsum[datarows]
+
+                    return qdata.reshape(shp)
 
             # Shepard's method
             else:
@@ -242,15 +263,21 @@ class SphericalNN(object):
                 wsum = np.sum(w, axis=1)
                 datarows = (wsum != 0)
 
-                # Empty array
-                qdata = np.empty_like(wsum)
-                qdata[:] = np.nan
+                def interpolator(data):
+                    """Using the weights and indices, we can return an interpolator
+                    """
 
-                # interpolation using the weights
-                qdata[datarows] = np.sum(
-                    w * data[inds[datarows]], axis=1) / wsum[datarows]
+                    # Empty array
+                    qdata = np.empty_like(wsum)
+                    qdata[:] = np.nan
 
-        return qdata.reshape(shp)
+                    # interpolation using the weights
+                    qdata[datarows] = np.sum(
+                        w * data[inds[datarows]], axis=1) / wsum[datarows]
+
+                    return qdata.reshape(shp)
+
+        return interpolator
 
     @ staticmethod
     def spherical2cartesian(lat, lon):
