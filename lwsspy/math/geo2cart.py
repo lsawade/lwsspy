@@ -30,13 +30,13 @@ def geo2cart(r: float or np.ndarray or list,
         phi = np.array(phi)
 
     # Convert to Radians
-    theta = theta * np.pi/180.0
-    phi = phi * np.pi/180.0
+    thetarad = theta * np.pi/180.0
+    phirad = phi * np.pi/180.0
 
     # Compute Transformation
-    x = r * np.cos(theta) * np.cos(phi)
-    y = r * np.cos(theta) * np.sin(phi)
-    z = r * np.sin(theta)
+    x = r * np.cos(thetarad) * np.cos(phirad)
+    y = r * np.cos(thetarad) * np.sin(phirad)
+    z = r * np.sin(thetarad)
 
     if type(r) is list:
         x = x.tolist()
