@@ -877,8 +877,9 @@ class MeshPlot():
 
         # Get the interpolated data using weighted spherical nearest neighbour
         # interpolation
-        d = snn.interp(data, llat, llon, no_weighting=False,
-                       k=10, maximum_distance=res*2.0)
+        interpolator = snn.interpolator(llat, llon, no_weighting=False,
+                                        k=10, maximum_distance=res*2.0)
+        d = interpolator(data)
 
         # Create Map
         fig = plt.figure()

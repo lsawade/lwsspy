@@ -52,7 +52,8 @@ def plot_csv_depth_slice(infile, outfile, label):
                              np.linspace(-90.0, 90.1, 721))
     # Interpoalte data
     SNN = lpy.SphericalNN(lat, lon)
-    datainterp = SNN.interp(data[:, -1], llat, llon, no_weighting=True)
+    interpolator = SNN.interpolator(llat, llon, no_weighting=True)
+    datainterp = interpolator(data[:, -1])
 
     # Create Figure
     lpy.updaterc()

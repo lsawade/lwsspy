@@ -166,6 +166,10 @@ def window_on_trace(obs: obspy.Trace, syn: obspy.Trace, config: pyflex.Config,
     return windows
 
 
+def window_on_stream_wrapper(streams, **kwargs):
+    return window_on_stream(*streams, **kwargs)
+
+
 def window_on_stream(observed: obspy.Stream, synthetic: obspy.Stream,
                      config_dict: dict,
                      station: Union[None, obspy.Inventory,
@@ -233,18 +237,27 @@ def window_on_stream(observed: obspy.Stream, synthetic: obspy.Stream,
                 if _verbose:
                     print("Couldn't find corresponding synt for obsd trace(%s):"
                           "%s" % (obs_tr.id, err))
-                obs_tr.stats.windows = []
+
+                if 'windows' not in obs_tr.stats:
+                    obs_tr.stats.windows = []
                 continue
 
             # Station is the normal inventory, nothing fancy
             # event is an ObsPy Event
-            obs_tr.stats.windows = window_on_trace(
+            tmpwins = window_on_trace(
                 obs_tr, syn_tr, pf_config, station=station,
                 event=event, _verbose=_verbose,
                 figure_mode=figure_mode, figure_dir=figure_dir)
 
+            if 'windows' in obs_tr.stats:
+                obs_tr.stats.windows.extend(tmpwins)
+            else:
+                obs_tr.stats.windows.extend(tmpwins)
+
             if _verbose:
                 print(f"Win on trace: {obs_tr.stats.windows}")
+
+    return observed
 
 
 def merge_windows(observed: obspy.Stream):

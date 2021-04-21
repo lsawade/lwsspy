@@ -59,14 +59,18 @@ if "-m" not in sys.argv:
 
     # Maps
     from .maps.fix_map_extent import fix_map_extent  # noqa
+    from .maps.line_buffer import line_buffer  # noqa
     from .maps.map_axes import map_axes  # noqa
     from .maps.plot_map import plot_map  # noqa
     from .maps.plot_topography import plot_topography  # noqa
+    from .maps.plot_line_buffer import plot_line_buffer  # noqa
     from .maps.plot_litho import plot_litho  # noqa
     from .maps.read_etopo import read_etopo  # noqa
     from .maps.read_litho import read_litho  # noqa
+    from .maps.reckon import reckon  # noqa
     from .maps.topocolormap import topocolormap  # noqa
     from .maps.topography_design import TopographyDesign  # noqa
+    from .maps.gctrack import gctrack  # noqa
 
     # Math
     from .math.cart2sph import cart2sph  # noqa
@@ -81,6 +85,7 @@ if "-m" not in sys.argv:
     from .math.pol2cart import pol2cart  # noqa
     from .math.project2D import project2D  # noqa
     from .math.rodrigues import rodrigues  # noqa
+    from .math.Ra2b import Ra2b  # noqa
     from .math.sph2cart import sph2cart  # noqa
     from .math.SphericalNN import SphericalNN  # noqa
 
@@ -133,8 +138,10 @@ if "-m" not in sys.argv:
     from .seismo.gaussiant import gaussiant  # noqa
     from .seismo.gaussiant import dgaussiant  # noqa
     from .seismo.get_inv_aspect_extent import get_inv_aspect_extent  # noqa
-    from .seismo.inv2stationxml import inv2stationxml  # noqa
+    from .seismo.instaseis.get_prem20s import get_prem20s  # noqa
     from .seismo.inv2geoloc import inv2geoloc  # noqa
+    from .seismo.inv2net_sta import inv2net_sta  # noqa
+    from .seismo.inv2stationxml import inv2stationxml  # noqa
     from .seismo.m0_2_mw import m0_2_mw  # noqa
     from .seismo.perturb_cmt import perturb_cmt  # noqa
     from .seismo.perturb_cmt import perturb_cmt_dir  # noqa
@@ -142,7 +149,10 @@ if "-m" not in sys.argv:
     from .seismo.plot_traveltimes_ak135 import plot_traveltimes_ak135  # noqa
     from .seismo.plot_inventory import plot_inventory  # noqa
     from .seismo.plot_quakes import plot_quakes  # noqa
+    from .seismo.plot_seismogram import plot_seismogram  # noqa
+    from .seismo.stream_pdf import stream_pdf  # noqa
     from .seismo.process.process import process_stream  # noqa
+    from .seismo.process.multiprocess_stream import multiprocess_stream  # noqa
     from .seismo.process.process_wrapper import process_wrapper  # noqa
     from .seismo.process.rotate import rotate_stream  # noqa
     from .seismo.process.process_classifier import ProcessParams  # noqa
@@ -168,6 +178,7 @@ if "-m" not in sys.argv:
     from .seismo.specfem.stationxml2STATIONS import stationxml2STATIONS  # noqa
     from .seismo.specfem.stationxmldir2STATIONSdir import stationxmldir2STATIONSdir  # noqa
     from .seismo.specfem.write_parfile import write_parfile  # noqa
+    from .seismo.window.multiwindow_stream import multiwindow_stream  # noqa
     from .seismo.window.window import window_on_stream  # noqa
     from .seismo.window.add_tapers import add_tapers  # noqa
     from .seismo.window.stream_cost_win import stream_cost_win  # noqa
