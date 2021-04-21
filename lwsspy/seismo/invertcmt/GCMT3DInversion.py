@@ -21,6 +21,8 @@ from itertools import repeat
 from obspy import read, read_events, Stream, Trace
 import multiprocessing.pool as mpp
 import _pickle as cPickle
+from .process_classifier import ProcessParams
+
 lpy.updaterc(rebuild=False)
 
 
@@ -58,6 +60,7 @@ parameter_check_list = ['depth_in_m', "time_shift", 'latitude', 'longitude',
                         "m_rr", "m_tt", "m_pp", "m_rt", "m_rp", "m_tp"]
 nosimpars = ["time_shift", "half_duration"]
 mt_params = ["m_rr", "m_tt", "m_pp", "m_rt", "m_rp", "m_tp"]
+
 pardict = dict(
     m_rr=dict(scale=None, pert=1e23),
     m_tt=dict(scale=None, pert=1e23),
@@ -173,6 +176,12 @@ class GCMT3DInversion:
         # Basic Checks
         self.__basic_check__()
 
+        # Initialize
+        self.init()
+
+        # Fix process dict
+        self.adapt_processdict()
+
     def __basic_check__(self):
 
         # Check Parameter dict for wrong parameters
@@ -201,6 +210,38 @@ class GCMT3DInversion:
                 raise ValueError("Can only use Zero Trace condition "
                                  "if inverting for Moment Tensor.\n"
                                  "Update your pardict.")
+
+    def adapt_processdict(self):
+
+        # Get Process parameters
+        PP = ProcessParams(
+            self.cmtsource.moment_magnitude, self.cmtsource.depth_in_m)
+        proc_params = PP.determine_all()
+
+        # Adjust the process dictionary
+        for _wave, _process_dict in proc_params.items():
+            if _wave in self.processdict:
+                # Adjust weight or drop wave altogether
+                if _process_dict['weight'] == 0.0 \
+                        or _process_dict['weight'] is None:
+                    self.processdict.pop(_wave)
+                    continue
+
+                else:
+                    self.processdict[_wave]['weight'] = _process_dict["weight"]
+
+                # Adjust pre_filt
+                self.processdict[_wave]['process']['pre_filt'] = \
+                    [1.0/x for x in _process_dict["filter"]]
+
+                # Adjust windowing config
+                for _windict in self.processdict[_wave]["window"]:
+                    _windict["config"]["min_period"] = _process_dict["filter"][2]
+                    _windict["config"]["max_period"] = _process_dict["filter"][1]
+
+        # Dump the processing file in the cmt directory
+        lpy.write_yaml_file(
+            self.processdict, os.path.join(self.cmtdir, "process.yml"))
 
     def init(self):
 
@@ -618,6 +659,7 @@ class GCMT3DInversion:
             processdict.pop("relative_endtime")
             processdict["starttime"] = starttime
             processdict["endtime"] = endtime
+            processdict["inventory"] = self.stations
             processdict.update(dict(
                 remove_response_flag=True,
                 event_latitude=self.cmtsource.latitude,
@@ -627,20 +669,16 @@ class GCMT3DInversion:
 
             if self.multiprocesses < 1:
                 self.data_dict[_wtype] = self.process_func(
-                    _stream, self.stations, **processdict)
+                    _stream, **processdict)
             else:
                 lpy.print_action(
                     f"Processing in parallel using {self.multiprocesses} cores")
-                with mpp.Pool(processes=self.multiprocesses) as p:
-                    self.data_dict[_wtype] = self.sumfunc(
-                        lpy.starmap_with_kwargs(
-                            p, self.process_func,
-                            zip(_stream, repeat(self.stations)),
-                            repeat(processdict), len(_stream))
-                    ).copy()
+                self.data_dict[_wtype] = lpy.multiprocess_stream(
+                    _stream, processdict)
 
     def __load_synt__(self):
 
+        # if self.specfemdir is not None:
         # Load forward data
         lpy.print_action("Loading forward synthetics")
         temp_synt = read(os.path.join(
@@ -694,6 +732,7 @@ class GCMT3DInversion:
             processdict.pop("relative_endtime")
             processdict["starttime"] = starttime
             processdict["endtime"] = endtime
+            processdict["inventory"] = self.stations
             processdict.update(dict(
                 remove_response_flag=False,
                 event_latitude=self.cmtsource.latitude,
@@ -703,14 +742,8 @@ class GCMT3DInversion:
                   len(self.synt_dict[_wtype]["synt"]))
 
             if parallel:
-                self.synt_dict[_wtype]["synt"] = self.sumfunc(
-                    lpy.starmap_with_kwargs(
-                        p, self.process_func,
-                        zip(self.synt_dict[_wtype]["synt"],
-                            repeat(self.stations)),
-                        repeat(processdict), len(
-                            self.synt_dict[_wtype]["synt"])
-                    )).copy()
+                self.synt_dict[_wtype]["synt"] = lpy.multiprocess_stream(
+                    self.synt_dict[_wtype]["synt"], processdict)
             else:
                 self.synt_dict[_wtype]["synt"] = self.process_func(
                     self.synt_dict[_wtype]["synt"], self.stations,
@@ -792,13 +825,35 @@ class GCMT3DInversion:
 
         for _wtype in self.processdict.keys():
             lpy.print_action(f"Windowing {_wtype}")
-            self.window_func(self.data_dict[_wtype],
-                             self.synt_dict[_wtype]["synt"],
-                             self.processdict[_wtype]["window"],
-                             station=self.stations, event=self.xml_event,
-                             _verbose=self.debug)
+
+            for window_dict in self.processdict[_wtype]["window"]:
+
+                # Wrap window dictionary
+                wrapwindowdict = dict(
+                    station=self.stations,
+                    event=self.xml_event,
+                    config_dict=window_dict,
+                    _verbose=self.debug
+                )
+
+                # Serial or Multiprocessing
+                if self.multiprocesses <= 1:
+                    self.window_func(
+                        self.data_dict[_wtype],
+                        self.synt_dict[_wtype]["synt"],
+                        **wrapwindowdict)
+                else:
+
+                    self.data_dict[_wtype] = lpy.multiwindow_stream(
+                        self.data_dict[_wtype],
+                        self.synt_dict[_wtype]["synt"],
+                        wrapwindowdict, nprocs=self.multiprocesses)
+
+            # After each trace has windows attached continue
             lpy.add_tapers(self.data_dict[_wtype], taper_type="tukey",
                            alpha=0.25, verbose=self.debug)
+
+            # Some traces aren't even iterated over..
             for _tr in self.data_dict[_wtype]:
                 if "windows" not in _tr.stats:
                     _tr.stats.windows = []
