@@ -96,6 +96,7 @@ class ProcessParams(object):
                          'weight': 1.0}
 
         """
+        
         # Magnitude
         self.mw = mw
         self.depth = depth
