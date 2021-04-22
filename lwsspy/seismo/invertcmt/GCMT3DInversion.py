@@ -176,11 +176,11 @@ class GCMT3DInversion:
         # Basic Checks
         self.__basic_check__()
 
-        # Initialize
-        self.init()
-
         # Fix process dict
         self.adapt_processdict()
+
+        # Initialize
+        self.init()
 
         # Set iteration number
         self.iteration = 0
