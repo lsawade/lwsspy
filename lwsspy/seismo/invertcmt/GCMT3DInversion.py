@@ -1789,5 +1789,5 @@ def bin():
         outfile=f"{gcmt3d.cmtdir}/InversionHistory_2params.pdf")
     print(gcmt3d.scale)
     lpy.plot_optimization(
-        [optim_list],
+        optim_list,
         outfile=f"{gcmt3d.cmtdir}/misfit_reduction_history.pdf")
