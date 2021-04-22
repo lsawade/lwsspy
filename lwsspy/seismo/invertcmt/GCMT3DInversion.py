@@ -1170,7 +1170,7 @@ class GCMT3DInversion:
                 verbose=self.debug,
                 normalize=self.normalize,
                 weight=self.weighting)
-            cost += cgh.cost()
+            cost += cgh.cost() * self.processdict[_wtype]["weight"]
         return cost
 
     def __compute_residuals__(self):
@@ -1210,7 +1210,7 @@ class GCMT3DInversion:
                 normalize=self.normalize,
                 weight=self.weighting)
 
-            gradient += cgh.grad()
+            gradient += cgh.grad() * self.processdict[_wtype]["weight"]
 
         return gradient
 
@@ -1239,8 +1239,8 @@ class GCMT3DInversion:
 
             tmp_g, tmp_h = cgh.grad_and_hess()
             print(tmp_g, tmp_h)
-            gradient += tmp_g
-            hessian += tmp_h
+            gradient += tmp_g * self.processdict[_wtype]["weight"]
+            hessian += tmp_h * self.processdict[_wtype]["weight"]
 
         return gradient, hessian
 
