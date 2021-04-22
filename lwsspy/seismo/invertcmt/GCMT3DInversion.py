@@ -227,7 +227,7 @@ class GCMT3DInversion:
                 # Adjust weight or drop wave altogether
                 if _process_dict['weight'] == 0.0 \
                         or _process_dict['weight'] is None:
-                    self.processdict.pop(_wave)
+                    self.processdict.popitem(_wave)
                     continue
 
                 else:
@@ -241,6 +241,14 @@ class GCMT3DInversion:
                 for _windict in self.processdict[_wave]["window"]:
                     _windict["config"]["min_period"] = _process_dict["filter"][2]
                     _windict["config"]["max_period"] = _process_dict["filter"][1]
+
+        # Remove unnecessary wavetypes
+        popkeys = []
+        for _wave in self.processdict.keys():
+            if _wave not in proc_params:
+                popkeys.append(_wave)
+        for _key in popkeys:
+            self.processdict.pop(_key, None)
 
         # Dump the processing file in the cmt directory
         lpy.write_yaml_file(
