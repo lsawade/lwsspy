@@ -96,7 +96,7 @@ class ProcessParams(object):
                          'weight': 1.0}
 
         """
-        
+
         # Magnitude
         self.mw = mw
         self.depth = depth
@@ -133,13 +133,22 @@ class ProcessParams(object):
         self.determine_surfacewave_weight()
         self.determine_mantlewave_weight()
 
+        print(self.bodywave_weight)
+        print(self.surfacewave_weight)
+        print(self.mantlewave_weight)
+
         # Create dictionary that contains only the necessary entries
         # to clarify which ones are actual necessary.
         outdict = dict()
-        normalization = \
-            self.bodywave_weight if not None else 0 \
-            + self.surfacewave_weight if not None else 0 \
-            + self.mantlewave_weight if not None else 0
+        normalization = 0
+        if self.bodywave_weight is not None:
+            normalization += self.bodywave_weight
+        if self.surfacewave_weight is not None:
+            normalization += self.surfacewave_weight
+        if self.mantlewave_weight is not None:
+            normalization += self.mantlewave_weight
+
+        print(normalization)
 
         if self.bodywave_weight is not None \
                 and self.bodywave_weight != 0.0:
