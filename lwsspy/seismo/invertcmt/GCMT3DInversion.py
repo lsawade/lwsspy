@@ -418,29 +418,34 @@ class GCMT3DInversion:
                 self.weights[_wtype][_component]["lon"] = deepcopy(longitudes)
 
                 # Get azimuthal weights for the traces of each component
-                azi_weights = lpy.azi_weights(
-                    self.cmtsource.latitude,
-                    self.cmtsource.longitude,
-                    latitudes, longitudes, nbins=12, p=0.5)
+                if len(latitudes) != 0 and len(longitudes) != 0:
+                    azi_weights = lpy.azi_weights(
+                        self.cmtsource.latitude,
+                        self.cmtsource.longitude,
+                        latitudes, longitudes, nbins=12, p=0.5)
 
-                # Save azi weights into dict
-                self.weights[_wtype][_component]["azimuthal"] = deepcopy(
-                    azi_weights)
+                    # Save azi weights into dict
+                    self.weights[_wtype][_component]["azimuthal"] = deepcopy(
+                        azi_weights)
 
-                # Get Geographical weights
-                gw = lpy.GeoWeights(latitudes, longitudes)
-                _, _, ref, _ = gw.get_condition()
-                geo_weights = gw.get_weights(ref)
+                    # Get Geographical weights
+                    gw = lpy.GeoWeights(latitudes, longitudes)
+                    _, _, ref, _ = gw.get_condition()
+                    geo_weights = gw.get_weights(ref)
 
-                # Save geo weights into dict
-                self.weights[_wtype][_component]["geographical"] = deepcopy(
-                    geo_weights)
+                    # Save geo weights into dict
+                    self.weights[_wtype][_component]["geographical"] = deepcopy(
+                        geo_weights)
 
-                # Compute Combination weights.
-                weights = (azi_weights * geo_weights)
-                weights /= np.sum(weights)/len(weights)
-                self.weights[_wtype][_component]["combination"] = deepcopy(
-                    weights)
+                    # Compute Combination weights.
+                    weights = (azi_weights * geo_weights)
+                    weights /= np.sum(weights)/len(weights)
+                    self.weights[_wtype][_component]["combination"] = deepcopy(
+                        weights)
+                else:
+                    self.weights[_wtype][_component]["azimuthal"] = []
+                    self.weights[_wtype][_component]["geographical"] = []
+                    self.weights[_wtype][_component]["combination"] = []
 
                 # Add weights to traces
                 for _tr, _weight in zip(RTZ_traces[_component], weights):
