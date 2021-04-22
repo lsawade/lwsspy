@@ -83,7 +83,7 @@ body:
         c_4a: 3.0
         c_4b: 10.0
         resolution_strategy: interval_scheduling
-        instrument_merge_flag: True
+        # instrument_merge_flag: True
       components:
         BHZ:
         BHR:
@@ -139,7 +139,7 @@ surface:
         c_4a: 3.0
         c_4b: 10.0
         resolution_strategy: interval_scheduling
-        instrument_merge_flag: True
+        # instrument_merge_flag: True
       components:
         BHZ:
 
@@ -191,7 +191,7 @@ mantle:
         c_4a: 3.0
         c_4b: 10.0
         resolution_strategy: interval_scheduling
-        instrument_merge_flag: True
+        # instrument_merge_flag: True
       components:
         BHZ:
         BHR:

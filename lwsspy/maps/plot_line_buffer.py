@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 
 def plot_line_buffer(lat, lon, delta: float = 1, **kwargs):
-    """Takse in 
+    """Takes in 
 
     Parameters
     ----------
