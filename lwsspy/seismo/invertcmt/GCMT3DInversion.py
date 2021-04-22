@@ -464,13 +464,15 @@ class GCMT3DInversion:
         for _i, (_wtype, _) in enumerate(self.data_dict.items()):
             # Create dict to access traces
             RTZ_traces = dict()
+
+            print(_wtype)
             for _component, _cweight in self.weights_rtz.items():
                 RTZ_traces[_component] = []
                 for _tr in _stream:
                     if _tr.stats.component == _component \
                             and "weights" in _tr.stats:
                         RTZ_traces[_component].append(_tr)
-
+                print(_component, len(RTZ_traces[_component]))
                 self.weights[_wtype][_component]["final"] = []
                 for _tr in RTZ_traces[_component]:
                     _tr.stats.weights /= waveweightdict[_wtype]
