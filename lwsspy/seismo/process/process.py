@@ -279,6 +279,7 @@ def process_stream(st: Stream, inventory: Union[Inventory, None] = None,
                                water_level=water_level)
         else:
             st.remove_response(output="DISP", zero_mean=False, taper=False)
+            
     elif filter_flag:
         # Perform a frequency domain taper like during the response removal
         # just without an actual response...

@@ -97,7 +97,7 @@ class GCMT3DInversion:
             processdict: dict = processdict,
             pardict: dict = pardict,
             zero_trace: bool = False,
-            duration: float = 11000.0,
+            duration: float = 10800.0,
             starttime_offset: float = -50.0,
             endtime_offset: float = 50.0,
             download_data: bool = True,
@@ -138,7 +138,7 @@ class GCMT3DInversion:
         self.window_func = window_func
         self.duration = duration
         self.duration_in_m = np.ceil(duration/60.0)
-        self.simulation_duration = np.round(self.duration_in_m * 1.2)
+        self.simulation_duration = np.round(self.duration_in_m * 1.02)
         self.multiprocesses = multiprocesses
         self.sumfunc = lambda results: Stream(results)
 
@@ -181,6 +181,9 @@ class GCMT3DInversion:
 
         # Fix process dict
         self.adapt_processdict()
+
+        # Set iteration number
+        self.iteration = 0
 
     def __basic_check__(self):
 
@@ -356,8 +359,8 @@ class GCMT3DInversion:
         self.__prep_simulations__()
         self.__write_sources__()
         with lpy.Timer():
-            self.__run_forward_only__()
-        self.process_synt()
+            self.__run_simulations__()
+        self.process_all_synt()
         with lpy.Timer():
             self.__window__()
         with lpy.Timer():
@@ -1071,11 +1074,16 @@ class GCMT3DInversion:
         self.__write_sources__()
 
         # Run the simulations
-        with lpy.Timer():
-            self.__run_simulations__()
+        if self.iteration == 0:
+            # First simulation and processing was done during windowing stage.
+            pass
+            self.iteration = 1
+        else:
+            with lpy.Timer():
+                self.__run_simulations__()
 
-        # Get streams
-        self.process_all_synt()
+            # Get streams
+            self.process_all_synt()
 
         # Window Data
         if self.not_windowed_yet:
@@ -1766,5 +1774,5 @@ def bin():
         list(pardict.keys()),  # "BFGS-R" "BFGS",
         outfile=f"{gcmt3d.cmtdir}/InversionHistory_8params.pdf")
     lpy.plot_optimization(
-        [optim_list], 
+        [optim_list],
         outfile=f"{gcmt3d.cmtdir}/misfit_reduction_history.pdf")
