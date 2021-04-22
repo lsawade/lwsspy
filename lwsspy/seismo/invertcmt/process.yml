@@ -44,12 +44,12 @@ body:
         resolution_strategy: interval_scheduling
         # instrument_merge_flag: True
       components:
-        BHZ:
-        BHR:
+        Z:
+        R:
           s2n_limit: 3.5
           s2n_limit_energy: 3.5
           snr_max_base: 3.5
-        BHT:
+        T:
           s2n_limit: 3.5
           s2n_limit_energy: 3.5
           snr_max_base: 3.5
@@ -85,12 +85,12 @@ body:
         resolution_strategy: interval_scheduling
         # instrument_merge_flag: True
       components:
-        BHZ:
-        BHR:
+        Z:
+        R:
           s2n_limit: 3.5
           s2n_limit_energy: 3.5
           snr_max_base: 3.5
-        BHT:
+        T:
           s2n_limit: 3.5
           s2n_limit_energy: 3.5
           snr_max_base: 3.5
@@ -141,11 +141,11 @@ surface:
         resolution_strategy: interval_scheduling
         # instrument_merge_flag: True
       components:
-        BHZ:
+        Z:
 
-        BHR:
+        R:
 
-        BHT:
+        T:
 
 mantle:
   weight: 1.0
@@ -193,8 +193,8 @@ mantle:
         resolution_strategy: interval_scheduling
         # instrument_merge_flag: True
       components:
-        BHZ:
-        BHR:
-        BHT:
+        Z:
+        R:
+        T:
           min_surface_wave_velocity: 3.80
           max_surface_wave_velocity: 6.5
