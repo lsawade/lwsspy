@@ -426,7 +426,7 @@ class GCMT3DInversion:
                 self.weights[_wtype][_component]["lon"] = deepcopy(longitudes)
 
                 # Get azimuthal weights for the traces of each component
-                if len(latitudes) != 0 and len(longitudes) != 0:
+                if len(latitudes) > 1 and len(longitudes) > 1:
                     azi_weights = lpy.azi_weights(
                         self.cmtsource.latitude,
                         self.cmtsource.longitude,
@@ -450,6 +450,11 @@ class GCMT3DInversion:
                     weights /= np.sum(weights)/len(weights)
                     self.weights[_wtype][_component]["combination"] = deepcopy(
                         weights)
+                elif len(latitudes) == 1 and len(longitudes) == 1:
+                    self.weights[_wtype][_component]["azimuthal"] = [1.0]
+                    self.weights[_wtype][_component]["geographical"] = [1.0]
+                    self.weights[_wtype][_component]["combination"] = [1.0]
+
                 else:
                     self.weights[_wtype][_component]["azimuthal"] = []
                     self.weights[_wtype][_component]["geographical"] = []

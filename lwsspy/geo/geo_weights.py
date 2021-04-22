@@ -22,7 +22,7 @@ class GeoWeights:
             Lucas Sawade (lsawade@princeton.edu)
 
         :Last Modified:
-            2021.03.16 16.30
+            2021.04.16 09.30
 
         """
 
@@ -33,7 +33,7 @@ class GeoWeights:
         self.dij = self.kdtree.sparse_distance_matrix()
 
     def get_weights(self, ref: float = 1.0):
-        """Compute the weights based on equation 22 in Ruan ett al. 2019
+        """Compute the weights based on equation 22 in Ruan et al. 2019
 
         Parameters
         ----------
