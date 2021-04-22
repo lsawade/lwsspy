@@ -252,7 +252,7 @@ def window_on_stream(observed: obspy.Stream, synthetic: obspy.Stream,
             if 'windows' in obs_tr.stats:
                 obs_tr.stats.windows.extend(tmpwins)
             else:
-                obs_tr.stats.windows.extend(tmpwins)
+                obs_tr.stats.windows = tmpwins
 
             if _verbose:
                 print(f"Win on trace: {obs_tr.stats.windows}")
