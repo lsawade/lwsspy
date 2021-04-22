@@ -108,7 +108,7 @@ class GCMT3DInversion:
             damping: float = 0.001,
             weighting: bool = True,
             normalize: bool = True,
-            overwrite: bool = True,
+            overwrite: bool = False,
             launch_method: str = "srun -n6 --gpus-per-task=1",
             process_func: Callable = lpy.process_stream,
             window_func: Callable = lpy.window_on_stream,
