@@ -176,11 +176,11 @@ class GCMT3DInversion:
         # Basic Checks
         self.__basic_check__()
 
-        # Fix process dict
-        self.adapt_processdict()
-
         # Initialize
         self.init()
+
+        # Fix process dict
+        self.adapt_processdict()
 
         # Set iteration number
         self.iteration = 0
@@ -1704,7 +1704,7 @@ def bin():
                              download_data=True, zero_trace=False,
                              duration=7200, overwrite=False,
                              launch_method=launch_method, damping=0.0001)
-    gcmt3d.init()
+    # gcmt3d.init()
     gcmt3d.process_data()
     gcmt3d.get_windows()
     gcmt3d.__compute_weights__()
