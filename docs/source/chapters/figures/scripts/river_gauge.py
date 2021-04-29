@@ -12,7 +12,7 @@ if __name__ == "__main__":
         "Lucas Sawade": '06817500',
         "Matthew Butler": '4127997',
         "William Carpenter": '1199000',
-        "Kaila Carroll": '1209700',
+        "Kaila Carroll": '1205500',
         "Shannon Chaffers": '4174500',
         "Sophia Duchateau": '50075000',
         "Michael Folding": '1208990',

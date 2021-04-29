@@ -17,6 +17,9 @@ def stream_pdf(
     backend = plt.get_backend()
     plt.switch_backend("pdf")
 
+    if 'distance' in obsd[0].stats:
+        obsd.sort('distance')
+
     with PdfPages(outfile) as pdf:
         for _obsd_tr in obsd:
 
