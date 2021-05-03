@@ -22,6 +22,7 @@ from obspy import read, read_events, Stream, Trace
 import multiprocessing.pool as mpp
 import _pickle as cPickle
 from .process_classifier import ProcessParams
+import logging
 
 lpy.updaterc(rebuild=False)
 
@@ -113,7 +114,9 @@ class GCMT3DInversion:
             process_func: Callable = lpy.process_stream,
             window_func: Callable = lpy.window_on_stream,
             multiprocesses: int = 20,
-            debug: bool = False):
+            loglevel: int = logging.DEBUG,
+            log2stdout: bool = True,
+            log2file: bool = True):
 
         # CMTSource
         self.cmtsource = lpy.CMTSource.from_CMTSOLUTION_file(cmtsolutionfile)
@@ -123,7 +126,8 @@ class GCMT3DInversion:
         # File locations
         self.databasedir = os.path.abspath(databasedir)
         self.cmtdir = os.path.join(self.databasedir, self.cmtsource.eventname)
-        self.cmt_in_db = os.path.join(self.cmtdir, self.cmtsource.eventname)
+        self.cmt_in_db = os.path.join(
+            self.cmtdir, self.cmtsource.eventname + "_gcmt")
         self.overwrite: bool = overwrite
         self.download_data = download_data
 
@@ -170,8 +174,10 @@ class GCMT3DInversion:
         self.synt_dict: dict = dict()
         self.zero_window_removal_dict: dict = dict()
 
-        # Other
-        self.debug = debug
+        # Logging
+        self.loglevel = loglevel
+        self.log2stdout = log2stdout
+        self.log2file = log2file
 
         # Basic Checks
         self.__basic_check__()
@@ -197,7 +203,6 @@ class GCMT3DInversion:
         # If one moment tensor parameter is given all must be given.
         if any([_par in self.pardict for _par in mt_params]):
             checklist = [_par for _par in mt_params if _par in self.pardict]
-            print(checklist)
             if not all([_par in checklist for _par in mt_params]):
                 raise ValueError("If one moment tensor parameter is to be "
                                  "inverted. All must be inverted.\n"
@@ -214,7 +219,43 @@ class GCMT3DInversion:
                                  "if inverting for Moment Tensor.\n"
                                  "Update your pardict.")
 
+    def __setup_logger__(self):
+        # create logger
+        self.logger = logging.getLogger("GCMT3D")
+        self.logger.setLevel(self.loglevel)
+        self.logger.handlers = []
+
+        # stop propagting to root logger
+        self.logger.propagate = False
+
+        # create formatter
+        formatter = lpy.CustomFormatter()
+
+        # Add file logger if necessary
+        if self.log2file:
+            fh = logging.FileHandler(self.logfile, mode='w+')
+            fh.setLevel(logging.DEBUG)
+            fh.setFormatter(formatter)
+            self.logger.addHandler(fh)
+
+        # Add stdout logger
+        if self.log2stdout:
+            sh = logging.StreamHandler()
+            sh.setLevel(self.loglevel)
+            sh.setFormatter(formatter)
+            self.logger.addHandler(sh)
+
+        # Make sure not multiple handlers are created
+        self.logger.handler_set = True
+
+        # Starting the log
+        lpy.log_bar("GCMT3D LOG", plogger=self.logger.info)
+
     def adapt_processdict(self):
+
+        # Logging
+        lpy.log_action(
+            "Adapting processing dictionary", plogger=self.logger.debug)
 
         # Get Process parameters
         PP = ProcessParams(
@@ -251,6 +292,8 @@ class GCMT3DInversion:
             self.processdict.pop(_key, None)
 
         # Dump the processing file in the cmt directory
+        lpy.log_action(
+            "Writing it to file", plogger=self.logger.debug)
         lpy.write_yaml_file(
             self.processdict, os.path.join(self.cmtdir, "process.yml"))
 
@@ -258,11 +301,15 @@ class GCMT3DInversion:
 
         # Initialize directory
         self.__initialize_dir__()
+        self.__setup_logger__()
+        lpy.log_section(
+            "Setting up the directories and Waveform dicts",
+            plogger=self.logger.info)
         self.__initialize_waveform_dictionaries__()
 
         # Get observed data and process data
         if self.download_data:
-            with lpy.Timer():
+            with lpy.Timer(plogger=self.logger.info):
                 self.__download_data__()
 
         # Initialize model vector
@@ -276,6 +323,8 @@ class GCMT3DInversion:
         self.stationdir = os.path.join(self.datadir, "stations")
         self.syntdir = os.path.join(self.cmtdir, "synt")
         self.windows = os.path.join(self.cmtdir, "windows")
+        self.logfile = os.path.join(
+            self.cmtdir, self.cmtsource.eventname + ".log")
 
         # Create subsynthetic directories
         self.synt_syntdir = os.path.join(self.syntdir, "cmt")
@@ -347,37 +396,49 @@ class GCMT3DInversion:
                 self.synt_dict[_wtype][_par] = Stream()
 
     def process_data(self):
-        lpy.print_section("Loading and processing the data")
+        lpy.log_section(
+            "Loading and processing the data",
+            plogger=self.logger.info)
 
-        with lpy.Timer():
+        with lpy.Timer(plogger=self.logger.info):
             self.__load_data__()
-        with lpy.Timer():
+        with lpy.Timer(plogger=self.logger.info):
             self.__process_data__()
 
     def process_synt(self):
-        lpy.print_section("Loading and processing the modeled data")
+        lpy.log_section(
+            "Loading and processing the modeled data",
+            plogger=self.logger.info)
 
-        with lpy.Timer():
+        with lpy.Timer(plogger=self.logger.info):
             self.__load_synt__()
-        with lpy.Timer():
+        with lpy.Timer(plogger=self.logger.info):
             self.__process_synt__()
 
     def get_windows(self):
 
         self.__prep_simulations__()
         self.__write_sources__()
-        with lpy.Timer():
+
+        # Run first set of simulations
+        with lpy.Timer(plogger=self.logger.info):
             self.__run_simulations__()
         self.process_all_synt()
-        with lpy.Timer():
+
+        # Window the data
+        with lpy.Timer(plogger=self.logger.info):
             self.__window__()
-        with lpy.Timer():
-            # self.__remove_zero_window_traces__()
-            # self.__remove_zero_windows_on_synt__()
+
+        # Prep next set of simulations
+        with lpy.Timer(plogger=self.logger.info):
             self.__prep_simulations__()
+
         self.not_windowed_yet = False
 
     def __compute_weights__(self):
+
+        # Computing the weights
+        lpy.log_bar("Computing Weights", plogger=self.logger.info)
 
         # Weight dictionary
         self.weights = dict()
@@ -487,106 +548,19 @@ class GCMT3DInversion:
         with open(os.path.join(self.cmtdir, "weights.pkl"), "wb") as f:
             cPickle.dump(deepcopy(self.weights), f)
 
-    # def __remove_unrotatable__(self):
-    #     """Removes the traces from the data_dict wavetype streams and inventory
-    #     that are not rotatable for whatever reason.
-    #     """
-
-    #     lpy.print_action("Removing traces that couldn't be rotated ...")
-    #     checklist = ["1", "2", "N", "E"]
-    #     rotate_removal_list = []
-    #     for _wtype, _stream in self.data_dict.items():
-    #         for _tr in _stream:
-    #             net = _tr.stats.network
-    #             sta = _tr.stats.station
-    #             loc = _tr.stats.location
-    #             cha = _tr.stats.channel
-    #             if cha[-1] in checklist:
-    #                 rotate_removal_list.append((net, sta, loc, cha))
-
-    #     # Create set.
-    #     self.rotate_removal_list = set(rotate_removal_list)
-
-    #     # Remove stations
-    #     for _i, _wtype in enumerate(self.data_dict.keys()):
-    #         for (net, sta, loc, cha) in self.rotate_removal_list:
-    #             # Remove channels from inventory
-    #             self.stations = self.stations.remove(
-    #                 network=net, station=sta, location=loc, channel=cha)
-
-    #             # Remove Traces from Streams
-    #             st = self.data_dict[_wtype].select(
-    #                 network=net, station=sta, location=loc, channel=cha)
-    #             for tr in st:
-    #                 self.data_dict[_wtype].remove(tr)
-
-    # def __remove_zero_window_traces__(self):
-    #     """Removes the traces from the data_dict wavetype streams, and
-    #     creates list with stations for each trace to be used for removal
-    #     prior to processing of the synthetics.
-
-    #     Not removing stuff from inventory, because negligible
-    #     """
-
-    #     # Process each wavetype.
-    #     self.zero_window_removal_dict = dict()
-    #     lpy.print_action("Removing traces without windows...")
-    #     for _wtype, _stream in self.data_dict.items():
-
-    #         lpy.print_action(f"    for {_wtype}")
-    #         self.zero_window_removal_dict[_wtype] = []
-    #         for _tr in _stream:
-    #             if len(_tr.stats.windows) == 0:
-    #                 net = _tr.stats.network
-    #                 sta = _tr.stats.station
-    #                 loc = _tr.stats.location
-    #                 cha = _tr.stats.channel
-    #                 self.zero_window_removal_dict[_wtype].append(
-    #                     (net, sta, loc, cha))
-
-    #     # # Create list of all traces that do not have to be simulated anymore
-    #     # for _i, _wtype in enumerate(self.data_dict.keys()):
-    #     #     if _i == 0:
-    #     #         channel_removal_set = set(zero_window_removal_dict[_wtype])
-    #     #     else:
-    #     #         channel_removal_set.intersection(
-    #     #             set(zero_window_removal_dict[_wtype]))
-
-    #     # Remove the set from the window removal dicts
-    #     for _i, _wtype in enumerate(self.data_dict.keys()):
-    #         for (net, sta, loc, cha) in self.zero_window_removal_dict[_wtype]:
-    #             tr = self.data_dict[_wtype].select(
-    #                 network=net, station=sta, location=loc, channel=cha)[0]
-    #             self.data_dict[_wtype].remove(tr)
-
-    #     # Remove the set from the window removal dicts
-    #     # for _i, _wtype in enumerate(self.data_dict.keys()):
-    #     #     for (net, sta, loc, cha) in channel_removal_set:
-    #     #         tr = self.data_dict[_wtype].select(
-    #     #             network=net, station=sta, location=loc, channel=cha)[0]
-    #     #         self.data_dict[_wtype].remove(tr)
-
-    # def __remove_zero_windows_on_synt__(self):
-
-    #     # Remove the set from the window removal dicts
-    #     for _i, (_wtype, _pardict) in enumerate(self.synt_dict.items()):
-    #         for _par, _stream in _pardict.items():
-    #             print(_par)
-    #             for (net, sta, loc, cha) in self.zero_window_removal_dict[_wtype]:
-    #                 print(net, sta, loc, cha)
-    #                 tr = _stream.select(
-    #                     network=net, station=sta, component=cha[-1])[0]
-    #                 _stream.remove(tr)
-
     def process_all_synt(self):
-        lpy.print_section("Loading and processing all modeled data")
 
-        with lpy.Timer():
+        # Logging
+        lpy.log_section(
+            "Loading and processing all modeled data",
+            plogger=self.logger.info)
+
+        with lpy.Timer(plogger=self.logger.info):
             self.__load_synt__()
             self.__load_synt_par__()
             # self.__remove_zero_windows_on_synt__()
 
-        with lpy.Timer():
+        with lpy.Timer(plogger=self.logger.info):
             self.__process_synt__()
             self.__process_synt_par__()
 
@@ -608,7 +582,7 @@ class GCMT3DInversion:
         endtime = self.cmtsource.cmt_time + self.duration \
             + self.endtime_offset
 
-        lpy.print_bar("Data Download")
+        lpy.log_bar("Data Download", plogger=self.logger.info)
 
         if self.node_login is None:
             lpy.download_waveforms_to_storage(
@@ -633,9 +607,10 @@ class GCMT3DInversion:
             {download_cmd}
             """
 
-            lpy.print_action(
-                f"Logging into {' '.join(login_cmd)} and downloading")
-            print(f"Command: \n{comcmd}\n")
+            lpy.log_action(
+                f"Logging into {' '.join(login_cmd)} and downloading",
+                plogger=self.logger.info)
+            self.logger.debug(f"Command: \n{comcmd}\n")
 
             with Popen(["ssh", "-T", self.node_login],
                        stdin=PIPE, stdout=PIPE, stderr=PIPE,
@@ -643,13 +618,13 @@ class GCMT3DInversion:
                 output, error = p.communicate(comcmd)
 
             if p.returncode != 0:
-                print(output)
-                print(error)
-                print(p.returncode)
+                self.logger.error(output)
+                self.logger.error(error)
+                self.logger.error(p.returncode)
                 raise ValueError("Download not successful.")
 
     def __load_data__(self):
-        lpy.print_action("Loading the data")
+        lpy.log_action("Loading the data", plogger=self.logger.info)
 
         # Load Station data
         self.stations = lpy.read_inventory(
@@ -666,7 +641,9 @@ class GCMT3DInversion:
 
         # Process each wavetype.
         for _wtype, _stream in self.data_dict.items():
-            lpy.print_action(f"Processing data for {_wtype}")
+            lpy.log_action(
+                f"Processing data for {_wtype}",
+                plogger=self.logger.info)
 
             # Call processing function and processing dictionary
             starttime = self.cmtsource.cmt_time \
@@ -693,8 +670,9 @@ class GCMT3DInversion:
                 self.data_dict[_wtype] = self.process_func(
                     _stream, **processdict)
             else:
-                lpy.print_action(
-                    f"Processing in parallel using {self.multiprocesses} cores")
+                lpy.log_action(
+                    f"Processing in parallel using {self.multiprocesses} cores",
+                    plogger=self.logger.debug)
                 self.data_dict[_wtype] = lpy.multiprocess_stream(
                     _stream, processdict)
 
@@ -702,7 +680,7 @@ class GCMT3DInversion:
 
         # if self.specfemdir is not None:
         # Load forward data
-        lpy.print_action("Loading forward synthetics")
+        lpy.log_action("Loading forward synthetics", plogger=self.logger.info)
         temp_synt = read(os.path.join(
             self.synt_syntdir, "OUTPUT_FILES", "*.sac"))
 
@@ -711,9 +689,10 @@ class GCMT3DInversion:
 
     def __load_synt_par__(self):
         # Load frechet data
-        lpy.print_action("Loading parameter synthetics")
+        lpy.log_action("Loading parameter synthetics",
+                       plogger=self.logger.info)
         for _par, _pardirs in self.synt_pardirs.items():
-            lpy.print_action(f"    {_par}")
+            lpy.log_action(f"    {_par}", plogger=self.logger.info)
 
             if _par in self.nosimpars:
                 temp_synt = read(os.path.join(
@@ -734,13 +713,13 @@ class GCMT3DInversion:
         if self.multiprocesses > 1:
             parallel = True
             p = mpp.Pool(processes=self.multiprocesses)
-            lpy.print_action(
-                f"Processing in parallel using {self.multiprocesses} cores")
+            lpy.log_action(
+                f"Processing in parallel using {self.multiprocesses} cores",
+                plogger=self.logger.debug)
         else:
             parallel = False
 
         for _wtype in self.processdict.keys():
-            lpy.print_action(f"Processing synt for {_wtype}")
 
             # Call processing function and processing dictionary
             starttime = self.cmtsource.cmt_time \
@@ -760,8 +739,10 @@ class GCMT3DInversion:
                 event_latitude=self.cmtsource.latitude,
                 event_longitude=self.cmtsource.longitude)
             )
-            print(f"Stream {_wtype}/synt: ",
-                  len(self.synt_dict[_wtype]["synt"]))
+            lpy.log_action(
+                f"Processing {_wtype}/synt: "
+                f"{len(self.synt_dict[_wtype]['synt'])} waveforms",
+                plogger=self.logger.info)
 
             if parallel:
                 self.synt_dict[_wtype]["synt"] = lpy.multiprocess_stream(
@@ -779,13 +760,13 @@ class GCMT3DInversion:
         if self.multiprocesses > 1:
             parallel = True
             p = mpp.Pool(processes=self.multiprocesses)
-            lpy.print_action(
-                f"Processing in parallel using {self.multiprocesses} cores")
+            lpy.log_action(
+                f"Processing in parallel using {self.multiprocesses} cores",
+                plogger=self.logger.debug)
         else:
             parallel = False
 
         for _wtype in self.processdict.keys():
-            lpy.print_action(f"Processing synt for {_wtype}")
 
             # Call processing function and processing dictionary
             starttime = self.cmtsource.cmt_time \
@@ -807,11 +788,15 @@ class GCMT3DInversion:
 
             # Process each wavetype.
             for _par, _parsubdict in self.pardict.items():
-                print(f"Stream {_wtype}/{_par}: ",
-                      len(self.synt_dict[_wtype][_par]))
+                lpy.log_action(
+                    f"Processing {_wtype}/{_par}: "
+                    f"{len(self.synt_dict[_wtype][_par])} waveforms",
+                    plogger=self.logger.info)
+
                 if _par in self.nosimpars:
-                    self.synt_dict[_wtype][_par] = self.synt_dict[_wtype]["synt"].copy(
-                    )
+                    self.synt_dict[_wtype][_par] = \
+                        self.synt_dict[_wtype]["synt"].copy()
+
                 else:
                     if parallel:
                         self.synt_dict[_wtype][_par] = self.sumfunc(
@@ -846,7 +831,7 @@ class GCMT3DInversion:
     def __window__(self):
 
         for _wtype in self.processdict.keys():
-            lpy.print_action(f"Windowing {_wtype}")
+            lpy.log_action(f"Windowing {_wtype}", plogger=self.logger.info)
 
             for window_dict in self.processdict[_wtype]["window"]:
 
@@ -899,7 +884,7 @@ class GCMT3DInversion:
 
     def __prep_simulations__(self):
 
-        lpy.print_action("Prepping simulations")
+        lpy.log_action("Prepping simulations", plogger=self.logger.info)
         # Create forward directory
         if self.specfemdir is not None:
             lpy.createsimdir(self.specfemdir, self.synt_syntdir,
@@ -981,7 +966,8 @@ class GCMT3DInversion:
             setattr(cmt, _par, _modelval)
 
         # Writing synthetic CMT solution
-        lpy.print_action("Writing Synthetic CMTSOLUTION")
+        lpy.log_action("Writing Synthetic CMTSOLUTION",
+                       plogger=self.logger.info)
         cmt.write_CMTSOLUTION_file(os.path.join(
             self.synt_syntdir, "DATA", "CMTSOLUTION"))
 
@@ -990,7 +976,10 @@ class GCMT3DInversion:
 
             if _par not in ["time_shift", "half_duration"]:
                 # Write source to the directory of simulation
-                lpy.print_action(f"Writing Frechet CMTSOLUTION for {_par}")
+                lpy.log_action(
+                    f"Writing Frechet CMTSOLUTION for {_par}",
+                    plogger=self.logger.info)
+
                 if self.pardict[_par]["pert"] is not None:
                     # Perturb source at parameter
                     cmt_pert = deepcopy(cmt)
@@ -1024,7 +1013,7 @@ class GCMT3DInversion:
 
     def __run_simulations__(self):
 
-        lpy.print_action("Submitting all simulations")
+        lpy.log_action("Submitting all simulations", plogger=self.logger.info)
         # Initialize necessary commands
         cmd_list = self.nsim * [[*self.launch_method, './bin/xspecfem3D']]
 
@@ -1037,7 +1026,8 @@ class GCMT3DInversion:
     def __run_forward_only__(self):
 
         # Initialize necessary commands
-        lpy.print_action("Submitting forward simulation")
+        lpy.log_action(
+            "Submitting forward simulation", plogger=self.logger.info)
         cmd_list = [[*self.launch_method, './bin/xspecfem3D']]
         cwdlist = [self.synt_syntdir]
         lpy.run_cmds_parallel(cmd_list, cwdlist=cwdlist)
@@ -1045,7 +1035,8 @@ class GCMT3DInversion:
     def __run_parameters_only__(self):
 
         # Initialize necessary commands
-        lpy.print_action("Submitting parameter simulations")
+        lpy.log_action(
+            "Submitting parameter simulations", plogger=self.logger.info)
         cmd_list = (self.nsim - 1) * \
             [[*self.launch_method, './bin/xspecfem3D']]
 
@@ -1065,7 +1056,7 @@ class GCMT3DInversion:
         self.__write_sources__()
 
         # Run the simulations
-        with lpy.Timer():
+        with lpy.Timer(plogger=self.logger.info):
             self.__run_simulations__()
 
         # Get streams
@@ -1098,7 +1089,7 @@ class GCMT3DInversion:
             pass
             self.iteration = 1
         else:
-            with lpy.Timer():
+            with lpy.Timer(plogger=self.logger.info):
                 self.__run_simulations__()
 
             # Get streams
@@ -1114,43 +1105,44 @@ class GCMT3DInversion:
         g, h = self.__compute_gradient_and_hessian__()
 
         if self.debug:
-            print("Raw")
-            print("C:", cost)
-            print("G:")
-            print(g)
-            print("H")
-            print(h)
+            self.logger.debug("Raw")
+            self.logger.debug("C:", cost)
+            self.logger.debug("G:")
+            self.logger.debug(g.flatten())
+            self.logger.debug("H")
+            self.logger.debug(h.flatten())
 
         # Scaling of the cost function
         g *= self.scale
         h = np.diag(self.scale) @ h @ np.diag(self.scale)
 
         if self.debug:
-            print("Scaled")
-            print("C:", cost)
-            print("G:")
-            print(g)
-            print("H")
-            print(h)
+            self.logger.debug("Scaled")
+            self.logger.debug("C: {cost}")
+            self.logger.debug("G:")
+            self.logger.debug(g.flatten())
+            self.logger.debug("H")
+            self.logger.debug(h.flatten())
 
         if self.damping > 0.0:
             factor = self.damping * np.max(np.abs((np.diag(h))))
-            print("f", factor)
+            self.logger.debug("f", factor)
             modelres = self.scaled_model - self.init_scaled_model
-            print("modelres:", modelres)
-            print("Costbef:", cost)
+            self.logger.debug(f"Model Residual: {modelres.flatten()}", )
+            self.logger.debug(f"Cost Before: {cost}")
             # cost += factor/2 * np.sum(modelres**2)
-            print("Costaft:", cost)
+            self.logger.debug(f"Cost After: {cost}")
             g += factor * modelres
             h += factor * np.eye(len(self.model))
 
         if self.debug:
-            print("Damped")
-            print("C:", cost)
-            print("G:")
-            print(g)
-            print("H")
-            print(h)
+            self.logger.debug("Damped")
+            self.logger.debug("Scaled")
+            self.logger.debug("C: {cost}")
+            self.logger.debug("G:")
+            self.logger.debug(g.flatten())
+            self.logger.debug("H")
+            self.logger.debug(h.flatten())
 
         # Add zero trace condition
         if self.zero_trace:
@@ -1163,13 +1155,14 @@ class GCMT3DInversion:
             g = np.append(g, 0.0)
             g[-1] = np.sum(self.scaled_model[self.zero_trace_index_array])
 
+        # Show stuf when debugging
         if self.debug:
-            print("Zero_traced")
-            print("C:", cost)
-            print("G:")
-            print(g)
-            print("H")
-            print(h)
+            self.logger.debug("Zero_traced")
+            self.logger.debug("C: {cost}")
+            self.logger.debug("G:")
+            self.logger.debug(g.flatten())
+            self.logger.debug("H")
+            self.logger.debug(h.flatten())
 
         return cost, g, h
 
@@ -1232,16 +1225,14 @@ class GCMT3DInversion:
 
         gradient = np.zeros_like(self.model)
         hessian = np.zeros((len(self.model), len(self.model)))
-        print(self.model)
-        print(gradient)
-        print(hessian)
+
         for _wtype in self.processdict.keys():
 
             # Get all perturbations
             dsyn = list()
             for _i, _par in enumerate(self.pardict.keys()):
                 dsyn.append(self.synt_dict[_wtype][_par])
-            print(len(dsyn))
+
             # Create costgradhess class to computte gradient
             cgh = lpy.CostGradHess(
                 data=self.data_dict[_wtype],
@@ -1252,19 +1243,24 @@ class GCMT3DInversion:
                 weight=self.weighting)
 
             tmp_g, tmp_h = cgh.grad_and_hess()
-            print(tmp_g, tmp_h)
             gradient += tmp_g * self.processdict[_wtype]["weight"]
             hessian += tmp_h * self.processdict[_wtype]["weight"]
+
+        self.logger.debug("M, G, H:")
+        self.logger.debug(self.model)
+        self.logger.debug(gradient.flatten())
+        self.logger.debug(hessian.flatten())
 
         return gradient, hessian
 
     def misfit_walk_depth(self):
 
         # Start the walk
-        lpy.print_bar("Misfit walk: Depth")
+        lpy.log_bar("Misfit walk: Depth", plogger=self.logger.info)
 
-        scaled_depths = np.arange(self.cmtsource.depth_in_m - 10000,
-                                  self.cmtsource.depth_in_m + 10100, 1000)/1000.0
+        scaled_depths = np.arange(
+            self.cmtsource.depth_in_m - 10000,
+            self.cmtsource.depth_in_m + 10100, 1000)/1000.0
         cost = np.zeros_like(scaled_depths)
         grad = np.zeros((*scaled_depths.shape, 1))
         hess = np.zeros((*scaled_depths.shape, 1, 1))
@@ -1272,11 +1268,16 @@ class GCMT3DInversion:
 
         for _i, _dep in enumerate(scaled_depths):
 
-            lpy.print_section(f"Computing CgH for: {_dep} km")
-            with lpy.Timer():
+            lpy.log_section(
+                f"Computing CgH for: {_dep} km",
+                plogger=self.logger.info)
+
+            with lpy.Timer(plogger=self.logger.info):
                 c, g, h = self.compute_cost_gradient_hessian(
                     np.array([_dep]))
-                print(f"\n     Iteration for {_dep} km done.")
+                lpy.log_action(
+                    f"\n     Iteration for {_dep} km done.",
+                    plogger=self.logger.info)
             cost[_i] = c
             grad[_i, :] = g
             hess[_i, :, :] = h
@@ -1313,10 +1314,10 @@ class GCMT3DInversion:
         plt.xlabel("$\Delta$m [km]")
         ax.tick_params(labelleft=False, labelright=False)
 
-        plt.savefig("misfit_walk_depth.pdf")
+        plt.savefig(self.cmtdir + "/misfit_walk_depth.pdf")
 
         # Start the walk
-        lpy.print_bar("DONE.")
+        lpy.log_bar("DONE.", plogger=self.logger.info)
 
     def misfit_walk_depth_times(self):
         """Pardict containing an array of the walk parameters.
@@ -1443,7 +1444,7 @@ class GCMT3DInversion:
         plt.xlabel(r'$\Delta t$')
 
         plt.subplots_adjust(hspace=0.2, wspace=0.15)
-        plt.savefig("SyntheticCostGradHess.pdf")
+        plt.savefig(self.cmtdir + "/SyntheticCostGradHess.pdf")
 
     def plot_data(self, outputdir="."):
         plt.switch_backend("pdf")
@@ -1464,35 +1465,6 @@ class GCMT3DInversion:
                 d['CreationDate'] = datetime.datetime.today()
                 d['ModDate'] = datetime.datetime.today()
 
-    def plot_windows(self, outputdir="."):
-        plt.switch_backend("pdf")
-        for _wtype in self.processdict.keys():
-            with PdfPages(os.path.join(outputdir, f"windows_{_wtype}.pdf")) as pdf:
-                for obsd_tr in self.data_dict[_wtype]:
-                    try:
-                        synt_tr = self.synt_dict[_wtype]["synt"].select(
-                            station=obsd_tr.stats.station,
-                            network=obsd_tr.stats.network,
-                            component=obsd_tr.stats.channel[-1])[0]
-                    except Exception as err:
-                        print("Couldn't find corresponding synt for obsd trace(%s):"
-                              "%s" % (obsd_tr.id, err))
-                        continue
-
-                    fig = plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
-                                           tag=_wtype)
-                    pdf.savefig()  # saves the current figure into a pdf page
-                    plt.close(fig)
-
-                    # We can also set the file's metadata via the PdfPages object:
-                d = pdf.infodict()
-                d['Title'] = f"{_wtype.capitalize()}-Wave-PDF"
-                d['Author'] = 'Lucas Sawade'
-                d['Subject'] = 'Trace comparison in one pdf'
-                d['Keywords'] = 'seismology, moment tensor inversion'
-                d['CreationDate'] = datetime.datetime.today()
-                d['ModDate'] = datetime.datetime.today()
-
     def plot_station(self, network: str, station: str, outputdir="."):
         plt.switch_backend("pdf")
         # Get station data
@@ -1503,7 +1475,8 @@ class GCMT3DInversion:
                 synt = self.synt_dict[_wtype]["synt"].select(
                     network=network, station=station)
             except Exception as e:
-                print(f"Could load station {network}{station} -- {e}")
+                self.logger.warning(
+                    f"Could load station {network}{station} -- {e}")
             # Plot PDF for each wtype
             with PdfPages(os.path.join(outputdir, f"{network}.{station}_{_wtype}.pdf")) as pdf:
                 for component in ["Z", "R", "T"]:
@@ -1515,8 +1488,8 @@ class GCMT3DInversion:
                             station=station, network=network,
                             component=component)[0]
                     except Exception as err:
-                        print(f"Couldn't find obs or syn for NET.STA.COMP:"
-                              f" {network}.{station}.{component} -- {err}")
+                        self.logger.warning(f"Couldn't find obs or syn for NET.STA.COMP:"
+                                            f" {network}.{station}.{component} -- {err}")
                         continue
 
                     fig = plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
@@ -1547,18 +1520,19 @@ class GCMT3DInversion:
                             synt = self.synt_dict[_wtype][_par].select(
                                 network=network, station=station)
                         except Exception as e:
-                            print(f"Could load station "
-                                  f"{network}{station} -- {e}")
+                            self.logger.warning(f"Could load station "
+                                                f"{network}{station} -- {e}")
                         for component in ["Z", "R", "T"]:
                             try:
                                 synt_tr = synt.select(
                                     station=station, network=network,
                                     component=component)[0]
                             except Exception as err:
-                                print(f"Couldn't find obs or syn "
-                                      f"for NET.STA.COMP:"
-                                      f" {network}.{station}.{component} "
-                                      f"-- {err}")
+                                self.logger.warning(
+                                    f"Couldn't find obs or syn "
+                                    f"for NET.STA.COMP:"
+                                    f" {network}.{station}.{component} "
+                                    f"-- {err}")
                                 continue
 
                             fig = plot_seismograms(
@@ -1587,8 +1561,9 @@ class GCMT3DInversion:
                             network=obsd_tr.stats.network,
                             component=obsd_tr.stats.channel[-1])[0]
                     except Exception as err:
-                        print("Couldn't find corresponding synt for obsd trace(%s):"
-                              "%s" % (obsd_tr.id, err))
+                        self.logger.warning(
+                            "Couldn't find corresponding synt for "
+                            f"obsd trace({obsd_tr.id}): {err}")
                         continue
 
                     fig = plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
@@ -1695,6 +1670,7 @@ def bin():
 
     import sys
     event = sys.argv[1]
+
     # Inputs
     database = "/gpfs/alpine/geo111/scratch/lsawade/testdatabase"
     specfemdir = "/gpfs/alpine/geo111/scratch/lsawade/SpecfemMagic/specfem3d_globe"
@@ -1709,20 +1685,18 @@ def bin():
     gcmt3d.get_windows()
     gcmt3d.__compute_weights__()
 
-    # print(50 * "-", "Cost, Grad, Hess", 50 * "_")
-
-    # # gcmt3d.misfit_walk_depth()
     optim_list = []
 
     max_iter = 5
     max_nls = 3
 
-    with lpy.Timer():
+    with lpy.Timer(plogger=gcmt3d.logger.info):
 
         # Gauss Newton Optimization Structure
-        lpy.print_bar("GN")
+        lpy.log_bar("GN", plogger=gcmt3d.logger.info)
         optim_gn = lpy.Optimization("gn")
-        optim_gn.compute_cost_and_grad_and_hess = gcmt3d.compute_cost_gradient_hessian
+        optim_gn.compute_cost_and_grad_and_hess = \
+            gcmt3d.compute_cost_gradient_hessian
         optim_gn.is_preco = False
         optim_gn.niter_max = max_iter
         optim_gn.nls_max = max_nls
@@ -1730,9 +1704,10 @@ def bin():
         optim_gn.stopping_criterion = 9.0e-1
 
         # Run optimization
-        with lpy.Timer():
+        with lpy.Timer(plogger=gcmt3d.logger.info):
             optim_out = gcmt3d.optimize(optim_gn)
-            lpy.print_action("DONE with Gauss-Newton.")
+            lpy.log_action("DONE with Gauss-Newton.",
+                           plogger=gcmt3d.logger.info)
 
         # Update model and write model
         gcmt3d.__update_cmt__(optim_out.model)

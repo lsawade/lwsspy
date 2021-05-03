@@ -36,6 +36,24 @@ if "-m" not in sys.argv:
 
     # -------- FUNCTIONS & CLASSES --------------------------------------------
 
+    # IO
+    from .utils.io import dump_json  # noqa
+    from .utils.io import load_asdf  # noqa
+    from .utils.io import load_json  # noqa
+    from .utils.io import loadxy_csv  # noqa
+    from .utils.io import loadmat  # noqa
+    from .utils.io import read_yaml_file  # noqa
+    from .utils.io import write_yaml_file  # noqa
+
+    # STDOUT
+    from .utils.customlogformatter import CustomFormatter  # noqa
+    from .utils.output import nostdout  # noqa
+    from .utils.output import print_action  # noqa
+    from .utils.output import print_bar  # noqa
+    from .utils.output import print_section  # noqa
+    from .utils.output import log_action  # noqa
+    from .utils.output import log_bar  # noqa
+    from .utils.output import log_section  # noqa
     # Geographical things
     from .geo.geo_weights import GeoWeights  # noqa
     from .geo.azi_weights import azi_weights  # noqa
@@ -45,17 +63,6 @@ if "-m" not in sys.argv:
     from .inversion.plot_optimization import plot_optimization  # noqa
     from .inversion.plot_model_history import plot_model_history  # noqa
     from .inversion.plot_single_parameter_optimization import plot_single_parameter_optimization  # noqa
-
-    # IO
-    from .utils.io import load_asdf  # noqa
-    from .utils.io import load_json  # noqa
-    from .utils.io import dump_json  # noqa
-    from .utils.io import read_yaml_file  # noqa
-    from .utils.io import write_yaml_file  # noqa
-    from .utils.output import nostdout  # noqa
-    from .utils.output import print_action  # noqa
-    from .utils.output import print_bar  # noqa
-    from .utils.output import print_section  # noqa
 
     # Maps
     from .maps.fix_map_extent import fix_map_extent  # noqa
@@ -244,15 +251,6 @@ if "-m" not in sys.argv:
     from .utils.threadwork import threadwork  # noqa
     from .utils.timer import Timer  # noqa
     from .utils.year2date import year2date  # noqa
-
-    # IO
-    from .utils.io import loadxy_csv  # noqa
-    from .utils.io import load_asdf  # noqa
-    from .utils.io import load_json  # noqa
-    from .utils.io import dump_json  # noqa
-    from .utils.io import read_yaml_file  # noqa
-    from .utils.io import write_yaml_file  # noqa
-    from .utils.io import loadmat  # noqa
 
     # Weather
     from .weather.requestweather import requestweather  # noqa
