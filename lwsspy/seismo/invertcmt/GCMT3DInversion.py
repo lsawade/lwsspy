@@ -866,7 +866,7 @@ class GCMT3DInversion:
 
             # After each trace has windows attached continue
             lpy.add_tapers(self.data_dict[_wtype], taper_type="tukey",
-                           alpha=0.25, verbose=self.debug)
+                           alpha=0.25, verbose=debug)
 
             # Some traces aren't even iterated over..
             for _tr in self.data_dict[_wtype]:
@@ -1112,25 +1112,23 @@ class GCMT3DInversion:
         cost = self.__compute_cost__()
         g, h = self.__compute_gradient_and_hessian__()
 
-        if self.debug:
-            self.logger.debug("Raw")
-            self.logger.debug("C:", cost)
-            self.logger.debug("G:")
-            self.logger.debug(g.flatten())
-            self.logger.debug("H")
-            self.logger.debug(h.flatten())
+        self.logger.debug("Raw")
+        self.logger.debug("C:", cost)
+        self.logger.debug("G:")
+        self.logger.debug(g.flatten())
+        self.logger.debug("H")
+        self.logger.debug(h.flatten())
 
         # Scaling of the cost function
         g *= self.scale
         h = np.diag(self.scale) @ h @ np.diag(self.scale)
 
-        if self.debug:
-            self.logger.debug("Scaled")
-            self.logger.debug("C: {cost}")
-            self.logger.debug("G:")
-            self.logger.debug(g.flatten())
-            self.logger.debug("H")
-            self.logger.debug(h.flatten())
+        self.logger.debug("Scaled")
+        self.logger.debug("C: {cost}")
+        self.logger.debug("G:")
+        self.logger.debug(g.flatten())
+        self.logger.debug("H")
+        self.logger.debug(h.flatten())
 
         if self.damping > 0.0:
             factor = self.damping * np.max(np.abs((np.diag(h))))
@@ -1143,14 +1141,13 @@ class GCMT3DInversion:
             g += factor * modelres
             h += factor * np.eye(len(self.model))
 
-        if self.debug:
-            self.logger.debug("Damped")
-            self.logger.debug("Scaled")
-            self.logger.debug("C: {cost}")
-            self.logger.debug("G:")
-            self.logger.debug(g.flatten())
-            self.logger.debug("H")
-            self.logger.debug(h.flatten())
+        self.logger.debug("Damped")
+        self.logger.debug("Scaled")
+        self.logger.debug("C: {cost}")
+        self.logger.debug("G:")
+        self.logger.debug(g.flatten())
+        self.logger.debug("H")
+        self.logger.debug(h.flatten())
 
         # Add zero trace condition
         if self.zero_trace:
@@ -1164,13 +1161,12 @@ class GCMT3DInversion:
             g[-1] = np.sum(self.scaled_model[self.zero_trace_index_array])
 
         # Show stuf when debugging
-        if self.debug:
-            self.logger.debug("Zero_traced")
-            self.logger.debug("C: {cost}")
-            self.logger.debug("G:")
-            self.logger.debug(g.flatten())
-            self.logger.debug("H")
-            self.logger.debug(h.flatten())
+        self.logger.debug("Zero_traced")
+        self.logger.debug("C: {cost}")
+        self.logger.debug("G:")
+        self.logger.debug(g.flatten())
+        self.logger.debug("H")
+        self.logger.debug(h.flatten())
 
         return cost, g, h
 
