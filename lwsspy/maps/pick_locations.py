@@ -24,7 +24,7 @@ def move_figure(f, x, y):
 
 
 # Create and show image
-fig = lpy.pz_figure()
+fig = pz_figure()
 X, Y, dx, dy = fig.canvas.manager.window.geometry().getRect()
 ax = plt.axes()
 plt.imshow(im)
@@ -41,6 +41,6 @@ zax = plt.axes()
 zax.imshow(im)
 zax.set_xlim((xc - xwin, xc + xwin))
 zax.set_ylim((yc + ywin, yc - ywin))
-PZ = lpy.PlotZoom(ax, zax, xc, yc, xwin, ywin)
+PZ = PlotZoom(ax, zax, xc, yc, xwin, ywin)
 PZ.connect()
 plt.show(block=False)

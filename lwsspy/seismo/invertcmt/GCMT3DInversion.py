@@ -185,9 +185,6 @@ class GCMT3DInversion:
         # Initialize
         self.init()
 
-        # Fix process dict
-        self.adapt_processdict()
-
         # Set iteration number
         self.iteration = 0
 
@@ -221,7 +218,7 @@ class GCMT3DInversion:
 
     def __setup_logger__(self):
         # create logger
-        self.logger = logging.getLogger("GCMT3D")
+        self.logger = logging.getLogger(f"GCMT3D-{self.cmtsource.eventname}")
         self.logger.setLevel(self.loglevel)
         self.logger.handlers = []
 
@@ -249,7 +246,9 @@ class GCMT3DInversion:
         self.logger.handler_set = True
 
         # Starting the log
-        lpy.log_bar("GCMT3D LOG", plogger=self.logger.info)
+        lpy.log_bar(
+            f"GCMT3D LOG: {self.cmtsource.eventname}",
+            plogger=self.logger.info)
 
     def adapt_processdict(self):
 
@@ -306,10 +305,18 @@ class GCMT3DInversion:
 
         # Initialize directory
         self.__initialize_dir__()
+
+        # Set up the Logger, so that progress is monitored
         self.__setup_logger__()
         lpy.log_section(
             "Setting up the directories and Waveform dicts",
             plogger=self.logger.info)
+
+        # Fix process dict
+        self.adapt_processdict()
+
+        # This has to happen after the processdict is adapted since the
+        # process dict is used to create the dictionaries
         self.__initialize_waveform_dictionaries__()
 
         # Get observed data and process data
