@@ -1113,7 +1113,7 @@ class GCMT3DInversion:
         g, h = self.__compute_gradient_and_hessian__()
 
         self.logger.debug("Raw")
-        self.logger.debug("C:", cost)
+        self.logger.debug(f"C: {cost}")
         self.logger.debug("G:")
         self.logger.debug(g.flatten())
         self.logger.debug("H")
@@ -1132,9 +1132,9 @@ class GCMT3DInversion:
 
         if self.damping > 0.0:
             factor = self.damping * np.max(np.abs((np.diag(h))))
-            self.logger.debug("f: {factor}")
+            self.logger.debug(f"f: {factor}")
             modelres = self.scaled_model - self.init_scaled_model
-            self.logger.debug(f"Model Residual: {modelres.flatten()}", )
+            self.logger.debug(f"Model Residual: {modelres.flatten()}")
             self.logger.debug(f"Cost Before: {cost}")
             # cost += factor/2 * np.sum(modelres**2)
             self.logger.debug(f"Cost After: {cost}")
@@ -1143,7 +1143,7 @@ class GCMT3DInversion:
 
         self.logger.debug("Damped")
         self.logger.debug("Scaled")
-        self.logger.debug("C: {cost}")
+        self.logger.debug(f"C: {cost}")
         self.logger.debug("G:")
         self.logger.debug(g.flatten())
         self.logger.debug("H")
@@ -1162,7 +1162,7 @@ class GCMT3DInversion:
 
         # Show stuf when debugging
         self.logger.debug("Zero_traced")
-        self.logger.debug("C: {cost}")
+        self.logger.debug(f"C: {cost}")
         self.logger.debug("G:")
         self.logger.debug(g.flatten())
         self.logger.debug("H")
