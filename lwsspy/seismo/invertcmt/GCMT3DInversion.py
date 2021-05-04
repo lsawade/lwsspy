@@ -835,6 +835,9 @@ class GCMT3DInversion:
 
     def __window__(self):
 
+        # Debug flag
+        debug = True if self.loglevel >= 20 else False
+
         for _wtype in self.processdict.keys():
             lpy.log_action(f"Windowing {_wtype}", plogger=self.logger.info)
 
@@ -845,7 +848,7 @@ class GCMT3DInversion:
                     station=self.stations,
                     event=self.xml_event,
                     config_dict=window_dict,
-                    _verbose=self.debug
+                    _verbose=debug
                 )
 
                 # Serial or Multiprocessing
