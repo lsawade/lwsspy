@@ -1178,7 +1178,7 @@ class GCMT3DInversion:
             cgh = lpy.CostGradHess(
                 data=self.data_dict[_wtype],
                 synt=self.synt_dict[_wtype]["synt"],
-                verbose=self.debug,
+                verbose=True if self.loglevel >= 20 else False,
                 normalize=self.normalize,
                 weight=self.weighting)
             cost += cgh.cost() * self.processdict[_wtype]["weight"]
@@ -1192,7 +1192,7 @@ class GCMT3DInversion:
             cgh = lpy.CostGradHess(
                 data=self.data_dict[_wtype],
                 synt=self.synt_dict[_wtype]["synt"],
-                verbose=self.debug,
+                verbose=True if self.loglevel >= 20 else False,
                 normalize=self.normalize,
                 weight=False)
             residuals[_wtype] = cgh.residuals()
@@ -1217,7 +1217,7 @@ class GCMT3DInversion:
                 data=self.data_dict[_wtype],
                 synt=self.synt_dict[_wtype]["synt"],
                 dsyn=dsyn,
-                verbose=self.debug,
+                verbose=True if self.loglevel >= 20 else False,
                 normalize=self.normalize,
                 weight=self.weighting)
 
@@ -1242,7 +1242,7 @@ class GCMT3DInversion:
                 data=self.data_dict[_wtype],
                 synt=self.synt_dict[_wtype]["synt"],
                 dsyn=dsyn,
-                verbose=self.debug,
+                verbose=True if self.loglevel >= 20 else False,
                 normalize=self.normalize,
                 weight=self.weighting)
 
