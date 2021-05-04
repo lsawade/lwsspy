@@ -1132,7 +1132,7 @@ class GCMT3DInversion:
 
         if self.damping > 0.0:
             factor = self.damping * np.max(np.abs((np.diag(h))))
-            self.logger.debug("f", factor)
+            self.logger.debug("f: {factor}")
             modelres = self.scaled_model - self.init_scaled_model
             self.logger.debug(f"Model Residual: {modelres.flatten()}", )
             self.logger.debug(f"Cost Before: {cost}")
