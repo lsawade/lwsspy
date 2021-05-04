@@ -280,8 +280,8 @@ class GCMT3DInversion:
 
                 # Adjust trace length depending on the duration
                 # given to the class
-                if self.processdict[_wave]['process']['endtime'] > self.duration:
-                    self.processdict[_wave]['process']['endtime'] = self.duration
+                if self.processdict[_wave]['process']['relative_endtime'] > self.duration:
+                    self.processdict[_wave]['process']['relative_endtime'] = self.duration
 
                 # Adjust windowing config
                 for _windict in self.processdict[_wave]["window"]:
