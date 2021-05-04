@@ -278,6 +278,11 @@ class GCMT3DInversion:
                 self.processdict[_wave]['process']['pre_filt'] = \
                     [1.0/x for x in _process_dict["filter"]]
 
+                # Adjust trace length depending on the duration
+                # given to the class
+                if self.processdict[_wave]['process']['endtime'] > self.duration:
+                    self.processdict[_wave]['process']['endtime'] = self.duration
+
                 # Adjust windowing config
                 for _windict in self.processdict[_wave]["window"]:
                     _windict["config"]["min_period"] = _process_dict["filter"][2]
