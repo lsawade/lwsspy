@@ -84,7 +84,7 @@ def bin():
                         help='list of locations, e.g. "BH*,HHZ,HHN" ',
                         default="BH*", required=False, type=str or None)
     parser.add_argument('-P', '--providers', dest='providers',
-                        help='list of providers, e.g. "IRIS,ORFEUS" ',
+                        help='list of providers, e.g. "IRIS ORFEUS" ',
                         default=["IRIS"], required=False, type=list or None)
 
     args = parser.parse_args()

@@ -63,21 +63,9 @@ nosimpars = ["time_shift", "half_duration"]
 mt_params = ["m_rr", "m_tt", "m_pp", "m_rt", "m_rp", "m_tp"]
 
 pardict = dict(
-    # m_rr=dict(scale=None, pert=1e23),
-    # m_tt=dict(scale=None, pert=1e23),
-    # m_pp=dict(scale=None, pert=1e23),
-    # m_rt=dict(scale=None, pert=1e23),
-    # m_rp=dict(scale=None, pert=1e23),
-    # m_tp=dict(scale=None, pert=1e23),
-    # latitude=dict(scale=1.0, pert=None),
-    # longitude=dict(scale=1.0, pert=None),
     time_shift=dict(scale=1.0, pert=None),
     depth_in_m=dict(scale=1000.0, pert=None)
 )
-# pardict = dict(
-#     depth_in_m=dict(scale=1000.0, pert=None),
-#     time_shift=dict(scale=1.0, pert=None)
-# )
 
 
 class GCMT3DInversion:
@@ -1131,7 +1119,7 @@ class GCMT3DInversion:
         h = np.diag(self.scale) @ h @ np.diag(self.scale)
 
         self.logger.debug("Scaled")
-        self.logger.debug("C: {cost}")
+        self.logger.debug(f"C: {cost}")
         self.logger.debug("G:")
         self.logger.debug(g.flatten())
         self.logger.debug("H")
@@ -1683,12 +1671,25 @@ def bin():
     event = sys.argv[1]
 
     # Inputs
-    database = "/gpfs/alpine/geo111/scratch/lsawade/testdatabase"
+    database = "/gpfs/alpine/geo111/scratch/lsawade/testdatabase_mt_loc_cmt"
     specfemdir = "/gpfs/alpine/geo111/scratch/lsawade/SpecfemMagic/specfem3d_globe"
     launch_method = "jsrun -n 6 -a 4 -c 4 -g 1"
 
+    pardict = dict(
+        m_rr=dict(scale=None, pert=1e23),
+        m_tt=dict(scale=None, pert=1e23),
+        m_pp=dict(scale=None, pert=1e23),
+        m_rt=dict(scale=None, pert=1e23),
+        m_rp=dict(scale=None, pert=1e23),
+        m_tp=dict(scale=None, pert=1e23),
+        latitude=dict(scale=1.0, pert=None),
+        longitude=dict(scale=1.0, pert=None),
+        time_shift=dict(scale=1.0, pert=None),
+        depth_in_m=dict(scale=1000.0, pert=None)
+    )
+
     gcmt3d = GCMT3DInversion(event, database, specfemdir, pardict=pardict,
-                             download_data=True, zero_trace=False,
+                             download_data=True, zero_trace=True,
                              duration=7200, overwrite=False,
                              launch_method=launch_method, damping=0.0001)
     # gcmt3d.init()
@@ -1712,7 +1713,9 @@ def bin():
         optim_gn.niter_max = max_iter
         optim_gn.nls_max = max_nls
         optim_gn.alpha = 1.0
-        optim_gn.stopping_criterion = 9.0e-1
+        optim_gn.stopping_criterion = 1.0e-2
+        optim_gn.stopping_criterion_cost_change = 1.0e-3
+        optim_gn.stopping_criterion_model = 1.0e-4
 
         # Run optimization
         with lpy.Timer(plogger=gcmt3d.logger.info):
@@ -1732,7 +1735,7 @@ def bin():
     lpy.plot_model_history(
         optim_list,
         list(pardict.keys()),  # "BFGS-R" "BFGS",
-        outfile=f"{gcmt3d.cmtdir}/InversionHistory_2params.pdf")
+        outfile=f"{gcmt3d.cmtdir}/InversionHistory.pdf")
     lpy.plot_optimization(
         optim_list,
         outfile=f"{gcmt3d.cmtdir}/misfit_reduction_history.pdf")

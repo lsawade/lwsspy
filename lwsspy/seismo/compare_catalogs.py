@@ -1,3 +1,6 @@
+import os
+from typing import Optional
+import lwsspy as lpy
 from copy import deepcopy
 import numpy as np
 import matplotlib.pyplot as plt
@@ -184,7 +187,11 @@ class CompareCatalogs:
         plt.xlabel("Depth Change [km]")
         plt.ylabel("Depth [km]")
 
-    def plot_summary(self):
+    def plot_summary(self, outfile: Optional[str] = None):
+
+        if outfile is not None:
+            backend = plt.get_backend()
+            plt.switch_backend('pdf')
 
         # Create figure handle
         fig = plt.figure(figsize=(11, 6))
@@ -242,6 +249,10 @@ class CompareCatalogs:
         plt.xlabel("Depth Change [km]")
         plt.ylabel("N", rotation=0, horizontalalignment='right')
         plot_label(ax, 'f)', location=6, box=False)
+
+        if outfile is not None:
+            plt.savefig(outfile)
+            plt.switch_backend(backend)
 
     def plot_histogram(self, ddata, n_bins, facecolor=(0.7, 0.2, 0.2),
                        alpha=1, chi=False, wmin=None, statsleft: bool = False,
@@ -435,3 +446,50 @@ class CompareCatalogs:
         return CompareCatalogs(CMTCatalog(oldlist), CMTCatalog(newlist),
                                oldlabel=self.oldlabel, newlabel=self.newlabel,
                                nbins=self.nbins)
+
+
+def bin():
+
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-o', '--old', dest='old',
+                        help='Old cmt solutions', nargs='+',
+                        required=True, type=str)
+    parser.add_argument('-n', '--new', dest='new',
+                        help='New cmt solutions', nargs='+',
+                        required=True, type=str)
+    parser.add_argument('-d', '--outdir', dest='outdir',
+                        help='Directory to place outputs in',
+                        type=str, default='.')
+    parser.add_argument('-w', '--write-cats', dest='write',
+                        help='Write catalogs to file', action='store_true',
+                        default=False)
+    parser.add_argument('-ol', '--old-label', dest='oldlabel',
+                        help='Old label',
+                        required=True, type=str or None)
+    parser.add_argument('-nl', '--new-label', dest='newlabel',
+                        help='New label',
+                        required=True, type=str or None)
+    args = parser.parse_args()
+
+    # Get catalogs
+    old = lpy.CMTCatalog.from_file_list(args.old)
+    new = lpy.CMTCatalog.from_file_list(args.new)
+
+    # Get overlaps
+    ocat, ncat = old.check_ids(new)
+
+    # Writing
+    if args.write:
+        ocat.save(os.path.join(args.outdir, args.oldlabel + ".pkl"))
+        ncat.save(os.path.join(args.outdir, args.newlabel + ".pkl"))
+
+    # Compare Catalog
+    CC = lpy.CompareCatalogs(old=ocat, new=ncat,
+                             oldlabel=args.oldlabel, newlabel=args.newlabel,
+                             nbins=25)
+
+    # Comparison figures
+    CC.plot_summary(outfile=os.path.join(
+        args.outdir, "catalog_comparison.pdf"))
