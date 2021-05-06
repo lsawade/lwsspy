@@ -1,14 +1,28 @@
 import os
 import matplotlib.pyplot as plt
 import numpy as np
+import logging
 
 # Internal
+import lwsspy as lpy
 from lwsspy import DOCFIGURES  # Location to store figure
 from lwsspy import updaterc    # Makes figure pretty in my opinion
 from lwsspy import Optimization
 from lwsspy import plot_model_history
 from lwsspy import plot_optimization
+
 updaterc()
+
+# create logger
+logger = logging.getLogger(f"Optimizer")
+logger.setLevel(logging.DEBUG)
+logger.handlers = []
+logger.propagate = False
+formatter = lpy.CustomFormatter()
+sh = logging.StreamHandler()
+sh.setLevel(logging.DEBUG)
+sh.setFormatter(formatter)
+logger.addHandler(sh)
 
 
 def rosenbrock(r):
@@ -80,8 +94,9 @@ niter = 100
 nls = 20
 
 # Prepare optim bfgs
-print(50 * "*", " BFGS ", 54 * "*")
+logger.info(50 * "*", " BFGS ", 54 * "*")
 optim = Optimization("bfgs")
+optim.logger = logger.info
 optim.compute_cost = rosenbrock
 optim.compute_gradient = rosenbrock_prime
 optim.apply_preconditioner = rosenbrock_preco
@@ -94,6 +109,7 @@ optim_bfgs = optim.solve(optim, model)
 
 # BFGS preco
 optim = Optimization("bfgs")
+optim.logger = logger.info
 optim.compute_cost = rosenbrock
 optim.compute_gradient = rosenbrock_prime
 optim.apply_preconditioner = rosenbrock_preco
@@ -104,9 +120,10 @@ optim.stopping_criterion = 1e-10
 optim.n = len(model)
 optim_pbfgs = optim.solve(optim, model)
 
-print(50 * "*", " Steepest ", 50 * "*")
+logger.info(50 * "*", " Steepest ", 50 * "*")
 # Prepare optim steepest
 optim = Optimization("steepest")
+optim.logger = logger.info
 optim.compute_cost = rosenbrock
 optim.compute_gradient = rosenbrock_prime
 optim.apply_preconditioner = rosenbrock_preco
@@ -119,6 +136,7 @@ optim_step = optim.solve(optim, model)
 
 # Steepest preco
 optim = Optimization("steepest")
+optim.logger = logger.info
 optim.compute_cost = rosenbrock
 optim.compute_gradient = rosenbrock_prime
 optim.apply_preconditioner = rosenbrock_preco_steepest
@@ -130,9 +148,10 @@ optim.n = len(model)
 optim.alpha = 1
 optim_pstep = optim.solve(optim, model)
 
-print(50 * "*", " NLCG ", 54 * "*")
+logger.info(50 * "*", " NLCG ", 54 * "*")
 # Prepare optim nlcg
 optim = Optimization("nlcg")
+optim.logger = logger.info
 optim.compute_cost = rosenbrock
 optim.compute_gradient = rosenbrock_prime
 optim.apply_preconditioner = rosenbrock_preco
@@ -145,6 +164,7 @@ optim_nlcg = optim.solve(optim, model)
 
 # Steepest preco
 optim = Optimization("nlcg")
+optim.logger = logger.info
 optim.compute_cost = rosenbrock
 optim.compute_gradient = rosenbrock_prime
 optim.apply_preconditioner = rosenbrock_preco
@@ -156,8 +176,9 @@ optim.n = len(model)
 optim_pnlcg = optim.solve(optim, model)
 
 # Gauss-Newton
-print(50 * "*", " Gauss-Newton ", 50 * "*")
+logger.info(50 * "*", " Gauss-Newton ", 50 * "*")
 optim = Optimization("gn")
+optim.logger = logger.info
 optim.compute_cost_and_grad_and_hess = compute_cost_and_grad_and_hess
 optim.is_preco = False
 optim.niter_max = niter

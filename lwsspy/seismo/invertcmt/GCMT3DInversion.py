@@ -1725,18 +1725,23 @@ def bin():
                            plogger=gcmt3d.logger.info)
 
         # Update model and write model
-        gcmt3d.__update_cmt__(optim_out.model)
+        if gcmt3d.zero_trace:
+            gcmt3d.__update_cmt__(optim_out.model[:-1])
+        else:
+            gcmt3d.__update_cmt__(optim_out.model)
+
+        # Write model to file
         gcmt3d.cmt_out.write_CMTSOLUTION_file(
-            f"{gcmt3d.cmtdir}/{gcmt3d.cmt_out.eventname}_GN")
+            f"{gcmt3d.cmtdir}/{gcmt3d.cmt_out.eventname}_gcmt3d")
 
         optim_list.append(deepcopy(optim_out))
 
     # # Write PDF
     plt.switch_backend("pdf")
-    lpy.plot_model_history(
-        optim_list,
-        list(pardict.keys()),  # "BFGS-R" "BFGS",
-        outfile=f"{gcmt3d.cmtdir}/InversionHistory.pdf")
+    # lpy.plot_model_history(
+    #     optim_list,
+    #     list(pardict.keys()),  # "BFGS-R" "BFGS",
+    #     outfile=f"{gcmt3d.cmtdir}/InversionHistory.pdf")
     lpy.plot_optimization(
         optim_list,
         outfile=f"{gcmt3d.cmtdir}/misfit_reduction_history.pdf")

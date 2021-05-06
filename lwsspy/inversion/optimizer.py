@@ -130,7 +130,8 @@ def Solve_Optimisation_Problem(optim, model):
     # optim.store_grad_and_model = store_grad_and_model  # could be overwritten
 
     # Perform optimization
-    optim.logger(f"\nModel: {optim.model} -- Grad: {optim.grad}\n")
+    optim.logger(f"    Model: {optim.model}")
+    optim.logger(f"    Grad:  {optim.grad}")
 
     # Start iteration.
     for _iter in range(optim.niter_max):
@@ -169,7 +170,8 @@ def Solve_Optimisation_Problem(optim, model):
         # Check stopping criteria
         if (np.abs(optim.fcost - optim.fcost_prev)/optim.fcost_ini
                 < optim.stopping_criterion_cost_change):
-            optim.logger("Cost function not decreasing enough to justify iteration.")
+            optim.logger(
+                "Cost function not decreasing enough to justify iteration.")
             # Update the iteration number otherwise the previous one is overwritten
             optim.current_iter = _iter + 1
             optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
@@ -347,9 +349,9 @@ def perform_linesearch(optim):
             optim.grad_new = optim.compute_gradient(optim.model_new)
 
         optim.logger(
-            f"\nils: {ils} -- "
+            f"    ils: {ils} -- "
             f"f/fo={optim.fcost_new/optim.fcost_ini:5.4e} -- "
-            f"model: {optim.model_new} -- alpha: {optim.alpha}\n")
+            f"model: {optim.model_new} -- alpha: {optim.alpha}")
 
         # Safeguard check for inf and nans...
         if np.isnan(optim.fcost_new) or np.isinf(optim.fcost_new):
@@ -372,10 +374,10 @@ def perform_linesearch(optim):
 
         if (optim.w1 is True) and (optim.w2 is True):  # both are satisfied, then terminate
             optim.logger(
-                f"\niter = {optim.current_iter}, ",
+                f"iter = {optim.current_iter}, "
                 f"f/fo={optim.fcost_new/optim.fcost_ini:5.4e}, "
                 f"nls = {ils}, wolfe1 = {optim.w1} wolfe2 = {optim.w2}, "
-                f"a={optim.alpha}, al={optim.al}, ar={optim.ar}\n")
+                f"a={optim.alpha}, al={optim.al}, ar={optim.ar}")
             break
 
         if optim.w1 is False:               # not a sufficient decrease, we've been too far
