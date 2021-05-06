@@ -117,8 +117,6 @@ def Solve_Optimisation_Problem(optim, model):
         # else
         #    optim.alpha = optim.perc; % * max(abs.(optim.model));
         #
-    print(optim.niter_max)
-    print(optim.nb_mem)
     if (optim.nb_mem < 1):
         optim.nb_mem = optim.niter_max  # by default
 
@@ -132,7 +130,7 @@ def Solve_Optimisation_Problem(optim, model):
     # optim.store_grad_and_model = store_grad_and_model  # could be overwritten
 
     # Perform optimization
-    print(f"\nModel: {optim.model} -- Grad: {optim.grad}\n")
+    optim.logger(f"\nModel: {optim.model} -- Grad: {optim.grad}\n")
 
     # Start iteration.
     for _iter in range(optim.niter_max):
@@ -171,14 +169,14 @@ def Solve_Optimisation_Problem(optim, model):
         # Check stopping criteria
         if (np.abs(optim.fcost - optim.fcost_prev)/optim.fcost_ini
                 < optim.stopping_criterion_cost_change):
-            print("Cost function not decreasing enough to justify iteration.")
+            optim.logger("Cost function not decreasing enough to justify iteration.")
             # Update the iteration number otherwise the previous one is overwritten
             optim.current_iter = _iter + 1
             optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
             optim.save_model_and_gradient(optim)
             break
         elif (optim.fcost/optim.fcost_ini < optim.stopping_criterion):
-            print("Optimization algorithm has converged.")
+            optim.logger("Optimization algorithm has converged.")
             # Update the iteration number otherwise the previous one is overwritten
             optim.current_iter = _iter + 1
             optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
@@ -186,7 +184,7 @@ def Solve_Optimisation_Problem(optim, model):
             break
         elif np.max(np.abs((optim.alpha * optim.descent)/optim.model_ini)) \
                 < optim.stopping_criterion_model:
-            print("Model is not updating enough anymore.")
+            optim.logger("Model is not updating enough anymore.")
             # Update the iteration number otherwise the previous one is overwritten
             optim.current_iter = _iter + 1
             optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
@@ -208,7 +206,6 @@ def get_steepest_descent_direction(optim):
     if (optim.is_preco is True):
         optim.norm_grad = norm_l2(optim.grad)
         optim.descent = -optim.apply_preconditioner(optim.grad)
-        print(optim.descent)
         optim.norm_desc = norm_l2(optim.descent)
         optim.descent = optim.descent * optim.norm_grad / optim.norm_desc
     else:
@@ -349,7 +346,7 @@ def perform_linesearch(optim):
             optim.fcost_new = optim.compute_cost(optim.model_new)
             optim.grad_new = optim.compute_gradient(optim.model_new)
 
-        print(
+        optim.logger(
             f"\nils: {ils} -- "
             f"f/fo={optim.fcost_new/optim.fcost_ini:5.4e} -- "
             f"model: {optim.model_new} -- alpha: {optim.alpha}\n")
@@ -374,7 +371,7 @@ def perform_linesearch(optim):
             # error('Not a descent direction... STOP');
 
         if (optim.w1 is True) and (optim.w2 is True):  # both are satisfied, then terminate
-            print(
+            optim.logger(
                 f"\niter = {optim.current_iter}, ",
                 f"f/fo={optim.fcost_new/optim.fcost_ini:5.4e}, "
                 f"nls = {ils}, wolfe1 = {optim.w1} wolfe2 = {optim.w2}, "
@@ -393,7 +390,7 @@ def perform_linesearch(optim):
 
     # Check linesearch
     if ils == (optim.nls_max - 1):  # and optim.w1== False and optim.w2 == False)
-        print("Linesearch ended without finding good model candidate.")
+        optim.logger("Linesearch ended without finding good model candidate.")
         optim.flag = "fail"
 
 
@@ -485,7 +482,6 @@ def polak_ribiere(optim):
     xtx = scalar_product(optim.grad, dgrad)
     xtxp = scalar_product(optim.grad_prev, optim.grad_prev)
     optim.beta = np.max(0, xtx / xtxp)
-    print(optim.beta)
     # pause
 
 
@@ -529,6 +525,8 @@ class Optimization:
         gsave: list = [],
         msave: list = [],
         nb_mem: int = 0,
+        # Logger to make your life more beautiful
+        logger: callable = print,
         # Routine
         compute_cost: callable = NOP,
         compute_gradient: callable = NOP,
@@ -671,6 +669,9 @@ class Optimization:
         self.nb_mem = nb_mem  # by default
         self.gsave = gsave
         self.msave = msave
+
+        # Logger
+        self.logger = logger
 
         # Routine
         self.compute_cost = compute_cost

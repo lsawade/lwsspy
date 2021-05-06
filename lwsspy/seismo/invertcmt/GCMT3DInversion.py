@@ -1707,6 +1707,7 @@ def bin():
         # Gauss Newton Optimization Structure
         lpy.log_bar("GN", plogger=gcmt3d.logger.info)
         optim_gn = lpy.Optimization("gn")
+        optim_gn.logger = gcmt3d.logger.info
         optim_gn.compute_cost_and_grad_and_hess = \
             gcmt3d.compute_cost_gradient_hessian
         optim_gn.is_preco = False
