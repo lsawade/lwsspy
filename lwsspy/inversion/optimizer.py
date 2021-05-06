@@ -117,7 +117,8 @@ def Solve_Optimisation_Problem(optim, model):
         # else
         #    optim.alpha = optim.perc; % * max(abs.(optim.model));
         #
-
+    print(optim.niter_max)
+    print(optim.nb_mem)
     if (optim.nb_mem < 1):
         optim.nb_mem = optim.niter_max  # by default
 
@@ -161,13 +162,22 @@ def Solve_Optimisation_Problem(optim, model):
             optim.grad_prev = optim.grad
 
         # If linesearch successful update informations
+        optim.fcost_prev = optim.fcost
         optim.fcost = optim.fcost_new
         optim.model = optim.model_new
         optim.grad = optim.grad_new
         optim.q = optim.qnew
 
         # Check stopping criteria
-        if ((optim.fcost / optim.fcost_ini) < optim.stopping_criterion):
+        if (np.abs(optim.fcost - optim.fcost_prev)/optim.fcost_ini
+                < optim.stopping_criterion_cost_change):
+            print("Cost function not decreasing enough to justify iteration.")
+            # Update the iteration number otherwise the previous one is overwritten
+            optim.current_iter = _iter + 1
+            optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
+            optim.save_model_and_gradient(optim)
+            break
+        elif (optim.fcost/optim.fcost_ini < optim.stopping_criterion):
             print("Optimization algorithm has converged.")
             # Update the iteration number otherwise the previous one is overwritten
             optim.current_iter = _iter + 1
@@ -486,10 +496,12 @@ class Optimization:
         otype: str = 'bfgs',
         fcost_init: float = 0.0,
         fcost: float = 0.0,
+        fcost_prev: float = 0.0,
         norm_grad_init: float = 0.0,
         norm_grad: float = 0.0,
         stopping_criterion: float = 1e-10,
-        stopping_criterion_model: float = 1e-3,
+        stopping_criterion_cost_change: float = 1e-10,
+        stopping_criterion_model: float = 1e-6,
         niter_max: int = 50,
         qk: float = 0.0,
         q: float = 0.0,
@@ -516,6 +528,7 @@ class Optimization:
         # For BFGS
         gsave: list = [],
         msave: list = [],
+        nb_mem: int = 0,
         # Routine
         compute_cost: callable = NOP,
         compute_gradient: callable = NOP,
@@ -622,9 +635,11 @@ class Optimization:
         self.type = otype
         self.fcost_init = fcost_init
         self.fcost = fcost
+        self.fcost_prev = fcost
         self.norm_grad_init = norm_grad_init
         self.norm_grad = norm_grad
         self.stopping_criterion = stopping_criterion
+        self.stopping_criterion_cost_change = stopping_criterion_cost_change
         self.stopping_criterion_model = stopping_criterion_model
         self.niter_max = niter_max
         self.qk = qk
@@ -653,7 +668,7 @@ class Optimization:
         self.factor = factor
 
         # For BFGS
-        self.nb_mem = self.niter_max  # by default
+        self.nb_mem = nb_mem  # by default
         self.gsave = gsave
         self.msave = msave
 
