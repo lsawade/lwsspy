@@ -1692,7 +1692,7 @@ def bin():
     gcmt3d = GCMT3DInversion(event, database, specfemdir, pardict=pardict,
                              download_data=True, zero_trace=True,
                              duration=7200, overwrite=False,
-                             launch_method=launch_method, damping=0.0001)
+                             launch_method=launch_method, damping=damping)
     # gcmt3d.init()
     gcmt3d.process_data()
     gcmt3d.get_windows()
