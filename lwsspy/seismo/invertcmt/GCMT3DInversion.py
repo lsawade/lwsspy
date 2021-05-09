@@ -1669,9 +1669,10 @@ def bin():
 
     import sys
     event = sys.argv[1]
+    damping = float(sys.argv[1])
 
     # Inputs
-    database = "/gpfs/alpine/geo111/scratch/lsawade/testdatabase_mt_loc_cmt"
+    database = f"/gpfs/alpine/geo111/scratch/lsawade/testdatabase_{damping}"
     specfemdir = "/gpfs/alpine/geo111/scratch/lsawade/SpecfemMagic/specfem3d_globe"
     launch_method = "jsrun -n 6 -a 4 -c 4 -g 1"
 
