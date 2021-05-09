@@ -122,6 +122,7 @@ if "-m" not in sys.argv:
     from .plot_util.remove_ticklabels import remove_ticklabels_topright  # noqa
     from .plot_util.rgb2dec import rgb_to_dec  # noqa
     from .plot_util.right_align_legend import right_align_legend  # noqa
+    from .plot_util.scatter_hist import scatter_hist  # noqa
     from .plot_util.smooth_nan_image import smooth_nan_image  # noqa
     from .plot_util.trendline import Trendline  # noqa
     from .plot_util.updaterc import updaterc  # noqa

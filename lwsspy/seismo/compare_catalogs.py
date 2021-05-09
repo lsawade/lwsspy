@@ -254,6 +254,43 @@ class CompareCatalogs:
             plt.savefig(outfile)
             plt.switch_backend(backend)
 
+    def plot_depth_v_eps_nu(self, outfile=None):
+
+        if outfile is not None:
+            backend = plt.get_backend()
+            plt.switch_backend('pdf')
+            plt.figure(figsize=(4.5, 3))
+
+        axscatter, _, _ = lpy.scatter_hist(
+            [self.oeps_nu[:, 0], self.neps_nu[:, 0]],
+            [self.odepth, self.ndepth],
+            self.nbins,
+            label=[self.oldlabel, self.newlabel],
+            histc=[(0.4, 0.4, 1.0), (1.0, 0.4, 0.4)],
+            fraction=0.85, ylog=True,
+            mult=True)
+        axscatter.invert_yaxis()
+        axscatter.set_xlim((-0.5, 0.5))
+        ylim = axscatter.get_ylim()
+        axscatter.set_ylim(
+            (ylim[0], 0.95*np.min((np.min(self.ndepth), np.min(self.odepth)))))
+        axscatter.set_yscale('log')
+
+        # Plot clvd labels
+        plot_label(axscatter, "CLVD-", location=11, box=False,
+                   fontdict=dict(fontsize='small'))
+        plot_label(axscatter, "CLVD+", location=10, box=False,
+                   fontdict=dict(fontsize='small'))
+        plot_label(axscatter, "DC", location=16, box=False,
+                   fontdict=dict(fontsize='small'))
+        axscatter.tick_params(labelbottom=False)
+        plt.ylabel('Depth [km]')
+
+        if outfile is not None:
+            plt.savefig(outfile)
+            plt.switch_backend(backend)
+            plt.close()
+
     def plot_histogram(self, ddata, n_bins, facecolor=(0.7, 0.2, 0.2),
                        alpha=1, chi=False, wmin=None, statsleft: bool = False,
                        label: str = None, stats: bool = True,
@@ -336,10 +373,10 @@ class CompareCatalogs:
             return None
 
     def filter(self, maxdict: dict = dict(), mindict: dict = dict()):
-        """This uses two dictionaries as inputs. One dictionary for 
+        """This uses two dictionaries as inputs. One dictionary for
         maximum values and one dictionary that contains min values of the
-        elements to filter. To do that we create a dictionary containing 
-        the attributes and properties of 
+        elements to filter. To do that we create a dictionary containing
+        the attributes and properties of
         :class:``lwsspy.seismo.source.CMTSource``.
 
         List of Attributes and Properties
