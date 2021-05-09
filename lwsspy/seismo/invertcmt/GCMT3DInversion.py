@@ -1669,7 +1669,7 @@ def bin():
 
     import sys
     event = sys.argv[1]
-    damping = float(sys.argv[1])
+    damping = float(sys.argv[2])
 
     # Inputs
     database = f"/gpfs/alpine/geo111/scratch/lsawade/testdatabase_{damping}"
