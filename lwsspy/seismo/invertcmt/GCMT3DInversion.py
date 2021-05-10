@@ -1737,6 +1737,18 @@ def bin():
 
         optim_list.append(deepcopy(optim_out))
 
+    # L-Curves
+    cost = gcmt3d.__compute_cost__()
+
+    if gcmt3d.zero_trace:
+        modelnorm = np.sqrt(np.sum(optim_out.model[:-1]**2))
+    else:
+        modelnorm = np.sqrt(np.sum(optim_out.model**2))
+
+    # Save to npz file
+    np.savez(os.path.join(gcmt3d.cmtdir, "mnormvrnorm.npz"),
+             cost=cost, modelnorm=modelnorm)
+
     # # Write PDF
     plt.switch_backend("pdf")
     # lpy.plot_model_history(
