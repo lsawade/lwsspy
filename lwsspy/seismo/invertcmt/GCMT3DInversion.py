@@ -1737,17 +1737,38 @@ def bin():
 
         optim_list.append(deepcopy(optim_out))
 
-    # L-Curves
-    cost = gcmt3d.__compute_cost__()
-
+    # Stuff for L-Curves
+    # Get model related things to save
     if gcmt3d.zero_trace:
+        init_model = optim_out.model_ini[:-1]
+        model = optim_out.model[:-1]
         modelnorm = np.sqrt(np.sum(optim_out.model[:-1]**2))
+        dmnorm = np.sqrt(np.sum((optim_out.model[:-1])**2))
+        modelhistory = optim_out.msave[:-1, :]
+
     else:
+        init_model = optim_out.model_ini
+        model = optim_out.model
         modelnorm = np.sqrt(np.sum(optim_out.model**2))
+        dmnorm = np.sqrt(np.sum(optim_out.model**2))
+        modelhistory = optim_out.msave
+
+    cost = optim_out.fcost
+    fcost_hist = optim_out.fcost_hist
+    fcost_init = optim_out.fcost_init
 
     # Save to npz file
-    np.savez(os.path.join(gcmt3d.cmtdir, "mnormvrnorm.npz"),
-             cost=cost, modelnorm=modelnorm)
+    np.savez(
+        os.path.join(gcmt3d.cmtdir, "mnormvrnorm.npz"),
+        cost=cost,
+        init_model=init_model,
+        modelnorm=modelnorm,
+        model=model,
+        dmnorm=dmnorm,
+        modelhistory=modelhistory,
+        fcost_hist=fcost_hist,
+        fcost_init=fcost_init
+    )
 
     # # Write PDF
     plt.switch_backend("pdf")
