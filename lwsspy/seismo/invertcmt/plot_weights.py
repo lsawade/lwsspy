@@ -14,10 +14,10 @@ def plot_single_weight_set(ax, lat, lon, weights, nomean=False):
 
     # Plot nonnormalized weights
     if nomean:
-        norm = LogNorm(vmin=min(weights), vmax=max(weights))
+        norm = LogNorm(vmin=np.min(weights), vmax=np.max(weights))
         cmap = "rainbow"
     else:
-        norm = lpy.MidPointLogNorm(vmin=min(weights), vmax=max(weights),
+        norm = lpy.MidPointLogNorm(vmin=np.min(weights), vmax=np.max(weights),
                                    midpoint=1.0)
         cmap = "RdBu_r"
 
@@ -108,5 +108,5 @@ def plot_weights(weights: dict):
                     lpy.plot_label(ax, _component.capitalize(),
                                    location=13, box=False, dist=0.05)
 
-        plt.suptitle(f"{_wtype.capitalize()}: {waveweight:4.2f}")
+        plt.suptitle(f"{_wtype.capitalize()}: {waveweight:6.4f}")
         plt.savefig(f"./weights_{_wtype}.pdf")
