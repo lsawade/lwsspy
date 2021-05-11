@@ -203,6 +203,8 @@ if "-m" not in sys.argv:
     from .seismo.invertcmt.plot_weights import plot_weights  # noqa
     from .seismo.invertcmt.plot_residuals import plot_residuals  # noqa
     from .seismo.invertcmt.plot_residuals import plot_residual_pkl  # noqa
+    from .seismo.invertcmt.process_classifier import filter_scaling  # noqa
+    from .seismo.invertcmt.process_classifier import ProcessParams  # noqa
 
     # Shell
     from .shell.cat import cat  # noqa
