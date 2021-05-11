@@ -1734,7 +1734,7 @@ def bin():
     # Inputs
     database = f"/gpfs/alpine/geo111/scratch/lsawade/testdatabase_{damping}"
     specfemdir = "/gpfs/alpine/geo111/scratch/lsawade/SpecfemMagic/specfem3d_globe"
-    launch_method = "jsrun -n 6 -a 4 -c 4 -g 4"
+    launch_method = "jsrun -n 24 -a 1 -c 1 -g 1"
 
     pardict = dict(
         m_rr=dict(scale=None, pert=1e23),
