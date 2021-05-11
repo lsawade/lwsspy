@@ -142,7 +142,7 @@ def Solve_Optimisation_Problem(optim, model):
         optim.current_iter = _iter
 
         # Save model
-        optim.fcost_hist.append(optim.fcost/optim.fcost_ini)
+        optim.fcost_hist.append(optim.fcost)
         optim.save_model_and_gradient(optim)
 
         # Get descent direction

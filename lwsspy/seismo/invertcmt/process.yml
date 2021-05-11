@@ -174,9 +174,9 @@ mantle:
         s2n_limit: 5.0
         s2n_limit_energy: 5.0
         window_signal_to_noise_type: amplitude
-        selection_mode: mantle_waves
-        min_surface_wave_velocity: 3.10
-        max_surface_wave_velocity: 4.20
+        selection_mode: surface_waves
+        min_surface_wave_velocity: 2.50
+        max_surface_wave_velocity: 5.00
         earth_model: ak135
         max_time_before_first_arrival: 200.0
         max_time_after_last_arrival: 400.0

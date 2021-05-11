@@ -435,6 +435,9 @@ class GCMT3DInversion:
 
         self.not_windowed_yet = False
 
+        # Copy the initial waveform dictionary
+        self.synt_dict_init = deepcopy(self.synt_dict)
+
     def __compute_weights__(self):
 
         # Computing the weights
@@ -1464,6 +1467,11 @@ class GCMT3DInversion:
                 d['CreationDate'] = datetime.datetime.today()
                 d['ModDate'] = datetime.datetime.today()
 
+    def write_windows(self):
+        pass
+        # for _wtype, _stream in self.data_dict.items()
+        #     for _tr
+
     def plot_station(self, network: str, station: str, outputdir="."):
         plt.switch_backend("pdf")
         # Get station data
@@ -1579,6 +1587,41 @@ class GCMT3DInversion:
                 d['CreationDate'] = datetime.datetime.today()
                 d['ModDate'] = datetime.datetime.today()
 
+    def plot_final_windows(self, outputdir="."):
+        plt.switch_backend("pdf")
+        for _wtype in self.processdict.keys():
+            with PdfPages(os.path.join(outputdir, f"windows_{_wtype}.pdf")) as pdf:
+                for obsd_tr in self.data_dict[_wtype]:
+                    try:
+                        synt_tr = self.synt_dict[_wtype]["synt"].select(
+                            station=obsd_tr.stats.station,
+                            network=obsd_tr.stats.network,
+                            component=obsd_tr.stats.channel[-1])[0]
+                        init_synt_tr = self.synt_dict_init[_wtype]["synt"].select(
+                            station=obsd_tr.stats.station,
+                            network=obsd_tr.stats.network,
+                            component=obsd_tr.stats.channel[-1])[0]
+                    except Exception as err:
+                        self.logger.warning(
+                            "Couldn't find corresponding synt for "
+                            f"obsd trace({obsd_tr.id}): {err}")
+                        continue
+
+                    fig = plot_seismograms(
+                        obsd_tr, init_synt_tr, synt_tr, self.cmtsource,
+                        tag=_wtype)
+                    pdf.savefig()  # saves the current figure into a pdf page
+                    plt.close(fig)
+
+                    # We can also set the file's metadata via the PdfPages object:
+                d = pdf.infodict()
+                d['Title'] = f"{_wtype.capitalize()}-Wave-PDF"
+                d['Author'] = 'Lucas Sawade'
+                d['Subject'] = 'Trace comparison in one pdf'
+                d['Keywords'] = 'seismology, moment tensor inversion'
+                d['CreationDate'] = datetime.datetime.today()
+                d['ModDate'] = datetime.datetime.today()
+
     @ staticmethod
     def __create_dir__(dir, overwrite=False):
         if os.path.exists(dir) is False:
@@ -1592,6 +1635,7 @@ class GCMT3DInversion:
 
 
 def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
+                     syntf: Union[Trace, None] = None,
                      cmtsource: Union[lpy.CMTSource, None] = None,
                      tag: Union[str, None] = None):
     station = obsd.stats.station
@@ -1609,11 +1653,16 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
         offset = obsd.stats.starttime - cmtsource.cmt_time
         if isinstance(synt, Trace):
             offset_synt = synt.stats.starttime - cmtsource.cmt_time
+        if isinstance(syntf, Trace):
+            offset_syntf = syntf.stats.starttime - cmtsource.cmt_time
 
     times = [offset + obsd.stats.delta * i for i in range(obsd.stats.npts)]
     if isinstance(synt, Trace):
         times_synt = [offset_synt + synt.stats.delta * i
                       for i in range(synt.stats.npts)]
+    if isinstance(syntf, Trace):
+        times_syntf = [offset_syntf + syntf.stats.delta * i
+                       for i in range(syntf.stats.npts)]
 
     # Figure Setup
     fig = plt.figure(figsize=(15, 5))
@@ -1621,11 +1670,16 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
     plt.subplots_adjust(left=0.03, right=0.97, top=0.95)
 
     ax1.plot(times, obsd.data, color="black", linewidth=0.75,
-             label="Observed")
+             label="Obs")
     if isinstance(synt, Trace):
         ax1.plot(times_synt, synt.data, color="red", linewidth=0.75,
-                 label="Synthetic")
+                 label="Syn")
+    if isinstance(syntf, Trace):
+        ax1.plot(times_syntf, syntf.data, color="blue", linewidth=0.75,
+                 label="New Syn")
+    scaleabsmax = 1.25*np.max(np.abs(obsd.data))
     ax1.set_xlim(times[0], times[-1])
+    ax1.set_ylim(-scaleabsmax, scaleabsmax)
     ax1.legend(loc='upper right', frameon=False, ncol=3, prop={'size': 11})
     ax1.tick_params(labelbottom=False, labeltop=False)
 
@@ -1638,12 +1692,18 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
 
     # plot envelope
     ax2 = plt.subplot(212)
-    ax2.plot(times, lpy.envelope(obsd.data), color="black",
-             linewidth=1.0, label="Observed")
+    obsenv = lpy.envelope(obsd.data)
+    ax2.plot(times, obsenv, color="black",
+             linewidth=1.0, label="Obs")
     if isinstance(synt, Trace):
         ax2.plot(times, lpy.envelope(synt.data), color="red", linewidth=1,
-                 label="Synthetic")
+                 label="Syn")
+    if isinstance(syntf, Trace):
+        ax2.plot(times, lpy.envelope(syntf.data), color="blue", linewidth=1,
+                 label="New Syn")
+    envscaleabsmax = 1.25*np.max(np.abs(obsenv))
     ax2.set_xlim(times[0], times[-1])
+    ax2.set_ylim(0, envscaleabsmax)
     ax2.set_xlabel("Time [s]", fontsize=13)
     lpy.plot_label(ax2, "Envelope", location=1, dist=0.005, box=False)
     if isinstance(synt, Trace):
@@ -1674,7 +1734,7 @@ def bin():
     # Inputs
     database = f"/gpfs/alpine/geo111/scratch/lsawade/testdatabase_{damping}"
     specfemdir = "/gpfs/alpine/geo111/scratch/lsawade/SpecfemMagic/specfem3d_globe"
-    launch_method = "jsrun -n 6 -a 4 -c 4 -g 1"
+    launch_method = "jsrun -n 6 -a 4 -c 4 -g 4"
 
     pardict = dict(
         m_rr=dict(scale=None, pert=1e23),
@@ -1745,6 +1805,7 @@ def bin():
         modelnorm = np.sqrt(np.sum(optim_out.model[:-1]**2))
         dmnorm = np.sqrt(np.sum((optim_out.model[:-1])**2))
         modelhistory = optim_out.msave[:-1, :]
+        scale = gcmt3d.scale[:-1]
 
     else:
         init_model = optim_out.model_ini
@@ -1752,14 +1813,14 @@ def bin():
         modelnorm = np.sqrt(np.sum(optim_out.model**2))
         dmnorm = np.sqrt(np.sum(optim_out.model**2))
         modelhistory = optim_out.msave
-
+        scale = gcmt3d.scale
     cost = optim_out.fcost
     fcost_hist = optim_out.fcost_hist
     fcost_init = optim_out.fcost_init
 
     # Save to npz file
     np.savez(
-        os.path.join(gcmt3d.cmtdir, "mnormvrnorm.npz"),
+        os.path.join(gcmt3d.cmtdir, "summary.npz"),
         cost=cost,
         init_model=init_model,
         modelnorm=modelnorm,
@@ -1767,7 +1828,8 @@ def bin():
         dmnorm=dmnorm,
         modelhistory=modelhistory,
         fcost_hist=fcost_hist,
-        fcost_init=fcost_init
+        fcost_init=fcost_init,
+        scale=scale
     )
 
     # # Write PDF
