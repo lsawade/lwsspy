@@ -188,6 +188,7 @@ if "-m" not in sys.argv:
     from .seismo.specfem.write_parfile import write_parfile  # noqa
     from .seismo.window.multiwindow_stream import multiwindow_stream  # noqa
     from .seismo.window.window import window_on_stream  # noqa
+    from .seismo.window.window import merge_trace_windows  # noqa
     from .seismo.window.add_tapers import add_tapers  # noqa
     from .seismo.window.stream_cost_win import stream_cost_win  # noqa
     from .seismo.window.stream_grad_frechet_win import stream_grad_frechet_win  # noqa
@@ -201,8 +202,8 @@ if "-m" not in sys.argv:
     from .seismo.invertcmt.GCMT3DInversion import GCMT3DInversion  # noqa
     from .seismo.invertcmt.plot_weights import plot_weightpickle  # noqa
     from .seismo.invertcmt.plot_weights import plot_weights  # noqa
-    from .seismo.invertcmt.plot_residuals import plot_residuals  # noqa
-    from .seismo.invertcmt.plot_residuals import plot_residual_pkl  # noqa
+    from .seismo.invertcmt.plot_measurements import plot_measurements  # noqa
+    from .seismo.invertcmt.plot_measurements import plot_measurement_pkl  # noqa
     from .seismo.invertcmt.process_classifier import filter_scaling  # noqa
     from .seismo.invertcmt.process_classifier import ProcessParams  # noqa
 
@@ -226,7 +227,7 @@ if "-m" not in sys.argv:
     # Simple Signal processing functions
     from .signal.dlna import dlna  # noqa
     from .signal.xcorr import xcorr  # noqa
-    from .signal.norm import norm1, norm2  # noqa
+    from .signal.norm import norm1, norm2, dnorm1, dnorm2  # noqa
     from .signal.power import power_l1, power_l2  # noqa
 
     # Statistics
