@@ -322,7 +322,6 @@ class GCMT3DInversion:
         self.waveformdir = os.path.join(self.datadir, "waveforms")
         self.stationdir = os.path.join(self.datadir, "stations")
         self.syntdir = os.path.join(self.cmtdir, "synt")
-        self.windows = os.path.join(self.cmtdir, "windows")
         self.logfile = os.path.join(
             self.cmtdir, self.cmtsource.eventname + ".log")
 
@@ -1313,7 +1312,7 @@ class GCMT3DInversion:
         ax = plt.subplot(144, sharey=ax)
         plt.plot(np.squeeze(dm), scaled_depths, label="Step")
         plt.legend(frameon=False, loc='upper right')
-        plt.xlabel("$\Delta$m [km]")
+        plt.xlabel("$\\Delta$m [km]")
         ax.tick_params(labelleft=False, labelright=False)
 
         plt.savefig(self.cmtdir + "/misfit_walk_depth.pdf")
@@ -1467,10 +1466,132 @@ class GCMT3DInversion:
                 d['CreationDate'] = datetime.datetime.today()
                 d['ModDate'] = datetime.datetime.today()
 
-    def write_windows(self):
-        pass
-        # for _wtype, _stream in self.data_dict.items()
-        #     for _tr
+    def write_windows(
+            self, data: dict, synt: dict, post_fix: str = None):
+
+        # Normalize by component and aximuthal weights
+        def get_measurements_and_windows(obs: Stream, syn: Stream):
+
+            windows = dict()
+
+            # Create dict to access traces
+            for _component in ["R", "T", "Z"]:
+                windows[_component] = dict()
+                windows[_component]["id"] = []
+                windows[_component]["dt"] = []
+                windows[_component]["latitude"] = []
+                windows[_component]["longitude"] = []
+                windows[_component]["distance"] = []
+                windows[_component]["azimuth"] = []
+                windows[_component]["back_azimuth"] = []
+                windows[_component]["time_shift"] = []
+                windows[_component]["max_cc_calue"] = []
+                windows[_component]["time_shift"] = []
+                windows[_component]["misfit"] = []
+                windows[_component]["dlna"] = []
+                windows[_component]["L1_Power"] = []
+                windows[_component]["L2_Power"] = []
+
+                for _tr in obs:
+                    if _tr.stats.component == _component \
+                            and "windows" in _tr.stats:
+
+                        d = _tr.data
+                        try:
+                            network, station, component = (
+                                _tr.stats.network, _tr.stats.station,
+                                _tr.stats.component)
+                            s = self.synt.select(
+                                network=network, station=station,
+                                component=component)[0].data
+                        except Exception as e:
+                            self.logger.warning(
+                                f"{network}.{station}..{component}")
+                            continue
+
+                        for win in _tr.stats.windows:
+                            # Get window data
+                            wd = d[win.left:win.right]
+                            ws = s[win.left:win.right]
+
+                            # Infos
+                            dt = _tr.stats.delta
+                            windows[_component]["id"].append(
+                                _tr.id
+                            )
+                            windows[_component]["dt"].append(
+                                dt
+                            )
+                            windows[_component]["latitude"].append(
+                                _tr.stats.latitude
+                            )
+                            windows[_component]["longitude"].append(
+                                _tr.stats.longitude
+                            )
+                            windows[_component]["distance"].append(
+                                _tr.stats.distance
+                            )
+                            windows[_component]["azimuth"].append(
+                                _tr.stats.azimuth
+                            )
+                            windows[_component]["back_azimuth"].append(
+                                _tr.stats.back_azimuth
+                            )
+
+                            # Measurements
+                            max_cc_value, nshift = lpy.xcorr(wd, ws)
+                            powerl1 = lpy.power_l1(wd, ws)
+                            powerl2 = lpy.power_l2(wd, ws)
+                            norm1 = lpy.norm1(wd, ws)
+                            norm2 = lpy.norm2(wd, ws)
+                            dlna = lpy.dlna(wd, ws)
+
+                            windows[_component]["nshift"].append(
+                                nshift
+                            )
+                            windows[_component]["time_shift"].append(
+                                nshift * dt
+                            )
+                            windows[_component]["max_cc_calue"].append(
+                                max_cc_value
+                            )
+                            windows[_component]["L1"].append(
+                                norm1
+                            )
+                            windows[_component]["L2"].append(
+                                norm2
+                            )
+                            windows[_component]["dlna"].append(
+                                dlna
+                            )
+                            windows[_component]["L1_Power"].append(
+                                powerl1
+                            )
+                            windows[_component]["L2_Power"].append(
+                                powerl2
+                            )
+
+            return windows
+
+        window_dict = dict()
+
+        for _wtype, _obs_stream in data.items():
+
+            # Get corresponding Synthetic data
+            _syn_stream = synt[_wtype]["synt"]
+
+            window_dict[_wtype] = \
+                get_measurements_and_windows(_obs_stream, _syn_stream)
+
+        # Create output file
+        filename = "measurements"
+        if post_fix is not None:
+            filename += post_fix
+        filename += ".pkl"
+
+        outfile = os.path.join(self.cmtdir, filename)
+        with open(outfile, "wb") as f:
+            cPickle.dump(window_dict, f)
 
     def plot_station(self, network: str, station: str, outputdir="."):
         plt.switch_backend("pdf")
@@ -1729,22 +1850,23 @@ def bin():
 
     import sys
     event = sys.argv[1]
-    damping = float(sys.argv[2])
+    # damping = float(sys.argv[2])
+    damping = 0.001
 
     # Inputs
-    database = f"/gpfs/alpine/geo111/scratch/lsawade/testdatabase_{damping}"
+    database = f"/gpfs/alpine/geo111/scratch/lsawade/testdatabase_windows"
     specfemdir = "/gpfs/alpine/geo111/scratch/lsawade/SpecfemMagic/specfem3d_globe"
     launch_method = "jsrun -n 24 -a 1 -c 1 -g 1"
 
     pardict = dict(
-        m_rr=dict(scale=None, pert=1e23),
-        m_tt=dict(scale=None, pert=1e23),
-        m_pp=dict(scale=None, pert=1e23),
-        m_rt=dict(scale=None, pert=1e23),
-        m_rp=dict(scale=None, pert=1e23),
-        m_tp=dict(scale=None, pert=1e23),
-        latitude=dict(scale=1.0, pert=None),
-        longitude=dict(scale=1.0, pert=None),
+        # m_rr=dict(scale=None, pert=1e23),
+        # m_tt=dict(scale=None, pert=1e23),
+        # m_pp=dict(scale=None, pert=1e23),
+        # m_rt=dict(scale=None, pert=1e23),
+        # m_rp=dict(scale=None, pert=1e23),
+        # m_tp=dict(scale=None, pert=1e23),
+        # latitude=dict(scale=1.0, pert=None),
+        # longitude=dict(scale=1.0, pert=None),
         time_shift=dict(scale=1.0, pert=None),
         depth_in_m=dict(scale=1000.0, pert=None)
     )
@@ -1805,7 +1927,12 @@ def bin():
         modelnorm = np.sqrt(np.sum(optim_out.model[:-1]**2))
         dmnorm = np.sqrt(np.sum((optim_out.model[:-1])**2))
         modelhistory = optim_out.msave[:-1, :]
+        hessianhistory = optim_out.hsave
         scale = gcmt3d.scale[:-1]
+
+        # Fix its shape
+        hessianhistory = hessianhistory.reshape(
+            (optim_out.n, optim_out.n, optim_out.nb_mem))[:-1, :-1, :]
 
     else:
         init_model = optim_out.model_ini
@@ -1813,7 +1940,9 @@ def bin():
         modelnorm = np.sqrt(np.sum(optim_out.model**2))
         dmnorm = np.sqrt(np.sum(optim_out.model**2))
         modelhistory = optim_out.msave
+        hessianhistory = optim_out.hsave
         scale = gcmt3d.scale
+
     cost = optim_out.fcost
     fcost_hist = optim_out.fcost_hist
     fcost_init = optim_out.fcost_init
@@ -1829,7 +1958,8 @@ def bin():
         modelhistory=modelhistory,
         fcost_hist=fcost_hist,
         fcost_init=fcost_init,
-        scale=scale
+        scale=scale,
+        hessianhistory=hessianhistory
     )
 
     # # Write PDF
