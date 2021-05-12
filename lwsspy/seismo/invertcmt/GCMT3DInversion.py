@@ -900,9 +900,6 @@ class GCMT3DInversion:
             if len(obs_tr.stats.windows) > 1:
                 obs_tr.stats.windows = lpy.merge_trace_windows(obs_tr, synt_tr)
 
-    def forward(self):
-        pass
-
     def optimize(self, optim: lpy.Optimization):
 
         try:
@@ -1080,6 +1077,24 @@ class GCMT3DInversion:
             [_pardir for _par, _pardir in self.synt_pardirs.items()
              if _par not in self.nosimpars])
         lpy.run_cmds_parallel(cmd_list, cwdlist=cwdlist)
+
+    def forward(self, model):
+        # Update model
+        if self.zero_trace:
+            self.model = model[:-1] * self.scale
+            self.scaled_model = model[:-1]
+        else:
+            self.model = model * self.scale
+            self.scaled_model = model
+
+        # Write sources for next iteration
+        self.__write_sources__()
+
+        # Run forward simulation
+        self.__run_forward_only__()
+
+        # Process synthetic only
+        self.process_synt()
 
     def compute_cost_gradient(self, model):
 
@@ -1928,7 +1943,7 @@ def bin():
     damping = 0.001
 
     # Inputs
-    database = f"/gpfs/alpine/geo111/scratch/lsawade/testdatabase_windows"
+    database = f"/gpfs/alpine/geo111/scratch/lsawade/testdatabase"
     specfemdir = "/gpfs/alpine/geo111/scratch/lsawade/SpecfemMagic/specfem3d_globe"
     launch_method = "jsrun -n 24 -a 1 -c 1 -g 1"
 
@@ -2035,6 +2050,17 @@ def bin():
         scale=scale,
         hessianhistory=hessianhistory
     )
+
+    # To be able to output the current model we need to go back and run one
+    # iteration with tht current model
+    gcmt3d.forward(optim_out.model)
+
+    # Then compute and save the measurements
+    gcmt3d.write_measurements(
+        gcmt3d.data_dict, gcmt3d.synt_dict_init, post_fix="before")
+    gcmt3d.write_measurements(
+        gcmt3d.data_dict, gcmt3d.synt_dict, post_fix="after")
+    gcmt3d.plot_final_windows(outputdir=gcmt3d.cmtdir)
 
     # # Write PDF
     plt.switch_backend("pdf")
