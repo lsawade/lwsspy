@@ -260,6 +260,34 @@ def window_on_stream(observed: obspy.Stream, synthetic: obspy.Stream,
     return observed
 
 
+def merge_trace_windows(obs: obspy.Trace, syn: obspy.Trace):
+    """
+    Merge overlapping windows. Will also recalculate the data fit criteria.
+    Trace needs to contain windows
+    """
+    # Sort by starttime.
+    windows = obs.stats.windows
+    windows = sorted(windows, key=lambda x: x.left)
+    nwindows = [windows.pop(0)]
+    for right_win in windows:
+        left_win = nwindows[-1]
+        if (left_win.right + 1) < right_win.left:
+            nwindows.append(right_win)
+            continue
+        left_win.right = right_win.right
+    windows = nwindows
+
+    for win in windows:
+        # Recenter windows
+        win.center = int(win.left + (win.right - win.left) / 2.0)
+        # Recalculate criteria.
+        win._calc_criteria(obs.data, syn.data)
+
+    obs.stats.windows = windows
+
+    return obs.stats.windows
+
+
 def merge_windows(observed: obspy.Stream):
     """
     Keep only location ("00", "01", etc.) with the highest number of windows.

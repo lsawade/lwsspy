@@ -867,6 +867,11 @@ class GCMT3DInversion:
                         self.synt_dict[_wtype]["synt"],
                         wrapwindowdict, nprocs=self.multiprocesses)
 
+            if len(self.processdict[_wtype]["window"]) > 1:
+                self.merge_windows(
+                    self.data_dict[_wtype],
+                    self.synt_dict[_wtype]["synt"])
+
             # After each trace has windows attached continue
             lpy.add_tapers(self.data_dict[_wtype], taper_type="tukey",
                            alpha=0.25, verbose=debug)
@@ -875,6 +880,23 @@ class GCMT3DInversion:
             for _tr in self.data_dict[_wtype]:
                 if "windows" not in _tr.stats:
                     _tr.stats.windows = []
+
+    def merge_windows(self, data_stream: Stream, synt_stream: Stream):
+
+        for obs_tr in data_stream:
+            try:
+                synt_tr = synt_stream.select(
+                    station=obs_tr.stats.station,
+                    network=obs_tr.stats.network,
+                    component=obs_tr.stats.component)[0]
+            except Exception as e:
+                self.logger.warning(e)
+                self.logger.warning(
+                    "Couldn't find corresponding synt for "
+                    f"obsd trace({obsd_tr.id}): {err}")
+                continue
+            if len(obs_tr.stats.windows) > 1:
+                obs_tr.stats.windows = lpy.merge_trace_windows(obs_tr, synt_tr)
 
     def forward(self):
         pass
@@ -1526,6 +1548,9 @@ class GCMT3DInversion:
                 windows[_component]["dlna"] = []
                 windows[_component]["L1"] = []
                 windows[_component]["L2"] = []
+                windows[_component]["dL1"] = []
+                windows[_component]["dL2"] = []
+                windows[_component]["trace_energy"] = []
                 windows[_component]["L1_Power"] = []
                 windows[_component]["L2_Power"] = []
 
@@ -1547,6 +1572,7 @@ class GCMT3DInversion:
                             self.logger.error(e)
                             continue
 
+                        trace_energy = 0
                         for win in _tr.stats.windows:
                             # Get window data
                             wd = d[win.left:win.right]
@@ -1586,12 +1612,17 @@ class GCMT3DInversion:
                             max_cc_value, nshift = lpy.xcorr(wd, ws)
                             powerl1 = lpy.power_l1(wd, ws)
                             powerl2 = lpy.power_l2(wd, ws)
-                            norm1 = lpy.norm1(wd, ws)
-                            norm2 = lpy.norm2(wd, ws)
+                            norm1 = lpy.norm1(wd)
+                            norm2 = lpy.norm2(wd)
+                            dnorm1 = lpy.dnorm1(wd, ws)
+                            dnorm2 = lpy.dnorm2(wd, ws)
                             dlna = lpy.dlna(wd, ws)
+                            trace_energy += norm2
 
                             windows[_component]["L1"].append(norm1)
                             windows[_component]["L2"].append(norm2)
+                            windows[_component]["dL1"].append(dnorm1)
+                            windows[_component]["dL2"].append(dnorm2)
                             windows[_component]["dlna"].append(dlna)
                             windows[_component]["L1_Power"].append(powerl1)
                             windows[_component]["L2_Power"].append(powerl2)
@@ -1602,6 +1633,9 @@ class GCMT3DInversion:
                             windows[_component]["max_cc_calue"].append(
                                 max_cc_value
                             )
+                        # Create array with the energy
+                        windows[_component]["trace_energy"].extend(
+                            [trace_energy]*len(_tr.stats.windows))
 
             return windows
 
@@ -1825,7 +1859,7 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
     # Figure Setup
     fig = plt.figure(figsize=(15, 5))
     ax1 = plt.subplot(211)
-    plt.subplots_adjust(left=0.03, right=0.97, top=0.95)
+    plt.subplots_adjust(left=0.075, right=0.925, top=0.95)
 
     ax1.plot(times, obsd.data, color="black", linewidth=0.75,
              label="Obs")
