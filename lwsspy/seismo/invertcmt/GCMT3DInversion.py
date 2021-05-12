@@ -1953,28 +1953,28 @@ def bin():
     damping = 0.001
 
     # Inputs
-    database = f"/gpfs/alpine/geo111/scratch/lsawade/testdatabase"
+    database = f"/gpfs/alpine/geo111/scratch/lsawade/testdatabase_mt_stats"
     specfemdir = "/gpfs/alpine/geo111/scratch/lsawade/SpecfemMagic/specfem3d_globe"
     launch_method = "jsrun -n 24 -a 1 -c 1 -g 1"
 
     pardict = dict(
-        # m_rr=dict(scale=None, pert=1e23),
-        # m_tt=dict(scale=None, pert=1e23),
-        # m_pp=dict(scale=None, pert=1e23),
-        # m_rt=dict(scale=None, pert=1e23),
-        # m_rp=dict(scale=None, pert=1e23),
-        # m_tp=dict(scale=None, pert=1e23),
-        # latitude=dict(scale=1.0, pert=None),
-        # longitude=dict(scale=1.0, pert=None),
+        m_rr=dict(scale=None, pert=1e23),
+        m_tt=dict(scale=None, pert=1e23),
+        m_pp=dict(scale=None, pert=1e23),
+        m_rt=dict(scale=None, pert=1e23),
+        m_rp=dict(scale=None, pert=1e23),
+        m_tp=dict(scale=None, pert=1e23),
+        latitude=dict(scale=1.0, pert=None),
+        longitude=dict(scale=1.0, pert=None),
         time_shift=dict(scale=1.0, pert=None),
         depth_in_m=dict(scale=1000.0, pert=None)
     )
-    pardict = dict(
-        time_shift=dict(scale=1.0, pert=None),
-        depth_in_m=dict(scale=1000.0, pert=None)
-    )
+    # pardict = dict(
+    #     time_shift=dict(scale=1.0, pert=None),
+    #     depth_in_m=dict(scale=1000.0, pert=None)
+    # )
     gcmt3d = GCMT3DInversion(event, database, specfemdir, pardict=pardict,
-                             download_data=True, zero_trace=False,
+                             download_data=True, zero_trace=True,
                              duration=7200, overwrite=False,
                              launch_method=launch_method, damping=damping,
                              multiprocesses=38)
