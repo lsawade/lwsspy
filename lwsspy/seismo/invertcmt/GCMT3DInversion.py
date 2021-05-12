@@ -868,6 +868,8 @@ class GCMT3DInversion:
                         wrapwindowdict, nprocs=self.multiprocesses)
 
             if len(self.processdict[_wtype]["window"]) > 1:
+                lpy.log_action(
+                    f"Merging {_wtype}windows", plogger=self.logger.info)
                 self.merge_windows(
                     self.data_dict[_wtype],
                     self.synt_dict[_wtype]["synt"])
@@ -1494,7 +1496,7 @@ class GCMT3DInversion:
                 d['CreationDate'] = datetime.datetime.today()
                 d['ModDate'] = datetime.datetime.today()
 
-    def write_windows(
+    def write_measurements(
             self, data: dict, synt: dict, post_fix: str = None):
 
         def get_toffset(
@@ -1750,6 +1752,7 @@ class GCMT3DInversion:
     def plot_windows(self, outputdir="."):
         plt.switch_backend("pdf")
         for _wtype in self.processdict.keys():
+            self.logger.info(f"Plotting {_wtype} waves")
             with PdfPages(os.path.join(outputdir, f"windows_{_wtype}.pdf")) as pdf:
                 for obsd_tr in self.data_dict[_wtype]:
                     try:
