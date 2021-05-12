@@ -5,6 +5,7 @@ CMTSOLUTTION depth.
 # %% Create inversion directory
 
 # Internal
+from obspy.core.utcdatetime import UTCDateTime
 from lwsspy.seismo.source import CMTSource
 import lwsspy as lpy
 
@@ -1474,7 +1475,33 @@ class GCMT3DInversion:
     def write_windows(
             self, data: dict, synt: dict, post_fix: str = None):
 
+        def get_toffset(
+                tsample: int, dt: float, t0: UTCDateTime, origin: UTCDateTime) -> float:
+            """Computes the time of a sample with respect to origin time
+
+            Parameters
+            ----------
+            tsample : int
+                sample on trace
+            dt : float
+                sample spacing
+            t0 : UTCDateTime
+                time of the first sample
+            origin : UTCDateTime
+                origin time
+
+            Returns
+            -------
+            float
+                Time relative to origin time
+            """
+
+            # Second on trace
+            trsec = (tsample*dt)
+            return (t0 + trsec) - origin
+
         # Normalize by component and aximuthal weights
+
         def get_measurements_and_windows(
                 obs: Stream, syn: Stream, event: CMTSource):
 
@@ -1485,7 +1512,8 @@ class GCMT3DInversion:
                 windows[_component] = dict()
                 windows[_component]["id"] = []
                 windows[_component]["dt"] = []
-                windows[_component]["toffset"] = []
+                windows[_component]["starttime"] = []
+                windows[_component]["endtime"] = []
                 windows[_component]["nsamples"] = []
                 windows[_component]["latitude"] = []
                 windows[_component]["longitude"] = []
@@ -1526,20 +1554,19 @@ class GCMT3DInversion:
 
                             # Infos
                             dt = _tr.stats.delta
-                            toffset = win.time_of_first_sample - event.origin_time
-                            nsamples = win.right - win.left
-                            windows[_component]["id"].append(
-                                _tr.id
-                            )
-                            windows[_component]["dt"].append(
-                                dt
-                            )
-                            windows[_component]["toffset"].append(
-                                toffset
-                            )
-                            windows[_component]["nsamples"].append(
-                                nsamples
-                            )
+                            winleft = get_toffset(
+                                win.left, dt, win.time_of_first_sample,
+                                event.origin_time)
+                            winright = get_toffset(
+                                win.right, dt, win.time_of_first_sample,
+                                event.origin_time)
+
+                            # Populate the dictionary
+                            windows[_component]["id"].append(_tr.id)
+                            windows[_component]["dt"].append(dt)
+                            windows[_component]["starttime"].append(winleft)
+                            windows[_component]["endtime"].append(winright)
+                            windows[_component]["nsamples"].append(nsamples)
                             windows[_component]["latitude"].append(
                                 _tr.stats.latitude
                             )
@@ -1564,29 +1591,17 @@ class GCMT3DInversion:
                             norm2 = lpy.norm2(wd, ws)
                             dlna = lpy.dlna(wd, ws)
 
-                            windows[_component]["nshift"].append(
-                                nshift
-                            )
+                            windows[_component]["L1"].append(norm1)
+                            windows[_component]["L2"].append(norm2)
+                            windows[_component]["dlna"].append(dlna)
+                            windows[_component]["L1_Power"].append(powerl1)
+                            windows[_component]["L2_Power"].append(powerl2)
+                            windows[_component]["nshift"].append(nshift)
                             windows[_component]["time_shift"].append(
                                 nshift * dt
                             )
                             windows[_component]["max_cc_calue"].append(
                                 max_cc_value
-                            )
-                            windows[_component]["L1"].append(
-                                norm1
-                            )
-                            windows[_component]["L2"].append(
-                                norm2
-                            )
-                            windows[_component]["dlna"].append(
-                                dlna
-                            )
-                            windows[_component]["L1_Power"].append(
-                                powerl1
-                            )
-                            windows[_component]["L2_Power"].append(
-                                powerl2
                             )
 
             return windows
@@ -1605,7 +1620,7 @@ class GCMT3DInversion:
         # Create output file
         filename = "measurements"
         if post_fix is not None:
-            filename += post_fix
+            filename += "_" + post_fix
         filename += ".pkl"
 
         outfile = os.path.join(self.cmtdir, filename)
