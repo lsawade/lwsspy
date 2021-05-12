@@ -1501,7 +1501,7 @@ class GCMT3DInversion:
                             network, station, component = (
                                 _tr.stats.network, _tr.stats.station,
                                 _tr.stats.component)
-                            s = self.synt.select(
+                            s = syn.select(
                                 network=network, station=station,
                                 component=component)[0].data
                         except Exception as e:
