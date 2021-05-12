@@ -1507,6 +1507,7 @@ class GCMT3DInversion:
                         except Exception as e:
                             self.logger.warning(
                                 f"{network}.{station}..{component}")
+                            self.logger.error(e)
                             continue
 
                         for win in _tr.stats.windows:
