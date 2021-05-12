@@ -1487,9 +1487,9 @@ class GCMT3DInversion:
                 windows[_component]["nshift"] = []
                 windows[_component]["time_shift"] = []
                 windows[_component]["max_cc_calue"] = []
-                windows[_component]["time_shift"] = []
-                windows[_component]["misfit"] = []
                 windows[_component]["dlna"] = []
+                windows[_component]["L1"] = []
+                windows[_component]["L2"] = []
                 windows[_component]["L1_Power"] = []
                 windows[_component]["L2_Power"] = []
 
