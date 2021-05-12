@@ -1593,6 +1593,8 @@ class GCMT3DInversion:
         with open(outfile, "wb") as f:
             cPickle.dump(window_dict, f)
 
+        return window_dict
+
     def plot_station(self, network: str, station: str, outputdir="."):
         plt.switch_backend("pdf")
         # Get station data
