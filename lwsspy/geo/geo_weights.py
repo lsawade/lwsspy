@@ -101,6 +101,8 @@ class GeoWeights:
         # Get condition numbers
         vcondno = reffunc(vref) - 1.0
 
+        print(vcondno)
+
         # Get quantile condition number
         cumcondo = np.cumsum(vcondno)/np.sum(vcondno)
         if ctype == "q":
