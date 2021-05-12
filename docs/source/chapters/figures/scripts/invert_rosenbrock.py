@@ -245,7 +245,6 @@ plt.legend(loc=3)
 plt.title('Model Movement')
 plt.show()
 
-
 # plot_model_history(optim_gn, outfile="./testhist.pdf")
 # plot_optimization(optim_gn, outfile="./testoptim.pdf")
 

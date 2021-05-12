@@ -94,10 +94,20 @@ def Solve_Optimisation_Problem(optim, model):
     optim.model = model
     optim.n = len(model)
 
+    if (optim.nb_mem < 1):
+        optim.nb_mem = optim.niter_max  # by default
+
+    # optim.alpha = 1.
+    optim.msave = np.zeros((optim.n, optim.nb_mem))
+    optim.gsave = np.zeros((optim.n, optim.nb_mem))
+
     if optim.compute_cost_and_grad_and_hess is not None:
         optim.fcost_ini, optim.grad_ini, optim.hess_ini = \
             optim.compute_cost_and_grad_and_hess(optim.model)
         optim.hess = optim.hess_ini
+        # Save Hessian for uncertainty quanitification
+        optim.hsave = np.zeros((optim.n**2, optim.nb_mem))
+        optim.save_model_and_gradient = store_hess_grad_and_model
     elif optim.compute_cost_and_gradient is not None:
         optim.fcost_ini, optim.grad_ini = \
             optim.compute_cost_and_gradient(optim.model)
@@ -117,12 +127,6 @@ def Solve_Optimisation_Problem(optim, model):
         # else
         #    optim.alpha = optim.perc; % * max(abs.(optim.model));
         #
-    if (optim.nb_mem < 1):
-        optim.nb_mem = optim.niter_max  # by default
-
-    # optim.alpha = 1.
-    optim.msave = np.zeros((optim.n, optim.nb_mem))
-    optim.gsave = np.zeros((optim.n, optim.nb_mem))
 
     # Some attached defs
     optim.bfgs_formula = bfgs_formula       # accessible outside for resolution
@@ -407,6 +411,20 @@ def store_grad_and_model(optim):
     _iter = optim.current_iter
     optim.msave[:, _iter] = optim.model[:]
     optim.gsave[:, _iter] = optim.grad[:]
+
+
+def store_hess_grad_and_model(optim):
+    """Function to store the model and the gradient.
+
+    Parameters
+    ----------
+    optim : Optimization
+        Optimization class
+    """
+    _iter = optim.current_iter
+    optim.msave[:, _iter] = optim.model[:]
+    optim.gsave[:, _iter] = optim.grad[:]
+    optim.hsave[:, _iter] = optim.hess.flatten()
 
 
 def check_wolfe_conditions(optim):

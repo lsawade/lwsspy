@@ -226,7 +226,8 @@ if "-m" not in sys.argv:
     # Simple Signal processing functions
     from .signal.dlna import dlna  # noqa
     from .signal.xcorr import xcorr  # noqa
-    from .signal.lsq import lsq  # noqa
+    from .signal.norm import norm1, norm2  # noqa
+    from .signal.power import power_l1, power_l2  # noqa
 
     # Statistics
     from .statistics.clm import clm  # noqa
