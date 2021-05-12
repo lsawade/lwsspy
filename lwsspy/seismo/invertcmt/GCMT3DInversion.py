@@ -1729,7 +1729,7 @@ class GCMT3DInversion:
                             f"obsd trace({obsd_tr.id}): {err}")
                         continue
 
-                    fig = plot_seismograms(obsd_tr, synt_tr, self.cmtsource,
+                    fig = plot_seismograms(obsd_tr, synt_tr, cmtsource=self.cmtsource,
                                            tag=_wtype)
                     pdf.savefig()  # saves the current figure into a pdf page
                     plt.close(fig)
