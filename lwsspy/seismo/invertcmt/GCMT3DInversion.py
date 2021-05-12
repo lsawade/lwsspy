@@ -1961,7 +1961,7 @@ def bin():
     )
 
     gcmt3d = GCMT3DInversion(event, database, specfemdir, pardict=pardict,
-                             download_data=True, zero_trace=True,
+                             download_data=False, zero_trace=False,
                              duration=7200, overwrite=False,
                              launch_method=launch_method, damping=damping)
     # gcmt3d.init()
