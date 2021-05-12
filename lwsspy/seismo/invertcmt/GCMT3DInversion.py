@@ -424,6 +424,9 @@ class GCMT3DInversion:
             self.__run_simulations__()
         self.process_all_synt()
 
+        # Copy the initial synthetics
+        self.copy_init_synt()
+
         # Window the data
         with lpy.Timer(plogger=self.logger.info):
             self.__window__()
@@ -434,6 +437,7 @@ class GCMT3DInversion:
 
         self.not_windowed_yet = False
 
+    def copy_init_synt(self):
         # Copy the initial waveform dictionary
         self.synt_dict_init = deepcopy(self.synt_dict)
 
