@@ -1748,7 +1748,7 @@ class GCMT3DInversion:
         plt.switch_backend("pdf")
         for _wtype in self.processdict.keys():
             self.logger.info(f"Plotting {_wtype} waves")
-            with PdfPages(os.path.join(outputdir, f"windows_{_wtype}.pdf")) as pdf:
+            with PdfPages(os.path.join(outputdir, f"final_windows_{_wtype}.pdf")) as pdf:
                 for obsd_tr in self.data_dict[_wtype]:
                     try:
                         synt_tr = self.synt_dict[_wtype]["synt"].select(
