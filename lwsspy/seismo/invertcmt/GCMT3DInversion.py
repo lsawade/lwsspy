@@ -495,7 +495,7 @@ class GCMT3DInversion:
                 self.weights[_wtype][_component]["lon"] = deepcopy(longitudes)
 
                 # Get azimuthal weights for the traces of each component
-                if len(latitudes) > 1 and len(longitudes) > 1:
+                if len(latitudes) > 1 and len(longitudes) > 2:
                     azi_weights = lpy.azi_weights(
                         self.cmtsource.latitude,
                         self.cmtsource.longitude,
@@ -519,6 +519,16 @@ class GCMT3DInversion:
                     weights /= np.sum(weights)/len(weights)
                     self.weights[_wtype][_component]["combination"] = deepcopy(
                         weights)
+
+                # Figuring out weighting for 2 events does not make sense
+                # There is no relative clustering.
+                elif len(latitudes) == 2 and len(longitudes) == 2:
+                    self.weights[_wtype][_component]["azimuthal"] = [0.5, 0.5]
+                    self.weights[_wtype][_component]["geographical"] = [
+                        0.5, 0.5]
+                    self.weights[_wtype][_component]["combination"] = [
+                        0.5, 0.5]
+
                 elif len(latitudes) == 1 and len(longitudes) == 1:
                     self.weights[_wtype][_component]["azimuthal"] = [1.0]
                     self.weights[_wtype][_component]["geographical"] = [1.0]
@@ -1959,7 +1969,10 @@ def bin():
         time_shift=dict(scale=1.0, pert=None),
         depth_in_m=dict(scale=1000.0, pert=None)
     )
-
+    pardict = dict(
+        time_shift=dict(scale=1.0, pert=None),
+        depth_in_m=dict(scale=1000.0, pert=None)
+    )
     gcmt3d = GCMT3DInversion(event, database, specfemdir, pardict=pardict,
                              download_data=True, zero_trace=False,
                              duration=7200, overwrite=False,
