@@ -1722,15 +1722,16 @@ class GCMT3DInversion:
                         synt_tr = self.synt_dict[_wtype]["synt"].select(
                             station=obsd_tr.stats.station,
                             network=obsd_tr.stats.network,
-                            component=obsd_tr.stats.channel[-1])[0]
+                            component=obsd_tr.stats.component)[0]
                     except Exception as err:
+                        self.logger.warning(err)
                         self.logger.warning(
                             "Couldn't find corresponding synt for "
                             f"obsd trace({obsd_tr.id}): {err}")
                         continue
 
-                    fig = plot_seismograms(obsd_tr, synt_tr, cmtsource=self.cmtsource,
-                                           tag=_wtype)
+                    fig = plot_seismograms(
+                        obsd_tr, synt_tr, cmtsource=self.cmtsource, tag=_wtype)
                     pdf.savefig()  # saves the current figure into a pdf page
                     plt.close(fig)
 
@@ -1746,17 +1747,18 @@ class GCMT3DInversion:
     def plot_final_windows(self, outputdir="."):
         plt.switch_backend("pdf")
         for _wtype in self.processdict.keys():
+            self.logger.info(f"Plotting {_wtype} waves")
             with PdfPages(os.path.join(outputdir, f"windows_{_wtype}.pdf")) as pdf:
                 for obsd_tr in self.data_dict[_wtype]:
                     try:
                         synt_tr = self.synt_dict[_wtype]["synt"].select(
                             station=obsd_tr.stats.station,
                             network=obsd_tr.stats.network,
-                            component=obsd_tr.stats.channel[-1])[0]
+                            component=obsd_tr.stats.component)[0]
                         init_synt_tr = self.synt_dict_init[_wtype]["synt"].select(
                             station=obsd_tr.stats.station,
                             network=obsd_tr.stats.network,
-                            component=obsd_tr.stats.channel[-1])[0]
+                            component=obsd_tr.stats.component)[0]
                     except Exception as err:
                         self.logger.warning(
                             "Couldn't find corresponding synt for "
