@@ -893,7 +893,7 @@ class GCMT3DInversion:
                 self.logger.warning(e)
                 self.logger.warning(
                     "Couldn't find corresponding synt for "
-                    f"obsd trace({obs_tr.id}): {err}")
+                    f"obsd trace({obs_tr.id}): {e}")
                 continue
             if len(obs_tr.stats.windows) > 1:
                 obs_tr.stats.windows = lpy.merge_trace_windows(obs_tr, synt_tr)
