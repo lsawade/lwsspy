@@ -1484,6 +1484,7 @@ class GCMT3DInversion:
                 windows[_component]["distance"] = []
                 windows[_component]["azimuth"] = []
                 windows[_component]["back_azimuth"] = []
+                windows[_component]["nshift"] = []
                 windows[_component]["time_shift"] = []
                 windows[_component]["max_cc_calue"] = []
                 windows[_component]["time_shift"] = []
