@@ -1566,7 +1566,6 @@ class GCMT3DInversion:
                             windows[_component]["dt"].append(dt)
                             windows[_component]["starttime"].append(winleft)
                             windows[_component]["endtime"].append(winright)
-                            windows[_component]["nsamples"].append(nsamples)
                             windows[_component]["latitude"].append(
                                 _tr.stats.latitude
                             )
