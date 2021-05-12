@@ -5,6 +5,7 @@ CMTSOLUTTION depth.
 # %% Create inversion directory
 
 # Internal
+from lwsspy.seismo.source import CMTSource
 import lwsspy as lpy
 
 # External
@@ -1474,7 +1475,8 @@ class GCMT3DInversion:
             self, data: dict, synt: dict, post_fix: str = None):
 
         # Normalize by component and aximuthal weights
-        def get_measurements_and_windows(obs: Stream, syn: Stream):
+        def get_measurements_and_windows(
+                obs: Stream, syn: Stream, event: CMTSource):
 
             windows = dict()
 
@@ -1483,6 +1485,8 @@ class GCMT3DInversion:
                 windows[_component] = dict()
                 windows[_component]["id"] = []
                 windows[_component]["dt"] = []
+                windows[_component]["toffset"] = []
+                windows[_component]["nsamples"] = []
                 windows[_component]["latitude"] = []
                 windows[_component]["longitude"] = []
                 windows[_component]["distance"] = []
@@ -1522,11 +1526,19 @@ class GCMT3DInversion:
 
                             # Infos
                             dt = _tr.stats.delta
+                            toffset = win.time_of_first_sample - event.origin_time
+                            nsamples = win.right - win.left
                             windows[_component]["id"].append(
                                 _tr.id
                             )
                             windows[_component]["dt"].append(
                                 dt
+                            )
+                            windows[_component]["toffset"].append(
+                                toffset
+                            )
+                            windows[_component]["nsamples"].append(
+                                nsamples
                             )
                             windows[_component]["latitude"].append(
                                 _tr.stats.latitude
@@ -1587,7 +1599,8 @@ class GCMT3DInversion:
             _syn_stream = synt[_wtype]["synt"]
 
             window_dict[_wtype] = \
-                get_measurements_and_windows(_obs_stream, _syn_stream)
+                get_measurements_and_windows(
+                    _obs_stream, _syn_stream, self.cmtsource)
 
         # Create output file
         filename = "measurements"
