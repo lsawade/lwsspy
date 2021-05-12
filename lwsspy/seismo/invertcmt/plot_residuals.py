@@ -45,7 +45,7 @@ def plot_residuals(residuals: dict):
             ax = plt.subplot(gs[_i, _j])
             plt.hist(_residuals, bins=_bins, edgecolor=colors[counter, :],
                      facecolor=acolor, linewidth=0.75,
-                     label='GCMT', histtype='stepfilled')
+                     label='GCMT', histtype='step')
             lpy.plot_label(ax, lpy.abc[counter] + ")", location=6, box=False)
 
             if _j == 0:
