@@ -3,6 +3,34 @@ One-liners to Remember
 
 Just one-liners that I decided to document for posterity.
 
+
+Simple pattern syncing that retains directory structure
+-------------------------------------------------------
+
+
+This is going to be helpful if
+1. All your files are located in a certain directory structure
+2. you know exactly the file pattern that 
+but need to get only this files from directories tress that you need to 
+retain. 
+
+.. code:: bash
+    
+    rsync -av --prune-empty-dirs \
+        --include="*/" \
+        --include="<yourpattern>" \
+        --exclude="*" 
+        source_dir/
+        destination_dir
+
+Note that ``source_dir`` and/or ``destination_dir`` can be remote locations,
+but it is important that source_dir is followed by a ``/``, otherwise 
+``source_dir``'s content will be saved in ``destination_dir``.
+An important flag is ``--prune-empty-dirs`` which will remove directories that
+do not contain an files. Use the ``--dry-ru`` option to just see the files that
+are goin to be copied.
+
+
 Simple Function wrapper in Bash
 -------------------------------
 

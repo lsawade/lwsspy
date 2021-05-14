@@ -1,3 +1,6 @@
+import os
+from typing import Optional
+from glob import glob
 from copy import deepcopy
 import numpy as np
 import matplotlib.pyplot as plt
@@ -6,18 +9,67 @@ import lwsspy as lpy
 import _pickle as cPickle
 
 
-def plot_measurement_pkl(measurement_pickle: str):
+def get_bins(b, a, nbin, mtype):
 
-    with open(measurement_pickle, "rb") as f:
-        measurements = cPickle.load(f)
+    if mtype == "cc":
+        ax_min = np.min((np.min(b), np.min(a)))
+        ax_max = np.max((np.max(b), np.max(a)))
+    elif mtype == "chi":
+        ax_min = 0.0
+        ax_max = np.max((np.max(b), np.max(a)))
+    elif mtype == "misfit":
+        ax_min = 0.0
+        ax_max = np.max((np.max(b), np.max(a)))
+    else:
+        ax_min = np.min((np.min(b), np.min(a)))
+        ax_max = np.max((np.max(b), np.max(a)))
+        abs_max = np.max((np.abs(ax_min), np.abs(ax_max)))
+        ax_min = -abs_max
+        ax_max = abs_max
+    binwidth = (ax_max - ax_min) / nbin
 
-    plot_measurements(measurements)
+    return np.arange(ax_min, ax_max + binwidth / 2., binwidth)
 
 
-def plot_measurements(measurements: dict):
+def plot_measurement_pkl(
+        measurement_pickle_before: str,
+        measurement_pickle_after: str):
+
+    with open(measurement_pickle_before, "rb") as f:
+        measurements_before = cPickle.load(f)
+    with open(measurement_pickle_after, "rb") as f:
+        measurements_after = cPickle.load(f)
+
+    plot_measurements(measurements_before, measurements_after)
+
+
+def get_measurement(bdict: dict, adict: dict, mtype: str):
+
+    if mtype == "chi":
+        # Get the data type from the measurement dictionary
+        b = np.array(bdict["dL2"])/np.array(bdict["L2"])
+        a = np.array(adict["dL2"])/np.array(adict["L2"])
+    elif mtype == "misfit":
+        # Get the data type from the measurement dictionary
+        b = np.array(bdict["dL2"])/np.array(bdict["trace_energy"])
+        a = np.array(adict["dL2"])/np.array(adict["trace_energy"])
+    
+    elif mtype == "misfit":
+        # Get the data type from the measurement dictionary
+        b = np.array(bdict["dlna"])
+        a = np.array(adict["dlna"])
+    else:
+        b = np.array(bdict[mtype])
+        a = np.array(adict[mtype])
+
+    return b, a
+
+
+def plot_measurements(before: dict, after: dict, alabel: Optional[str] = None,
+                      blabel: Optional[str] = None, mtype='chi'):
 
     # Get number of wave types:
-    Nwaves = len(measurements.keys())
+    Nwaves = len(before.keys())
 
     # Get the amount of colors
     colors = lpy.pick_colors_from_cmap(Nwaves*3, cmap='rainbow')
@@ -33,31 +85,62 @@ def plot_measurements(measurements: dict):
     # Create subplots
     counter = 0
     components = ["Z", "R", "T"]
-    component_bins = [50, 20, 10]
+    if mtype == "time_shift":
+        component_bins = [15, 15, 10]
+    else:
+        component_bins = [50, 20, 10]
 
-    for _i, (_wtype, _compdict) in enumerate(measurements.items()):
+    if blabel is None:
+        blabel = "$m_0$"
+
+    if alabel is None:
+        alabel = "$m_f$"
+
+    for _i, (_wtype, _compdict) in enumerate(before.items()):
         for _j, (_comp, _bins) in enumerate(zip(components, component_bins)):
 
-            # Get the data type from the measurement dictionary
-            _residuals = np.array(_compdict[_comp]["dL2"])
-            _norm2 = np.array(_compdict[_comp]["L2"])
-            _trace_nrj = np.array(_compdict[_comp]["trace_energy"])
+            bdict = _compdict[_comp]
+            adict = after[_wtype][_comp]
 
+            b, a = get_measurement(bdict, adict, mtype)
             # Set alpha color
             acolor = deepcopy(colors[counter, :])
             acolor[3] = 0.5
 
             # Create plot
             ax = plt.subplot(gs[_i, _j])
-            plt.hist(_residuals/_norm2,
-                     bins=_bins,
-                     edgecolor=colors[counter, :],
-                     facecolor='none', linewidth=0.75,
-                     label='GCMT', histtype='step')
+
+            # Plot before
+            bins = get_bins(b, a, _bins, mtype)
+            nb, _, _ = plt.hist(b,
+                                bins=bins,
+                                edgecolor=colors[counter, :],
+                                facecolor='none', linewidth=0.75, linestyle="--",
+                                histtype='step')
+            plt.plot([], [], color=colors[counter, :],
+                     linewidth=0.75, linestyle=":", label=blabel)
+
+            # Plot After
+            na, _, _ = plt.hist(a,
+                                bins=bins,
+                                edgecolor=colors[counter, :],
+                                facecolor='none', linewidth=1.0, linestyle="-",
+                                histtype='step')
+            plt.plot([], [], color=colors[counter, :],
+                     linewidth=0.75, linestyle="-", label=alabel)
+
+            # Annotations
+            lpy.plot_label(ax, f"N: {len(b)}", location=2, box=False,
+                           fontsize="small")
+            ax.set_ylim((0, 1.275*np.max([np.max(nb), np.max(na)])))
+            plt.legend(loc='upper left', fontsize='x-small',
+                       fancybox=False, frameon=False,
+                       ncol=2, borderaxespad=0.0, borderpad=0.5,
+                       handletextpad=0.15, labelspacing=0.0,
+                       handlelength=1.0, columnspacing=1.0)
             # lpy.plot_label(ax, lpy.abc[counter] + ")", location=6, box=False,
             #                fontsize="small")
-            lpy.plot_label(ax, f"N: {len(_residuals)}", location=2, box=False,
-                           fontsize="small")
+
             # if _wtype == "body" and _comp == "Z":
             #     ax.set_xlim((-0.001, 0.1))
 
@@ -73,3 +156,68 @@ def plot_measurements(measurements: dict):
             counter += 1
 
     plt.show()
+
+
+def get_database_measurements(database: str, outdir: Optional[str] = None):
+
+    # Get all directories
+    cmtlocs = glob(os.path.join(database, '*'))
+
+    # Empty measurement lists
+    components = ["Z", "R", "T"]
+    for _cmtloc in cmtlocs:
+        print(_cmtloc)
+        try:
+            measurement_pickle_before = os.path.join(
+                _cmtloc, "measurements_before.pkl"
+            )
+            measurement_pickle_after = os.path.join(
+                _cmtloc, "measurements_after.pkl"
+            )
+            print(measurement_pickle_before)
+            print(measurement_pickle_after)
+            with open(measurement_pickle_before, "rb") as f:
+                measurements_before = cPickle.load(f)
+            with open(measurement_pickle_after, "rb") as f:
+                measurements_after = cPickle.load(f)
+
+        except Exception as e:
+            print(e)
+            continue
+
+        if "after" not in locals():
+            before = measurements_before
+            after = measurements_after
+
+        else:
+
+            for _wtype in measurements_before.keys():
+                for _comp in components:
+                    for _mtype in before[_wtype][_comp].keys():
+
+                        # Grab
+                        bdict = measurements_before[_wtype][_comp]
+                        adict = measurements_after[_wtype][_comp]
+
+                        # Get measurements
+                        b, a = get_measurement(bdict, adict, _mtype)
+
+                        # Add to first dictionary
+                        before[_wtype][_comp][_mtype].extend(b)
+                        after[_wtype][_comp][_mtype].extend(a)
+
+    if outdir is not None:
+
+        measurement_pickle_before_out = os.path.join(
+            outdir, "database_measurement_before.pkl"
+        )
+        measurement_pickle_after_out = os.path.join(
+            outdir, "database_measurement_before.pkl"
+        )
+
+        with open(measurement_pickle_before_out, "wb") as f:
+            cPickle.dump(before, f)
+
+        with open(measurement_pickle_after_out, "wb") as f:
+            cPickle.dump(after, f)
+    return before, after

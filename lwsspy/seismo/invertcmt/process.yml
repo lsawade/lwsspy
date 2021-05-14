@@ -111,14 +111,14 @@ surface:
     sanity_check: True
   window:
     - config:
-        min_period: 40.0
-        max_period: 100.0
+        min_period: 90.0
+        max_period: 250.0
         stalta_waterlevel: 0.085
         tshift_acceptance_level: 18.0
         tshift_reference: 0.0
         dlna_acceptance_level: 0.8
         dlna_reference: 0.0
-        cc_acceptance_level: 0.85
+        cc_acceptance_level: 0.80
         s2n_limit: 3.5
         s2n_limit_energy: 3.5
         window_signal_to_noise_type: amplitude
@@ -130,7 +130,7 @@ surface:
         max_time_after_last_arrival: 200.0
         check_global_data_quality: True
         snr_integrate_base: 3.5
-        snr_max_base: 5.0
+        snr_max_base: 6.0
         c_0: 0.7
         c_1: 4.0
         c_2: 0.1
@@ -146,6 +146,7 @@ surface:
         R:
 
         T:
+          max_surface_wave_velocity: 4.80
 
 mantle:
   weight: 1.0
