@@ -843,6 +843,7 @@ class GCMT3DInversion:
                 if _par == "depth_in_m":
                     lpy.stream_multiply(
                         self.synt_dict[_wtype][_par], 1.0/1000.0)
+
         if parallel:
             p.close()
 
@@ -1520,6 +1521,40 @@ class GCMT3DInversion:
                 d['Keywords'] = 'seismology, moment tensor inversion'
                 d['CreationDate'] = datetime.datetime.today()
                 d['ModDate'] = datetime.datetime.today()
+
+    def save_seismograms(self):
+
+        outdir = os.path.join(self.cmtdir, "output")
+        obsddir = os.path.join(outdir, "observed")
+        syntdir = os.path.join(outdir, "synthetic")
+        syntdir_init = os.path.join(outdir, "synthetic_init")
+        stations = os.path.join(outdir, "STATIONS.xml")
+
+        # Write out stations
+        self.stations.write(stations, format="STATIONXML")
+
+        # Write processed data
+        for _wtype, _stream in self.data_dict.items():
+
+            filename = os.path.join(obsddir, f"{_wtype}_stream.pkl")
+            with open(filename, 'wn') as f:
+                cPickle.dump(_stream, filename)
+
+        # Write processed synthetics
+        # Note that you have to run an extra siumulation the right model
+        # to get the accruate
+        for _wtype in self.synt_dict.keys():
+
+            filename = os.path.join(syntdir, f"{_wtype}_stream.pkl")
+            with open(filename, 'wn') as f:
+                cPickle.dump(self.synt_dict[_wtype]["synt"], filename)
+
+        # Write processed initial synthetics
+        if hasattr(self, "synt_dict_init"):
+            for _wtype in self.synt_dict_init.keys():
+                filename = os.path.join(syntdir_init, f"{_wtype}_stream.pkl")
+                with open(filename, 'wn') as f:
+                    cPickle.dump(self.synt_dict_init[_wtype]["synt"], filename)
 
     def write_measurements(
             self, data: dict, synt: dict, post_fix: str = None):

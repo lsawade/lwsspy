@@ -202,6 +202,7 @@ if "-m" not in sys.argv:
     from .seismo.invertcmt.GCMT3DInversion import GCMT3DInversion  # noqa
     from .seismo.invertcmt.plot_weights import plot_weightpickle  # noqa
     from .seismo.invertcmt.plot_weights import plot_weights  # noqa
+    from .seismo.invertcmt.plot_measurements import get_database_measurements  # noqa
     from .seismo.invertcmt.plot_measurements import plot_measurements  # noqa
     from .seismo.invertcmt.plot_measurements import plot_measurement_pkl  # noqa
     from .seismo.invertcmt.process_classifier import filter_scaling  # noqa
