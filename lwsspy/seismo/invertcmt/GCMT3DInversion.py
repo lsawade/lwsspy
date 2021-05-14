@@ -2111,6 +2111,11 @@ def bin():
         gcmt3d.data_dict, gcmt3d.synt_dict, post_fix="after")
     gcmt3d.plot_final_windows(outputdir=gcmt3d.cmtdir)
 
+    try:
+        gcmt3d.save_seismograms()
+    except Exception as e:
+        print(e)
+
     # # Write PDF
     plt.switch_backend("pdf")
     # lpy.plot_model_history(
