@@ -1545,8 +1545,8 @@ class GCMT3DInversion:
         for _wtype, _stream in self.data_dict.items():
 
             filename = os.path.join(obsddir, f"{_wtype}_stream.pkl")
-            with open(filename, 'wn') as f:
-                cPickle.dump(_stream, filename)
+            with open(filename, 'wb') as f:
+                cPickle.dump(_stream, f)
 
         # Write processed synthetics
         # Note that you have to run an extra siumulation the right model
@@ -1554,8 +1554,8 @@ class GCMT3DInversion:
         for _wtype in self.synt_dict.keys():
 
             filename = os.path.join(syntdir, f"{_wtype}_stream.pkl")
-            with open(filename, 'wn') as f:
-                cPickle.dump(self.synt_dict[_wtype]["synt"], filename)
+            with open(filename, 'wb') as f:
+                cPickle.dump(self.synt_dict[_wtype]["synt"], f)
 
         # Write processed initial synthetics
         if hasattr(self, "synt_dict_init"):
@@ -1563,8 +1563,8 @@ class GCMT3DInversion:
                 os.makedirs(syntdir_init)
             for _wtype in self.synt_dict_init.keys():
                 filename = os.path.join(syntdir_init, f"{_wtype}_stream.pkl")
-                with open(filename, 'wn') as f:
-                    cPickle.dump(self.synt_dict_init[_wtype]["synt"], filename)
+                with open(filename, 'wb') as f:
+                    cPickle.dump(self.synt_dict_init[_wtype]["synt"], f)
 
     def write_measurements(
             self, data: dict, synt: dict, post_fix: str = None):
