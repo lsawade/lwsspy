@@ -1530,6 +1530,14 @@ class GCMT3DInversion:
         syntdir_init = os.path.join(outdir, "synthetic_init")
         stations = os.path.join(outdir, "STATIONS.xml")
 
+        # Make directories
+        if os.path.exists(outdir) is False:
+            os.makedirs(outdir)
+        if os.path.exists(obsddir) is False:
+            os.makedirs(obsddir)
+        if os.path.exists(syntdir) is False:
+            os.makedirs(syntdir)
+
         # Write out stations
         self.stations.write(stations, format="STATIONXML")
 
@@ -1551,6 +1559,8 @@ class GCMT3DInversion:
 
         # Write processed initial synthetics
         if hasattr(self, "synt_dict_init"):
+            if os.path.exists(syntdir_init) is False:
+                os.makedirs(syntdir_init)
             for _wtype in self.synt_dict_init.keys():
                 filename = os.path.join(syntdir_init, f"{_wtype}_stream.pkl")
                 with open(filename, 'wn') as f:
@@ -2021,7 +2031,7 @@ def bin():
     optim_list = []
 
     max_iter = 5
-    max_nls = 3
+    max_nls = 1
 
     with lpy.Timer(plogger=gcmt3d.logger.info):
 
