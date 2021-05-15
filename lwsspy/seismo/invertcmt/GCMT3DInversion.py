@@ -2031,7 +2031,7 @@ def bin():
     optim_list = []
 
     max_iter = 5
-    max_nls = 1
+    max_nls = 3
 
     with lpy.Timer(plogger=gcmt3d.logger.info):
 
