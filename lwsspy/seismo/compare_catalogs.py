@@ -108,7 +108,7 @@ class CompareCatalogs:
         # Plot events
         scatter, ax, l1, l2 = plot_quakes(
             self.olat, self.olon, self.odepth, self.omoment_mag, ax=ax,
-            yoffsetlegend2=0.09)
+            yoffsetlegend2=0.09, sizefunc=lambda x: (x-(np.min(x)-1))**2.5 + 5)
         ax.set_global()
         plot_map(zorder=0, fill=True)
         plot_label(ax, f"N: {self.N}", location=1, box=False, dist=0.0)
@@ -225,7 +225,8 @@ class CompareCatalogs:
         # Plot tshift histogram
         ax = fig.add_subplot(GS[2, 0])
         self.plot_histogram(
-            self.ntime_shift-self.otime_shift, self.nbins, facecolor='lightgray')
+            self.ntime_shift-self.otime_shift, np.linspace(-0.5, 0.5, 100),
+            facecolor='lightgray')
         remove_topright()
         plt.xlabel("Centroid Time Change [sec]")
         plt.ylabel("N", rotation=0, horizontalalignment='right')
@@ -233,8 +234,9 @@ class CompareCatalogs:
 
         # Plot Scalar Moment histogram
         ax = fig.add_subplot(GS[2, 1])
-        self.plot_histogram((self.nM0-self.oM0)/self.oM0*100,
-                            self.nbins, facecolor='lightgray')
+        self.plot_histogram(
+            (self.nM0-self.oM0)/self.oM0*100, np.linspace(-10, 10, 100),
+            facecolor='lightgray', statsleft=True)
         remove_topright()
         plt.xlabel("Scalar Moment Change [%]")
         plt.ylabel("N", rotation=0, horizontalalignment='right')
@@ -243,7 +245,7 @@ class CompareCatalogs:
         # Plot ddepth histogram
         ax = fig.add_subplot(GS[2, 2])
         self.plot_histogram(
-            self.ndepth-self.odepth, self.nbins, facecolor='lightgray',
+            self.ndepth-self.odepth, np.linspace(-2.5, 2.5, 100), facecolor='lightgray',
             statsleft=True)
         remove_topright()
         plt.xlabel("Depth Change [km]")
@@ -527,6 +529,11 @@ def bin():
                              oldlabel=args.oldlabel, newlabel=args.newlabel,
                              nbins=25)
 
+    # Filter for a minimum depth larger than zero
+    # CC = CC.filter(mindict={"depth_in_m": 1e-12})
+
     # Comparison figures
     CC.plot_summary(outfile=os.path.join(
         args.outdir, "catalog_comparison.pdf"))
+    CC.plot_depth_v_eps_nu(outfile=os.path.join(
+        args.outdir, "depth_v_sourcetype.pdf"))
