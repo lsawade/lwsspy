@@ -54,6 +54,7 @@ if "-m" not in sys.argv:
     from .utils.output import log_action  # noqa
     from .utils.output import log_bar  # noqa
     from .utils.output import log_section  # noqa
+
     # Geographical things
     from .geo.geo_weights import GeoWeights  # noqa
     from .geo.azi_weights import azi_weights  # noqa
@@ -138,6 +139,7 @@ if "-m" not in sys.argv:
     from .seismo.cmt_catalog import CMTCatalog  # noqa
     from .seismo.compare_catalogs import CompareCatalogs  # noqa
     from .seismo.costgradhess import CostGradHess  # noqa
+    from .seismo.costgradhess_log import CostGradHessLogEnergy  # noqa
     from .seismo.download_data import download_data  # noqa
     from .seismo.download_gcmt_catalog import download_gcmt_catalog  # noqa
     from .seismo.download_waveforms_cmt2storage import download_waveforms_cmt2storage  # noqa

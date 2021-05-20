@@ -395,7 +395,7 @@ def perform_linesearch(optim):
                 optim.alpha = optim.factor * optim.alpha
 
     # Check linesearch
-    if ils == (optim.nls_max - 1):  # and optim.w1== False and optim.w2 == False)
+    if ils == (optim.nls_max - 1) and (optim.w1 == False or optim.w2 == False):
         optim.logger("Linesearch ended without finding good model candidate.")
         optim.flag = "fail"
 

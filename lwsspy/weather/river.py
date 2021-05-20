@@ -103,9 +103,6 @@ class River:
         # Get url
         self.construct_url()
 
-        # Get data
-        self.populate()
-
     def construct_url(self):
         """Constructs the URL to request the data for the given station"""
 
