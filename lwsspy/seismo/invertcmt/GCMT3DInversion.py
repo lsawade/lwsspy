@@ -2152,6 +2152,7 @@ def bin():
     database = inputdict["database"]
     specfem = inputdict["specfem"]
     launch_method = inputdict["launch_method"]
+    download_data = inputdict["download_data"]
     damping = inputdict["damping"]
     duration = inputdict["duration"]
     overwrite = inputdict["overwrite"]
@@ -2164,14 +2165,13 @@ def bin():
         specfemdir=specfem,
         pardict=pardict,
         processdict=processdict,
-        download_data=False,
+        download_data=download_data,
         zero_trace=zero_trace,
         duration=duration,
         overwrite=overwrite,
         launch_method=launch_method,
         damping=damping,
         start_label=start_label,
-        no_init=True,
         multiprocesses=38)
 
     # gcmt3d.init()

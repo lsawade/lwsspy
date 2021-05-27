@@ -10,6 +10,9 @@ processparams: null
 # For launching specfem 
 launch_method: jsrun -n 6 -a 4 -c 4 -g 1
 
+# Define whether to download data or not
+download_data: True
+
 # Regularization fraction of absmax of the Gauss-Newton Hessian
 damping: 0.0001
 
