@@ -50,6 +50,7 @@ body:
           s2n_limit_energy: 3.5
           snr_max_base: 3.5
         T:
+          max_surface_wave_velocity: 5.00
           s2n_limit: 3.5
           s2n_limit_energy: 3.5
           snr_max_base: 3.5
@@ -91,6 +92,7 @@ body:
           s2n_limit_energy: 3.5
           snr_max_base: 3.5
         T:
+          max_surface_wave_velocity: 5.00
           s2n_limit: 3.5
           s2n_limit_energy: 3.5
           snr_max_base: 3.5
@@ -197,5 +199,5 @@ mantle:
         Z:
         R:
         T:
-          min_surface_wave_velocity: 3.80
+          min_surface_wave_velocity: 3.0
           max_surface_wave_velocity: 6.5

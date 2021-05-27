@@ -1,12 +1,29 @@
 # Inputs
 database: ./testdatabase
+
+# Specfem Directory
 specfem: ./specfem3d_globe
+
+# For the default also the default process parameters are used
 processparams: null
+
+# For launching specfem 
 launch_method: jsrun -n 6 -a 4 -c 4 -g 1
+
+# Regularization fraction of absmax of the Gauss-Newton Hessian
 damping: 0.0001
+
+# Maximum duration of the simulation 
+# independet of wave type classifier
 duration: 7200 
-overwrite: False
+
+# Whether to constrain the moment tensor to have a zero trace
 zero_trace: False
+
+# Whether to overwrite a previous direcotry completely
+overwrite: False
+
+# Labels for start and final solution "<event_id>_<label>"
 start_label: null
 solution_label: "gcmt3d"
 
