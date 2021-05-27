@@ -1793,13 +1793,21 @@ class GCMT3DInversion:
 
                             # Measurements
                             max_cc_value, nshift = lpy.xcorr(wd, ws)
+
+                            # Get fixed window indeces.
+                            istart, iend = win.left. win.right
+                            istart_d, iend_d, istart_s, iend_s = \
+                                lpy.correct_window_index(istart, iend, nshift)
+                            wd_fix = d[istart_d:iend_d]
+                            ws_fix = s[istart_s:iend_s]
+
                             powerl1 = lpy.power_l1(wd, ws)
                             powerl2 = lpy.power_l2(wd, ws)
                             norm1 = lpy.norm1(wd)
                             norm2 = lpy.norm2(wd)
                             dnorm1 = lpy.dnorm1(wd, ws)
                             dnorm2 = lpy.dnorm2(wd, ws)
-                            dlna = lpy.dlna(wd, ws)
+                            dlna = lpy.dlna(wd_fix, ws_fix)
                             trace_energy += norm2
 
                             windows[_component]["L1"].append(norm1)
@@ -2106,7 +2114,7 @@ def bin():
     import sys
     event = sys.argv[1]
     # damping = float(sys.argv[2])
-    damping = 0.001
+    damping = 0.0001
 
     # Inputs
     database = f"/gpfs/alpine/geo111/scratch/lsawade/testdatabase_mt_stats"
@@ -2114,14 +2122,14 @@ def bin():
     launch_method = "jsrun -n 24 -a 1 -c 1 -g 1"
 
     pardict = dict(
-        m_rr=dict(scale=None, pert=1e23),
-        m_tt=dict(scale=None, pert=1e23),
-        m_pp=dict(scale=None, pert=1e23),
-        m_rt=dict(scale=None, pert=1e23),
-        m_rp=dict(scale=None, pert=1e23),
-        m_tp=dict(scale=None, pert=1e23),
-        latitude=dict(scale=1.0, pert=None),
-        longitude=dict(scale=1.0, pert=None),
+        # m_rr=dict(scale=None, pert=1e23),
+        # m_tt=dict(scale=None, pert=1e23),
+        # m_pp=dict(scale=None, pert=1e23),
+        # m_rt=dict(scale=None, pert=1e23),
+        # m_rp=dict(scale=None, pert=1e23),
+        # m_tp=dict(scale=None, pert=1e23),
+        # latitude=dict(scale=1.0, pert=None),
+        # longitude=dict(scale=1.0, pert=None),
         time_shift=dict(scale=1.0, pert=None),
         depth_in_m=dict(scale=1000.0, pert=None)
     )
@@ -2130,7 +2138,7 @@ def bin():
     #     depth_in_m=dict(scale=1000.0, pert=None)
     # )
     gcmt3d = GCMT3DInversion(event, database, specfemdir, pardict=pardict,
-                             download_data=True, zero_trace=True,
+                             download_data=False, zero_trace=True,
                              duration=7200, overwrite=False,
                              launch_method=launch_method, damping=damping,
                              multiprocesses=38)
