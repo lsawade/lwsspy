@@ -5,6 +5,7 @@ CMTSOLUTTION depth.
 # %% Create inversion directory
 
 # Internal
+from obspy.core import event
 from obspy.core.utcdatetime import UTCDateTime
 from lwsspy.seismo.source import CMTSource
 import lwsspy as lpy
@@ -107,7 +108,9 @@ class GCMT3DInversion:
             multiprocesses: int = 20,
             loglevel: int = logging.DEBUG,
             log2stdout: bool = True,
-            log2file: bool = True):
+            log2file: bool = True,
+            start_label: Optional[str] = None,
+            no_init: bool = False):
 
         # CMTSource
         self.cmtsource = lpy.CMTSource.from_CMTSOLUTION_file(cmtsolutionfile)
@@ -117,8 +120,13 @@ class GCMT3DInversion:
         # File locations
         self.databasedir = os.path.abspath(databasedir)
         self.cmtdir = os.path.join(self.databasedir, self.cmtsource.eventname)
+
+        if start_label is not None:
+            start_label = "_" + start_label
+        else:
+            start_label = "_gcmt"
         self.cmt_in_db = os.path.join(
-            self.cmtdir, self.cmtsource.eventname + "_gcmt")
+            self.cmtdir, self.cmtsource.eventname + start_label)
         self.overwrite: bool = overwrite
         self.download_data = download_data
 
@@ -2112,45 +2120,66 @@ def plot_seismograms(obsd: Trace, synt: Union[Trace, None] = None,
 def bin():
 
     import sys
-    event = sys.argv[1]
-    # damping = float(sys.argv[2])
-    damping = 0.0001
+    import argparse
 
-    # Inputs
-    database = f"/gpfs/alpine/geo111/scratch/lsawade/testdatabase_mt_stats"
-    specfemdir = "/gpfs/alpine/geo111/scratch/lsawade/SpecfemMagic/specfem3d_globe"
-    launch_method = "jsrun -n 24 -a 1 -c 1 -g 1"
+    # Get arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument(dest='event', help='CMTSOLUTION file',
+                        type=str)
+    parser.add_argument('-i', '--inputfile', dest='inputfile',
+                        help='Input file location',
+                        required=False, type=str, default=None)
+    args = parser.parse_args()
 
-    pardict = dict(
-        # m_rr=dict(scale=None, pert=1e23),
-        # m_tt=dict(scale=None, pert=1e23),
-        # m_pp=dict(scale=None, pert=1e23),
-        # m_rt=dict(scale=None, pert=1e23),
-        # m_rp=dict(scale=None, pert=1e23),
-        # m_tp=dict(scale=None, pert=1e23),
-        # latitude=dict(scale=1.0, pert=None),
-        # longitude=dict(scale=1.0, pert=None),
-        time_shift=dict(scale=1.0, pert=None),
-        depth_in_m=dict(scale=1000.0, pert=None)
-    )
-    # pardict = dict(
-    #     time_shift=dict(scale=1.0, pert=None),
-    #     depth_in_m=dict(scale=1000.0, pert=None)
-    # )
-    gcmt3d = GCMT3DInversion(event, database, specfemdir, pardict=pardict,
-                             download_data=False, zero_trace=True,
-                             duration=7200, overwrite=False,
-                             launch_method=launch_method, damping=damping,
-                             multiprocesses=38)
+    cmtsolutionfile = args.event
+    inputfile = args.inputfile
+
+    # Get Input parameters
+    if inputfile is None:
+        inputdict = lpy.read_yaml_file(os.path.join(scriptdir, "input.yml"))
+    else:
+        inputdict = lpy.read_yaml_file(inputfile)
+
+    # Get process params
+    if inputdict["processparams"] is None:
+        processdict = lpy.read_yaml_file(
+            os.path.join(scriptdir, "process.yml"))
+    else:
+        processdict = lpy.read_yaml_file(inputdict["processparams"])
+
+    # Set params
+    pardict = inputdict["parameters"]
+    database = inputdict["database"]
+    specfem = inputdict["specfem"]
+    launch_method = inputdict["launch_method"]
+    damping = inputdict["damping"]
+    duration = inputdict["duration"]
+    overwrite = inputdict["overwrite"]
+    zero_trace = inputdict["zero_trace"]
+    start_label = inputdict["start_label"]
+
+    gcmt3d = GCMT3DInversion(
+        cmtsolutionfile,
+        databasedir=database,
+        specfemdir=specfem,
+        pardict=pardict,
+        processdict=processdict,
+        download_data=False,
+        zero_trace=zero_trace,
+        duration=duration,
+        overwrite=overwrite,
+        launch_method=launch_method,
+        damping=damping,
+        start_label=start_label,
+        no_init=True,
+        multiprocesses=38)
+
     # gcmt3d.init()
-    gcmt3d.process_data()
-    gcmt3d.get_windows()
-    gcmt3d.__compute_weights__()
+    # gcmt3d.process_data()
+    # gcmt3d.get_windows()
+    # gcmt3d.__compute_weights__()
 
     optim_list = []
-
-    max_iter = 5
-    max_nls = 3
 
     with lpy.Timer(plogger=gcmt3d.logger.info):
 
@@ -2160,14 +2189,11 @@ def bin():
         optim_gn.logger = gcmt3d.logger.info
         optim_gn.compute_cost_and_grad_and_hess = \
             gcmt3d.compute_cost_gradient_hessian
-        optim_gn.is_preco = False
-        optim_gn.niter_max = max_iter
-        optim_gn.nls_max = max_nls
-        optim_gn.alpha = 1.0
-        optim_gn.stopping_criterion = 1.0e-2
-        optim_gn.stopping_criterion_cost_change = 1.0e-3
-        optim_gn.stopping_criterion_model = 1.0e-4
 
+        # Set attributes depending on the optimization input parameters
+        for key, val in inputdict["optimization"].items():
+            setattr(optim_gn, key, val)
+        sys.exit()
         # Run optimization
         with lpy.Timer(plogger=gcmt3d.logger.info):
             optim_out = gcmt3d.optimize(optim_gn)
@@ -2181,8 +2207,9 @@ def bin():
             gcmt3d.__update_cmt__(optim_out.model)
 
         # Write model to file
+        solution_label = inputdict["solution_label"]
         gcmt3d.cmt_out.write_CMTSOLUTION_file(
-            f"{gcmt3d.cmtdir}/{gcmt3d.cmt_out.eventname}_gcmt3d")
+            f"{gcmt3d.cmtdir}/{gcmt3d.cmt_out.eventname}_{solution_label}")
 
         optim_list.append(deepcopy(optim_out))
 
