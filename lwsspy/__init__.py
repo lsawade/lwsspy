@@ -156,10 +156,14 @@ if "-m" not in sys.argv:
     from .seismo.perturb_cmt import perturb_cmt  # noqa
     from .seismo.perturb_cmt import perturb_cmt_dir  # noqa
     from .seismo.plot_stationxml import plot_station_xml  # noqa
+    from .seismo.plot_traveltimes import compute_traveltimes  # noqa
+    from .seismo.plot_traveltimes import plot_traveltimes  # noqa
     from .seismo.plot_traveltimes_ak135 import plot_traveltimes_ak135  # noqa
     from .seismo.plot_inventory import plot_inventory  # noqa
     from .seismo.plot_quakes import plot_quakes  # noqa
     from .seismo.plot_seismogram import plot_seismogram  # noqa
+    from .seismo.plot_seismogram import plot_seismogram_by_station  # noqa
+    from .seismo.plot_seismogram import plot_seismograms  # noqa
     from .seismo.stream_pdf import stream_pdf  # noqa
     from .seismo.process.process import process_stream  # noqa
     from .seismo.process.multiprocess_stream import multiprocess_stream  # noqa
@@ -207,6 +211,8 @@ if "-m" not in sys.argv:
     from .seismo.invertcmt.plot_measurements import get_database_measurements  # noqa
     from .seismo.invertcmt.plot_measurements import plot_measurements  # noqa
     from .seismo.invertcmt.plot_measurements import plot_measurement_pkl  # noqa
+    from .seismo.invertcmt.plot_measurements import compute_window_hists  # noqa
+    from .seismo.invertcmt.plot_measurements import plot_window_histograms  # noqa
     from .seismo.invertcmt.process_classifier import filter_scaling  # noqa
     from .seismo.invertcmt.process_classifier import ProcessParams  # noqa
 
