@@ -88,7 +88,7 @@ class GCMT3DInversion:
             processdict: dict = processdict,
             pardict: dict = pardict,
             zero_trace: bool = False,
-            zero_energy: bool = False,
+            # zero_energy: bool = False,
             duration: float = 10800.0,
             starttime_offset: float = -50.0,
             endtime_offset: float = 50.0,
@@ -155,7 +155,7 @@ class GCMT3DInversion:
         self.__get_number_of_forward_simulations__()
         self.not_windowed_yet = True
         self.zero_trace = zero_trace
-        self.zero_energy = zero_energy
+        # self.zero_energy = zero_energy
         self.damping = damping
         self.normalize = normalize
         self.weighting = weighting
@@ -271,13 +271,15 @@ class GCMT3DInversion:
 
                 # Adjust trace length depending on the duration
                 # given to the class
+                self.processdict[_wave]['process']['relative_endtime'] = \
+                    _process_dict["relative_endtime"]
                 if self.processdict[_wave]['process']['relative_endtime'] > self.duration:
                     self.processdict[_wave]['process']['relative_endtime'] = self.duration
 
                 # Adjust windowing config
                 for _windict in self.processdict[_wave]["window"]:
-                    _windict["config"]["min_period"] = _process_dict["filter"][2]
-                    _windict["config"]["max_period"] = _process_dict["filter"][1]
+                    _windict["config"]["min_period"] = _process_dict["filter"][3]
+                    _windict["config"]["max_period"] = _process_dict["filter"][0]
 
         # Remove unnecessary wavetypes
         popkeys = []
@@ -371,7 +373,7 @@ class GCMT3DInversion:
         # model parameters. For the zero_energy constraint, we explicitly have
         # have to compute this gradient from measurements, and is therefore
         # "missing" here
-        if self.zero_trace and not self.zero_energy:
+        if self.zero_trace:  # and not self.zero_energy:
 
             self.zero_trace_array = np.array([1.0 if _par in ['m_rr', 'm_tt', 'm_pp'] else 0.0
                                               for _par in self.pardict.keys()])
@@ -379,14 +381,14 @@ class GCMT3DInversion:
                 self.zero_trace_array == 1.)[0]
             self.zero_trace_array = np.append(self.zero_trace_array, 0.0)
 
-        elif self.zero_trace and self.zero_energy:
+        # elif self.zero_trace and self.zero_energy:
 
-            self.zero_trace_array = np.array([1.0 if _par in ['m_rr', 'm_tt', 'm_pp'] else 0.0
-                                              for _par in self.pardict.keys()])
-            self.zero_trace_index_array = np.where(
-                self.zero_trace_array == 1.)[0]
-            self.zero_trace_array = np.append(self.zero_trace_array, 0.0)
-            self.zero_trace_array = np.append(self.zero_trace_array, 0.0)
+        #     self.zero_trace_array = np.array([1.0 if _par in ['m_rr', 'm_tt', 'm_pp'] else 0.0
+        #                                       for _par in self.pardict.keys()])
+        #     self.zero_trace_index_array = np.where(
+        #         self.zero_trace_array == 1.)[0]
+        #     self.zero_trace_array = np.append(self.zero_trace_array, 0.0)
+        #     self.zero_trace_array = np.append(self.zero_trace_array, 0.0)
 
         # Get the model vector given the parameters to invert for
         self.model = np.array(
@@ -1149,19 +1151,19 @@ class GCMT3DInversion:
     def compute_cost_gradient_hessian(self, model):
 
         # Update model
-        if self.zero_trace and not self.zero_energy:
+        if self.zero_trace:  # and not self.zero_energy:
             mu = model[-1]
             self.model = model[:-1] * self.scale
             self.scaled_model = model[:-1]
 
-        elif self.zero_trace and self.zero_energy:
-            mu = model[-2:]
-            self.model = model[:-2] * self.scale
-            self.scaled_model = model[:-2]
-        elif not self.zero_trace and self.zero_energy:
-            mu = model[-1]
-            self.model = model[:-1] * self.scale
-            self.scaled_model = model[:-1]
+        # elif self.zero_trace and self.zero_energy:
+        #     mu = model[-2:]
+        #     self.model = model[:-2] * self.scale
+        #     self.scaled_model = model[:-2]
+        # elif not self.zero_trace and self.zero_energy:
+        #     mu = model[-1]
+        #     self.model = model[:-1] * self.scale
+        #     self.scaled_model = model[:-1]
         else:
             self.model = model * self.scale
             self.scaled_model = model
@@ -1213,9 +1215,9 @@ class GCMT3DInversion:
         h = np.diag(self.scale) @ h @ np.diag(self.scale)
 
         # Scaling the log energy cost grad and hessian
-        if self.zero_energy:
-            g_log *= self.scale
-            h_log = np.diag(self.scale) @ h_log @ np.diag(self.scale)
+        # if self.zero_energy:
+        #     g_log *= self.scale
+        #     h_log = np.diag(self.scale) @ h_log @ np.diag(self.scale)
 
         self.logger.debug("Scaled")
         self.logger.debug(f"C: {cost}")
@@ -1235,16 +1237,16 @@ class GCMT3DInversion:
             g += factor * modelres
             h += factor * np.eye(len(self.model))
 
-        self.logger.debug("Damped")
-        self.logger.debug("Scaled")
-        self.logger.debug(f"C: {cost}")
-        self.logger.debug("G:")
-        self.logger.debug(g.flatten())
-        self.logger.debug("H")
-        self.logger.debug(h.flatten())
+            self.logger.debug("Damped")
+            self.logger.debug("Scaled")
+            self.logger.debug(f"C: {cost}")
+            self.logger.debug("G:")
+            self.logger.debug(g.flatten())
+            self.logger.debug("H")
+            self.logger.debug(h.flatten())
 
         # Add zero trace condition
-        if self.zero_trace and not self.zero_energy:
+        if self.zero_trace:  # and not self.zero_energy:
             m, n = h.shape
             hz = np.zeros((m+1, n+1))
             hz[:-1, :-1] = h
@@ -1254,37 +1256,37 @@ class GCMT3DInversion:
             g = np.append(g, 0.0)
             g[-1] = np.sum(self.scaled_model[self.zero_trace_index_array])
 
-        elif self.zero_trace and self.zero_energy:
-            m, n = h.shape
-            hz = np.zeros((m+2, n+2))
-            hz[:-2, :-2] = h + 1 * h_log
-            hz[:, -2] = self.zero_trace_array
-            hz[-2, :] = self.zero_trace_array
-            hz[:-2, -1] = g_log
-            hz[-1, :-2] = g_log
-            h = hz
-            g = np.append(g, 0.0)
-            g = np.append(g, 0.0)
-            g[-2] = np.sum(self.scaled_model[self.zero_trace_index_array])
-            g[-1] = c_log
+        # elif self.zero_trace and self.zero_energy:
+        #     m, n = h.shape
+        #     hz = np.zeros((m+2, n+2))
+        #     hz[:-2, :-2] = h + 1 * h_log
+        #     hz[:, -2] = self.zero_trace_array
+        #     hz[-2, :] = self.zero_trace_array
+        #     hz[:-2, -1] = g_log
+        #     hz[-1, :-2] = g_log
+        #     h = hz
+        #     g = np.append(g, 0.0)
+        #     g = np.append(g, 0.0)
+        #     g[-2] = np.sum(self.scaled_model[self.zero_trace_index_array])
+        #     g[-1] = c_log
 
-        elif not self.zero_trace and self.zero_energy:
-            m, n = h.shape
-            hz = np.zeros((m+1, n+1))
-            hz[:-1, :-1] = h
-            hz[:-1, -1] = g_log
-            hz[-1, :-1] = g_log
-            h = hz
-            g = np.append(g, 0.0)
-            g[-1] = c_log
+        # elif not self.zero_trace and self.zero_energy:
+        #     m, n = h.shape
+        #     hz = np.zeros((m+1, n+1))
+        #     hz[:-1, :-1] = h
+        #     hz[:-1, -1] = g_log
+        #     hz[-1, :-1] = g_log
+        #     h = hz
+        #     g = np.append(g, 0.0)
+        #     g[-1] = c_log
 
             # Show stuf when debugging
-        self.logger.debug("Constrained:")
-        self.logger.debug(f"C: {cost}")
-        self.logger.debug("G:")
-        self.logger.debug(g.flatten())
-        self.logger.debug("H")
-        self.logger.debug(h.flatten())
+            self.logger.debug("Constrained:")
+            self.logger.debug(f"C: {cost}")
+            self.logger.debug("G:")
+            self.logger.debug(g.flatten())
+            self.logger.debug("H")
+            self.logger.debug(h.flatten())
 
         return cost, g, h
 
@@ -1725,7 +1727,7 @@ class GCMT3DInversion:
                 windows[_component]["back_azimuth"] = []
                 windows[_component]["nshift"] = []
                 windows[_component]["time_shift"] = []
-                windows[_component]["max_cc_calue"] = []
+                windows[_component]["maxcc"] = []
                 windows[_component]["dlna"] = []
                 windows[_component]["L1"] = []
                 windows[_component]["L2"] = []
@@ -1811,7 +1813,7 @@ class GCMT3DInversion:
                             windows[_component]["time_shift"].append(
                                 nshift * dt
                             )
-                            windows[_component]["max_cc_calue"].append(
+                            windows[_component]["maxcc"].append(
                                 max_cc_value
                             )
                         # Create array with the energy
