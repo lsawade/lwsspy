@@ -2193,7 +2193,7 @@ def bin():
         # Set attributes depending on the optimization input parameters
         for key, val in inputdict["optimization"].items():
             setattr(optim_gn, key, val)
-        sys.exit()
+
         # Run optimization
         with lpy.Timer(plogger=gcmt3d.logger.info):
             optim_out = gcmt3d.optimize(optim_gn)
