@@ -1803,7 +1803,7 @@ class GCMT3DInversion:
                             max_cc_value, nshift = lpy.xcorr(wd, ws)
 
                             # Get fixed window indeces.
-                            istart, iend = win.left. win.right
+                            istart, iend = win.left, win.right
                             istart_d, iend_d, istart_s, iend_s = \
                                 lpy.correct_window_index(istart, iend, nshift)
                             wd_fix = d[istart_d:iend_d]
