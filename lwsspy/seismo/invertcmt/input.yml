@@ -26,7 +26,8 @@ zero_trace: False
 # Whether to overwrite a previous direcotry completely
 overwrite: False
 
-# Labels for start and final solution "<event_id>_<label>"
+# Labels for start and final solution "<event_id>_<label>", 
+# Solution label must be set
 start_label: null
 solution_label: "gcmt3d"
 
