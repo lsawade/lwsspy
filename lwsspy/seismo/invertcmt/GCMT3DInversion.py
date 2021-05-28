@@ -1207,9 +1207,9 @@ class GCMT3DInversion:
         cost /= self.cost_norm
 
         # Compute the log energy cost grad and hessian
-        if self.zero_energy:
-            c_log = self.__compute_cost_log__()
-            g_log, h_log = self.__compute_gradient_and_hessian_log__()
+        # if self.zero_energy:
+        #     c_log = self.__compute_cost_log__()
+        #     g_log, h_log = self.__compute_gradient_and_hessian_log__()
 
         self.logger.debug("Raw")
         self.logger.debug(f"C: {cost}")
@@ -2158,6 +2158,7 @@ def bin():
     overwrite = inputdict["overwrite"]
     zero_trace = inputdict["zero_trace"]
     start_label = inputdict["start_label"]
+    solution_label = inputdict["solution_label"]
 
     gcmt3d = GCMT3DInversion(
         cmtsolutionfile,
@@ -2207,7 +2208,6 @@ def bin():
             gcmt3d.__update_cmt__(optim_out.model)
 
         # Write model to file
-        solution_label = inputdict["solution_label"]
         gcmt3d.cmt_out.write_CMTSOLUTION_file(
             f"{gcmt3d.cmtdir}/{gcmt3d.cmt_out.eventname}_{solution_label}")
 
