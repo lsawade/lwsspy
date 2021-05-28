@@ -1163,6 +1163,9 @@ class GCMT3DInversion:
             mu = model[-1]
             self.model = model[:-1] * self.scale
             self.scaled_model = model[:-1]
+        else:
+            self.model = model * self.scale
+            self.scaled_model = model
 
         # elif self.zero_trace and self.zero_energy:
         #     mu = model[-2:]
@@ -1172,9 +1175,6 @@ class GCMT3DInversion:
         #     mu = model[-1]
         #     self.model = model[:-1] * self.scale
         #     self.scaled_model = model[:-1]
-        else:
-            self.model = model * self.scale
-            self.scaled_model = model
 
         # Write sources for next iteration
         self.__write_sources__()
@@ -2175,9 +2175,9 @@ def bin():
         multiprocesses=38)
 
     # gcmt3d.init()
-    # gcmt3d.process_data()
-    # gcmt3d.get_windows()
-    # gcmt3d.__compute_weights__()
+    gcmt3d.process_data()
+    gcmt3d.get_windows()
+    gcmt3d.__compute_weights__()
 
     optim_list = []
 
