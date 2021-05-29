@@ -1805,7 +1805,8 @@ class GCMT3DInversion:
                             # Get fixed window indeces.
                             istart, iend = win.left, win.right
                             istart_d, iend_d, istart_s, iend_s = \
-                                lpy.correct_window_index(istart, iend, nshift)
+                                lpy.correct_window_index(
+                                    istart, iend, nshift, len(wd))
                             wd_fix = d[istart_d:iend_d]
                             ws_fix = s[istart_s:iend_s]
 
