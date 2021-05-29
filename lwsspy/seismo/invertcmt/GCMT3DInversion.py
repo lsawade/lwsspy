@@ -1771,6 +1771,7 @@ class GCMT3DInversion:
 
                             # Infos
                             dt = _tr.stats.delta
+                            npts = _tr.stats.npts
                             winleft = get_toffset(
                                 win.left, dt, win.time_of_first_sample,
                                 event.origin_time)
@@ -1806,7 +1807,7 @@ class GCMT3DInversion:
                             istart, iend = win.left, win.right
                             istart_d, iend_d, istart_s, iend_s = \
                                 lpy.correct_window_index(
-                                    istart, iend, nshift, len(wd))
+                                    istart, iend, nshift, npts)
                             wd_fix = d[istart_d:iend_d]
                             ws_fix = s[istart_s:iend_s]
 
