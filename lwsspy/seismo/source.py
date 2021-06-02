@@ -35,8 +35,8 @@ class CMTSource(object):
                  pde_latitude=0.0, pde_longitude=0.0, mb=0.0, ms=0.0,
                  pde_depth_in_m=None, region_tag=None, eventname=None,
                  cmt_time=UTCDateTime(0), half_duration=0.0, latitude=0.0,
-                 longitude=0.0, depth_in_m=None, m_rr=1.0, m_tt=1.0, m_pp=1.0, m_rt=1.0,
-                 m_rp=1.0, m_tp=1.0):
+                 longitude=0.0, depth_in_m=None, m_rr=0.0, m_tt=0.0, m_pp=0.0, m_rt=0.0,
+                 m_rp=0.0, m_tp=0.0):
         """
         :param latitude: latitude of the source in degree
         :param longitude: longitude of the source in degree
@@ -280,6 +280,21 @@ class CMTSource(object):
         return (self.m_rr ** 2 + self.m_tt ** 2 + self.m_pp ** 2
                 + 2 * self.m_rt ** 2 + 2 * self.m_rp ** 2
                 + 2 * self.m_tp ** 2) ** 0.5 * 0.5 ** 0.5
+
+    @M0.setter
+    def M0(self, M0):
+        """
+        Scalar Moment M0 in Nm
+        """
+        iM0 = self.M0
+        fM0 = M0
+        factor = fM0/iM0
+        self.m_rr *= factor
+        self.m_tt *= factor
+        self.m_pp *= factor
+        self.m_rt *= factor
+        self.m_rp *= factor
+        self.m_tp *= factor
 
     @property
     def moment_magnitude(self):
