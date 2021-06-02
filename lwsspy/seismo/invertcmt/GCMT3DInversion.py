@@ -554,16 +554,18 @@ class GCMT3DInversion:
                         0.5, 0.5]
                     self.weights[_wtype][_component]["combination"] = [
                         0.5, 0.5]
+                    weights = [0.5, 0.5]
 
                 elif len(latitudes) == 1 and len(longitudes) == 1:
                     self.weights[_wtype][_component]["azimuthal"] = [1.0]
                     self.weights[_wtype][_component]["geographical"] = [1.0]
                     self.weights[_wtype][_component]["combination"] = [1.0]
-
+                    weights = [1.0]
                 else:
                     self.weights[_wtype][_component]["azimuthal"] = []
                     self.weights[_wtype][_component]["geographical"] = []
                     self.weights[_wtype][_component]["combination"] = []
+                    weights = []
 
                 # Add weights to traces
                 for _tr, _weight in zip(RTZ_traces[_component], weights):

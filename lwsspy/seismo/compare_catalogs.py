@@ -181,9 +181,10 @@ class CompareCatalogs:
                  "k--", lw=1.5)
 
         # Axes properties
-        plt.ylim(([0, np.max(self.odepth)]))
+        plt.ylim(([10, np.max(self.odepth)]))
         plt.xlim(([np.min(self.ddepth), np.max(self.ddepth)]))
         ax.invert_yaxis()
+        ax.set_yscale('log')
         plt.xlabel("Depth Change [km]")
         plt.ylabel("Depth [km]")
 
@@ -223,9 +224,11 @@ class CompareCatalogs:
         plot_label(ax, 'c)', location=6, box=False)
 
         # Plot tshift histogram
+        tbins = self.nbins
+        # tbins = np.linspace(-0.5, 0.5, 100)
         ax = fig.add_subplot(GS[2, 0])
         self.plot_histogram(
-            self.ntime_shift-self.otime_shift, np.linspace(-0.5, 0.5, 100),
+            self.ntime_shift-self.otime_shift, tbins,
             facecolor='lightgray')
         remove_topright()
         plt.xlabel("Centroid Time Change [sec]")
@@ -233,9 +236,11 @@ class CompareCatalogs:
         plot_label(ax, 'd)', location=6, box=False)
 
         # Plot Scalar Moment histogram
+        Mbins = self.nbins
+        # Mbins = np.linspace(-10, 10, 100)
         ax = fig.add_subplot(GS[2, 1])
         self.plot_histogram(
-            (self.nM0-self.oM0)/self.oM0*100, np.linspace(-10, 10, 100),
+            (self.nM0-self.oM0)/self.oM0*100, Mbins,
             facecolor='lightgray', statsleft=True)
         remove_topright()
         plt.xlabel("Scalar Moment Change [%]")
@@ -243,9 +248,11 @@ class CompareCatalogs:
         plot_label(ax, 'e)', location=6, box=False)
 
         # Plot ddepth histogram
+        zbins = self.nbins
+        # zbins = np.linspace(-2.5, 2.5, 100)
         ax = fig.add_subplot(GS[2, 2])
         self.plot_histogram(
-            self.ndepth-self.odepth, np.linspace(-2.5, 2.5, 100), facecolor='lightgray',
+            self.ndepth-self.odepth, zbins, facecolor='lightgray',
             statsleft=True)
         remove_topright()
         plt.xlabel("Depth Change [km]")
