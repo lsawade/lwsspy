@@ -16,6 +16,9 @@ download_data: False
 # Regularization fraction of absmax of the Gauss-Newton Hessian
 damping: 0.0001
 
+# Hypocenter damping, unused if damping is non-zero
+hypo_damping: 0.0001
+
 # Maximum duration of the simulation 
 # independet of wave type classifier
 duration: 7200 

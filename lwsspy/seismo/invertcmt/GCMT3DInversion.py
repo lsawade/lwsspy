@@ -63,6 +63,7 @@ bash_escape = "source ~/.bash_profile"
 parameter_check_list = ['depth_in_m', "time_shift", 'latitude', 'longitude',
                         "m_rr", "m_tt", "m_pp", "m_rt", "m_rp", "m_tp"]
 nosimpars = ["time_shift", "half_duration"]
+hypo_pars = ['depth_in_m', "time_shift", 'latitude', 'longitude']
 mt_params = ["m_rr", "m_tt", "m_pp", "m_rt", "m_rp", "m_tp"]
 
 pardict = dict(
@@ -99,6 +100,7 @@ class GCMT3DInversion:
             bash_escape: str = bash_escape,
             download_dict: dict = download_dict,
             damping: float = 0.001,
+            hypo_damping: float = 0.001,
             weighting: bool = True,
             normalize: bool = True,
             overwrite: bool = False,
@@ -165,6 +167,7 @@ class GCMT3DInversion:
         self.zero_trace = zero_trace
         # self.zero_energy = zero_energy
         self.damping = damping
+        self.hypo_damping = hypo_damping
         self.normalize = normalize
         self.weighting = weighting
         self.weights_rtz = dict(R=1.0, T=1.0, Z=1.0)
@@ -397,6 +400,18 @@ class GCMT3DInversion:
         #         self.zero_trace_array == 1.)[0]
         #     self.zero_trace_array = np.append(self.zero_trace_array, 0.0)
         #     self.zero_trace_array = np.append(self.zero_trace_array, 0.0)
+
+        # damping settings
+        if self.damping > 0.0:
+            # Do nothing as damping is easy to handle
+            pass
+
+        elif self.hypo_damping > 0.0:
+            # Figure out where to dampen!
+            self.hypo_damp_array = np.array([1.0 if _par in hypo_pars else 0.0
+                                             for _par in self.pardict.keys()])
+            self.hypo_damp_index_array = np.where(
+                self.hypo_damp_array == 1.)[0]
 
         # Get the model vector given the parameters to invert for
         self.model = np.array(
@@ -1255,7 +1270,28 @@ class GCMT3DInversion:
             self.logger.debug("H")
             self.logger.debug(h.flatten())
 
-        # Add zero trace condition
+        elif self.hypo_damping > 0.0:
+            # Only get the hessian elements of the hypocenter
+            hdiag = np.diag(h)[self.hypo_damp_index_array]
+            factor = self.hypo_damping * np.max(np.abs((hdiag)))
+            self.logger.debug(f"f: {factor}")
+            modelres = self.scaled_model - self.init_scaled_model
+            self.logger.debug(f"Model Residual: {modelres.flatten()}")
+            self.logger.debug(f"Cost Before: {cost}")
+            # cost += factor/2 * np.sum(modelres**2)
+            self.logger.debug(f"Cost After: {cost}")
+            g += factor * modelres
+            h += factor * np.diag(self.hypo_damp_array)
+
+            self.logger.debug("Damped")
+            self.logger.debug("Scaled")
+            self.logger.debug(f"C: {cost}")
+            self.logger.debug("G:")
+            self.logger.debug(g.flatten())
+            self.logger.debug("H")
+            self.logger.debug(h.flatten())
+
+            # Add zero trace condition
         if self.zero_trace:  # and not self.zero_energy:
             m, n = h.shape
             hz = np.zeros((m+1, n+1))
