@@ -1263,7 +1263,6 @@ class GCMT3DInversion:
             h += factor * np.eye(len(self.model))
 
             self.logger.debug("Damped")
-            self.logger.debug("Scaled")
             self.logger.debug(f"C: {cost}")
             self.logger.debug("G:")
             self.logger.debug(g.flatten())
@@ -1273,6 +1272,8 @@ class GCMT3DInversion:
         elif self.hypo_damping > 0.0:
             # Only get the hessian elements of the hypocenter
             hdiag = np.diag(h)[self.hypo_damp_index_array]
+            self.logger.debug("HypoDiag:")
+            self.logger.debug(hdiag)
             factor = self.hypo_damping * np.max(np.abs((hdiag)))
             self.logger.debug(f"f: {factor}")
             modelres = self.scaled_model - self.init_scaled_model
@@ -1283,8 +1284,7 @@ class GCMT3DInversion:
             g += factor * modelres
             h += factor * np.diag(self.hypo_damp_array)
 
-            self.logger.debug("Damped")
-            self.logger.debug("Scaled")
+            self.logger.debug("Hypocenter-Damped")
             self.logger.debug(f"C: {cost}")
             self.logger.debug("G:")
             self.logger.debug(g.flatten())
@@ -1843,9 +1843,8 @@ class GCMT3DInversion:
 
                             # Get fixed window indeces.
                             istart, iend = win.left, win.right
-                            istart_d, iend_d, istart_s, iend_s = \
-                                lpy.correct_window_index(
-                                    istart, iend, nshift, npts)
+                            istart_d, iend_d, istart_s, iend_s = lpy.correct_window_index(
+                                istart, iend, nshift, npts)
                             wd_fix = d[istart_d:iend_d]
                             ws_fix = s[istart_s:iend_s]
 
@@ -1885,9 +1884,8 @@ class GCMT3DInversion:
             # Get corresponding Synthetic data
             _syn_stream = synt[_wtype]["synt"]
 
-            window_dict[_wtype] = \
-                get_measurements_and_windows(
-                    _obs_stream, _syn_stream, self.cmtsource)
+            window_dict[_wtype] = get_measurements_and_windows(
+                _obs_stream, _syn_stream, self.cmtsource)
 
         # Create output file
         filename = "measurements"
@@ -2228,8 +2226,7 @@ def bin():
         lpy.log_bar("GN", plogger=gcmt3d.logger.info)
         optim_gn = lpy.Optimization("gn")
         optim_gn.logger = gcmt3d.logger.info
-        optim_gn.compute_cost_and_grad_and_hess = \
-            gcmt3d.compute_cost_gradient_hessian
+        optim_gn.compute_cost_and_grad_and_hess = gcmt3d.compute_cost_gradient_hessian
 
         # Set attributes depending on the optimization input parameters
         for key, val in inputdict["optimization"].items():
