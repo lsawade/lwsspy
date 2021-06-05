@@ -215,6 +215,7 @@ if "-m" not in sys.argv:
     from .seismo.invertcmt.plot_measurements import plot_window_histograms  # noqa
     from .seismo.invertcmt.process_classifier import filter_scaling  # noqa
     from .seismo.invertcmt.process_classifier import ProcessParams  # noqa
+    from .seismo.invertcmt.io import read_output_traces  # noqa
 
     # Shell
     from .shell.cat import cat  # noqa
