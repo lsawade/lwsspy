@@ -413,6 +413,9 @@ class GCMT3DInversion:
             self.hypo_damp_index_array = np.where(
                 self.hypo_damp_array == 1.)[0]
 
+            self.logger.debug("Hypocenter-Damping Indeces:")
+            self.logger.debug(self.hypo_damp_index_array)
+
         # Get the model vector given the parameters to invert for
         self.model = np.array(
             [getattr(self.cmtsource, _par) for _par in self.pardict.keys()])
