@@ -1277,6 +1277,8 @@ class GCMT3DInversion:
             hdiag = np.diag(h)[self.hypo_damp_index_array]
             self.logger.debug("HypoDiag:")
             self.logger.debug(hdiag)
+            self.logger.debug("HypoDamping:")
+            self.logger.debug(self.hypo_damping)
             factor = self.hypo_damping * np.max(np.abs((hdiag)))
             self.logger.debug(f"f: {factor}")
             modelres = self.scaled_model - self.init_scaled_model
@@ -2194,6 +2196,7 @@ def bin():
     specfem = inputdict["specfem"]
     launch_method = inputdict["launch_method"]
     download_data = inputdict["download_data"]
+    hypo_damping = inputdict["hypo_damping"]
     damping = inputdict["damping"]
     duration = inputdict["duration"]
     overwrite = inputdict["overwrite"]
@@ -2213,6 +2216,7 @@ def bin():
         overwrite=overwrite,
         launch_method=launch_method,
         damping=damping,
+        hypo_damping=hypo_damping,
         start_label=start_label,
         multiprocesses=38)
 
