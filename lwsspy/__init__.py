@@ -216,7 +216,7 @@ if "-m" not in sys.argv:
     from .seismo.invertcmt.process_classifier import filter_scaling  # noqa
     from .seismo.invertcmt.process_classifier import ProcessParams  # noqa
     from .seismo.invertcmt.io import read_output_traces  # noqa
-
+    from .seismo.invertcmt.io import read_measurements  # noqa
     # Shell
     from .shell.cat import cat  # noqa
     from .shell.copy_dirtree import copy_dirtree  # noqa

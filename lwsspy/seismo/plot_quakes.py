@@ -26,7 +26,7 @@ def plot_quakes(latitude, longitude, depth, moment,
     Parameters
     ----------
     latitude : np.ndarray
-        Latitudes   
+        Latitudes
     longitude : np.ndarray
         Longitudes
     depth : np.ndarray
@@ -41,7 +41,7 @@ def plot_quakes(latitude, longitude, depth, moment,
     cmap : str, optional
         by default ``jet``, by default None
     sizefunc : Callable, optional
-        Function to resize the scatter points, 
+        Function to resize the scatter points,
         by default lambda x : (x - (np.min(x) - 1)) ** 2.5
     legend : bool, optional
         flag on whether to plot the legend, by default True
@@ -52,7 +52,8 @@ def plot_quakes(latitude, longitude, depth, moment,
 
     Returns
     -------
-    Tuple[ matplotlib.collections.PathCollection, matplotlib.axes.Axes, Union[None, matplotlib.legend.Legend], Union[None, matplotlib.legend.Legend]]
+    Tuple[ matplotlib.collections.PathCollection, matplotlib.axes.Axes,
+        Union[None, matplotlib.legend.Legend], Union[None, matplotlib.legend.Legend]]
         If legend is true (scatter, ax, depthlegend, momentlegend), else:
         (scatter, ax, None, None)
 
@@ -65,6 +66,14 @@ def plot_quakes(latitude, longitude, depth, moment,
                   50.0, 70.0, 200.0, 400.0, 600.0, 700.0]
 
     isort = np.argsort(depth)[::-1]
+    mindepth = np.min(depth)
+    maxdepth = np.max(depth)
+    level_minidx = int(np.where(levels < mindepth)[0][-1])
+    level_maxidx = int(np.where(levels > maxdepth)[0][0])
+
+    # Fix levels
+    levels = levels[level_minidx:level_maxidx]
+    levels.append(levels[-1] + 10)
 
     # Create
     colormap = plt.get_cmap(cmap)
@@ -85,7 +94,7 @@ def plot_quakes(latitude, longitude, depth, moment,
     scatter = plt.scatter(longitude[isort], latitude[isort],
                           sizefunc(rmoments[isort]), c=depth[isort],
                           transform=PlateCarree(), cmap=cmap, alpha=1.0,
-                          norm=norm, edgecolor='k', linewidth=0.1)
+                          norm=norm, edgecolor='k', linewidth=0.1, zorder=10)
 
     if legend:
 
