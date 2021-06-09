@@ -181,6 +181,7 @@ if "-m" not in sys.argv:
     from .seismo.source import CMTSource  # noqa
     from .seismo.stream_multiply import stream_multiply  # noqa
     from .seismo.validate_cmt import validate_cmt  # noqa
+    print('past halfway')
     from .seismo.specfem.cmt2rundir import cmt2rundir  # noqa
     from .seismo.specfem.cmt2simdir import cmt2simdir  # noqa
     from .seismo.specfem.cmt2STATIONS import cmt2STATIONS  # noqa
