@@ -166,6 +166,7 @@ if "-m" not in sys.argv:
     from .seismo.plot_seismogram import plot_seismograms  # noqa
     from .seismo.stream_pdf import stream_pdf  # noqa
     from .seismo.process.process import process_stream  # noqa
+    from .seismo.process.mpiprocessclass import MPIProcessStream  # noqa
     from .seismo.process.multiprocess_stream import multiprocess_stream  # noqa
     from .seismo.process.process_wrapper import process_wrapper  # noqa
     from .seismo.process.rotate import rotate_stream  # noqa
@@ -193,6 +194,7 @@ if "-m" not in sys.argv:
     from .seismo.specfem.stationxmldir2STATIONSdir import stationxmldir2STATIONSdir  # noqa
     from .seismo.specfem.write_parfile import write_parfile  # noqa
     from .seismo.window.multiwindow_stream import multiwindow_stream  # noqa
+    from .seismo.window.mpiwindowclass import MPIWindowStream  # noqa
     from .seismo.window.window import window_on_stream  # noqa
     from .seismo.window.window import merge_trace_windows  # noqa
     from .seismo.window.add_tapers import add_tapers  # noqa

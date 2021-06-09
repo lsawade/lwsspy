@@ -26,6 +26,13 @@ import multiprocessing.pool as mpp
 import _pickle as cPickle
 from .process_classifier import ProcessParams
 import logging
+try:
+    from mpi4py import MPI
+    MPIMODE = True
+except ImportError as e:
+    print(e)
+    MPIMODE = False
+
 
 lpy.updaterc(rebuild=False)
 
@@ -112,84 +119,104 @@ class GCMT3DInversion:
             log2stdout: bool = True,
             log2file: bool = True,
             start_label: Optional[str] = None,
-            no_init: bool = False):
+            no_init: bool = False,
+            force_no_mpi: bool = False):
 
-        # CMTSource
-        self.cmtsource = lpy.CMTSource.from_CMTSOLUTION_file(cmtsolutionfile)
-        self.cmt_out = deepcopy(self.cmtsource)
-        self.xml_event = read_events(cmtsolutionfile)[0]
+        if force_no_mpi:
+            MPIMODE = False
 
-        # File locations
-        self.databasedir = os.path.abspath(databasedir)
-        self.cmtdir = os.path.join(self.databasedir, self.cmtsource.eventname)
-
-        if start_label is not None:
-            start_label = "_" + start_label
+        if MPIMODE:
+            self.comm = MPI.COMM_WORLD
+            self.rank = self.comm.Get_rank()
+            self.size = self.comm.Get_size()
         else:
-            start_label = "_gcmt"
-        self.cmt_in_db = os.path.join(
-            self.cmtdir, self.cmtsource.eventname + start_label)
-        self.overwrite: bool = overwrite
-        self.download_data = download_data
+            self.comm = None
+            self.rank = None
+            self.size = None
 
-        # Simulation stuff
-        self.specfemdir = specfemdir
-        self.specfem_dict = specfem_dict
-        self.launch_method = launch_method.split()
+        if MPIMODE is False or self.rank == 0:
 
-        # Processing parameters
-        self.processdict = processdict
-        self.process_func = process_func
-        self.window_func = window_func
-        self.duration = duration
-        self.duration_in_m = np.ceil(duration/60.0)
-        self.simulation_duration = np.round(self.duration_in_m * 1.02)
-        self.multiprocesses = multiprocesses
-        self.sumfunc = lambda results: Stream(results)
+            # CMTSource
+            self.cmtsource = lpy.CMTSource.from_CMTSOLUTION_file(
+                cmtsolutionfile)
+            self.cmt_out = deepcopy(self.cmtsource)
+            self.xml_event = read_events(cmtsolutionfile)[0]
 
-        # Inversion dictionary
-        self.pardict = pardict
+            # File locations
+            self.databasedir = os.path.abspath(databasedir)
+            self.cmtdir = os.path.join(
+                self.databasedir, self.cmtsource.eventname)
 
-        # Download parameters
-        self.starttime_offset = starttime_offset
-        self.endtime_offset = endtime_offset
-        self.download_dict = download_dict
+            if start_label is not None:
+                start_label = "_" + start_label
+            else:
+                start_label = "_gcmt"
+            self.cmt_in_db = os.path.join(
+                self.cmtdir, self.cmtsource.eventname + start_label)
+            self.overwrite: bool = overwrite
+            self.download_data = download_data
 
-        # Compute Node does not have internet
-        self.conda_activation = conda_activation
-        self.node_login = node_login
-        self.bash_escape = bash_escape
+            # Simulation stuff
+            self.specfemdir = specfemdir
+            self.specfem_dict = specfem_dict
+            self.launch_method = launch_method.split()
 
-        # Inversion parameters:
-        self.nsim = 1
-        self.__get_number_of_forward_simulations__()
-        self.not_windowed_yet = True
-        self.zero_trace = zero_trace
-        # self.zero_energy = zero_energy
-        self.damping = damping
-        self.hypo_damping = hypo_damping
-        self.normalize = normalize
-        self.weighting = weighting
-        self.weights_rtz = dict(R=1.0, T=1.0, Z=1.0)
+            # Processing parameters
+            self.processdict = processdict
+            self.process_func = process_func
+            self.window_func = window_func
+            self.duration = duration
+            self.duration_in_m = np.ceil(duration/60.0)
+            self.simulation_duration = np.round(self.duration_in_m * 1.02)
+            self.multiprocesses = multiprocesses
+            self.sumfunc = lambda results: Stream(results)
 
-        # Initialize data dictionaries
-        self.data_dict: dict = dict()
-        self.synt_dict: dict = dict()
-        self.zero_window_removal_dict: dict = dict()
+            # Inversion dictionary
+            self.pardict = pardict
 
-        # Logging
-        self.loglevel = loglevel
-        self.log2stdout = log2stdout
-        self.log2file = log2file
+            # Download parameters
+            self.starttime_offset = starttime_offset
+            self.endtime_offset = endtime_offset
+            self.download_dict = download_dict
 
-        # Basic Checks
-        self.__basic_check__()
+            # Compute Node does not have internet
+            self.conda_activation = conda_activation
+            self.node_login = node_login
+            self.bash_escape = bash_escape
 
-        # Initialize
-        self.init()
+            # Inversion parameters:
+            self.nsim = 1
+            self.__get_number_of_forward_simulations__()
+            self.not_windowed_yet = True
+            self.zero_trace = zero_trace
+            # self.zero_energy = zero_energy
+            self.damping = damping
+            self.hypo_damping = hypo_damping
+            self.normalize = normalize
+            self.weighting = weighting
+            self.weights_rtz = dict(R=1.0, T=1.0, Z=1.0)
 
-        # Set iteration number
-        self.iteration = 0
+            # Initialize data dictionaries
+            self.data_dict: dict = dict()
+            self.synt_dict: dict = dict()
+            self.zero_window_removal_dict: dict = dict()
+
+            # Logging
+            self.loglevel = loglevel
+            self.log2stdout = log2stdout
+            self.log2file = log2file
+
+            # Basic Checks
+            self.__basic_check__()
+
+            # Initialize
+            self.init()
+
+            # Set iteration number
+            self.iteration = 0
+
+        if MPIMODE:
+            self.comm.Barrier()
 
     def __basic_check__(self):
 
@@ -202,7 +229,8 @@ class GCMT3DInversion:
 
         # If one moment tensor parameter is given all must be given.
         if any([_par in self.pardict for _par in mt_params]):
-            checklist = [_par for _par in mt_params if _par in self.pardict]
+            checklist = [
+                _par for _par in mt_params if _par in self.pardict]
             if not all([_par in checklist for _par in mt_params]):
                 raise ValueError("If one moment tensor parameter is to be "
                                  "inverted. All must be inverted.\n"
@@ -220,8 +248,10 @@ class GCMT3DInversion:
                                  "Update your pardict.")
 
     def __setup_logger__(self):
+
         # create logger
-        self.logger = logging.getLogger(f"GCMT3D-{self.cmtsource.eventname}")
+        self.logger = logging.getLogger(
+            f"GCMT3D-{self.cmtsource.eventname}")
         self.logger.setLevel(self.loglevel)
         self.logger.handlers = []
 
@@ -254,7 +284,6 @@ class GCMT3DInversion:
             plogger=self.logger.info)
 
     def adapt_processdict(self):
-
         # Logging
         lpy.log_action(
             "Adapting processing dictionary", plogger=self.logger.debug)
@@ -441,24 +470,34 @@ class GCMT3DInversion:
                 self.synt_dict[_wtype][_par] = Stream()
 
     def process_data(self):
-        lpy.log_section(
-            "Loading and processing the data",
-            plogger=self.logger.info)
 
-        with lpy.Timer(plogger=self.logger.info):
-            self.__load_data__()
-        with lpy.Timer(plogger=self.logger.info):
-            self.__process_data__()
+        if MPIMODE is False or self.rank == 0:
+            lpy.log_section(
+                "Loading and processing the data",
+                plogger=self.logger.info)
+            t = lpy.Timer(plogger=self.logger.info)
+            t.start()
+
+        self.__load_data__()
+        self.__process_data__()
+
+        if MPIMODE is False or self.rank == 0:
+            t.stop()
 
     def process_synt(self):
-        lpy.log_section(
-            "Loading and processing the modeled data",
-            plogger=self.logger.info)
 
-        with lpy.Timer(plogger=self.logger.info):
-            self.__load_synt__()
-        with lpy.Timer(plogger=self.logger.info):
-            self.__process_synt__()
+        if MPIMODE is False or self.rank == 0:
+            lpy.log_section(
+                "Loading and processing the modeled data",
+                plogger=self.logger.info)
+            t = lpy.Timer(plogger=self.logger.info)
+            t.start()
+
+        self.__load_synt__()
+        self.__process_synt__()
+
+        if MPIMODE is False or self.rank == 0:
+            t.stop()
 
     def get_windows(self):
 
@@ -481,11 +520,14 @@ class GCMT3DInversion:
         with lpy.Timer(plogger=self.logger.info):
             self.__prep_simulations__()
 
-        self.not_windowed_yet = False
+        if MPIMODE is False or self.rank == 0:
+            self.not_windowed_yet = False
 
     def copy_init_synt(self):
-        # Copy the initial waveform dictionary
-        self.synt_dict_init = deepcopy(self.synt_dict)
+
+        if MPIMODE is False or self.rank == 0:
+            # Copy the initial waveform dictionary
+            self.synt_dict_init = deepcopy(self.synt_dict)
 
     def __compute_weights__(self):
 
@@ -614,19 +656,21 @@ class GCMT3DInversion:
 
     def process_all_synt(self):
 
-        # Logging
-        lpy.log_section(
-            "Loading and processing all modeled data",
-            plogger=self.logger.info)
+        if MPIMODE is False or self.rank == 0:
+            # Logging
+            lpy.log_section(
+                "Loading and processing all modeled data",
+                plogger=self.logger.info)
+            t = lpy.Timer(plogger=self.logger.info)
+            t.start()
 
-        with lpy.Timer(plogger=self.logger.info):
-            self.__load_synt__()
-            self.__load_synt_par__()
-            # self.__remove_zero_windows_on_synt__()
+        self.__load_synt__()
+        self.__load_synt_par__()
+        self.__process_synt__()
+        self.__process_synt_par__()
 
-        with lpy.Timer(plogger=self.logger.info):
-            self.__process_synt__()
-            self.__process_synt_par__()
+        if MPIMODE is False or self.rank == 0:
+            t.stop()
 
     def __get_number_of_forward_simulations__(self):
 
@@ -688,49 +732,74 @@ class GCMT3DInversion:
                 raise ValueError("Download not successful.")
 
     def __load_data__(self):
-        lpy.log_action("Loading the data", plogger=self.logger.info)
 
-        # Load Station data
-        self.stations = lpy.read_inventory(
-            os.path.join(self.stationdir, "*.xml"))
+        if MPIMODE is False or self.rank == 0:
+            lpy.log_action("Loading the data", plogger=self.logger.info)
 
-        # Load seismic data
-        self.data = read(os.path.join(self.waveformdir, "*.mseed"))
-        self.raw_data = self.data.copy()
-        # Populate the data dictionary.
-        for _wtype, _stream in self.data_dict.items():
-            self.data_dict[_wtype] = self.data.copy()
+            # Load Station data
+            self.stations = lpy.read_inventory(
+                os.path.join(self.stationdir, "*.xml"))
+
+            # Load seismic data
+            self.data = read(os.path.join(self.waveformdir, "*.mseed"))
+            self.raw_data = self.data.copy()
+            # Populate the data dictionary.
+            for _wtype, _ in self.data_dict.items():
+                self.data_dict[_wtype] = self.data.copy()
+
+        if MPIMODE:
+            self.comm.Barrier()
 
     def __process_data__(self):
 
         # Process each wavetype.
         for _wtype, _stream in self.data_dict.items():
-            lpy.log_action(
-                f"Processing data for {_wtype}",
-                plogger=self.logger.info)
 
-            # Call processing function and processing dictionary
-            starttime = self.cmtsource.cmt_time \
-                + self.processdict[_wtype]["process"]["relative_starttime"]
-            endtime = self.cmtsource.cmt_time \
-                + self.processdict[_wtype]["process"]["relative_endtime"]
+            if MPIMODE is False or self.rank == 0:
+                lpy.log_action(
+                    f"Processing data for {_wtype}",
+                    plogger=self.logger.info)
 
-            # Process dict
-            processdict = deepcopy(self.processdict[_wtype]["process"])
+                # Call processing function and processing dictionary
+                starttime = self.cmtsource.cmt_time \
+                    + self.processdict[_wtype]["process"]["relative_starttime"]
+                endtime = self.cmtsource.cmt_time \
+                    + self.processdict[_wtype]["process"]["relative_endtime"]
 
-            processdict.pop("relative_starttime")
-            processdict.pop("relative_endtime")
-            processdict["starttime"] = starttime
-            processdict["endtime"] = endtime
-            processdict["inventory"] = self.stations
-            processdict.update(dict(
-                remove_response_flag=True,
-                event_latitude=self.cmtsource.latitude,
-                event_longitude=self.cmtsource.longitude,
-                geodata=True)
-            )
+                # Process dict
+                processdict = deepcopy(self.processdict[_wtype]["process"])
 
-            if self.multiprocesses < 1:
+                processdict.pop("relative_starttime")
+                processdict.pop("relative_endtime")
+                processdict["starttime"] = starttime
+                processdict["endtime"] = endtime
+                processdict["inventory"] = self.stations
+                processdict.update(dict(
+                    remove_response_flag=True,
+                    event_latitude=self.cmtsource.latitude,
+                    event_longitude=self.cmtsource.longitude,
+                    geodata=True)
+                )
+
+            if MPIMODE:
+                # Initialize multiprocessing Class
+                PC = lpy.MPIProcessStream()
+
+                # Populate with stream and process
+                if PC.rank == 0:
+                    PC.get_stream_and_processdict(_stream, processdict)
+
+                # Process traces
+                PC.process()
+
+                # Copy to the data dictionary
+                if PC.rank == 0:
+                    self.data_dict[_wtype] = deepcopy(PC.processed_stream)
+
+                # Prohibit runaway traces
+                self.comm.Barrier()
+
+            elif self.multiprocesses < 1:
                 self.data_dict[_wtype] = self.process_func(
                     _stream, **processdict)
             else:
@@ -742,39 +811,47 @@ class GCMT3DInversion:
 
     def __load_synt__(self):
 
-        # if self.specfemdir is not None:
-        # Load forward data
-        lpy.log_action("Loading forward synthetics", plogger=self.logger.info)
-        temp_synt = read(os.path.join(
-            self.synt_syntdir, "OUTPUT_FILES", "*.sac"))
+        if MPIMODE is False or self.rank == 0:
 
-        for _wtype in self.processdict.keys():
-            self.synt_dict[_wtype]["synt"] = temp_synt.copy()
+            # if self.specfemdir is not None:
+            # Load forward data
+            lpy.log_action("Loading forward synthetics",
+                           plogger=self.logger.info)
+            temp_synt = read(os.path.join(
+                self.synt_syntdir, "OUTPUT_FILES", "*.sac"))
+
+            for _wtype in self.processdict.keys():
+                self.synt_dict[_wtype]["synt"] = temp_synt.copy()
 
     def __load_synt_par__(self):
-        # Load frechet data
-        lpy.log_action("Loading parameter synthetics",
-                       plogger=self.logger.info)
-        for _par, _pardirs in self.synt_pardirs.items():
-            lpy.log_action(f"    {_par}", plogger=self.logger.info)
 
-            if _par in self.nosimpars:
-                temp_synt = read(os.path.join(
-                    self.synt_syntdir, "OUTPUT_FILES", "*.sac"))
-            else:
-                # Load foward/perturbed data
-                temp_synt = read(os.path.join(
-                    _pardirs, "OUTPUT_FILES", "*.sac"))
+        if MPIMODE is False or self.rank == 0:
+            # Load frechet data
+            lpy.log_action("Loading parameter synthetics",
+                           plogger=self.logger.info)
+            for _par, _pardirs in self.synt_pardirs.items():
+                lpy.log_action(f"    {_par}", plogger=self.logger.info)
 
-            # Populate the wavetype Streams.
-            for _wtype, _ in self.data_dict.items():
-                self.synt_dict[_wtype][_par] = temp_synt.copy()
+                if _par in self.nosimpars:
+                    temp_synt = read(os.path.join(
+                        self.synt_syntdir, "OUTPUT_FILES", "*.sac"))
+                else:
+                    # Load foward/perturbed data
+                    temp_synt = read(os.path.join(
+                        _pardirs, "OUTPUT_FILES", "*.sac"))
 
-        del temp_synt
+                # Populate the wavetype Streams.
+                for _wtype, _ in self.data_dict.items():
+                    self.synt_dict[_wtype][_par] = temp_synt.copy()
+
+            del temp_synt
 
     def __process_synt__(self, no_grad=False):
 
-        if self.multiprocesses > 1:
+        if MPIMODE:
+            parallel = False
+
+        elif self.multiprocesses > 1:
             parallel = True
             p = mpp.Pool(processes=self.multiprocesses)
             lpy.log_action(
@@ -785,30 +862,51 @@ class GCMT3DInversion:
 
         for _wtype in self.processdict.keys():
 
-            # Call processing function and processing dictionary
-            starttime = self.cmtsource.cmt_time \
-                + self.processdict[_wtype]["process"]["relative_starttime"]
-            endtime = self.cmtsource.cmt_time \
-                + self.processdict[_wtype]["process"]["relative_endtime"]
+            if MPIMODE is False or self.rank == 0:
+                # Call processing function and processing dictionary
+                starttime = self.cmtsource.cmt_time \
+                    + self.processdict[_wtype]["process"]["relative_starttime"]
+                endtime = self.cmtsource.cmt_time \
+                    + self.processdict[_wtype]["process"]["relative_endtime"]
 
-            # Process dict
-            processdict = deepcopy(self.processdict[_wtype]["process"])
-            processdict.pop("relative_starttime")
-            processdict.pop("relative_endtime")
-            processdict["starttime"] = starttime
-            processdict["endtime"] = endtime
-            processdict["inventory"] = self.stations
-            processdict.update(dict(
-                remove_response_flag=False,
-                event_latitude=self.cmtsource.latitude,
-                event_longitude=self.cmtsource.longitude)
-            )
-            lpy.log_action(
-                f"Processing {_wtype}/synt: "
-                f"{len(self.synt_dict[_wtype]['synt'])} waveforms",
-                plogger=self.logger.info)
+                # Process dict
+                processdict = deepcopy(self.processdict[_wtype]["process"])
+                processdict.pop("relative_starttime")
+                processdict.pop("relative_endtime")
+                processdict["starttime"] = starttime
+                processdict["endtime"] = endtime
+                processdict["inventory"] = self.stations
+                processdict.update(dict(
+                    remove_response_flag=False,
+                    event_latitude=self.cmtsource.latitude,
+                    event_longitude=self.cmtsource.longitude)
+                )
+                lpy.log_action(
+                    f"Processing {_wtype}/synt: "
+                    f"{len(self.synt_dict[_wtype]['synt'])} waveforms",
+                    plogger=self.logger.info)
 
-            if parallel:
+            if MPIMODE:
+                # Initialize multiprocessing Class
+                PC = lpy.MPIProcessStream()
+
+                # Populate with stream and process
+                if PC.rank == 0:
+                    PC.get_stream_and_processdict(
+                        self.synt_dict[_wtype]["synt"], processdict)
+
+                # Process traces
+                PC.process()
+
+                # Copy to the data dictionary
+                if PC.rank == 0:
+                    self.synt_dict[_wtype]["synt"] = deepcopy(
+                        PC.processed_stream)
+
+                # Prohibit runaway traces
+                self.comm.Barrier()
+
+            elif parallel:
                 self.synt_dict[_wtype]["synt"] = lpy.multiprocess_stream(
                     self.synt_dict[_wtype]["synt"], processdict)
             else:
@@ -821,7 +919,9 @@ class GCMT3DInversion:
 
     def __process_synt_par__(self):
 
-        if self.multiprocesses > 1:
+        if MPIMODE:
+            parallel = False
+        elif self.multiprocesses > 1:
             parallel = True
             p = mpp.Pool(processes=self.multiprocesses)
             lpy.log_action(
@@ -832,37 +932,60 @@ class GCMT3DInversion:
 
         for _wtype in self.processdict.keys():
 
-            # Call processing function and processing dictionary
-            starttime = self.cmtsource.cmt_time \
-                + self.processdict[_wtype]["process"]["relative_starttime"]
-            endtime = self.cmtsource.cmt_time \
-                + self.processdict[_wtype]["process"]["relative_endtime"]
+            if MPIMODE is False or self.rank == 0:
+                # Call processing function and processing dictionary
+                starttime = self.cmtsource.cmt_time \
+                    + self.processdict[_wtype]["process"]["relative_starttime"]
+                endtime = self.cmtsource.cmt_time \
+                    + self.processdict[_wtype]["process"]["relative_endtime"]
 
-            # Process dict
-            processdict = deepcopy(self.processdict[_wtype]["process"])
-            processdict.pop("relative_starttime")
-            processdict.pop("relative_endtime")
-            processdict["starttime"] = starttime
-            processdict["endtime"] = endtime
-            processdict.update(dict(
-                remove_response_flag=False,
-                event_latitude=self.cmtsource.latitude,
-                event_longitude=self.cmtsource.longitude)
-            )
+                # Process dict
+                processdict = deepcopy(self.processdict[_wtype]["process"])
+                processdict.pop("relative_starttime")
+                processdict.pop("relative_endtime")
+                processdict["starttime"] = starttime
+                processdict["endtime"] = endtime
+                processdict.update(dict(
+                    remove_response_flag=False,
+                    event_latitude=self.cmtsource.latitude,
+                    event_longitude=self.cmtsource.longitude)
+                )
 
             # Process each wavetype.
             for _par, _parsubdict in self.pardict.items():
-                lpy.log_action(
-                    f"Processing {_wtype}/{_par}: "
-                    f"{len(self.synt_dict[_wtype][_par])} waveforms",
-                    plogger=self.logger.info)
+                if MPIMODE is False or self.rank == 0:
+                    lpy.log_action(
+                        f"Processing {_wtype}/{_par}: "
+                        f"{len(self.synt_dict[_wtype][_par])} waveforms",
+                        plogger=self.logger.info)
 
                 if _par in self.nosimpars:
-                    self.synt_dict[_wtype][_par] = \
-                        self.synt_dict[_wtype]["synt"].copy()
+                    if MPIMODE is False or self.rank == 0:
+                        self.synt_dict[_wtype][_par] = \
+                            self.synt_dict[_wtype]["synt"].copy()
 
                 else:
-                    if parallel:
+                    if MPIMODE:
+                        # Initialize multiprocessing Class
+                        PC = lpy.MPIProcessStream()
+
+                        # Populate with stream and process
+                        if PC.rank == 0:
+                            PC.get_stream_and_processdict(
+                                self.synt_dict[_wtype]["synt"], processdict)
+
+                        # Process traces
+                        PC.process()
+
+                        # Copy to the data dictionary
+                        if PC.rank == 0:
+                            self.synt_dict[_wtype]["synt"] = deepcopy(
+                                PC.processed_stream)
+
+                        # Prohibit runaway traces
+                        self.comm.Barrier()
+
+                    elif parallel:
                         self.synt_dict[_wtype][_par] = self.sumfunc(
                             lpy.starmap_with_kwargs(
                                 p, self.process_func,
@@ -874,21 +997,24 @@ class GCMT3DInversion:
                         self.synt_dict[_wtype][_par] = self.process_func(
                             self.synt_dict[_wtype][_par], self.stations,
                             **processdict)
-                    # divide by perturbation value and scale by scale length
-                if _parsubdict["pert"] is not None:
-                    if _parsubdict["pert"] != 1.0:
-                        lpy.stream_multiply(
-                            self.synt_dict[_wtype][_par],
-                            1.0/_parsubdict["pert"])
 
-                # Compute frechet derivative with respect to time
-                if _par == "time_shift":
-                    self.synt_dict[_wtype][_par].differentiate(
-                        method='gradient')
-                    lpy.stream_multiply(self.synt_dict[_wtype][_par], -1.0)
-                if _par == "depth_in_m":
-                    lpy.stream_multiply(
-                        self.synt_dict[_wtype][_par], 1.0/1000.0)
+                if MPIMODE is False or self.rank == 0:
+
+                    # divide by perturbation value and scale by scale length
+                    if _parsubdict["pert"] is not None:
+                        if _parsubdict["pert"] != 1.0:
+                            lpy.stream_multiply(
+                                self.synt_dict[_wtype][_par],
+                                1.0/_parsubdict["pert"])
+
+                    # Compute frechet derivative with respect to time
+                    if _par == "time_shift":
+                        self.synt_dict[_wtype][_par].differentiate(
+                            method='gradient')
+                        lpy.stream_multiply(self.synt_dict[_wtype][_par], -1.0)
+                    if _par == "depth_in_m":
+                        lpy.stream_multiply(
+                            self.synt_dict[_wtype][_par], 1.0/1000.0)
 
         if parallel:
             p.close()
@@ -912,6 +1038,28 @@ class GCMT3DInversion:
                 )
 
                 # Serial or Multiprocessing
+                if MPIMODE:
+                    # Initialize multiprocessing Class
+                    WC = lpy.MPIWindowStream()
+
+                    # Populate with stream and process
+                    if WC.rank == 0:
+                        WC.get_streams_and_windowdict(
+                            self.data_dict[_wtype],
+                            self.synt_dict[_wtype]["synt"],
+                            wrapwindowdict)
+
+                    # Process traces
+                    WC.window()
+
+                    # Copy to the data dictionary
+                    if WC.rank == 0:
+                        self.data_dict[_wtype] = deepcopy(
+                            WC.processed_stream)
+
+                    # Prohibit runaway traces
+                    self.comm.Barrier()
+
                 if self.multiprocesses <= 1:
                     self.window_func(
                         self.data_dict[_wtype],
@@ -973,132 +1121,137 @@ class GCMT3DInversion:
 
     def __prep_simulations__(self):
 
-        lpy.log_action("Prepping simulations", plogger=self.logger.info)
-        # Create forward directory
-        if self.specfemdir is not None:
-            lpy.createsimdir(self.specfemdir, self.synt_syntdir,
-                             specfem_dict=self.specfem_dict)
-        else:
-            self.__create_dir__(self.syntdir)
+        if MPIMODE is False or self.rank == 0:
 
-        # Create one directory synthetics and each parameter
-        for _par, _pardir in self.synt_pardirs.items():
-            if _par not in self.nosimpars:
-                if self.specfemdir is not None:
-                    lpy.createsimdir(self.specfemdir, _pardir,
-                                     specfem_dict=self.specfem_dict)
-                else:
-                    self.__create_dir__(_pardir)
+            lpy.log_action("Prepping simulations", plogger=self.logger.info)
+            # Create forward directory
+            if self.specfemdir is not None:
+                lpy.createsimdir(self.specfemdir, self.synt_syntdir,
+                                 specfem_dict=self.specfem_dict)
+            else:
+                self.__create_dir__(self.syntdir)
 
-        # Write stations file
-        lpy.inv2STATIONS(
-            self.stations, os.path.join(self.synt_syntdir, "DATA", "STATIONS"))
-
-        # Update Par_file depending on the parameter.
-        syn_parfile = os.path.join(self.synt_syntdir, "DATA", "Par_file")
-        syn_pars = lpy.read_parfile(syn_parfile)
-        syn_pars["USE_SOURCE_DERIVATIVE"] = False
-
-        # Adapt duration
-        syn_pars["RECORD_LENGTH_IN_MINUTES"] = self.simulation_duration
-
-        # Write Stuff to Par_file
-        lpy.write_parfile(syn_pars, syn_parfile)
-
-        # Do the same for the parameters to invert for.
-        for _par, _pardir in self.synt_pardirs.items():
-
-            # Half duration an time-shift don't need extra simulations
-            if _par not in self.nosimpars:
-
-                # Write stations file
-                lpy.inv2STATIONS(
-                    self.stations, os.path.join(_pardir, "DATA", "STATIONS"))
-
-                # Update Par_file depending on the parameter.
-                dsyn_parfile = os.path.join(_pardir, "DATA", "Par_file")
-                dsyn_pars = lpy.read_parfile(dsyn_parfile)
-
-                # Set data parameters and  write new parfiles
-                locations = ["latitude", "longitude", "depth_in_m"]
-                if _par in locations:
-                    dsyn_pars["USE_SOURCE_DERIVATIVE"] = True
-                    if _par == "depth_in_m":
-                        # 1 for depth
-                        dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"] = 1
-                    elif _par == "latitude":
-                        # 2 for latitude
-                        dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"] = 2
+            # Create one directory synthetics and each parameter
+            for _par, _pardir in self.synt_pardirs.items():
+                if _par not in self.nosimpars:
+                    if self.specfemdir is not None:
+                        lpy.createsimdir(self.specfemdir, _pardir,
+                                         specfem_dict=self.specfem_dict)
                     else:
-                        # 3 for longitude
-                        dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"] = 3
-                else:
-                    dsyn_pars["USE_SOURCE_DERIVATIVE"] = False
+                        self.__create_dir__(_pardir)
 
-                # Adapt duration
-                dsyn_pars["RECORD_LENGTH_IN_MINUTES"] = self.simulation_duration
+            # Write stations file
+            lpy.inv2STATIONS(
+                self.stations, os.path.join(self.synt_syntdir, "DATA", "STATIONS"))
 
-                # Write Stuff to Par_file
-                lpy.write_parfile(dsyn_pars, dsyn_parfile)
+            # Update Par_file depending on the parameter.
+            syn_parfile = os.path.join(self.synt_syntdir, "DATA", "Par_file")
+            syn_pars = lpy.read_parfile(syn_parfile)
+            syn_pars["USE_SOURCE_DERIVATIVE"] = False
+
+            # Adapt duration
+            syn_pars["RECORD_LENGTH_IN_MINUTES"] = self.simulation_duration
+
+            # Write Stuff to Par_file
+            lpy.write_parfile(syn_pars, syn_parfile)
+
+            # Do the same for the parameters to invert for.
+            for _par, _pardir in self.synt_pardirs.items():
+
+                # Half duration an time-shift don't need extra simulations
+                if _par not in self.nosimpars:
+
+                    # Write stations file
+                    lpy.inv2STATIONS(
+                        self.stations, os.path.join(_pardir, "DATA", "STATIONS"))
+
+                    # Update Par_file depending on the parameter.
+                    dsyn_parfile = os.path.join(_pardir, "DATA", "Par_file")
+                    dsyn_pars = lpy.read_parfile(dsyn_parfile)
+
+                    # Set data parameters and  write new parfiles
+                    locations = ["latitude", "longitude", "depth_in_m"]
+                    if _par in locations:
+                        dsyn_pars["USE_SOURCE_DERIVATIVE"] = True
+                        if _par == "depth_in_m":
+                            # 1 for depth
+                            dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"] = 1
+                        elif _par == "latitude":
+                            # 2 for latitude
+                            dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"] = 2
+                        else:
+                            # 3 for longitude
+                            dsyn_pars["USE_SOURCE_DERIVATIVE_DIRECTION"] = 3
+                    else:
+                        dsyn_pars["USE_SOURCE_DERIVATIVE"] = False
+
+                    # Adapt duration
+                    dsyn_pars["RECORD_LENGTH_IN_MINUTES"] = self.simulation_duration
+
+                    # Write Stuff to Par_file
+                    lpy.write_parfile(dsyn_pars, dsyn_parfile)
 
     def __update_cmt__(self, model):
-        cmt = deepcopy(self.cmtsource)
-        for _par, _modelval in zip(self.pars, model * self.scale):
-            setattr(cmt, _par, _modelval)
-        self.cmt_out = cmt
+
+        if MPIMODE is False or self.rank == 0:
+            cmt = deepcopy(self.cmtsource)
+            for _par, _modelval in zip(self.pars, model * self.scale):
+                setattr(cmt, _par, _modelval)
+            self.cmt_out = cmt
 
     def __write_sources__(self):
 
-        # Update cmt solution with new model values
-        cmt = deepcopy(self.cmtsource)
-        for _par, _modelval in zip(self.pars, self.model):
-            setattr(cmt, _par, _modelval)
+        if MPIMODE is False or self.rank == 0:
+            # Update cmt solution with new model values
+            cmt = deepcopy(self.cmtsource)
+            for _par, _modelval in zip(self.pars, self.model):
+                setattr(cmt, _par, _modelval)
 
-        # Writing synthetic CMT solution
-        lpy.log_action("Writing Synthetic CMTSOLUTION",
-                       plogger=self.logger.info)
-        cmt.write_CMTSOLUTION_file(os.path.join(
-            self.synt_syntdir, "DATA", "CMTSOLUTION"))
+            # Writing synthetic CMT solution
+            lpy.log_action("Writing Synthetic CMTSOLUTION",
+                           plogger=self.logger.info)
+            cmt.write_CMTSOLUTION_file(os.path.join(
+                self.synt_syntdir, "DATA", "CMTSOLUTION"))
 
-        # For the perturbations it's slightly more complicated.
-        for _par, _pardir in self.synt_pardirs.items():
+            # For the perturbations it's slightly more complicated.
+            for _par, _pardir in self.synt_pardirs.items():
 
-            if _par not in ["time_shift", "half_duration"]:
-                # Write source to the directory of simulation
-                lpy.log_action(
-                    f"Writing Frechet CMTSOLUTION for {_par}",
-                    plogger=self.logger.info)
+                if _par not in ["time_shift", "half_duration"]:
+                    # Write source to the directory of simulation
+                    lpy.log_action(
+                        f"Writing Frechet CMTSOLUTION for {_par}",
+                        plogger=self.logger.info)
 
-                if self.pardict[_par]["pert"] is not None:
-                    # Perturb source at parameter
-                    cmt_pert = deepcopy(cmt)
+                    if self.pardict[_par]["pert"] is not None:
+                        # Perturb source at parameter
+                        cmt_pert = deepcopy(cmt)
 
-                    # If parameter a part of the tensor elements then set the
-                    # rest of the parameters to 0.
-                    tensorlist = ['m_rr', 'm_tt', 'm_pp',
-                                  'm_rt', 'm_rp', 'm_tp']
-                    if _par in tensorlist:
-                        for _tensor_el in tensorlist:
-                            if _tensor_el != _par:
-                                setattr(cmt_pert, _tensor_el, 0.0)
-                            else:
-                                setattr(cmt_pert, _tensor_el,
-                                        self.pardict[_par]["pert"])
+                        # If parameter a part of the tensor elements then set the
+                        # rest of the parameters to 0.
+                        tensorlist = ['m_rr', 'm_tt', 'm_pp',
+                                      'm_rt', 'm_rp', 'm_tp']
+                        if _par in tensorlist:
+                            for _tensor_el in tensorlist:
+                                if _tensor_el != _par:
+                                    setattr(cmt_pert, _tensor_el, 0.0)
+                                else:
+                                    setattr(cmt_pert, _tensor_el,
+                                            self.pardict[_par]["pert"])
+                        else:
+                            # Get the parameter to be perturbed
+                            to_be_perturbed = getattr(cmt_pert, _par)
+
+                            # Perturb the parameter
+                            to_be_perturbed += self.pardict[_par]["pert"]
+
+                            # Set the perturb
+                            setattr(cmt_pert, _par, to_be_perturbed)
+
+                        cmt_pert.write_CMTSOLUTION_file(os.path.join(
+                            _pardir, "DATA", "CMTSOLUTION"))
                     else:
-                        # Get the parameter to be perturbed
-                        to_be_perturbed = getattr(cmt_pert, _par)
-
-                        # Perturb the parameter
-                        to_be_perturbed += self.pardict[_par]["pert"]
-
-                        # Set the perturb
-                        setattr(cmt_pert, _par, to_be_perturbed)
-
-                    cmt_pert.write_CMTSOLUTION_file(os.path.join(
-                        _pardir, "DATA", "CMTSOLUTION"))
-                else:
-                    cmt.write_CMTSOLUTION_file(os.path.join(
-                        _pardir, "DATA", "CMTSOLUTION"))
+                        cmt.write_CMTSOLUTION_file(os.path.join(
+                            _pardir, "DATA", "CMTSOLUTION"))
 
     def __run_simulations__(self):
 
@@ -1132,39 +1285,48 @@ class GCMT3DInversion:
         cwdlist = []
         cwdlist.extend(
             [_pardir for _par, _pardir in self.synt_pardirs.items()
-             if _par not in self.nosimpars])
+                if _par not in self.nosimpars])
         lpy.run_cmds_parallel(cmd_list, cwdlist=cwdlist)
 
     def forward(self, model):
-        # Update model
-        if self.zero_trace:
-            self.model = model[:-1] * self.scale
-            self.scaled_model = model[:-1]
-        else:
-            self.model = model * self.scale
-            self.scaled_model = model
 
-        # Write sources for next iteration
-        self.__write_sources__()
+        if MPIMODE is False or self.rank == 0:
+            # Update model
+            if self.zero_trace:
+                self.model = model[:-1] * self.scale
+                self.scaled_model = model[:-1]
+            else:
+                self.model = model * self.scale
+                self.scaled_model = model
 
-        # Run forward simulation
-        self.__run_forward_only__()
+            # Write sources for next iteration
+            self.__write_sources__()
+
+            # Run forward simulation
+            self.__run_forward_only__()
+
+        if MPIMODE:
+            self.comm.Barrier()
 
         # Process synthetic only
         self.process_synt()
 
     def compute_cost_gradient(self, model):
 
-        # Update model
-        self.model = model * self.scale
-        self.scaled_model = model
+        if MPIMODE is False or self.rank == 0:
+            # Update model
+            self.model = model * self.scale
+            self.scaled_model = model
 
-        # Write sources for next iteration
-        self.__write_sources__()
+            # Write sources for next iteration
+            self.__write_sources__()
 
-        # Run the simulations
-        with lpy.Timer(plogger=self.logger.info):
-            self.__run_simulations__()
+            # Run the simulations
+            with lpy.Timer(plogger=self.logger.info):
+                self.__run_simulations__()
+
+        if MPIMODE:
+            self.comm.Barrier()
 
         # Get streams
         self.process_all_synt()
@@ -2220,7 +2382,6 @@ def bin():
         start_label=start_label,
         multiprocesses=38)
 
-    # gcmt3d.init()
     gcmt3d.process_data()
     gcmt3d.get_windows()
     gcmt3d.__compute_weights__()
