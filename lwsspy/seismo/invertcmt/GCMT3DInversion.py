@@ -2426,17 +2426,6 @@ def bin():
     import sys
     import argparse
 
-    MPIMODE = lpy.is_mpi_env()
-
-    if MPIMODE:
-        comm = MPI.COMM_WORLD
-        rank = comm.Get_rank()
-        size = comm.Get_size()
-    else:
-        comm = None
-        rank = None
-        size = None
-
     # Get arguments
     parser = argparse.ArgumentParser()
     parser.add_argument(dest='event', help='CMTSOLUTION file',
@@ -2452,6 +2441,22 @@ def bin():
     cmtsolutionfile = args.event
     inputfile = args.inputfile
     download_only = args.download_only
+
+    print(f"Hello 1")
+
+    if download_only:
+        MPIMODE = False
+    else:
+        MPIMODE = lpy.is_mpi_env()
+
+    if MPIMODE:
+        comm = MPI.COMM_WORLD
+        rank = comm.Get_rank()
+        size = comm.Get_size()
+    else:
+        comm = None
+        rank = None
+        size = None
 
     print(f"Hello 1 from rank {rank}")
 
