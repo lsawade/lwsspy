@@ -2444,10 +2444,14 @@ def bin():
     parser.add_argument('-i', '--inputfile', dest='inputfile',
                         help='Input file location',
                         required=False, type=str, default=None)
+    parser.add_argument('-d', '--download-only', dest='download_only',
+                        help='Input file location',
+                        required=False, type=bool, default=False)
     args = parser.parse_args()
 
     cmtsolutionfile = args.event
     inputfile = args.inputfile
+    download_only = args.download_only
 
     # Get Input parameters
     if inputfile is None:
@@ -2480,6 +2484,9 @@ def bin():
     start_label = inputdict["start_label"]
     solution_label = inputdict["solution_label"]
 
+    if download_only:
+        download_data = True
+
     gcmt3d = GCMT3DInversion(
         cmtsolutionfile,
         databasedir=database,
@@ -2496,6 +2503,9 @@ def bin():
         start_label=start_label,
         multiprocesses=38,
         MPIMODE=MPIMODE)
+
+    if download_only:
+        return
 
     gcmt3d.process_data()
     gcmt3d.get_windows()
