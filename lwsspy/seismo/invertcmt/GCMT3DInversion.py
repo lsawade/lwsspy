@@ -2453,12 +2453,17 @@ def bin():
     inputfile = args.inputfile
     download_only = args.download_only
 
+    print(f"Hello 1 from rank {rank}")
+
     # Get Input parameters
     if inputfile is None:
         inputdict = lpy.smart_read_yaml(
-            os.path.join(scriptdir, "input.yml"), mpi_mode=MPIMODE, comm=comm)
+            os.path.join(scriptdir, "input.yml"),
+            mpi_mode=MPIMODE, comm=comm)
     else:
         inputdict = lpy.smart_read_yaml(inputfile)
+
+    print(f"Hello 2 from rank {rank}")
 
     # Get process params
     if inputdict["processparams"] is None:
@@ -2469,6 +2474,8 @@ def bin():
         processdict = lpy.smart_read_yaml(
             inputdict["processparams"],
             mpi_mode=MPIMODE, comm=comm)
+
+    print(f"Hello 3 from rank {rank}")
 
     # Set params
     pardict = inputdict["parameters"]
@@ -2486,6 +2493,8 @@ def bin():
 
     if download_only:
         download_data = True
+
+    print(f"Hello 4 from rank {rank}")
 
     gcmt3d = GCMT3DInversion(
         cmtsolutionfile,
