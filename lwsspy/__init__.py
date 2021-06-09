@@ -76,16 +76,17 @@ if "-m" not in sys.argv:
     from .maps.line_buffer import line_buffer  # noqa
     from .maps.map_axes import map_axes  # noqa
     from .maps.plot_map import plot_map  # noqa
-    from .maps.plot_topography import plot_topography  # noqa
+    # from .maps.plot_topography import plot_topography  # noqa
     from .maps.plot_line_buffer import plot_line_buffer  # noqa
     from .maps.plot_litho import plot_litho  # noqa
-    from .maps.read_etopo import read_etopo  # noqa
+    # from .maps.read_etopo import read_etopo  # noqa
     from .maps.read_litho import read_litho  # noqa
     from .maps.reckon import reckon  # noqa
     from .maps.topocolormap import topocolormap  # noqa
     from .maps.topography_design import TopographyDesign  # noqa
     from .maps.gctrack import gctrack  # noqa
 
+    print("Hello pastt maps")
     # Math
     from .math.cart2sph import cart2sph  # noqa
     from .math.convm import convm  # noqa
