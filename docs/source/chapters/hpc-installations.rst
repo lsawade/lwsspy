@@ -85,7 +85,7 @@ installed via ``pip`` when compiled against ``Parallel HDF5``.
 This was not always the case.
 
 So, given you have followed the script above and still have your 
-``HDF5_DESTDIR`` environment variable loaded. ``h5py`` be installed using:
+``HDF5_DIR`` environment variable loaded. ``h5py`` be installed using:
 
 .. code:: bash
 

@@ -19,7 +19,7 @@ import json
 import yaml
 import logging
 import numpy as np
-from pyasdf import ASDFDataSet
+# from pyasdf import ASDFDataSet
 from obspy import Stream, Inventory
 from obspy import read_inventory
 import scipy.io as spio
@@ -239,44 +239,44 @@ def _get_mpi_comm():
 #     return cmtsource.eventname
 
 
-def load_asdf(filename: str, no_event=False):
-    """Takes in a filename of an asdf file and outputs event, inventory,
-    and stream with the traces. Note that this is only good for asdffiles
-    with one set of traces event and stations since the function will get the
-    first/only waveform tag from the dataset
+# def load_asdf(filename: str, no_event=False):
+#     """Takes in a filename of an asdf file and outputs event, inventory,
+#     and stream with the traces. Note that this is only good for asdffiles
+#     with one set of traces event and stations since the function will get the
+#     first/only waveform tag from the dataset
 
-    Args:
-        filename: ASDF filename. "somethingsomething.h5"
+#     Args:
+#         filename: ASDF filename. "somethingsomething.h5"
 
-    Returns:
-        Event, Inventory, Stream
-    """
+#     Returns:
+#         Event, Inventory, Stream
+#     """
 
-    ds = ASDFDataSet(filename)
+#     ds = ASDFDataSet(filename)
 
-    # Create empty streams and inventories
-    inv = Inventory()
-    st = Stream()
+#     # Create empty streams and inventories
+#     inv = Inventory()
+#     st = Stream()
 
-    # Get waveform tag
-    tag = list(ds.waveform_tags)[0]
-    for station in ds.waveforms.list():
-        try:
-            st += getattr(ds.waveforms[station], tag)
-            inv += ds.waveforms[station].StationXML
-        except Exception as e:
-            print(e)
+#     # Get waveform tag
+#     tag = list(ds.waveform_tags)[0]
+#     for station in ds.waveforms.list():
+#         try:
+#             st += getattr(ds.waveforms[station], tag)
+#             inv += ds.waveforms[station].StationXML
+#         except Exception as e:
+#             print(e)
 
-    # Choose not to load an event from the asdf file (pycmt3d's event doesn't
-    # output an event...)
-    if not no_event:
-        ev = ds.events[0]
-        del ds
+#     # Choose not to load an event from the asdf file (pycmt3d's event doesn't
+#     # output an event...)
+#     if not no_event:
+#         ev = ds.events[0]
+#         del ds
 
-        return ev, inv, st
-    else:
-        del ds
-        return inv, st
+#         return ev, inv, st
+#     else:
+#         del ds
+#         return inv, st
 
 
 def flex_read_stations(filenames: str or list):
