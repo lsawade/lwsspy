@@ -494,6 +494,119 @@ class CompareCatalogs:
                                nbins=self.nbins)
 
 
+def filter(self, maxdict: dict = dict(), mindict: dict = dict()):
+    """This uses two dictionaries as inputs. One dictionary for
+    maximum values and one dictionary that contains min values of the
+    elements to filter. To do that we create a dictionary containing
+    the attributes and properties of
+    :class:``lwsspy.seismo.source.CMTSource``.
+
+    List of Attributes and Properties
+    -------------------------
+
+    .. literal::
+
+        origin_time
+        pde_latitude
+        pde_longitude
+        pde_depth_in_m
+        mb
+        ms
+        region_tag
+        eventname
+        cmt_time
+        half_duration
+        latitude
+        longitude
+        depth_in_m
+        m_rr
+        m_tt
+        m_pp
+        m_rt
+        m_rp
+        m_tp
+        M0
+        moment_magnitude
+        time_shift
+
+    Example
+    -------
+
+    Let's filter the catalog to only contain events with a maximum depth
+    of 20km.
+
+    >>> maxfilterdict = dict(depth_in_m=20000.0)
+    >>> cmtcat = CMTCatalog.from_files("CMTfiles/*")
+    >>> filtered_cat = cmtcat.filter(maxdict=maxfilterdict)
+
+    will returns a catalog with events shallower than 20.0 km.
+    """
+
+    # Create new list of cmts
+    oldlist, newlist = deepcopy(self.old.cmts), deepcopy(self.new.cmts)
+
+    # percentage parameters
+    pparams = [
+        "m_rr", "m_tt", "m_pp", "m_rt", "m_rp", "m_tp", "M0",
+        "moment_magnitude"]
+
+    # First maxvalues
+    for key, value in maxdict.items():
+
+        # Create empty pop set
+        popset = set()
+        print(key, value)
+        # Check CMTs that are below threshold for key
+        for _i, (_ocmt, _ncmt) in enumerate(zip(oldlist, newlist)):
+            oldval = getattr(_ocmt, key)
+            newval = getattr(_ncmt, key)
+            if key in pparams:
+                if np.abs((newval-oldval)/oldval) > value:
+                    popset.add(_i)
+            else:
+                if np.abs(newval-oldval) > value:
+                    popset.add(_i)
+
+        # Convert set to list and sort
+        poplist = list(popset)
+        poplist.sort()
+
+        # Pop found indeces
+        for _i in poplist[::-1]:
+            oldlist.pop(_i)
+            newlist.pop(_i)
+
+    # First maxvalues
+    for key, value in mindict.items():
+
+        # Create empty pop set
+        popset = set()
+
+        # Check CMTs that are below threshold for key
+        for _i, (_ocmt, _ncmt) in enumerate(zip(oldlist, newlist)):
+            oldval = getattr(_ocmt, key)
+            newval = getattr(_ncmt, key)
+            if key in pparams:
+                if np.abs((newval-oldval)/oldval) < value:
+                    popset.add(_i)
+            else:
+                if np.abs(newval-oldval) < value:
+                    popset.add(_i)
+
+        # Convert set to list and sort
+        poplist = list(popset)
+        poplist.sort()
+
+        # Pop found indeces
+        for _i in poplist[::-1]:
+            oldlist.pop(_i)
+            newlist.pop(_i)
+
+    return CompareCatalogs(CMTCatalog(oldlist), CMTCatalog(newlist),
+                           oldlabel=self.oldlabel, newlabel=self.newlabel,
+                           nbins=self.nbins)
+
+
 def bin():
 
     import argparse
@@ -537,7 +650,12 @@ def bin():
                              nbins=25)
 
     # Filter for a minimum depth larger than zero
-    # CC = CC.filter(mindict={"depth_in_m": 1e-12})
+    CC = CC.filter(mindict={"depth_in_m": 10000.0})
+    for ocmt, ncmt in zip(CC.old, CC.new):
+        print(f"OLD: {(ncmt.depth_in_m - ocmt.depth_in_m)/1000.0}")
+        print(ocmt)
+        print("NEW")
+        print(ncmt)
 
     # Comparison figures
     CC.plot_summary(outfile=os.path.join(

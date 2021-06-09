@@ -78,7 +78,6 @@ def multiwindow_stream(
 
         # Populate stream with results
         for _res in results:
-            print(_res)
             windowed_stream += _res
 
     return windowed_stream

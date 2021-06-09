@@ -8,6 +8,7 @@ import os
 import glob
 import _pickle as pickle
 from copy import deepcopy
+import _pickle as cPickle
 
 
 def read_traces(wtype, streamdir):
@@ -61,3 +62,21 @@ def read_output_traces(cmtdir: str, verbose: bool = True):
                 print(e)
 
     return obsd, synt
+
+
+def read_measurements(cmtdir: str):
+
+    measurement_pickle_before = os.path.join(
+        cmtdir, "measurements_before.pkl")
+    measurement_pickle_after = os.path.join(
+        cmtdir, "measurements_after.pkl")
+    try:
+        with open(measurement_pickle_before, "rb") as f:
+            measurements_before = cPickle.load(f)
+        with open(measurement_pickle_after, "rb") as f:
+            measurements_after = cPickle.load(f)
+
+        return measurements_before, measurements_after
+
+    except Exception:
+        return None

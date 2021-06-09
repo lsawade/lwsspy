@@ -110,7 +110,7 @@ I thought it was ridiculous how there is not a single simple example doing this.
 
     statglob = 'your xmls'
     waveglob = 'you miniseeds'
-    # coul use an obspy event here, but it's so difficult to handle...
+    # could use an obspy event here, but it's so difficult to handle...
     event = CMTSource.from_CMTSOLUTION_file("your cmt solution")
     # Important for specfem simulations
     p = Popen(["/bin/echo", "Hello", "from", "rank", f"{rank}/{nprocs}"],
@@ -155,7 +155,7 @@ I thought it was ridiculous how there is not a single simple example doing this.
     results = []
     with Timer():
         results.append(process_stream(substream, subinv,
-                                    event.latitude, event.longitude))
+                                      event.latitude, event.longitude))
         print(f"Rank: {rank}/{nprocs} -- Done.")
     # Gather
     results = comm.gather(results, root=0)
