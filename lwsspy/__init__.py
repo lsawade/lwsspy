@@ -182,7 +182,6 @@ if "-m" not in sys.argv:
     from .seismo.source import CMTSource  # noqa
     from .seismo.stream_multiply import stream_multiply  # noqa
     from .seismo.validate_cmt import validate_cmt  # noqa
-    print('past some point')
     from .seismo.specfem.cmt2rundir import cmt2rundir  # noqa
     from .seismo.specfem.cmt2simdir import cmt2simdir  # noqa
     from .seismo.specfem.cmt2STATIONS import cmt2STATIONS  # noqa
@@ -198,6 +197,7 @@ if "-m" not in sys.argv:
     from .seismo.specfem.stationxml2STATIONS import stationxml2STATIONS  # noqa
     from .seismo.specfem.stationxmldir2STATIONSdir import stationxmldir2STATIONSdir  # noqa
     from .seismo.specfem.write_parfile import write_parfile  # noqa
+    print('past some point')
     from .seismo.window.multiwindow_stream import multiwindow_stream  # noqa
     from .seismo.window.mpiwindowclass import MPIWindowStream  # noqa
     from .seismo.window.window import window_on_stream  # noqa
