@@ -5,7 +5,6 @@ CMTSOLUTTION depth.
 # %% Create inversion directory
 
 # Internal
-import mpi4py
 from obspy.core import event
 from obspy.core.utcdatetime import UTCDateTime
 from lwsspy.seismo.source import CMTSource
