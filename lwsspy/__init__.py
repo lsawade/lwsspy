@@ -170,8 +170,8 @@ if "-m" not in sys.argv:
     from .seismo.plot_seismogram import plot_seismograms  # noqa
     from .seismo.stream_pdf import stream_pdf  # noqa
     from .seismo.process.process import process_stream  # noqa
-    print('past some point')
     from .seismo.process.mpiprocessclass import MPIProcessStream  # noqa
+    print('past some point')
     from .seismo.process.multiprocess_stream import multiprocess_stream  # noqa
     from .seismo.process.process_wrapper import process_wrapper  # noqa
     from .seismo.process.rotate import rotate_stream  # noqa
