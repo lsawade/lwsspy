@@ -502,20 +502,21 @@ class GCMT3DInversion:
 
     def get_windows(self):
 
+        # Prepare all simulations
         self.__prep_simulations__()
         self.__write_sources__()
 
         # Run first set of simulations
-        with lpy.Timer(plogger=self.logger.info):
-            self.__run_simulations__()
+        self.__run_simulations__()
+
+        # Process all syntheticss
         self.process_all_synt()
 
         # Copy the initial synthetics
         self.copy_init_synt()
 
         # Window the data
-        with lpy.Timer(plogger=self.logger.info):
-            self.__window__()
+        self.__window__()
 
         # Prep next set of simulations
         with lpy.Timer(plogger=self.logger.info):
@@ -530,130 +531,140 @@ class GCMT3DInversion:
             # Copy the initial waveform dictionary
             self.synt_dict_init = deepcopy(self.synt_dict)
 
+        if self.MPIMODE:
+            self.comm.Barrier()
+
     def __compute_weights__(self):
 
-        # Computing the weights
-        lpy.log_bar("Computing Weights", plogger=self.logger.info)
+        if self.MPIMODE is False or self.rank == 0:
 
-        # Weight dictionary
-        self.weights = dict()
-        self.weights["event"] = [
-            self.cmtsource.latitude, self.cmtsource.longitude]
+            # Computing the weights
+            lpy.log_bar("Computing Weights", plogger=self.logger.info)
 
-        waveweightdict = dict()
-        for _i, (_wtype, _stream) in enumerate(self.data_dict.items()):
+            # Weight dictionary
+            self.weights = dict()
+            self.weights["event"] = [
+                self.cmtsource.latitude, self.cmtsource.longitude]
 
-            # Dictionary to keep track of the sum in each wave type.
-            waveweightdict[_wtype] = 0
+            waveweightdict = dict()
+            for _i, (_wtype, _stream) in enumerate(self.data_dict.items()):
 
-            # Get wave type weight from process.yml
-            self.weights[_wtype] = dict()
-            waveweight = self.processdict[_wtype]["weight"]
-            self.weights[_wtype]["weight"] = deepcopy(waveweight)
+                # Dictionary to keep track of the sum in each wave type.
+                waveweightdict[_wtype] = 0
 
-            # Create dict to access traces
-            RTZ_traces = dict()
-            for _component, _cweight in self.weights_rtz.items():
+                # Get wave type weight from process.yml
+                self.weights[_wtype] = dict()
+                waveweight = self.processdict[_wtype]["weight"]
+                self.weights[_wtype]["weight"] = deepcopy(waveweight)
 
-                # Copy compnent weight to dictionary
-                self.weights[_wtype][_component] = dict()
-                self.weights[_wtype][_component]["weight"] = deepcopy(_cweight)
+                # Create dict to access traces
+                RTZ_traces = dict()
+                for _component, _cweight in self.weights_rtz.items():
 
-                # Create reference
-                RTZ_traces[_component] = []
+                    # Copy compnent weight to dictionary
+                    self.weights[_wtype][_component] = dict()
+                    self.weights[_wtype][_component]["weight"] = deepcopy(
+                        _cweight)
 
-                # Only add ttraces that have windows.
-                for _tr in _stream:
-                    if _tr.stats.component == _component \
-                            and len(_tr.stats.windows) > 0:
-                        RTZ_traces[_component].append(_tr)
+                    # Create reference
+                    RTZ_traces[_component] = []
 
-                # Get locations
-                latitudes = []
-                longitudes = []
-                for _tr in RTZ_traces[_component]:
-                    latitudes.append(_tr.stats.latitude)
-                    longitudes.append(_tr.stats.longitude)
-                latitudes = np.array(latitudes)
-                longitudes = np.array(longitudes)
+                    # Only add ttraces that have windows.
+                    for _tr in _stream:
+                        if _tr.stats.component == _component \
+                                and len(_tr.stats.windows) > 0:
+                            RTZ_traces[_component].append(_tr)
 
-                # Save locations into dict
-                self.weights[_wtype][_component]["lat"] = deepcopy(latitudes)
-                self.weights[_wtype][_component]["lon"] = deepcopy(longitudes)
+                    # Get locations
+                    latitudes = []
+                    longitudes = []
+                    for _tr in RTZ_traces[_component]:
+                        latitudes.append(_tr.stats.latitude)
+                        longitudes.append(_tr.stats.longitude)
+                    latitudes = np.array(latitudes)
+                    longitudes = np.array(longitudes)
 
-                # Get azimuthal weights for the traces of each component
-                if len(latitudes) > 1 and len(longitudes) > 2:
-                    azi_weights = lpy.azi_weights(
-                        self.cmtsource.latitude,
-                        self.cmtsource.longitude,
-                        latitudes, longitudes, nbins=12, p=0.5)
+                    # Save locations into dict
+                    self.weights[_wtype][_component]["lat"] = deepcopy(
+                        latitudes)
+                    self.weights[_wtype][_component]["lon"] = deepcopy(
+                        longitudes)
 
-                    # Save azi weights into dict
-                    self.weights[_wtype][_component]["azimuthal"] = deepcopy(
-                        azi_weights)
+                    # Get azimuthal weights for the traces of each component
+                    if len(latitudes) > 1 and len(longitudes) > 2:
+                        azi_weights = lpy.azi_weights(
+                            self.cmtsource.latitude,
+                            self.cmtsource.longitude,
+                            latitudes, longitudes, nbins=12, p=0.5)
 
-                    # Get Geographical weights
-                    gw = lpy.GeoWeights(latitudes, longitudes)
-                    _, _, ref, _ = gw.get_condition()
-                    geo_weights = gw.get_weights(ref)
+                        # Save azi weights into dict
+                        self.weights[_wtype][_component]["azimuthal"] = \
+                            deepcopy(azi_weights)
 
-                    # Save geo weights into dict
-                    self.weights[_wtype][_component]["geographical"] = deepcopy(
-                        geo_weights)
+                        # Get Geographical weights
+                        gw = lpy.GeoWeights(latitudes, longitudes)
+                        _, _, ref, _ = gw.get_condition()
+                        geo_weights = gw.get_weights(ref)
 
-                    # Compute Combination weights.
-                    weights = (azi_weights * geo_weights)
-                    weights /= np.sum(weights)/len(weights)
-                    self.weights[_wtype][_component]["combination"] = deepcopy(
-                        weights)
+                        # Save geo weights into dict
+                        self.weights[_wtype][_component]["geographical"] = \
+                            deepcopy(geo_weights)
 
-                # Figuring out weighting for 2 events does not make sense
-                # There is no relative clustering.
-                elif len(latitudes) == 2 and len(longitudes) == 2:
-                    self.weights[_wtype][_component]["azimuthal"] = [0.5, 0.5]
-                    self.weights[_wtype][_component]["geographical"] = [
-                        0.5, 0.5]
-                    self.weights[_wtype][_component]["combination"] = [
-                        0.5, 0.5]
-                    weights = [0.5, 0.5]
+                        # Compute Combination weights.
+                        weights = (azi_weights * geo_weights)
+                        weights /= np.sum(weights)/len(weights)
+                        self.weights[_wtype][_component]["combination"] = \
+                            deepcopy(weights)
 
-                elif len(latitudes) == 1 and len(longitudes) == 1:
-                    self.weights[_wtype][_component]["azimuthal"] = [1.0]
-                    self.weights[_wtype][_component]["geographical"] = [1.0]
-                    self.weights[_wtype][_component]["combination"] = [1.0]
-                    weights = [1.0]
-                else:
-                    self.weights[_wtype][_component]["azimuthal"] = []
-                    self.weights[_wtype][_component]["geographical"] = []
-                    self.weights[_wtype][_component]["combination"] = []
-                    weights = []
+                    # Figuring out weighting for 2 events does not make sense
+                    # There is no relative clustering.
+                    elif len(latitudes) == 2 and len(longitudes) == 2:
+                        self.weights[_wtype][_component]["azimuthal"] = \
+                            [0.5, 0.5]
+                        self.weights[_wtype][_component]["geographical"] = \
+                            [0.5, 0.5]
+                        self.weights[_wtype][_component]["combination"] = \
+                            [0.5, 0.5]
+                        weights = [0.5, 0.5]
 
-                # Add weights to traces
-                for _tr, _weight in zip(RTZ_traces[_component], weights):
-                    _tr.stats.weights = _cweight * _weight
-                    waveweightdict[_wtype] += np.sum(_cweight * _weight)
+                    elif len(latitudes) == 1 and len(longitudes) == 1:
+                        self.weights[_wtype][_component]["azimuthal"] = [1.0]
+                        self.weights[_wtype][_component]["geographical"] = \
+                            [1.0]
+                        self.weights[_wtype][_component]["combination"] = [1.0]
+                        weights = [1.0]
+                    else:
+                        self.weights[_wtype][_component]["azimuthal"] = []
+                        self.weights[_wtype][_component]["geographical"] = []
+                        self.weights[_wtype][_component]["combination"] = []
+                        weights = []
 
-        # Normalize by component and aximuthal weights
-        for _i, (_wtype, _stream) in enumerate(self.data_dict.items()):
-            # Create dict to access traces
-            RTZ_traces = dict()
+                    # Add weights to traces
+                    for _tr, _weight in zip(RTZ_traces[_component], weights):
+                        _tr.stats.weights = _cweight * _weight
+                        waveweightdict[_wtype] += np.sum(_cweight * _weight)
 
-            for _component, _cweight in self.weights_rtz.items():
-                RTZ_traces[_component] = []
-                for _tr in _stream:
-                    if _tr.stats.component == _component \
-                            and "weights" in _tr.stats:
-                        RTZ_traces[_component].append(_tr)
+            # Normalize by component and aximuthal weights
+            for _i, (_wtype, _stream) in enumerate(self.data_dict.items()):
+                # Create dict to access traces
+                RTZ_traces = dict()
 
-                self.weights[_wtype][_component]["final"] = []
-                for _tr in RTZ_traces[_component]:
-                    _tr.stats.weights /= waveweightdict[_wtype]
+                for _component, _cweight in self.weights_rtz.items():
+                    RTZ_traces[_component] = []
+                    for _tr in _stream:
+                        if _tr.stats.component == _component \
+                                and "weights" in _tr.stats:
+                            RTZ_traces[_component].append(_tr)
 
-                    self.weights[_wtype][_component]["final"].append(
-                        deepcopy(_tr.stats.weights))
+                    self.weights[_wtype][_component]["final"] = []
+                    for _tr in RTZ_traces[_component]:
+                        _tr.stats.weights /= waveweightdict[_wtype]
 
-        with open(os.path.join(self.cmtdir, "weights.pkl"), "wb") as f:
-            cPickle.dump(deepcopy(self.weights), f)
+                        self.weights[_wtype][_component]["final"].append(
+                            deepcopy(_tr.stats.weights))
+
+            with open(os.path.join(self.cmtdir, "weights.pkl"), "wb") as f:
+                cPickle.dump(deepcopy(self.weights), f)
 
     def process_all_synt(self):
 
@@ -832,6 +843,9 @@ class GCMT3DInversion:
             for _wtype in self.processdict.keys():
                 self.synt_dict[_wtype]["synt"] = temp_synt.copy()
 
+        if self.MPIMODE:
+            self.comm.Barrier()
+
     def __load_synt_par__(self):
 
         if self.MPIMODE is False or self.rank == 0:
@@ -854,6 +868,9 @@ class GCMT3DInversion:
                     self.synt_dict[_wtype][_par] = temp_synt.copy()
 
             del temp_synt
+
+        if self.MPIMODE:
+            self.comm.Barrier()
 
     def __process_synt__(self, no_grad=False):
 
@@ -931,6 +948,9 @@ class GCMT3DInversion:
                 self.synt_dict[_wtype]["synt"] = self.process_func(
                     self.synt_dict[_wtype]["synt"], self.stations,
                     **processdict)
+
+        if self.MPIMODE:
+            self.comm.Barrier()
 
         if parallel:
             p.close()
@@ -1047,29 +1067,53 @@ class GCMT3DInversion:
                         lpy.stream_multiply(
                             self.synt_dict[_wtype][_par], 1.0/1000.0)
 
+        if self.MPIMODE:
+            self.comm.Barrier()
+
         if parallel:
             p.close()
 
     def __window__(self):
 
+        # Process each wavetype.
+        if self.MPIMODE is False or self.rank == 0:
+            wtypes = list(self.data_dict.keys())
+        else:
+            wtypes = None
+
+        if self.MPIMODE:
+            wtypes = self.comm.bcast(wtypes, root=0)
+
         # Debug flag
         debug = True if self.loglevel >= 20 else False
 
-        for _wtype in self.processdict.keys():
-            lpy.log_action(f"Windowing {_wtype}", plogger=self.logger.info)
+        for _wtype in wtypes:
 
-            for window_dict in self.processdict[_wtype]["window"]:
+            if self.MPIMODE is False or self.rank == 0:
+                lpy.log_action(f"Windowing {_wtype}", plogger=self.logger.info)
+                window_dicts = self.processdict[_wtype]["window"]
+            else:
+                window_dicts = None
 
-                # Wrap window dictionary
-                wrapwindowdict = dict(
-                    station=self.stations,
-                    event=self.xml_event,
-                    config_dict=window_dict,
-                    _verbose=debug
-                )
+            if self.MPIMODE:
+                window_dicts = self.comm.bcast(window_dicts, root=0)
+
+            # Loop over window dictionary
+            for window_dict in window_dicts:
+
+                if self.MPIMODE is False or self.rank == 0:
+
+                    # Wrap window dictionary
+                    wrapwindowdict = dict(
+                        station=self.stations,
+                        event=self.xml_event,
+                        config_dict=window_dict,
+                        _verbose=debug
+                    )
 
                 # Serial or Multiprocessing
                 if self.MPIMODE:
+
                     # Initialize multiprocessing Class
                     WC = lpy.MPIWindowStream()
 
@@ -1118,6 +1162,9 @@ class GCMT3DInversion:
             for _tr in self.data_dict[_wtype]:
                 if "windows" not in _tr.stats:
                     _tr.stats.windows = []
+
+        if self.MPIMODE:
+            self.comm.Barrier()
 
     def merge_windows(self, data_stream: Stream, synt_stream: Stream):
 
@@ -1222,6 +1269,9 @@ class GCMT3DInversion:
                     # Write Stuff to Par_file
                     lpy.write_parfile(dsyn_pars, dsyn_parfile)
 
+        if self.MPIMODE:
+            self.comm.Barrier()
+
     def __update_cmt__(self, model):
 
         if self.MPIMODE is False or self.rank == 0:
@@ -1229,6 +1279,9 @@ class GCMT3DInversion:
             for _par, _modelval in zip(self.pars, model * self.scale):
                 setattr(cmt, _par, _modelval)
             self.cmt_out = cmt
+
+        if self.MPIMODE:
+            self.comm.Barrier()
 
     def __write_sources__(self):
 
@@ -1284,17 +1337,32 @@ class GCMT3DInversion:
                         cmt.write_CMTSOLUTION_file(os.path.join(
                             _pardir, "DATA", "CMTSOLUTION"))
 
+        if self.MPIMODE:
+            self.comm.Barrier()
+
     def __run_simulations__(self):
 
-        lpy.log_action("Submitting all simulations", plogger=self.logger.info)
-        # Initialize necessary commands
-        cmd_list = self.nsim * [[*self.launch_method, './bin/xspecfem3D']]
+        if self.MPIMODE is False or self.rank == 0:
 
-        cwdlist = [self.synt_syntdir]
-        cwdlist.extend(
-            [_pardir for _par, _pardir in self.synt_pardirs.items()
-             if _par not in self.nosimpars])
-        lpy.run_cmds_parallel(cmd_list, cwdlist=cwdlist)
+            t = lpy.Timer(plogger=self.logger.info)
+            t.start()
+
+            lpy.log_action("Submitting all simulations",
+                           plogger=self.logger.info)
+
+            # Initialize necessary commands
+            cmd_list = self.nsim * [[*self.launch_method, './bin/xspecfem3D']]
+
+            cwdlist = [self.synt_syntdir]
+            cwdlist.extend(
+                [_pardir for _par, _pardir in self.synt_pardirs.items()
+                 if _par not in self.nosimpars])
+            lpy.run_cmds_parallel(cmd_list, cwdlist=cwdlist)
+
+            t.start()
+
+        if self.MPIMODE:
+            self.comm.Barrier()
 
     def __run_forward_only__(self):
 
@@ -2430,13 +2498,13 @@ def bin():
         MPIMODE=MPIMODE)
 
     gcmt3d.process_data()
-    return
     gcmt3d.get_windows()
     gcmt3d.__compute_weights__()
-
-    optim_list = []
-
-    with lpy.Timer(plogger=gcmt3d.logger.info):
+    return
+    if gcmt3d.MPIMODE is False or gcmt3d.rank == 0:
+        optim_list = []
+        t = lpy.Timer(plogger=gcmt3d.logger.info)
+        t.start()
 
         # Gauss Newton Optimization Structure
         lpy.log_bar("GN", plogger=gcmt3d.logger.info)
