@@ -38,7 +38,7 @@ if "-m" not in sys.argv:
 
     # IO
     from .utils.io import dump_json  # noqa
-    from .utils.io import load_asdf  # noqa
+    # from .utils.io import load_asdf  # noqa
     from .utils.io import load_json  # noqa
     from .utils.io import loadxy_csv  # noqa
     from .utils.io import loadmat  # noqa
