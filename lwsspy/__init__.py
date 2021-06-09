@@ -43,6 +43,9 @@ if "-m" not in sys.argv:
     from .utils.io import loadxy_csv  # noqa
     from .utils.io import loadmat  # noqa
     from .utils.io import read_yaml_file  # noqa
+    from .utils.io import smart_read_yaml  # noqa
+    from .utils.io import is_mpi_env  # noqa
+
     from .utils.io import write_yaml_file  # noqa
 
     # STDOUT
