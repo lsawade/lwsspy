@@ -152,7 +152,6 @@ if "-m" not in sys.argv:
     from .seismo.gaussiant import gaussiant  # noqa
     from .seismo.gaussiant import dgaussiant  # noqa
     from .seismo.get_inv_aspect_extent import get_inv_aspect_extent  # noqa
-    print('past some point')
     from .seismo.instaseis.get_prem20s import get_prem20s  # noqa
     from .seismo.inv2geoloc import inv2geoloc  # noqa
     from .seismo.inv2net_sta import inv2net_sta  # noqa
@@ -160,6 +159,7 @@ if "-m" not in sys.argv:
     from .seismo.m0_2_mw import m0_2_mw  # noqa
     from .seismo.perturb_cmt import perturb_cmt  # noqa
     from .seismo.perturb_cmt import perturb_cmt_dir  # noqa
+    print('past some point')
     from .seismo.plot_stationxml import plot_station_xml  # noqa
     from .seismo.plot_traveltimes import compute_traveltimes  # noqa
     from .seismo.plot_traveltimes import plot_traveltimes  # noqa
