@@ -177,13 +177,12 @@ if "-m" not in sys.argv:
     from .seismo.process.rotate import rotate_stream  # noqa
     from .seismo.process.process_classifier import ProcessParams  # noqa
     from .seismo.process.process_classifier import filter_scaling  # noqa
-    print('past some point')
     from .seismo.read_gcmt_catalog import read_gcmt_catalog  # noqa
     from .seismo.read_inventory import flex_read_inventory as read_inventory  # noqa
     from .seismo.source import CMTSource  # noqa
     from .seismo.stream_multiply import stream_multiply  # noqa
     from .seismo.validate_cmt import validate_cmt  # noqa
-
+    print('past some point')
     from .seismo.specfem.cmt2rundir import cmt2rundir  # noqa
     from .seismo.specfem.cmt2simdir import cmt2simdir  # noqa
     from .seismo.specfem.cmt2STATIONS import cmt2STATIONS  # noqa
