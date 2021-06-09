@@ -159,7 +159,6 @@ if "-m" not in sys.argv:
     from .seismo.m0_2_mw import m0_2_mw  # noqa
     from .seismo.perturb_cmt import perturb_cmt  # noqa
     from .seismo.perturb_cmt import perturb_cmt_dir  # noqa
-    print('past some point')
     from .seismo.plot_stationxml import plot_station_xml  # noqa
     from .seismo.plot_traveltimes import compute_traveltimes  # noqa
     from .seismo.plot_traveltimes import plot_traveltimes  # noqa
@@ -171,6 +170,7 @@ if "-m" not in sys.argv:
     from .seismo.plot_seismogram import plot_seismograms  # noqa
     from .seismo.stream_pdf import stream_pdf  # noqa
     from .seismo.process.process import process_stream  # noqa
+    print('past some point')
     from .seismo.process.mpiprocessclass import MPIProcessStream  # noqa
     from .seismo.process.multiprocess_stream import multiprocess_stream  # noqa
     from .seismo.process.process_wrapper import process_wrapper  # noqa
@@ -197,7 +197,6 @@ if "-m" not in sys.argv:
     from .seismo.specfem.stationxml2STATIONS import stationxml2STATIONS  # noqa
     from .seismo.specfem.stationxmldir2STATIONSdir import stationxmldir2STATIONSdir  # noqa
     from .seismo.specfem.write_parfile import write_parfile  # noqa
-    print('past some point')
     from .seismo.window.multiwindow_stream import multiwindow_stream  # noqa
     from .seismo.window.mpiwindowclass import MPIWindowStream  # noqa
     from .seismo.window.window import window_on_stream  # noqa
