@@ -43,14 +43,10 @@ if "-m" not in sys.argv:
     from .utils.io import loadxy_csv  # noqa
     from .utils.io import loadmat  # noqa
     from .utils.io import read_yaml_file  # noqa
-
-    print("Hello before smart read")
     from .utils.io import smart_read_yaml  # noqa
     from .utils.io import is_mpi_env  # noqa
-
     from .utils.io import write_yaml_file  # noqa
 
-    print("Hello after smart read")
     # STDOUT
     from .utils.customlogformatter import CustomFormatter  # noqa
     from .utils.output import nostdout  # noqa
@@ -60,8 +56,6 @@ if "-m" not in sys.argv:
     from .utils.output import log_action  # noqa
     from .utils.output import log_bar  # noqa
     from .utils.output import log_section  # noqa
-
-    print("Hello after output")
 
     # Geographical things
     from .geo.geo_weights import GeoWeights  # noqa
@@ -73,8 +67,6 @@ if "-m" not in sys.argv:
     from .inversion.plot_model_history import plot_model_history  # noqa
     from .inversion.plot_single_parameter_optimization import plot_single_parameter_optimization  # noqa
 
-    print("Hello after inversion")
-
     # Maps
     from .maps.fix_map_extent import fix_map_extent  # noqa
     from .maps.line_buffer import line_buffer  # noqa
@@ -82,16 +74,15 @@ if "-m" not in sys.argv:
     from .maps.plot_map import plot_map  # noqa
     # from .maps.plot_topography import plot_topography  # noqa
     from .maps.plot_line_buffer import plot_line_buffer  # noqa
-    from .maps.plot_litho import plot_litho  # noqa
+    # from .maps.plot_litho import plot_litho  # noqa
     # from .maps.read_etopo import read_etopo  # noqa
-    from .maps.read_litho import read_litho  # noqa
+    # from .maps.read_litho import read_litho  # noqa
     from .maps.reckon import reckon  # noqa
     from .maps.topocolormap import topocolormap  # noqa
     from .maps.topography_design import TopographyDesign  # noqa
     from .maps.gctrack import gctrack  # noqa
 
-    print("Hello pastt maps")
-
+    print('past maps')
     # Math
     from .math.cart2sph import cart2sph  # noqa
     from .math.convm import convm  # noqa
@@ -108,7 +99,7 @@ if "-m" not in sys.argv:
     from .math.Ra2b import Ra2b  # noqa
     from .math.sph2cart import sph2cart  # noqa
     from .math.SphericalNN import SphericalNN  # noqa
-
+    print('past math')
     # Plot
     from .plot_util.figcolorbar import figcolorbar  # noqa
     from .plot_util.fixedpointcolornorm import FixedPointColorNorm  # noqa
@@ -144,6 +135,7 @@ if "-m" not in sys.argv:
     from .plot_util.view_colormap import view_colormap  # noqa
     from .plot_util.zerotraceaxes import ztaxes  # noqa
 
+    print('past plotutil')
     # Seismology
     from .seismo.cmt2inv import cmt2inv  # noqa
     from .seismo.cmt2stationxml import cmt2stationxml  # noqa
@@ -187,7 +179,6 @@ if "-m" not in sys.argv:
     from .seismo.read_gcmt_catalog import read_gcmt_catalog  # noqa
     from .seismo.read_inventory import flex_read_inventory as read_inventory  # noqa
     from .seismo.source import CMTSource  # noqa
-    # from .seismo.cmt_catalog import CMTCatalog  # noqa
     from .seismo.stream_multiply import stream_multiply  # noqa
     from .seismo.validate_cmt import validate_cmt  # noqa
     from .seismo.specfem.cmt2rundir import cmt2rundir  # noqa
@@ -217,6 +208,8 @@ if "-m" not in sys.argv:
     from .seismo.read_gcmt_data import load_2004_2010_mag  # noqa
     from .seismo.read_gcmt_data import load_num_events  # noqa
     from .seismo.read_gcmt_data import load_cum_mag  # noqa
+
+    print('past seismo')
 
     # CMT3D
     from .seismo.invertcmt.GCMT3DInversion import GCMT3DInversion  # noqa
