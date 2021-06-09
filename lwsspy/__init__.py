@@ -61,6 +61,8 @@ if "-m" not in sys.argv:
     from .utils.output import log_bar  # noqa
     from .utils.output import log_section  # noqa
 
+    print("Hello after output")
+
     # Geographical things
     from .geo.geo_weights import GeoWeights  # noqa
     from .geo.azi_weights import azi_weights  # noqa
@@ -70,6 +72,8 @@ if "-m" not in sys.argv:
     from .inversion.plot_optimization import plot_optimization  # noqa
     from .inversion.plot_model_history import plot_model_history  # noqa
     from .inversion.plot_single_parameter_optimization import plot_single_parameter_optimization  # noqa
+
+    print("Hello after inversion")
 
     # Maps
     from .maps.fix_map_extent import fix_map_extent  # noqa
@@ -87,6 +91,7 @@ if "-m" not in sys.argv:
     from .maps.gctrack import gctrack  # noqa
 
     print("Hello pastt maps")
+
     # Math
     from .math.cart2sph import cart2sph  # noqa
     from .math.convm import convm  # noqa
