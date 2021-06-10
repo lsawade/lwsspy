@@ -55,14 +55,14 @@ class MPIProcessStream:
         print(
             f"Stream {len(streamlist)} -- "
             f"Inv: {len(processdict['inventory'].get_contents()['channels'])} -- "
-            f"Rank: {self.rank}/{self.size}")
+            f"Rank: {self.rank}/{self.size}", flush=True)
 
         # Process
         results = []
         result = process_stream(streamlist, **processdict)
 
         results.append(result)
-        print(f"Rank: {self.rank}/{self.size} -- Done.")
+        print(f"Rank: {self.rank}/{self.size} -- Done.", flush=True)
 
         results = self.comm.gather(results, root=0)
 

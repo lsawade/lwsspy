@@ -61,7 +61,7 @@ class MPIWindowStream:
         print(
             f"Observed {len(obsdlist)} -- Synthetic {len(syntlist)} --"
             f"Inv: {len(windowdict['station'].get_contents()['channels'])} -- "
-            f"Rank: {self.rank}/{self.size}")
+            f"Rank: {self.rank}/{self.size}", flush=True)
 
         # Process
         results = []
@@ -73,7 +73,7 @@ class MPIWindowStream:
         #     except Exception:
         #         print(f"----- {_tr.id}")
         results.append(result)
-        print(f"Rank: {self.rank}/{self.size} -- Done.")
+        print(f"Rank: {self.rank}/{self.size} -- Done.", flush=True)
 
         results = self.comm.gather(results, root=0)
 

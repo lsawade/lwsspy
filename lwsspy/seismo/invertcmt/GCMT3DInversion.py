@@ -2505,8 +2505,6 @@ def bin():
     if download_only:
         download_data = True
 
-    print(f"Hello 4 from rank {rank}")
-
     gcmt3d = GCMT3DInversion(
         cmtsolutionfile,
         databasedir=database,
