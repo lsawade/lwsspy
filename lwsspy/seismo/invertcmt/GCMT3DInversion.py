@@ -26,13 +26,6 @@ import multiprocessing.pool as mpp
 import _pickle as cPickle
 from .process_classifier import ProcessParams
 import logging
-try:
-    from mpi4py import MPI
-    MPIMODE = True
-except ImportError as e:
-    print(e)
-    MPIMODE = False
-
 
 lpy.updaterc(rebuild=False)
 
@@ -125,6 +118,7 @@ class GCMT3DInversion:
         self.MPIMODE = MPIMODE
 
         if self.MPIMODE:
+            from mpi4py import MPI
             self.comm = MPI.COMM_WORLD
             self.rank = self.comm.Get_rank()
             self.size = self.comm.Get_size()
@@ -2441,12 +2435,17 @@ def bin():
     inputfile = args.inputfile
     download_only = args.download_only
 
-    print(f"Hello 1")
-
     if download_only:
         MPIMODE = False
-    else:
-        MPIMODE = lpy.is_mpi_env()
+
+    if MPIMODE:
+        try:
+            from mpi4py import MPI
+            MPIMODE = True
+
+        except ImportError as e:
+            print(e)
+            MPIMODE = False
 
     if MPIMODE:
         comm = MPI.COMM_WORLD
