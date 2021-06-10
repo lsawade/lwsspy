@@ -2427,7 +2427,7 @@ def bin():
                         help='Input file location',
                         required=False, type=str, default=None)
     parser.add_argument('-d', '--download-only', dest='download_only',
-                        help='Input file location',
+                        help='Input file location', action='store_true',
                         required=False, type=bool, default=False)
     args = parser.parse_args()
 
