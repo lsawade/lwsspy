@@ -81,7 +81,6 @@ if "-m" not in sys.argv:
     from .maps.topography_design import TopographyDesign  # noqa
     from .maps.gctrack import gctrack  # noqa
 
-    print('past maps')
     # Math
     from .math.cart2sph import cart2sph  # noqa
     from .math.convm import convm  # noqa
@@ -98,7 +97,7 @@ if "-m" not in sys.argv:
     from .math.Ra2b import Ra2b  # noqa
     from .math.sph2cart import sph2cart  # noqa
     from .math.SphericalNN import SphericalNN  # noqa
-    print('past math')
+
     # Plot
     from .plot_util.figcolorbar import figcolorbar  # noqa
     from .plot_util.fixedpointcolornorm import FixedPointColorNorm  # noqa
@@ -134,7 +133,6 @@ if "-m" not in sys.argv:
     from .plot_util.view_colormap import view_colormap  # noqa
     from .plot_util.zerotraceaxes import ztaxes  # noqa
 
-    print('past plotutil')
     # Seismology
     from .seismo.cmt2inv import cmt2inv  # noqa
     from .seismo.cmt2stationxml import cmt2stationxml  # noqa
@@ -206,8 +204,6 @@ if "-m" not in sys.argv:
     from .seismo.read_gcmt_data import load_num_events  # noqa
     from .seismo.read_gcmt_data import load_cum_mag  # noqa
 
-    print('past seismo')
-
     # CMT3D
     from .seismo.invertcmt.GCMT3DInversion import GCMT3DInversion  # noqa
     from .seismo.invertcmt.plot_weights import plot_weightpickle  # noqa
@@ -221,6 +217,7 @@ if "-m" not in sys.argv:
     from .seismo.invertcmt.process_classifier import ProcessParams  # noqa
     from .seismo.invertcmt.io import read_output_traces  # noqa
     from .seismo.invertcmt.io import read_measurements  # noqa
+
     # Shell
     from .shell.cat import cat  # noqa
     from .shell.copy_dirtree import copy_dirtree  # noqa

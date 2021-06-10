@@ -4,15 +4,7 @@ from .split_stream_inv import split_stream_inv
 from ...utils.timer import Timer
 from .process import process_stream
 from obspy import Stream
-
-print("Before import")
-
-
 from mpi4py import MPI
-
-
-
-print("After import")
 
 
 class MPIProcessStream:
