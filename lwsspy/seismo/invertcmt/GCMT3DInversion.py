@@ -119,6 +119,8 @@ class GCMT3DInversion:
 
         if self.MPIMODE:
             from mpi4py import MPI
+            from ..process.mpiprocessclass import self.MPIProcessStream
+            from ..window.mpiwindowclass import self.MPIWindowStream
             self.comm = MPI.COMM_WORLD
             self.rank = self.comm.Get_rank()
             self.size = self.comm.Get_size()
@@ -795,7 +797,7 @@ class GCMT3DInversion:
 
             if self.MPIMODE:
                 # Initialize multiprocessing Class
-                PC = lpy.MPIProcessStream()
+                PC = self.MPIProcessStream()
 
                 # Populate with stream and process
                 if PC.rank == 0:
@@ -916,7 +918,7 @@ class GCMT3DInversion:
 
             if self.MPIMODE:
                 # Initialize multiprocessing Class
-                PC = lpy.MPIProcessStream()
+                PC = self.MPIProcessStream()
 
                 # Populate with stream and process
                 if PC.rank == 0:
@@ -1011,7 +1013,7 @@ class GCMT3DInversion:
                 else:
                     if self.MPIMODE:
                         # Initialize multiprocessing Class
-                        PC = lpy.MPIProcessStream()
+                        PC = self.MPIProcessStream()
 
                         # Populate with stream and process
                         if PC.rank == 0:
@@ -1108,7 +1110,7 @@ class GCMT3DInversion:
                 if self.MPIMODE:
 
                     # Initialize multiprocessing Class
-                    WC = lpy.MPIWindowStream()
+                    WC = self.MPIWindowStream()
 
                     # Populate with stream and process
                     if WC.rank == 0:
