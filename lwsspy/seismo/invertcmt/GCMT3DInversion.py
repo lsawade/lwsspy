@@ -2428,7 +2428,7 @@ def bin():
                         required=False, type=str, default=None)
     parser.add_argument('-d', '--download-only', dest='download_only',
                         help='Input file location', action='store_true',
-                        required=False, type=bool, default=False)
+                        required=False, default=False)
     args = parser.parse_args()
 
     cmtsolutionfile = args.event
