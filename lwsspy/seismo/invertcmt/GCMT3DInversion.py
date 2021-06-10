@@ -2437,6 +2437,8 @@ def bin():
 
     if download_only:
         MPIMODE = False
+    else:
+        MPIMODE = True
 
     if MPIMODE:
         try:
