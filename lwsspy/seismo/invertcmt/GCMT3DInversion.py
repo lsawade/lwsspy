@@ -121,6 +121,8 @@ class GCMT3DInversion:
             from mpi4py import MPI
             from ..process.mpiprocessclass import MPIProcessStream
             from ..window.mpiwindowclass import MPIWindowStream
+            self.MPIProcessStream = MPIProcessStream
+            self.MPIWindowStream = MPIWindowStream
             self.comm = MPI.COMM_WORLD
             self.rank = self.comm.Get_rank()
             self.size = self.comm.Get_size()
