@@ -2464,7 +2464,9 @@ def bin():
             os.path.join(scriptdir, "input.yml"),
             mpi_mode=MPIMODE, comm=comm)
     else:
-        inputdict = lpy.smart_read_yaml(inputfile)
+        inputdict = lpy.smart_read_yaml(
+            inputfile,
+            mpi_mode=MPIMODE, comm=comm)
 
     print(f"Hello 2 from rank {rank}")
 
