@@ -2444,6 +2444,8 @@ def bin():
     else:
         MPIMODE = True
 
+    MPIMODE = False
+
     if MPIMODE:
         try:
             from mpi4py import MPI
@@ -2519,7 +2521,7 @@ def bin():
         damping=damping,
         hypo_damping=hypo_damping,
         start_label=start_label,
-        multiprocesses=38,
+        multiprocesses=40,
         MPIMODE=MPIMODE)
 
     if download_only:
