@@ -853,6 +853,7 @@ class GCMT3DInversion:
             processdict.pop("relative_endtime")
             processdict["starttime"] = starttime
             processdict["endtime"] = endtime
+            processdict["inventory"] = self.stations
             processdict.update(dict(
                 remove_response_flag=False,
                 event_latitude=self.cmtsource.latitude,
