@@ -1116,7 +1116,7 @@ class GCMT3DInversion:
         cwdlist.extend(
             [_pardir for _par, _pardir in self.synt_pardirs.items()
              if _par not in self.nosimpars])
-        lpy.run_cmds_parallel(cmd_list, cwdlist=cwdlist)
+        lpy.asyncio_commands(cmd_list, cwdlist=cwdlist)
 
     def __run_forward_only__(self):
 
@@ -1125,7 +1125,7 @@ class GCMT3DInversion:
             "Submitting forward simulation", plogger=self.logger.info)
         cmd_list = [[*self.launch_method, './bin/xspecfem3D']]
         cwdlist = [self.synt_syntdir]
-        lpy.run_cmds_parallel(cmd_list, cwdlist=cwdlist)
+        lpy.asyncio_commands(cmd_list, cwdlist=cwdlist)
 
     def __run_parameters_only__(self):
 
@@ -1139,7 +1139,7 @@ class GCMT3DInversion:
         cwdlist.extend(
             [_pardir for _par, _pardir in self.synt_pardirs.items()
              if _par not in self.nosimpars])
-        lpy.run_cmds_parallel(cmd_list, cwdlist=cwdlist)
+        lpy.asyncio_commands(cmd_list, cwdlist=cwdlist)
 
     def forward(self, model):
         # Update model
