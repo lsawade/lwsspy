@@ -11,16 +11,17 @@ from lwsspy.seismo.window.queue_multiwindow_stream import queue_multiwindow_stre
 import lwsspy as lpy
 
 # External
-from typing import Callable, Union, Optional, List
 import os
+import asyncio
 import shutil
 import datetime
-from copy import deepcopy
 import numpy as np
+from itertools import repeat
+from copy import deepcopy
+from typing import Callable, Union, Optional, List
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib.backends.backend_pdf import PdfPages
-from itertools import repeat
 from obspy import read, read_events, Stream, Trace
 from obspy.core import event
 from obspy.core.utcdatetime import UTCDateTime
@@ -1116,7 +1117,7 @@ class GCMT3DInversion:
         cwdlist.extend(
             [_pardir for _par, _pardir in self.synt_pardirs.items()
              if _par not in self.nosimpars])
-        lpy.asyncio_commands(cmd_list, cwdlist=cwdlist)
+        asyncio.run(lpy.asyncio_commands(cmd_list, cwdlist=cwdlist))
 
     def __run_forward_only__(self):
 
@@ -1125,7 +1126,7 @@ class GCMT3DInversion:
             "Submitting forward simulation", plogger=self.logger.info)
         cmd_list = [[*self.launch_method, './bin/xspecfem3D']]
         cwdlist = [self.synt_syntdir]
-        lpy.asyncio_commands(cmd_list, cwdlist=cwdlist)
+        asyncio.run(lpy.asyncio_commands(cmd_list, cwdlist=cwdlist))
 
     def __run_parameters_only__(self):
 
@@ -1139,7 +1140,7 @@ class GCMT3DInversion:
         cwdlist.extend(
             [_pardir for _par, _pardir in self.synt_pardirs.items()
              if _par not in self.nosimpars])
-        lpy.asyncio_commands(cmd_list, cwdlist=cwdlist)
+        asyncio.run(lpy.asyncio_commands(cmd_list, cwdlist=cwdlist))
 
     def forward(self, model):
         # Update model
