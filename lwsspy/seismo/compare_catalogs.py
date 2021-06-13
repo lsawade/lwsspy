@@ -537,7 +537,12 @@ def bin():
                              nbins=25)
 
     # Filter for a minimum depth larger than zero
-    # CC = CC.filter(mindict={"depth_in_m": 1e-12})
+    CC = CC.filter(mindict={"depth_in_m": 10000.0})
+    for ocmt, ncmt in zip(CC.old, CC.new):
+        print(f"OLD: {(ncmt.depth_in_m - ocmt.depth_in_m)/1000.0}")
+        print(ocmt)
+        print("NEW")
+        print(ncmt)
 
     # Comparison figures
     CC.plot_summary(outfile=os.path.join(

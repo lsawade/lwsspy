@@ -5,9 +5,9 @@ CMTSOLUTTION depth.
 # %% Create inversion directory
 
 # Internal
-from obspy.core import event
-from obspy.core.utcdatetime import UTCDateTime
 from lwsspy.seismo.source import CMTSource
+from lwsspy.seismo.process.queue_multiprocess_stream import queue_multiprocess_stream
+from lwsspy.seismo.window.queue_multiwindow_stream import queue_multiwindow_stream
 import lwsspy as lpy
 
 # External
@@ -22,6 +22,8 @@ from matplotlib.patches import Rectangle
 from matplotlib.backends.backend_pdf import PdfPages
 from itertools import repeat
 from obspy import read, read_events, Stream, Trace
+from obspy.core import event
+from obspy.core.utcdatetime import UTCDateTime
 import multiprocessing.pool as mpp
 import _pickle as cPickle
 from .process_classifier import ProcessParams
@@ -737,8 +739,10 @@ class GCMT3DInversion:
                 lpy.log_action(
                     f"Processing in parallel using {self.multiprocesses} cores",
                     plogger=self.logger.debug)
-                self.data_dict[_wtype] = lpy.multiprocess_stream(
-                    _stream, processdict)
+                # self.data_dict[_wtype] = lpy.multiprocess_stream(
+                #     _stream, processdict)
+                self.data_dict[_wtype] = queue_multiprocess_stream(
+                    _stream, processdict, nproc=self.multiprocesses)
 
     def __load_synt__(self):
 
@@ -776,7 +780,7 @@ class GCMT3DInversion:
 
         if self.multiprocesses > 1:
             parallel = True
-            p = mpp.Pool(processes=self.multiprocesses)
+            # p = mpp.Pool(processes=self.multiprocesses)
             lpy.log_action(
                 f"Processing in parallel using {self.multiprocesses} cores",
                 plogger=self.logger.debug)
@@ -809,21 +813,25 @@ class GCMT3DInversion:
                 plogger=self.logger.info)
 
             if parallel:
-                self.synt_dict[_wtype]["synt"] = lpy.multiprocess_stream(
-                    self.synt_dict[_wtype]["synt"], processdict)
+                # self.synt_dict[_wtype]["synt"] = lpy.multiprocess_stream(
+                #     self.synt_dict[_wtype]["synt"], processdict)
+                self.synt_dict[_wtype]["synt"] = queue_multiprocess_stream(
+                    self.synt_dict[_wtype]["synt"], processdict,
+                    nproc=self.multiprocesses)
             else:
                 self.synt_dict[_wtype]["synt"] = self.process_func(
                     self.synt_dict[_wtype]["synt"], self.stations,
                     **processdict)
 
         if parallel:
-            p.close()
+            pass
+            # p.close()
 
     def __process_synt_par__(self):
 
         if self.multiprocesses > 1:
             parallel = True
-            p = mpp.Pool(processes=self.multiprocesses)
+            # p = mpp.Pool(processes=self.multiprocesses)
             lpy.log_action(
                 f"Processing in parallel using {self.multiprocesses} cores",
                 plogger=self.logger.debug)
@@ -863,13 +871,10 @@ class GCMT3DInversion:
 
                 else:
                     if parallel:
-                        self.synt_dict[_wtype][_par] = self.sumfunc(
-                            lpy.starmap_with_kwargs(
-                                p, self.process_func,
-                                zip(self.synt_dict[_wtype]
-                                    [_par], repeat(self.stations)),
-                                repeat(processdict),
-                                len(self.synt_dict[_wtype][_par]))).copy()
+                        self.synt_dict[_wtype][_par] = \
+                            queue_multiprocess_stream(
+                            self.synt_dict[_wtype][_par], processdict,
+                            nproc=self.multiprocesses)
                     else:
                         self.synt_dict[_wtype][_par] = self.process_func(
                             self.synt_dict[_wtype][_par], self.stations,
@@ -891,7 +896,8 @@ class GCMT3DInversion:
                         self.synt_dict[_wtype][_par], 1.0/1000.0)
 
         if parallel:
-            p.close()
+            pass
+            # p.close()
 
     def __window__(self):
 
