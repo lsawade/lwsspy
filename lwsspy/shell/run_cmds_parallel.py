@@ -15,7 +15,8 @@ def run_cmds_parallel(cmd_list, cwdlist=None):
 
     # Create list of processes that immediately start execution
     if cwdlist is None:
-        cwdlist = len(cmd_list) * None
+        cwdlist = len(cmd_list) * [None]
+
     process_list = [Popen(cmd, stdout=PIPE, stderr=PIPE, cwd=cwd)
                     for cmd, cwd in zip(cmd_list, cwdlist)]
 

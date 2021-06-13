@@ -237,7 +237,7 @@ def process_stream(st: Stream, inventory: Union[Inventory, None] = None,
     ValueError
         sampling rate mustt be provided if you want to resample.
     """
-
+    
     # check input data type
     if isinstance(st, Trace):
         st = Stream(traces=[st, ])
