@@ -46,7 +46,7 @@ def queue_multiprocess_stream(
     Notes
     -----
 
-    :Author:
+    :Author:f
         Lucas Sawade (lsawade@princeton.edu)
 
     :Last Modified:
@@ -59,7 +59,7 @@ def queue_multiprocess_stream(
     splitstream, _ = split_stream_inv(st, processdict['inventory'],
                                       nprocs=nproc)
     # Make argument tuples
-    splitstream = [(st, ) for st in splitstream]
+    splitstream = [(st, ) for st in splitstream if len(st) > 0]
 
     if verbose:
         print(splitstream)
