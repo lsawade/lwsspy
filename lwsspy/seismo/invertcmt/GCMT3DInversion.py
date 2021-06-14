@@ -138,7 +138,7 @@ class GCMT3DInversion:
         # Simulation stuff
         self.specfemdir = specfemdir
         self.specfem_dict = specfem_dict
-        self.launch_method = launch_method.split()
+        self.launch_method = launch_method
 
         # Processing parameters
         self.processdict = processdict
@@ -1112,7 +1112,7 @@ class GCMT3DInversion:
 
         lpy.log_action("Submitting all simulations", plogger=self.logger.info)
         # Initialize necessary commands
-        cmd_list = self.nsim * [[*self.launch_method, './bin/xspecfem3D']]
+        cmd_list = self.nsim * [f'{self.launch_method} ./bin/xspecfem3D']
 
         cwdlist = [self.synt_syntdir]
         cwdlist.extend(
@@ -1125,7 +1125,7 @@ class GCMT3DInversion:
         # Initialize necessary commands
         lpy.log_action(
             "Submitting forward simulation", plogger=self.logger.info)
-        cmd_list = [[*self.launch_method, './bin/xspecfem3D']]
+        cmd_list = [f'{self.launch_method} ./bin/xspecfem3D']
         cwdlist = [self.synt_syntdir]
         asyncio.run(lpy.asyncio_commands(cmd_list, cwdlist=cwdlist))
 
@@ -1134,8 +1134,7 @@ class GCMT3DInversion:
         # Initialize necessary commands
         lpy.log_action(
             "Submitting parameter simulations", plogger=self.logger.info)
-        cmd_list = (self.nsim - 1) * \
-            [[*self.launch_method, './bin/xspecfem3D']]
+        cmd_list = (self.nsim - 1) * [f'{self.launch_method} ./bin/xspecfem3D']
 
         cwdlist = []
         cwdlist.extend(

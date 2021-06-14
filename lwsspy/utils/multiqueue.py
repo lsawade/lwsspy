@@ -125,5 +125,3 @@ def multiwrapper(
     final_results = [t[1] for t in sorted_by_first]
 
     return final_results
-
-
