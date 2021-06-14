@@ -815,7 +815,7 @@ class GCMT3DInversion:
 
             if parallel:
                 self.synt_dict[_wtype]["synt"] = lpy.multiprocess_stream(
-                    self.synt_dict[_wtype]["synt"], processdict)
+                    self.synt_dict[_wtype]["synt"], processdict, pool=p)
                 # self.synt_dict[_wtype]["synt"] = queue_multiprocess_stream(
                 #     self.synt_dict[_wtype]["synt"], processdict,
                 #     nproc=self.multiprocesses)
