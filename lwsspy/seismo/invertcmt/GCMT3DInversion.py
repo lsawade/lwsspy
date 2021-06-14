@@ -740,10 +740,10 @@ class GCMT3DInversion:
                 lpy.log_action(
                     f"Processing in parallel using {self.multiprocesses} cores",
                     plogger=self.logger.debug)
-                self.data_dict[_wtype] = lpy.multiprocess_stream(
-                    _stream, processdict)
-                # self.data_dict[_wtype] = queue_multiprocess_stream(
-                #     _stream, processdict, nproc=self.multiprocesses)
+                # self.data_dict[_wtype] = lpy.multiprocess_stream(
+                #     _stream, processdict)
+                self.data_dict[_wtype] = queue_multiprocess_stream(
+                    _stream, processdict, nproc=self.multiprocesses)
 
     def __load_synt__(self):
 
@@ -781,7 +781,7 @@ class GCMT3DInversion:
 
         if self.multiprocesses > 1:
             parallel = True
-            p = mpp.Pool(processes=self.multiprocesses)
+            # p = mpp.Pool(processes=self.multiprocesses)
             lpy.log_action(
                 f"Processing in parallel using {self.multiprocesses} cores",
                 plogger=self.logger.debug)
@@ -814,24 +814,25 @@ class GCMT3DInversion:
                 plogger=self.logger.info)
 
             if parallel:
-                self.synt_dict[_wtype]["synt"] = lpy.multiprocess_stream(
-                    self.synt_dict[_wtype]["synt"], processdict, pool=p)
-                # self.synt_dict[_wtype]["synt"] = queue_multiprocess_stream(
-                #     self.synt_dict[_wtype]["synt"], processdict,
-                #     nproc=self.multiprocesses)
+                # self.synt_dict[_wtype]["synt"] = lpy.multiprocess_stream(
+                #     self.synt_dict[_wtype]["synt"], processdict, pool=p)
+                self.synt_dict[_wtype]["synt"] = queue_multiprocess_stream(
+                    self.synt_dict[_wtype]["synt"], processdict,
+                    nproc=self.multiprocesses)
             else:
                 self.synt_dict[_wtype]["synt"] = self.process_func(
                     self.synt_dict[_wtype]["synt"], self.stations,
                     **processdict)
 
         if parallel:
-            p.close()
+            pass
+            # p.close()
 
     def __process_synt_par__(self):
 
         if self.multiprocesses > 1:
             parallel = True
-            p = mpp.Pool(processes=self.multiprocesses)
+            # p = mpp.Pool(processes=self.multiprocesses)
             lpy.log_action(
                 f"Processing in parallel using {self.multiprocesses} cores",
                 plogger=self.logger.debug)
@@ -852,6 +853,7 @@ class GCMT3DInversion:
             processdict.pop("relative_endtime")
             processdict["starttime"] = starttime
             processdict["endtime"] = endtime
+            processdict["inventory"] = self.stations
             processdict.update(dict(
                 remove_response_flag=False,
                 event_latitude=self.cmtsource.latitude,
@@ -871,17 +873,17 @@ class GCMT3DInversion:
 
                 else:
                     if parallel:
-                        self.synt_dict[_wtype][_par] = self.sumfunc(
-                            lpy.starmap_with_kwargs(
-                                p, self.process_func,
-                                zip(self.synt_dict[_wtype]
-                                    [_par], repeat(self.stations)),
-                                repeat(processdict),
-                                len(self.synt_dict[_wtype][_par]))).copy()
-                        # self.synt_dict[_wtype][_par] = \
-                        #     queue_multiprocess_stream(
-                        #     self.synt_dict[_wtype][_par], processdict,
-                        #     nproc=self.multiprocesses)
+                        # self.synt_dict[_wtype][_par] = self.sumfunc(
+                        #     lpy.starmap_with_kwargs(
+                        #         p, self.process_func,
+                        #         zip(self.synt_dict[_wtype]
+                        #             [_par], repeat(self.stations)),
+                        #         repeat(processdict),
+                        #         len(self.synt_dict[_wtype][_par]))).copy()
+                        self.synt_dict[_wtype][_par] = \
+                            queue_multiprocess_stream(
+                            self.synt_dict[_wtype][_par], processdict,
+                            nproc=self.multiprocesses)
                     else:
                         self.synt_dict[_wtype][_par] = self.process_func(
                             self.synt_dict[_wtype][_par], self.stations,
@@ -903,7 +905,8 @@ class GCMT3DInversion:
                         self.synt_dict[_wtype][_par], 1.0/1000.0)
 
         if parallel:
-            p.close()
+            pass
+            # p.close()
 
     def __window__(self):
 
@@ -2215,6 +2218,9 @@ def bin():
     start_label = inputdict["start_label"]
     solution_label = inputdict["solution_label"]
 
+    # Set CPU Affinity
+    lpy.reset_cpu_affinity(verbose=True)
+
     gcmt3d = GCMT3DInversion(
         cmtsolutionfile,
         databasedir=database,
@@ -2229,7 +2235,7 @@ def bin():
         damping=damping,
         hypo_damping=hypo_damping,
         start_label=start_label,
-        multiprocesses=38)
+        multiprocesses=40)
 
     # gcmt3d.init()
     gcmt3d.process_data()

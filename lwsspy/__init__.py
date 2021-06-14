@@ -263,6 +263,7 @@ if "-m" not in sys.argv:
     from .utils.multiwrapper import starmap_with_kwargs  # noqa
     from .utils.pixels2data import pixels2data  # noqa
     from .utils.reduce_fontsize import reduce_fontsize  # noqa
+    from .utils.reset_cpu_affinity import reset_cpu_affinity  # noqa
     from .utils.sec2hhmmss import sec2hhmmss  # noqa
     from .utils.sec2hhmmss import sec2timestamp  # noqa
     from .utils.threadwork import threadwork  # noqa
