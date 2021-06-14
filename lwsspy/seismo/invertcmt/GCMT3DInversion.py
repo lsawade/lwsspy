@@ -933,11 +933,14 @@ class GCMT3DInversion:
                         self.synt_dict[_wtype]["synt"],
                         **wrapwindowdict)
                 else:
-
-                    self.data_dict[_wtype] = lpy.multiwindow_stream(
+                    self.data_dict[_wtype] = queue_multiwindow_stream(
                         self.data_dict[_wtype],
                         self.synt_dict[_wtype]["synt"],
-                        wrapwindowdict, nprocs=self.multiprocesses)
+                        wrapwindowdict, nproc=self.multiprocesses)
+                    # self.data_dict[_wtype] = lpy.multiwindow_stream(
+                    #     self.data_dict[_wtype],
+                    #     self.synt_dict[_wtype]["synt"],
+                    #     wrapwindowdict, nprocs=self.multiprocesses)
 
             if len(self.processdict[_wtype]["window"]) > 1:
                 lpy.log_action(
