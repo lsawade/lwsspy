@@ -188,6 +188,72 @@ class CompareCatalogs:
         plt.xlabel("Depth Change [km]")
         plt.ylabel("Depth [km]")
 
+    def plot_slab_map(self, outfile: Optional[str] = None, extent=None):
+
+        if outfile is not None:
+            backend = plt.get_backend()
+            plt.switch_backend('pdf')
+
+        # Get slab location
+        dss = lpy.get_slabs()
+        vmin, vmax = lpy.get_slab_minmax(dss)
+
+        # Compute levels
+        levels = np.linspace(vmin, vmax, 100)
+
+        # Define color mapping
+        cmap = plt.get_cmap('rainbow')
+        norm = BoundaryNorm(levels, cmap.N)
+
+        # Get extent in which to include surrounding slabs
+        lats = self.olat
+        lons = self.olon
+
+        # Plot map
+        proj = Mollweide(central_longitude=160.0)
+        ax = plt.axes(projection=proj)
+        if extent is not None:
+            ax.set_extent(extent)
+        else:
+            ax.set_global()
+        lpy.plot_map()
+        lpy.plot_map(fill=False, borders=False, zorder=10)
+        # ax.set_extent(extent05)
+
+        # Plot map with central longitude on event longitude
+        lpy.plot_slabs(dss=dss, levels=levels, cmap=cmap, norm=norm)
+
+        # Plot CMT as popint or beachball
+        # cdepth = cmap(norm(-1*self.odepth))
+
+        # Old CMTs
+        plt.plot(
+            np.vstack((self.olon, self.nlon)),
+            np.vstack((self.olat, self.nlat)), 'k',
+            linewidth=0.75, transform=PlateCarree(), zorder=105)
+
+        plt.scatter(lons, lats, c=-1*self.odepth, s=30,
+                    marker='s', edgecolor='k', cmap=cmap, norm=norm,
+                    transform=PlateCarree(), zorder=100)
+
+        # New CMTs
+        plt.scatter(self.nlon, self.nlat, c=-1*self.odepth, s=30,
+                    marker='o', edgecolor='k', cmap=cmap, norm=norm,
+                    transform=PlateCarree(), zorder=110)
+
+        # Redo, I think?
+        if extent is not None:
+            ax.set_extent(extent)
+
+        c = lpy.nice_colorbar(aspect=40, fraction=0.1, shrink=0.6)
+        c.set_label("Depth [km]")
+
+        if outfile is not None:
+            plt.savefig(outfile, dpi=300)
+            plt.switch_backend(backend)
+        else:
+            plt.show()
+
     def plot_summary(self, outfile: Optional[str] = None):
 
         if outfile is not None:
@@ -537,15 +603,22 @@ def bin():
                              nbins=25)
 
     # Filter for a minimum depth larger than zero
-    CC = CC.filter(mindict={"depth_in_m": 10000.0})
+    # CC = CC.filter(mindict={"depth_in_m": 10000.0})
     for ocmt, ncmt in zip(CC.old, CC.new):
-        print(f"OLD: {(ncmt.depth_in_m - ocmt.depth_in_m)/1000.0}")
+        print(f"\n\nOLD: {(ncmt.depth_in_m - ocmt.depth_in_m)/1000.0}")
         print(ocmt)
+        print(" ")
         print("NEW")
         print(ncmt)
 
+    extent = -80, -60, -10, -30
+    extent = None
+
     # Comparison figures
-    CC.plot_summary(outfile=os.path.join(
-        args.outdir, "catalog_comparison.pdf"))
-    CC.plot_depth_v_eps_nu(outfile=os.path.join(
-        args.outdir, "depth_v_sourcetype.pdf"))
+    CC.plot_slab_map()
+    # outfile=os.path.join(
+    #     args.outdir, "catalog_slab_map.pdf"), extent=extent)
+    # CC.plot_summary(outfile=os.path.join(
+    #     args.outdir, "catalog_comparison.pdf"))
+    # CC.plot_depth_v_eps_nu(outfile=os.path.join(
+    #     args.outdir, "depth_v_sourcetype.pdf"))

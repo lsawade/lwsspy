@@ -58,6 +58,10 @@ if "-m" not in sys.argv:
     # Geographical things
     from .geo.geo_weights import GeoWeights  # noqa
     from .geo.azi_weights import azi_weights  # noqa
+    from .geo.get_slabs import get_slabs  # noqa
+    from .geo.get_slabs import get_slab_minmax  # noqa
+    from .geo.get_slabs import get_slab_extend  # noqa
+    from .geo.plot_slabs import plot_slabs  # noqa
 
     # Inversion
     from .inversion.optimizer import Optimization  # noqa
@@ -67,6 +71,7 @@ if "-m" not in sys.argv:
 
     # Maps
     from .maps.fix_map_extent import fix_map_extent  # noqa
+    from .maps.in_extent import in_extent  # noqa
     from .maps.line_buffer import line_buffer  # noqa
     from .maps.map_axes import map_axes  # noqa
     from .maps.plot_map import plot_map  # noqa
@@ -78,6 +83,7 @@ if "-m" not in sys.argv:
     from .maps.reckon import reckon  # noqa
     from .maps.topocolormap import topocolormap  # noqa
     from .maps.topography_design import TopographyDesign  # noqa
+    from .maps.geo2disp import geo2disp
     from .maps.gctrack import gctrack  # noqa
 
     # Math
@@ -206,13 +212,14 @@ if "-m" not in sys.argv:
 
     # CMT3D
     from .seismo.invertcmt.GCMT3DInversion import GCMT3DInversion  # noqa
-    from .seismo.invertcmt.plot_weights import plot_weightpickle  # noqa
-    from .seismo.invertcmt.plot_weights import plot_weights  # noqa
     from .seismo.invertcmt.plot_measurements import get_database_measurements  # noqa
     from .seismo.invertcmt.plot_measurements import plot_measurements  # noqa
     from .seismo.invertcmt.plot_measurements import plot_measurement_pkl  # noqa
     from .seismo.invertcmt.plot_measurements import compute_window_hists  # noqa
     from .seismo.invertcmt.plot_measurements import plot_window_histograms  # noqa
+    from .seismo.invertcmt.plot_slab_location import plot_slab_location  # noqa
+    from .seismo.invertcmt.plot_weights import plot_weightpickle  # noqa
+    from .seismo.invertcmt.plot_weights import plot_weights  # noqa
     from .seismo.invertcmt.process_classifier import filter_scaling  # noqa
     from .seismo.invertcmt.process_classifier import ProcessParams  # noqa
     from .seismo.invertcmt.io import read_output_traces  # noqa
@@ -234,6 +241,7 @@ if "-m" not in sys.argv:
     from .shell.touch import touch  # noqa
     from .shell.unzip import unzip  # noqa
     from .shell.ungzip import ungzip  # noqa
+    from .shell.untar import untar  # noqa
     from .shell.writefile import writefile  # noqa
 
     # Simple Signal processing functions

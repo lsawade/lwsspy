@@ -2189,6 +2189,9 @@ def bin():
     parser.add_argument('-i', '--inputfile', dest='inputfile',
                         help='Input file location',
                         required=False, type=str, default=None)
+    parser.add_argument('-d', '--download_only', dest='download_only',
+                        help='Download only', action='store_true',
+                        required=False, default=False)
     args = parser.parse_args()
 
     cmtsolutionfile = args.event
@@ -2221,9 +2224,13 @@ def bin():
     start_label = inputdict["start_label"]
     solution_label = inputdict["solution_label"]
 
-    # Set CPU Affinity
-    lpy.reset_cpu_affinity(verbose=True)
+    if args.download_only:
+        download_data = True
+    else:
+        # Set CPU Affinity
+        lpy.reset_cpu_affinity(verbose=True)
 
+    # Setup the download
     gcmt3d = GCMT3DInversion(
         cmtsolutionfile,
         databasedir=database,
@@ -2239,6 +2246,9 @@ def bin():
         hypo_damping=hypo_damping,
         start_label=start_label,
         multiprocesses=40)
+
+    if args.download_only:
+        sys.exit()
 
     # gcmt3d.init()
     gcmt3d.process_data()
