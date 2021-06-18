@@ -224,6 +224,7 @@ if "-m" not in sys.argv:
     from .seismo.invertcmt.process_classifier import ProcessParams  # noqa
     from .seismo.invertcmt.io import read_output_traces  # noqa
     from .seismo.invertcmt.io import read_measurements  # noqa
+    from .seismo.invertcmt.sync_data import sync_data  # noqa
 
     # Shell
     from .shell.asyncio_cmds import asyncio_commands
