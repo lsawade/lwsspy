@@ -2194,6 +2194,7 @@ def bin():
                         required=False, default=False)
     args = parser.parse_args()
 
+    
     cmtsolutionfile = args.event
     inputfile = args.inputfile
 

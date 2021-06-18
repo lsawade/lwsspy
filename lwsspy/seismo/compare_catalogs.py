@@ -615,10 +615,10 @@ def bin():
     extent = None
 
     # Comparison figures
-    CC.plot_slab_map()
+    # CC.plot_slab_map()
     # outfile=os.path.join(
     #     args.outdir, "catalog_slab_map.pdf"), extent=extent)
-    # CC.plot_summary(outfile=os.path.join(
-    #     args.outdir, "catalog_comparison.pdf"))
-    # CC.plot_depth_v_eps_nu(outfile=os.path.join(
-    #     args.outdir, "depth_v_sourcetype.pdf"))
+    CC.plot_summary(outfile=os.path.join(
+        args.outdir, "catalog_comparison.pdf"))
+    CC.plot_depth_v_eps_nu(outfile=os.path.join(
+        args.outdir, "depth_v_sourcetype.pdf"))
