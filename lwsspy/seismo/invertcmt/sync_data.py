@@ -40,11 +40,10 @@ def bin():
     # Get arguments
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        dest='data_database', type=str, required=True,
+        dest='data_database', type=str,
         help='Database that contains the downloaded data.')
     parser.add_argument(
-        dest='new_database', help='Database for inversion',
-        required=True, type=str)
+        dest='new_database', help='Database for inversion', type=str)
     parser.add_argument(
         '-e', '--event-list', dest='event_list', nargs='+',
         help='List of events to sync', default=None,
