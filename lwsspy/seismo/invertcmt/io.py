@@ -63,6 +63,7 @@ def read_output_traces(cmtdir: str, verbose: bool = True):
 
     return obsd, synt
 
+
 def read_measurements(cmtdir: str):
 
     measurement_pickle_before = os.path.join(
