@@ -4,6 +4,44 @@ import time
 import platform
 import asyncio
 from typing import List, Optional
+from random import randint
+
+
+async def longprocess():
+
+    """Run command in subprocess (shell)
+
+    Note:
+        This can be used if you wish to execute e.g. "copy"
+        on Windows, which can only be executed in the shell.
+    """
+    seconds = randint(1, 14)
+    command = f"echo Sleeping {seconds} s && sleep {seconds}"
+    # Create subprocess
+    process = await asyncio.create_subprocess_shell(
+        command,
+        stderr=asyncio.subprocess.PIPE)
+
+    # Status
+    print('Started:', command, '(pid = ' + str(process.pid) + ')')
+
+    # Wait for the subprocess to finish
+    stdout, stderr = await process.communicate()
+
+    # Progress
+    if process.returncode == 0:
+        print('Done:', command, '(pid = ' + str(process.pid) + ')')
+    else:
+        print('Failed:', command, '(pid = ' + str(process.pid) + ')')
+
+    # Result
+    result = stderr.decode().strip()
+
+    # Real time print
+    print(result)
+
+    # Return stdout
+    return result
 
 
 async def run_command_shell(command):
@@ -97,7 +135,7 @@ def sync_data(
     processes = []
 
     # Rsync command to synchronize the databases in terms of events
-    rsyncstr = 'rsync -av --include="*/" ' \
+    rsyncstr = 'rsync -a --include="*/" ' \
         '--include="*.mseed" ' \
         '--include="*.xml" ' \
         '--exclude="*"'
@@ -115,13 +153,14 @@ def sync_data(
         # Create task for asyncio
         commands.append(command)
 
+    # Create list of asynchronous tasks.
     tasks = []
     for command in commands:
         tasks.append(run_command_shell(command))
 
     # At most max_concurrent_tasks parallel tasks
     results = run_asyncio_commands(
-        tasks, max_concurrent_tasks=20)
+        tasks, max_concurrent_tasks=n)
     print("[INFO] ... finished event list")
 
     end = time.time()
@@ -146,50 +185,9 @@ def bin():
         required=False)
     parser.add_argument(
         '-n', '--max-threads', dest='threads', type=int,
-        help='Maximum number of concurrent tasks', default=50,
+        help='Maximum number of concurrent tasks', default=20,
         required=False)
     args = parser.parse_args()
 
-    asyncio.run(sync_data(args.data_database,
-                          args.new_database, args.event_list, n=args.threads))
-
-
-# async def sync_data(
-#         data_database: str, new_database: str,
-#         eventlist: Optional[List[str]] = None,
-#         n: int = 50):
-
-#     # If no list is provided, the entire database will be synchronized
-#     if eventlist is None:
-#         eventlist = os.listdir(data_database)
-#         # Initialize list of process
-#     processes = []
-
-#     # Rsync command to synchronize the databases in terms of events
-#     rsyncstr = 'rsync -av --include="*/" ' \
-#         '--include="*.mseed" ' \
-#         '--include="*.xml" ' \
-#         '--exclude="*"'
-
-#     # define processes
-#     print("[INFO] Starting event list...")
-#     semaphore = asyncio.Semaphore(n)
-
-#     # Don't run more than simultaneous jobs below
-
-#     for event in eventlist:
-
-#         # Full RSYNC command
-#         command = f"{rsyncstr} {data_database}/{event}/ {new_database}/{event}"
-
-#         # Create task for asyncio
-
-#         async with semaphore:
-#             print(f"[INFO]     --> syncing {event} ...")
-#             process = await asyncio.create_subprocess_shell(command, stdout=asyncio.subprocess.PIPE)
-#             output = await process.stdout.read()
-#             print(f"[INFO]     --> done {event}.")
-#             processes.append(output)
-
-#         # Run two asyncio processes at the same time with asyncio
-#         await asyncio.gather(*(process for process in processes))
+    sync_data(
+        args.data_database, args.new_database, args.event_list, n=args.threads)
