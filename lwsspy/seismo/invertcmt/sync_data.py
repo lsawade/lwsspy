@@ -4,11 +4,11 @@ from typing import List, Optional
 
 
 async def gather_with_concurrency(n, *tasks):
-    semaphore = asyncio.BoundedSemaphore(n)
+    semaphore = asyncio.Semaphore(n)
 
     async def sem_task(task):
         async with semaphore:
-            return await task.wait()
+            return await task
     return await asyncio.gather(*(sem_task(task) for task in tasks))
 
 
@@ -31,19 +31,22 @@ async def sync_data(
 
     # define processes
     print("[INFO] Starting event list...")
-    for event in eventlist:
+    semaphore = asyncio.Semaphore(n)
 
-        # Full RSYNC command
-        command = f"{rsyncstr} {data_database}/{event}/ {new_database}/{event}"
+    async with semaphore:  # Don't run more than 10 simultaneous jobs below
 
-        # Create task for asyncio
-        print("[INFO]     --> syncing {event} ...")
-        process = await asyncio.create_subprocess_shell(command)
-        processes.append(process)
+        for event in eventlist:
+
+            # Full RSYNC command
+            command = f"{rsyncstr} {data_database}/{event}/ {new_database}/{event}"
+
+            # Create task for asyncio
+            print("[INFO]     --> syncing {event} ...")
+            process = await asyncio.create_subprocess_shell(command)
+            output = await process.communicate()
 
     # Run two asyncio processes at the same time with asyncio
-    await gather_with_concurrency(
-        n, *(_proc for _proc in processes))
+    await gather(*(_proc for _proc in processes))
 
 
 def bin():
