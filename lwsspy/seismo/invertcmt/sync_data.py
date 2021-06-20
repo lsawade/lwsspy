@@ -33,20 +33,24 @@ async def sync_data(
     print("[INFO] Starting event list...")
     semaphore = asyncio.Semaphore(n)
 
-    async with semaphore:  # Don't run more than simultaneous jobs below
+    # Don't run more than simultaneous jobs below
 
-        for event in eventlist:
+    for event in eventlist:
 
-            # Full RSYNC command
-            command = f"{rsyncstr} {data_database}/{event}/ {new_database}/{event}"
+        # Full RSYNC command
+        command = f"{rsyncstr} {data_database}/{event}/ {new_database}/{event}"
 
-            # Create task for asyncio
-            print("[INFO]     --> syncing {event} ...")
+        # Create task for asyncio
+
+        async with semaphore:
+            print(f"[INFO]     --> syncing {event} ...")
             process = await asyncio.create_subprocess_shell(command, stdout=asyncio.subprocess.PIPE)
             output = await process.stdout.read()
-            return output
+            print(f"[INFO]     --> done {event}.")
+            processes.append(output)
 
         # Run two asyncio processes at the same time with asyncio
+        await asyncio.gather(*(process for process in processes))
 
 
 def bin():
