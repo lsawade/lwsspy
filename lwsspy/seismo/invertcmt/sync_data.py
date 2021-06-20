@@ -33,7 +33,7 @@ async def sync_data(
     print("[INFO] Starting event list...")
     semaphore = asyncio.Semaphore(n)
 
-    async with semaphore:  # Don't run more than 10 simultaneous jobs below
+    async with semaphore:  # Don't run more than simultaneous jobs below
 
         for event in eventlist:
 
@@ -43,10 +43,9 @@ async def sync_data(
             # Create task for asyncio
             print("[INFO]     --> syncing {event} ...")
             process = await asyncio.create_subprocess_shell(command)
-            output = await process.communicate()
 
-    # Run two asyncio processes at the same time with asyncio
-    await asyncio.gather(*(_proc for _proc in processes))
+        # Run two asyncio processes at the same time with asyncio
+        await asyncio.gather(*(process.communicate() for _proc in processes))
 
 
 def bin():
