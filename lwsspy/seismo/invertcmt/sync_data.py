@@ -43,7 +43,7 @@ async def sync_data(
             # Create task for asyncio
             print("[INFO]     --> syncing {event} ...")
             process = await asyncio.create_subprocess_shell(command)
-            output = await processes.communicate()
+            output = await process.communicate()
             processes.append(output)
 
         # Run two asyncio processes at the same time with asyncio
