@@ -1,21 +1,93 @@
 import os
+import sys
+import time
+import platform
 import asyncio
 from typing import List, Optional
 
 
-async def gather_with_concurrency(n, *tasks):
-    semaphore = asyncio.Semaphore(n)
+async def run_command_shell(command):
+    """Run command in subprocess (shell)
 
-    async def sem_task(task):
-        async with semaphore:
-            return await task
-    return await asyncio.gather(*(sem_task(task) for task in tasks))
+    Note:
+        This can be used if you wish to execute e.g. "copy"
+        on Windows, which can only be executed in the shell.
+    """
+    # Create subprocess
+    process = await asyncio.create_subprocess_shell(
+        command,
+        stderr=asyncio.subprocess.PIPE)
+
+    # Status
+    print('Started:', command, '(pid = ' + str(process.pid) + ')')
+
+    # Wait for the subprocess to finish
+    stdout, stderr = await process.communicate()
+
+    # Progress
+    if process.returncode == 0:
+        print('Done:', command, '(pid = ' + str(process.pid) + ')')
+    else:
+        print('Failed:', command, '(pid = ' + str(process.pid) + ')')
+
+    # Result
+    result = stderr.decode().strip()
+
+    # Real time print
+    print(result)
+
+    # Return stdout
+    return result
 
 
-async def sync_data(
+def make_chunks(l, n):
+    """Yield successive n-sized chunks from l.
+
+    Note:
+        Taken from https://stackoverflow.com/a/312464
+    """
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
+
+def run_asyncio_commands(tasks, max_concurrent_tasks=0):
+    """Run tasks asynchronously using asyncio and return results
+
+    If max_concurrent_tasks are set to 0, no limit is applied.
+
+    Note:
+        By default, Windows uses SelectorEventLoop, which does not support
+        subprocesses. Therefore ProactorEventLoop is used on Windows.
+        https://docs.python.org/3/library/asyncio-eventloops.html#windows
+    """
+
+    all_results = []
+
+    if max_concurrent_tasks == 0:
+        chunks = [tasks]
+    else:
+        chunks = make_chunks(l=tasks, n=max_concurrent_tasks)
+
+    for tasks_in_chunk in chunks:
+        if platform.system() == 'Windows':
+            loop = asyncio.ProactorEventLoop()
+            asyncio.set_event_loop(loop)
+        else:
+            loop = asyncio.get_event_loop()
+
+        commands = asyncio.gather(*tasks_in_chunk)  # Unpack list using *
+        results = loop.run_until_complete(commands)
+        all_results += results
+        loop.close()
+    return all_results
+
+
+def sync_data(
         data_database: str, new_database: str,
         eventlist: Optional[List[str]] = None,
         n: int = 50):
+
+    start = time.time()
 
     # If no list is provided, the entire database will be synchronized
     if eventlist is None:
@@ -31,26 +103,29 @@ async def sync_data(
 
     # define processes
     print("[INFO] Starting event list...")
-    semaphore = asyncio.Semaphore(n)
 
     # Don't run more than simultaneous jobs below
-
+    commands = []
     for event in eventlist:
 
         # Full RSYNC command
         command = f"{rsyncstr} {data_database}/{event}/ {new_database}/{event}"
 
         # Create task for asyncio
+        commands.append(command)
 
-        async with semaphore:
-            print(f"[INFO]     --> syncing {event} ...")
-            process = await asyncio.create_subprocess_shell(command, stdout=asyncio.subprocess.PIPE)
-            output = await process.stdout.read()
-            print(f"[INFO]     --> done {event}.")
-            processes.append(output)
+    tasks = []
+    for command in commands:
+        tasks.append(run_command_shell(command))
 
-        # Run two asyncio processes at the same time with asyncio
-        await asyncio.gather(*(process for process in processes))
+    # At most max_concurrent_tasks parallel tasks
+    results = run_asyncio_commands(
+        tasks, max_concurrent_tasks=20)
+    print("[INFO] ... finished event list")
+
+    end = time.time()
+    rounded_end = ('{0:.4f}'.format(round(end-start, 4)))
+    print('Script ran in about', str(rounded_end), 'seconds')
 
 
 def bin():
@@ -76,3 +151,44 @@ def bin():
 
     asyncio.run(sync_data(args.data_database,
                           args.new_database, args.event_list, n=args.threads))
+
+
+# async def sync_data(
+#         data_database: str, new_database: str,
+#         eventlist: Optional[List[str]] = None,
+#         n: int = 50):
+
+#     # If no list is provided, the entire database will be synchronized
+#     if eventlist is None:
+#         eventlist = os.listdir(data_database)
+#         # Initialize list of process
+#     processes = []
+
+#     # Rsync command to synchronize the databases in terms of events
+#     rsyncstr = 'rsync -av --include="*/" ' \
+#         '--include="*.mseed" ' \
+#         '--include="*.xml" ' \
+#         '--exclude="*"'
+
+#     # define processes
+#     print("[INFO] Starting event list...")
+#     semaphore = asyncio.Semaphore(n)
+
+#     # Don't run more than simultaneous jobs below
+
+#     for event in eventlist:
+
+#         # Full RSYNC command
+#         command = f"{rsyncstr} {data_database}/{event}/ {new_database}/{event}"
+
+#         # Create task for asyncio
+
+#         async with semaphore:
+#             print(f"[INFO]     --> syncing {event} ...")
+#             process = await asyncio.create_subprocess_shell(command, stdout=asyncio.subprocess.PIPE)
+#             output = await process.stdout.read()
+#             print(f"[INFO]     --> done {event}.")
+#             processes.append(output)
+
+#         # Run two asyncio processes at the same time with asyncio
+#         await asyncio.gather(*(process for process in processes))
