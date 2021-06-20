@@ -46,7 +46,7 @@ async def sync_data(
             output = await process.communicate()
 
     # Run two asyncio processes at the same time with asyncio
-    await gather(*(_proc for _proc in processes))
+    await asyncio.gather(*(_proc for _proc in processes))
 
 
 def bin():
