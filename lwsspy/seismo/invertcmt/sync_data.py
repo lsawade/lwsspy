@@ -73,6 +73,7 @@ def run_asyncio_commands(tasks, max_concurrent_tasks=0):
             loop = asyncio.ProactorEventLoop()
             asyncio.set_event_loop(loop)
         else:
+            asyncio.set_event_loop(asyncio.new_event_loop())
             loop = asyncio.get_event_loop()
 
         commands = asyncio.gather(*tasks_in_chunk)  # Unpack list using *
