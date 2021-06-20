@@ -42,12 +42,11 @@ async def sync_data(
 
             # Create task for asyncio
             print("[INFO]     --> syncing {event} ...")
-            process = await asyncio.create_subprocess_shell(command)
-            output = await process.communicate()
-            processes.append(output)
+            process = await asyncio.create_subprocess_shell(command, stdout=asyncio.subprocess.PIPE)
+            output = await process.stdout.read()
+            return output
 
         # Run two asyncio processes at the same time with asyncio
-    await asyncio.gather(*(process for _proc in processes))
 
 
 def bin():
