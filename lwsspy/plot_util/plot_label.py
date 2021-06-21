@@ -1,7 +1,7 @@
 from typing import Union
 import matplotlib
 import matplotlib.pyplot as plt
-import lwsspy as lpy
+from .get_aspect import get_aspect
 
 
 def plot_label(ax: matplotlib.axes.Axes, label: str, aspect: float = 1,
@@ -53,7 +53,7 @@ def plot_label(ax: matplotlib.axes.Axes, label: str, aspect: float = 1,
         boxdict = box
 
     # Get aspect of the axes
-    aspect = 1.0/lpy.get_aspect(ax)
+    aspect = 1.0/get_aspect(ax)
 
     # Inside
     if location == 1:

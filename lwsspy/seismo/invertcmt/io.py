@@ -17,6 +17,23 @@ def read_traces(wtype, streamdir):
     return d
 
 
+def write_fixed_traces(cmtdir: str, fixsynt: dict):
+
+    # Get the output directory
+    outputdir = os.path.join(cmtdir, "output")
+    syntheticdir = os.path.join(outputdir, "synthetic_fix")
+
+    # Make sure dirs exist
+    if os.path.exists(syntheticdir) is False:
+        os.makedirs(syntheticdir)
+
+    for _wtype in fixsynt.keys():
+
+        filename = os.path.join(syntheticdir, f"{_wtype}_stream.pkl")
+        with open(filename, 'wb') as f:
+            cPickle.dump(fixsynt[_wtype]["synt"], f)
+
+
 def read_output_traces(cmtdir: str, verbose: bool = True):
     """Given an Inversion directory, read the output waveforms
 
@@ -54,7 +71,8 @@ def read_output_traces(cmtdir: str, verbose: bool = True):
             tsynt = read_traces(_wtype, syntheticdir)
 
             obsd[_wtype] = deepcopy(tobsd)
-            synt[_wtype] = deepcopy(tsynt)
+            synt[_wtype] = dict()
+            synt[_wtype]["synt"] = deepcopy(tsynt)
 
         except Exception as e:
             if verbose:

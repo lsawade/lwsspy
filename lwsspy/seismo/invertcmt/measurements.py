@@ -1,3 +1,9 @@
+from typing import Optional
+import lwsspy as lpy
+from obspy import UTCDateTime, Stream
+import logging
+
+
 def get_toffset(
         tsample: int, dt: float, t0: UTCDateTime, origin: UTCDateTime) -> float:
     """Computes the time of a sample with respect to origin time
@@ -23,11 +29,31 @@ def get_toffset(
     trsec = (tsample*dt)
     return (t0 + trsec) - origin
 
-    # Normalize by component and aximuthal weights
-
 
 def get_measurements_and_windows(
-        obs: Stream, syn: Stream, event: CMTSource):
+        obs: Stream, syn: Stream, event: lpy.CMTSource, logger: logging.Logger):
+    """Make measurements on two correpsonding streams.
+
+    Parameters
+    ----------
+    obs : Stream
+        Observed stream
+    syn : Stream
+        synthetic stream
+    event : lpy.CMTSource
+        event
+    logger : logging.Logger, optional
+        Logger. Default None
+
+
+    Returns
+    -------
+    dict
+        dictionary with measurements for each component.
+    """
+
+    if logger is None:
+        logger = logging.getLogger('lwsspy')
 
     windows = dict()
 
@@ -69,9 +95,9 @@ def get_measurements_and_windows(
                         network=network, station=station,
                         component=component)[0].data
                 except Exception as e:
-                    self.logger.warning(
+                    logger.warning(
                         f"{network}.{station}..{component}")
-                    self.logger.error(e)
+                    logger.error(e)
                     continue
 
                 trace_energy = 0
@@ -116,8 +142,8 @@ def get_measurements_and_windows(
 
                     # Get fixed window indeces.
                     istart, iend = win.left, win.right
-                    istart_d, iend_d, istart_s, iend_s = lpy.correct_window_index(
-                        istart, iend, nshift, npts)
+                    istart_d, iend_d, istart_s, iend_s = \
+                        lpy.correct_window_index(istart, iend, nshift, npts)
                     wd_fix = d[istart_d:iend_d]
                     ws_fix = s[istart_s:iend_s]
 
@@ -149,3 +175,20 @@ def get_measurements_and_windows(
                     [trace_energy]*len(_tr.stats.windows))
 
     return windows
+
+
+def get_all_measurements(
+        datadict: dict, syntdict: dict, event: lpy.CMTSource,
+        logger: Optional[logging.Logger] = None):
+
+    window_dict = dict()
+
+    for _wtype, _obs_stream in datadict.items():
+
+        # Get corresponding Synthetic data
+        _syn_stream = syntdict[_wtype]["synt"]
+
+        window_dict[_wtype] = get_measurements_and_windows(
+            _obs_stream, _syn_stream, event, logger=logger)
+
+    return window_dict

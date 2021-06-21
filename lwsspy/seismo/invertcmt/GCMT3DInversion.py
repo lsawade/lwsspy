@@ -28,7 +28,7 @@ from obspy.core.utcdatetime import UTCDateTime
 import multiprocessing.pool as mpp
 import _pickle as cPickle
 from .process_classifier import ProcessParams
-from .measurements import get_measurements_and_windows, get_toffset
+from .measurements import get_all_measurements
 import logging
 
 lpy.updaterc(rebuild=False)
@@ -1749,15 +1749,7 @@ class GCMT3DInversion:
     def write_measurements(
             self, data: dict, synt: dict, post_fix: str = None):
 
-        window_dict = dict()
-
-        for _wtype, _obs_stream in data.items():
-
-            # Get corresponding Synthetic data
-            _syn_stream = synt[_wtype]["synt"]
-
-            window_dict[_wtype] = get_measurements_and_windows(
-                _obs_stream, _syn_stream, self.cmtsource)
+        window_dict = get_all_measurements(data, synt, self.cmtsource, logger=self.logger)
 
         # Create output file
         filename = "measurements"

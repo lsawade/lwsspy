@@ -10,6 +10,9 @@ from glob import glob
 from typing import Optional
 import os
 import lwsspy as lpy
+from ...plot_util.pick_colors_from_cmap import pick_colors_from_cmap
+from ...plot_util.plot_label import plot_label
+from ...constants import abc
 
 
 def get_bins(b, a, nbin, mtype):
@@ -42,14 +45,19 @@ def get_bins(b, a, nbin, mtype):
 
 def plot_measurement_pkl(
         measurement_pickle_before: str,
-        measurement_pickle_after: str):
+        measurement_pickle_after: str,
+        alabel: Optional[str] = None,
+        blabel: Optional[str] = None,
+        mtype="chi"):
 
     with open(measurement_pickle_before, "rb") as f:
         measurements_before = cPickle.load(f)
     with open(measurement_pickle_after, "rb") as f:
         measurements_after = cPickle.load(f)
 
-    plot_measurements(measurements_before, measurements_after)
+    plot_measurements(
+        measurements_before, measurements_after, mtype=mtype,
+        blabel=blabel, alabel=alabel)
 
 
 def get_measurement(mdict: dict, mtype: str):
@@ -79,9 +87,6 @@ def plot_measurements(before: dict, after: dict, alabel: Optional[str] = None,
     # Get number of wave types:
     Nwaves = len(before.keys())
 
-    # Get the amount of colors
-    colors = lpy.pick_colors_from_cmap(Nwaves*3, cmap='rainbow')
-
     # Create base figure
     fig = plt.figure(figsize=(6.5, 0.5+Nwaves*1.5))
     gs = GridSpec(Nwaves, 3, figure=fig)
@@ -94,6 +99,10 @@ def plot_measurements(before: dict, after: dict, alabel: Optional[str] = None,
     # Create subplots
     counter = 0
     components = ["Z", "R", "T"]
+
+    # Get the amount of colors
+    colors = pick_colors_from_cmap(len(components), cmap='rainbow')
+    colors = np.array([[0.8, 0, 0, 1], [0, 0.8, 0, 1], [0, 0, 0.8, 1]])
     if mtype == "time_shift":
         component_bins = [21, 21, 21]
     else:
@@ -115,7 +124,7 @@ def plot_measurements(before: dict, after: dict, alabel: Optional[str] = None,
             b = get_measurement(bdict, mtype)
 
             # Set alpha color
-            acolor = deepcopy(colors[counter, :])
+            acolor = deepcopy(colors[_j, :])
             acolor[3] = 0.5
 
             # Create plot
@@ -123,28 +132,34 @@ def plot_measurements(before: dict, after: dict, alabel: Optional[str] = None,
 
             # Plot before
             if no_after is False:
-                blinestyle = "--"
+                blinestyle = "-"
+                lcolor = 'none'
+                fcolor = 'lightgray'
+
             else:
                 blinestyle = "-"
+                lcolor = colors[_j, :]
+                fcolor = 'none'
+
             bins = get_bins(b, a, _bins, mtype)
             nb, _, _ = plt.hist(b,
                                 bins=bins,
-                                edgecolor=colors[counter, :],
-                                facecolor='none', linewidth=0.75,
+                                edgecolor=lcolor,
+                                facecolor=fcolor, linewidth=0.5,
                                 linestyle=blinestyle,
-                                histtype='step')
-            plt.plot([], [], color=colors[counter, :],
+                                histtype='stepfilled')
+            plt.plot([], [], color=colors[_j, :],
                      linewidth=0.75, linestyle=blinestyle, label=blabel)
 
             # Plot After
             if no_after is False:
                 na, _, _ = plt.hist(a,
                                     bins=bins,
-                                    edgecolor=colors[counter, :],
-                                    facecolor='none', linewidth=1.0,
+                                    edgecolor=colors[_j, :],
+                                    facecolor='none', linewidth=1.25,
                                     linestyle="-",
                                     histtype='step')
-                plt.plot([], [], color=colors[counter, :],
+                plt.plot([], [], color=colors[_j, :],
                          linewidth=0.75, linestyle="-", label=alabel)
 
             # Annotations
@@ -154,12 +169,12 @@ def plot_measurements(before: dict, after: dict, alabel: Optional[str] = None,
                 label += f"{alabel:<{mlabel}}: {np.mean(a):5.2f}±{np.std(a):4.2f}"
             else:
                 label = f"{blabel}: {np.mean(b):5.2f}±{np.std(b):4.2f}"
-            lpy.plot_label(ax, label, location=2, box=False, fontfamily="monospace",
-                           fontsize="x-small", dist=0.025)
-            lpy.plot_label(ax, f"N: {len(b)}", location=7, box=False,
+            plot_label(ax, label, location=2, box=False, fontfamily="monospace",
+                       fontsize="x-small", dist=0.025)
+            plot_label(ax, f"N: {len(b)}", location=7, box=False,
                            fontsize="small", dist=0.025)
-            lpy.plot_label(ax, lpy.abc[counter], location=6, box=False,
-                           fontsize="small", dist=0.025)
+            plot_label(ax, abc[counter], location=6, box=False,
+                       fontsize="small", dist=0.025)
             if no_after is False:
                 ax.set_ylim((0, 1.5*np.max([np.max(nb), np.max(na)])))
             else:
@@ -194,7 +209,7 @@ def plot_measurements(before: dict, after: dict, alabel: Optional[str] = None,
                 ax.tick_params(labelbottom=False)
             counter += 1
 
-    plt.show()
+    plt.show(block=False)
 
 
 def get_illumination(mat: np.ndarray, minillum: int = 25,
@@ -501,7 +516,15 @@ def compute_window_hists(mdict: dict, t_res: float = 5, deg_res: float = 1):
     return xbins, ybins, hists
 
 
-def get_database_measurements(database: str, outdir: Optional[str] = None):
+def get_database_measurements(
+        database: str, outdir: Optional[str] = None,
+        blabel: Optional[str] = None, alabel: Optional[str] = None):
+
+    if blabel is None:
+        blabel = "before"
+
+    if alabel is None:
+        alabel = "after"
 
     # Get all directories
     cmtlocs = glob(os.path.join(database, '*'))
@@ -512,10 +535,10 @@ def get_database_measurements(database: str, outdir: Optional[str] = None):
         print(_cmtloc)
         try:
             measurement_pickle_before = os.path.join(
-                _cmtloc, "measurements_before.pkl"
+                _cmtloc, f"measurements_{blabel}.pkl"
             )
             measurement_pickle_after = os.path.join(
-                _cmtloc, "measurements_after.pkl"
+                _cmtloc, f"measurements_{alabel}.pkl"
             )
             print(measurement_pickle_before)
             print(measurement_pickle_after)
@@ -553,10 +576,10 @@ def get_database_measurements(database: str, outdir: Optional[str] = None):
     if outdir is not None:
 
         measurement_pickle_before_out = os.path.join(
-            outdir, "database_measurement_before.pkl"
+            outdir, f"database_measurement_{blabel}.pkl"
         )
         measurement_pickle_after_out = os.path.join(
-            outdir, "database_measurement_before.pkl"
+            outdir, f"database_measurement_{alabel}.pkl"
         )
 
         with open(measurement_pickle_before_out, "wb") as f:
@@ -564,6 +587,7 @@ def get_database_measurements(database: str, outdir: Optional[str] = None):
 
         with open(measurement_pickle_after_out, "wb") as f:
             cPickle.dump(after, f)
+
     return before, after
 
 
@@ -571,6 +595,7 @@ def bin():
 
     import argparse
     import lwsspy as lpy
+    lpy.updaterc()
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--database', dest='database',
@@ -582,14 +607,16 @@ def bin():
     parser.add_argument('-m', '--measurement', dest='measure', nargs='+',
                         type=str, default='chi')
     parser.add_argument('-a', '--alabel', dest='alabel',
-                        type=str, default=None)
+                        type=str, default='after')
     parser.add_argument('-b', '--blabel', dest='blabel',
-                        type=str, default=None)
+                        type=str, default='before')
 
     args = parser.parse_args()
 
     # Get the measurements
-    before, after = lpy.get_database_measurements("testdatabase_mt_stats")
+    before, after = get_database_measurements(
+        args.database, alabel=args.alabel, blabel=args.blabel,
+        outdir=args.outdir)
 
     if type(args.measure) is str:
         measure = [args.measure]
@@ -598,9 +625,51 @@ def bin():
 
     # Plot the measurements
     for _m in measure:
-        lpy.plot_measurements(before, after, args.alabel,
-                              args.blabel, mtype=_m)
+        plot_measurements(before, after, args.alabel,
+                          args.blabel, mtype=_m)
 
         if args.outdir is not None:
             outfile = os.path.join(args.outdir, f"histograms_{_m}.pdf")
             plt.savefig(outfile, format='pdf')
+
+
+def bin_plot_pickles():
+
+    import argparse
+    import lwsspy as lpy
+    lpy.updaterc()
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(dest='before',
+                        help='Measurement before pickle',
+                        type=str)
+    parser.add_argument(dest='after',
+                        help='Measurement after pickle',
+                        type=str)
+    parser.add_argument('-o', '--outdir', dest='outdir',
+                        help='Plot output directory', default=None,
+                        required=False, type=str)
+    parser.add_argument('-m', '--measurement', dest='measure', nargs='+',
+                        type=str, default='chi')
+    parser.add_argument('-a', '--alabel', dest='alabel',
+                        type=str, default='after')
+    parser.add_argument('-b', '--blabel', dest='blabel',
+                        type=str, default='before')
+
+    args = parser.parse_args()
+
+    if type(args.measure) is str:
+        measure = [args.measure]
+    else:
+        measure = args.measure
+
+    # Plot the measurements
+    for _m in measure:
+        plot_measurement_pkl(args.before, args.after, args.alabel,
+                             args.blabel, mtype=_m)
+
+        if args.outdir is not None:
+            outfile = os.path.join(args.outdir, f"histograms_{_m}.pdf")
+            plt.savefig(outfile, format='pdf')
+
+    plt.show(block=True)
