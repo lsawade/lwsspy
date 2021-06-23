@@ -158,6 +158,23 @@ def fix_database(database: str, label: Optional[str] = None):
         fix_synthetics(cmtdir, label=label, verbose=True)
 
 
+def bin_fix_event():
+
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(dest='event',
+                        help='event directory',
+                        type=str)
+    parser.add_argument('-l', '--label', dest='label',
+                        type=str, default=None, required=False)
+
+    args = parser.parse_args()
+
+    # Fix dlna database
+    fix_synthetics(args.database, label=args.label, verbose=True)
+
+
 def bin_fix_dlna_database():
 
     import argparse

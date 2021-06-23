@@ -1749,7 +1749,8 @@ class GCMT3DInversion:
     def write_measurements(
             self, data: dict, synt: dict, post_fix: str = None):
 
-        window_dict = get_all_measurements(data, synt, self.cmtsource, logger=self.logger)
+        window_dict = get_all_measurements(
+            data, synt, self.cmtsource, logger=self.logger)
 
         # Create output file
         filename = "measurements"
