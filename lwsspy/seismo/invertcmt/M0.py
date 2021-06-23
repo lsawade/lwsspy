@@ -172,7 +172,7 @@ def bin_fix_event():
     args = parser.parse_args()
 
     # Fix dlna database
-    fix_synthetics(args.database, label=args.label, verbose=True)
+    fix_synthetics(args.event, label=args.label, verbose=True)
 
 
 def bin_fix_dlna_database():
