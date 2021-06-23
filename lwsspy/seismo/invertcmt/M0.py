@@ -12,16 +12,19 @@ import numpy as np
 
 
 def get_ratio(measurement_dict):
-    ratios = []
+
     ratiodict = dict()
+    neldict = dict()
     for _wtype, _wtypedict in measurement_dict.items():
         ratiodict[_wtype] = dict()
+        neldict[_wtype] = dict()
         for _comp, _compdict in _wtypedict.items():
+            nel = len(_compdict['dlna'])
             ratio = np.mean(np.sqrt(np.exp(2 * np.array(_compdict['dlna']))))
-            ratios.append(ratio)
             ratiodict[_wtype][_comp] = ratio
+            neldict[_wtype][_comp] = nel
 
-    return ratiodict
+    return ratiodict, nel
 
 
 def print_ratiodict(ratiodict: dict):
@@ -37,28 +40,32 @@ def print_ratiodict(ratiodict: dict):
     print(f"Actual: {get_factor_from_ratiodict(ratiodict):6.4f}\n")
 
 
-def get_other_ratios(ratiodict):
-    ratios = []
-
-    for _wtype, _compdict in ratiodict.items():
-        for _comp, _rat in _compdict.items():
-            if _comp == "Z":
-                ratios.append(_rat)
-
-    return ratios
-
-
-def get_factor_from_ratiodict(ratiodict):
+def get_factor_from_ratiodict(ratiodict, neldict):
+    """Computes the weighted average of the ratios across components"""
 
     ratios = []
-
+    nel = 0
     if "mantle" in ratiodict:
-        if len(ratiodict["mantle"]["Z"]) > 0:
-            ratios.append(ratiodict["mantle"]["Z"])
-        else:
-            ratios.extend(get_other_ratios(ratiodict))
+
+        for (_comp, _rat), (_, _nel) in zip(
+                ratiodict["mantle"].items(), neldict["mantle"].items()):
+
+            nel += _nel
+            ratios.append(_rat * float(_nel))
+
+        ratios = np.array(ratios)/float(nel)
+
     else:
-        ratios.extend(get_other_ratios(ratiodict))
+        for (_wtype, _compdict), (_, _nelcompdict) in zip(
+                ratiodict.items(), neldict.items()):
+
+            for (_comp, _rat), (_, _nel) in zip(
+                    _compdict.items(), _nelcompdict.items()):
+
+                nel += nel
+                ratios.append(_rat * float(_nel))
+
+        ratios = np.array(ratios)/float(nel)
 
     return np.mean(ratios)
 
@@ -110,8 +117,8 @@ def fix_synthetics(cmtdir, label: Optional[str] = None, verbose=True):
     measurementdict_prefix = get_all_measurements(obsd, synt, event)
 
     # Get factor
-    ratiodict = get_ratio(measurementdict_prefix)
-    factor = get_factor_from_ratiodict(ratiodict)
+    ratiodict, neldict = get_ratio(measurementdict_prefix)
+    factor = get_factor_from_ratiodict(ratiodict, neldict)
     if verbose:
         print(f"Correction factor: {factor}")
 
