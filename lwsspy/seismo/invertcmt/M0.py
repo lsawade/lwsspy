@@ -37,19 +37,28 @@ def print_ratiodict(ratiodict: dict):
     print(f"Actual: {get_factor_from_ratiodict(ratiodict):6.4f}\n")
 
 
+def get_other_ratios(ratiodict):
+    ratios = []
+
+    for _wtype, _compdict in ratiodict.items():
+        for _comp, _rat in _compdict.items():
+            if _comp == "Z":
+                ratios.append(_rat)
+
+    return ratios
+
+
 def get_factor_from_ratiodict(ratiodict):
 
     ratios = []
 
     if "mantle" in ratiodict:
-        for _comp, _rat in ratiodict["mantle"].items():
-            if _comp == "Z":
-                ratios.append(_rat)
+        if len(ratiodict["mantle"]["Z"]) > 0:
+            ratios.append(ratiodict["mantle"]["Z"])
+        else:
+            ratios.extend(get_other_ratios(ratiodict))
     else:
-        for _wtype, _compdict in ratiodict.items():
-            for _comp, _rat in _compdict.items():
-                if _comp == "Z":
-                    ratios.append(_rat)
+        ratios.extend(get_other_ratios(ratiodict))
 
     return np.mean(ratios)
 
