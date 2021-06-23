@@ -28,6 +28,8 @@ def get_ratio(measurement_dict):
             # Put into dictionary
             ratiodict[_wtype][_comp] = dict(ratio=ratio, n=n)
 
+            print(f"{_wtype:7} - {_comp} - R: {ratio:4.2f} - N: {n:d}")
+
     return ratiodict
 
 
@@ -56,6 +58,8 @@ def get_factor_from_ratiodict(ratiodict):
             nel += _ratdict["n"]
             ratios.append(_ratdict["ratio"] * float(_ratdict["n"]))
 
+        print("mantle")
+        print("ratios: ", ratios, "n", nel)
         ratios = np.array(ratios)/float(nel)
 
     else:
@@ -66,6 +70,8 @@ def get_factor_from_ratiodict(ratiodict):
                 nel += _ratdict["n"]
                 ratios.append(_ratdict["ratio"] * float(_ratdict["n"]))
 
+        print("other")
+        print("ratios: ", ratios, "n", nel)
         ratios = np.array(ratios)/float(nel)
 
     return np.mean(ratios)
