@@ -12,6 +12,7 @@ import os
 import lwsspy as lpy
 from ...plot_util.pick_colors_from_cmap import pick_colors_from_cmap
 from ...plot_util.plot_label import plot_label
+from ...plot_util.updaterc import updaterc
 from ...constants import abc
 
 
@@ -594,8 +595,7 @@ def get_database_measurements(
 def bin():
 
     import argparse
-    import lwsspy as lpy
-    lpy.updaterc()
+    updaterc()
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--database', dest='database',
@@ -636,8 +636,7 @@ def bin():
 def bin_plot_pickles():
 
     import argparse
-    import lwsspy as lpy
-    lpy.updaterc()
+    updaterc()
 
     parser = argparse.ArgumentParser()
     parser.add_argument(dest='before',

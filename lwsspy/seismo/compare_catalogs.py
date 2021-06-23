@@ -107,7 +107,7 @@ class CompareCatalogs:
 
         # Plot events
         scatter, ax, l1, l2 = plot_quakes(
-            self.olat, self.olon, self.odepth, self.omoment_mag, ax=ax,
+            self.nlat, self.nlon, self.ndepth, self.nmoment_mag, ax=ax,
             yoffsetlegend2=0.09, sizefunc=lambda x: (x-(np.min(x)-1))**2.5 + 5)
         ax.set_global()
         plot_map(zorder=0, fill=True)
@@ -307,7 +307,7 @@ class CompareCatalogs:
         ax = fig.add_subplot(GS[2, 1])
         self.plot_histogram(
             (self.nM0-self.oM0)/self.oM0*100, Mbins,
-            facecolor='lightgray', statsleft=True)
+            facecolor='lightgray', statsleft=False)
         remove_topright()
         plt.xlabel("Scalar Moment Change [%]")
         plt.ylabel("N", rotation=0, horizontalalignment='right')
@@ -392,6 +392,18 @@ class CompareCatalogs:
         }
 
         if stats:
+            # Get datastats
+            datamean = np.mean(ddata)
+            datastd = np.mean(ddata)
+
+            # Check if mean closer to right edge or left edge and putt stats
+            # wherever there is more room
+            xmin, xmax = ax.get_xlim()
+            if np.abs(datamean - xmin) > np.abs(xmax - datamean):
+                statsleft = True
+            else:
+                statsleft = False
+
             if statsleft:
                 text_dict["horizontalalignment"] = 'left'
                 posx = 0.03
@@ -399,8 +411,8 @@ class CompareCatalogs:
                 posx = 0.97
 
             ax.text(posx, 0.97,
-                    f"$\\mu$ = {np.mean(ddata):5.2f}\n"
-                    f"$\\sigma$ = {np.std(ddata):5.2f}",
+                    f"$\\mu$ = {datamean:5.2f}\n"
+                    f"$\\sigma$ = {datastd:5.2f}",
                     **text_dict)
 
         if CI:
@@ -604,12 +616,12 @@ def bin():
 
     # Filter for a minimum depth larger than zero
     # CC = CC.filter(mindict={"depth_in_m": 10000.0})
-    for ocmt, ncmt in zip(CC.old, CC.new):
-        print(f"\n\nOLD: {(ncmt.depth_in_m - ocmt.depth_in_m)/1000.0}")
-        print(ocmt)
-        print(" ")
-        print("NEW")
-        print(ncmt)
+    # for ocmt, ncmt in zip(CC.old, CC.new):
+    #     print(f"\n\nOLD: {(ncmt.depth_in_m - ocmt.depth_in_m)/1000.0}")
+    #     print(ocmt)
+    #     print(" ")
+    #     print("NEW")
+    #     print(ncmt)
 
     extent = -80, -60, -10, -30
     extent = None

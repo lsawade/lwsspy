@@ -45,3 +45,4 @@ if __name__ == "__main__":
     print('multiprocCKd:   %s' % timeit.Timer(
         lambda: multiprocCKd()).repeat(1, 1)[0])
     
+    

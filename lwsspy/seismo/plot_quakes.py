@@ -3,6 +3,7 @@ import lwsspy as lpy
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap, BoundaryNorm
+from matplotlib.ticker import FixedLocator
 from cartopy.crs import PlateCarree
 import numpy as np
 
@@ -73,13 +74,13 @@ def plot_quakes(latitude, longitude, depth, moment,
 
     # Fix levels
     levels = levels[level_minidx:level_maxidx]
-    levels.append(levels[-1] + 10)
 
     # Create
     colormap = plt.get_cmap(cmap)
     colors = lpy.pick_colors_from_cmap(len(levels), colormap)
     cmap = ListedColormap(colors)
-    norm = BoundaryNorm(levels, len(colors), clip=True)
+    norm = BoundaryNorm(levels, cmap.N)
+    print(norm)
 
     # Create figure if no axes was given
     if ax is None:
@@ -102,12 +103,23 @@ def plot_quakes(latitude, longitude, depth, moment,
         legendfontsize = "x-small"
         title_fontsize = "small"
 
-        # Get depth legend
-        handles, labels = scatter.legend_elements(num=levels)
+        # Get the exact depth handles
+        handles = []
+        labels = []
 
-        # Set labels
-        labels = [f"{int(np.round(levels[_i]))} - {int(np.round(levels[_i + 1]))} km"
-                  for _i in range(len(labels))]
+        for _i in range(len(levels)-1):
+            # Set labels
+            labels.append(
+                f"{int(np.round(levels[_i]))} - {int(np.round(levels[_i + 1]))} km")
+
+            bincenter = (levels[_i+1] + levels[_i])/2
+
+            # Set handles
+            handle, = plt.plot(
+                [], [], 'o', markeredgecolor='k', markeredgewidth=0.1,
+                markerfacecolor=cmap(norm(bincenter)), linestyle='none')
+
+            handles.append(handle)
 
         # Plot Depth legend
         legend1 = ax.legend(
@@ -125,11 +137,21 @@ def plot_quakes(latitude, longitude, depth, moment,
 
         # Create labels
         labels = [f"{_m:>4.1f} - {_m + 1:>4.1f}" for _m in unique_moments]
+        for _unique_moment in unique_moments:
+
+            # Set handles
+            handle, = plt.plot(
+                [], [], 'o', markersize=sizefunc(_unique_moment),
+                markeredgecolor='k', markeredgewidth=0.1,
+                markerfacecolor='darkgray', linestyle='none')
+
+            handles.append(handle)
 
         # Plot Moment legend
         legend2 = ax.legend(
             handles, labels, loc="upper right", title="$M_w$", frameon=False,
-            bbox_to_anchor=(1.0 + xoffsetlegend, yoffsetlegend+yoffsetlegend2),
+            bbox_to_anchor=(1.0 + xoffsetlegend,
+                            yoffsetlegend+yoffsetlegend2),
             ncol=1, handletextpad=0.2,
             fontsize=legendfontsize, title_fontsize=title_fontsize,
             bbox_transform=ax.transAxes)

@@ -1,6 +1,7 @@
 import os
 from glob import glob
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def get_optimization_stats(database):
@@ -22,12 +23,27 @@ def get_optimization_stats(database):
 
     # Summary
     iterations = []
-    
+
     for summaryfile in summaryfiles:
         summary = np.load(summaryfile)
-        iterations.append(len(summary['fcost_hist']))
+        iterations.append(len(summary['fcost_hist'][1:]))
 
     print("Average number of iterations:", np.mean(iterations))
+
+    # Plot
+    bins = np.array([0.5, 1.5, 2.5, 3.5])
+    ticks = bins[:-1] + np.diff(bins)/2
+
+    plt.figure(figsize=(4, 3))
+    plt.subplots_adjust(left=0.15, right=0.85, bottom=0.15, top=0.95)
+    ax = plt.gca()
+    plt.hist(iterations, bins=bins, rwidth=0.8, color=(0.3, 0.3, 0.8))
+    plt.xticks(ticks)
+    ax.set_yscale('log')
+    ax.set_xlabel("# of iterations")
+    ax.set_ylabel("N")
+    plt.savefig("iterationstats.pdf")
+    plt.show()
 
 
 def bin():
