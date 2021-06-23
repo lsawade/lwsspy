@@ -74,7 +74,7 @@ def get_factor_from_ratiodict(ratiodict):
         print("ratios: ", ratios, "n", nel)
         ratios = np.array(ratios)/float(nel)
 
-    return np.mean(ratios)
+    return np.sum(ratios)
 
 
 def multiply_synt(synt, factor):
