@@ -16,12 +16,17 @@ def get_ratio(measurement_dict):
     ratiodict = dict()
 
     for _wtype, _wtypedict in measurement_dict.items():
+
         ratiodict[_wtype] = dict()
-        neldict[_wtype] = dict()
+
         for _comp, _compdict in _wtypedict.items():
-            nel = len(_compdict['dlna'])
+
+            # Get number of element
+            n = len(_compdict['dlna'])
             ratio = np.mean(np.sqrt(np.exp(2 * np.array(_compdict['dlna']))))
-            ratiodict[_wtype][_comp] = dict(ratio=ratio, n=nel)
+
+            # Put into dictionary
+            ratiodict[_wtype][_comp] = dict(ratio=ratio, n=n)
 
     return ratiodict
 
