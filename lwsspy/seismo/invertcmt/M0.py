@@ -60,7 +60,7 @@ def get_factor_from_ratiodict(ratiodict):
         for _comp, _ratdict in ratiodict["mantle"].items():
 
             # Only use if non-empty
-            if np.isnan(_ratdict["ratio"]):
+            if np.isnan(_ratdict["ratio"]) is False:
                 nel += _ratdict["n"]
                 ratios.append(_ratdict["ratio"] * float(_ratdict["n"]))
 
@@ -72,7 +72,7 @@ def get_factor_from_ratiodict(ratiodict):
             for _wtype, _compdict in ratiodict.items():
                 for _comp, _ratdict in _compdict.items():
 
-                    if np.isnan(_ratdict["ratio"]):
+                    if np.isnan(_ratdict["ratio"]) is False:
                         nel += _ratdict["n"]
                         ratios.append(_ratdict["ratio"] * float(_ratdict["n"]))
 
@@ -87,8 +87,9 @@ def get_factor_from_ratiodict(ratiodict):
         for _wtype, _compdict in ratiodict.items():
             for _comp, _ratdict in _compdict.items():
 
-                nel += _ratdict["n"]
-                ratios.append(_ratdict["ratio"] * float(_ratdict["n"]))
+                if np.isnan(_ratdict["ratio"]) is False:
+                    nel += _ratdict["n"]
+                    ratios.append(_ratdict["ratio"] * float(_ratdict["n"]))
 
         if len(ratios) != 0:
             ratios = np.array(ratios)/float(nel)
