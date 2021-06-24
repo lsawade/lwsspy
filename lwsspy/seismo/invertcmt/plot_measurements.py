@@ -529,7 +529,7 @@ def get_database_measurements(
 
     # Get all directories
     cmtlocs = glob(os.path.join(database, '*/measurements*'))
-    cmtlocs = list(tuple([os.path.dirname(cmtloc) for cmtloc in cmtlocs]))
+    cmtlocs = list(set([os.path.dirname(cmtloc) for cmtloc in cmtlocs]))
     cmtlocs.sort()
 
     # Empty measurement lists
@@ -569,6 +569,7 @@ def get_database_measurements(
                 if _wtype not in after:
                     after[_wtype] = dict()
                     after[_wtype].update(measurements_after[_wtype])
+
                 for _comp in components:
                     for _mtype in before[_wtype][_comp].keys():
 
