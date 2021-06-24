@@ -184,7 +184,7 @@ def fix_synthetics(cmtdir, label: Optional[str] = None, verbose=True):
     except Exception as e:
         if verbose:
             eprint(e)
-            pprint(ratiodict)
+            eprint(ratiodict)
         return -1
 
     if verbose:
