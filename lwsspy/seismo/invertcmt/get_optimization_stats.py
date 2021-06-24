@@ -31,7 +31,7 @@ def get_optimization_stats(database):
     print("Average number of iterations:", np.mean(iterations))
 
     # Plot
-    bins = np.array([0.5, 1.5, 2.5, 3.5])
+    bins = np.array([0.5, 1.5, 2.5, 3.5, 4.5, 5.5])
     ticks = bins[:-1] + np.diff(bins)/2
 
     plt.figure(figsize=(4, 3))
