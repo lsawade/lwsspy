@@ -528,7 +528,8 @@ def get_database_measurements(
         alabel = "after"
 
     # Get all directories
-    cmtlocs = glob(os.path.join(database, '*'))
+    cmtlocs = glob(os.path.join(database, '*/measurements*'))
+    cmtlocs = list(tuple([os.path.dirname(cmtloc) for cmtloc in cmtlocs]))
 
     # Empty measurement lists
     components = ["Z", "R", "T"]

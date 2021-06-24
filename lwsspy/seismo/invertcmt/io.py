@@ -60,6 +60,8 @@ def read_output_traces(cmtdir: str, verbose: bool = True):
     wavedictfiles = glob.glob(os.path.join(observeddir, "*_stream.pkl"))
     wtypes = [os.path.basename(x).split("_")[0] for x in wavedictfiles]
 
+    print(wtypes)
+
     # Read dictionary
     obsd = dict()
     synt = dict()
