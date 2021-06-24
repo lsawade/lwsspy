@@ -64,7 +64,8 @@ def get_factor_from_ratiodict(ratiodict, verbose=True):
             # Only use if non-empty
             if ~np.isnan(_ratdict["ratio"]):
                 if verbose:
-                    print(f"mantle - {_comp} - R: {_ratdict["ratio"]:4.2f} - N: {_ratdict["n"]:d}")
+                    print(
+                        f"mantle - {_comp} - R: {_ratdict['ratio']:4.2f} - N: {_ratdict['n']:d}")
 
                 nel += _ratdict["n"]
                 ratios.append(_ratdict["ratio"] * float(_ratdict["n"]))
@@ -83,7 +84,8 @@ def get_factor_from_ratiodict(ratiodict, verbose=True):
                     if ~np.isnan(_ratdict["ratio"]):
 
                         if verbose:
-                            print(f"{_wtype:7} - {_comp} - R: {_ratdict["ratio"]:4.2f} - N: {_ratdict["n"]:d}")
+                            print(
+                                f"{_wtype:7} - {_comp} - R: {_ratdict['ratio']:4.2f} - N: {_ratdict['n']:d}")
 
                         nel += _ratdict["n"]
                         ratios.append(_ratdict["ratio"] * float(_ratdict["n"]))
@@ -105,7 +107,8 @@ def get_factor_from_ratiodict(ratiodict, verbose=True):
                 if ~np.isnan(_ratdict["ratio"]):
 
                     if verbose:
-                        print(f"{_wtype:7} - {_comp} - R: {_ratdict["ratio"]:4.2f} - N: {_ratdict["n"]:d}")
+                        print(
+                            f"{_wtype:7} - {_comp} - R: {_ratdict['ratio']:4.2f} - N: {_ratdict['n']:d}")
 
                     nel += _ratdict["n"]
                     ratios.append(_ratdict["ratio"] * float(_ratdict["n"]))
