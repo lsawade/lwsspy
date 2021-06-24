@@ -2182,10 +2182,14 @@ def bin():
         gcmt3d.data_dict, gcmt3d.synt_dict_init, post_fix="before")
     gcmt3d.write_measurements(
         gcmt3d.data_dict, gcmt3d.synt_dict, post_fix="after")
-    gcmt3d.plot_final_windows(outputdir=gcmt3d.cmtdir)
 
     try:
         gcmt3d.save_seismograms()
+    except Exception as e:
+        print(e)
+
+    try:
+        gcmt3d.plot_final_windows(outputdir=gcmt3d.cmtdir)
     except Exception as e:
         print(e)
 
