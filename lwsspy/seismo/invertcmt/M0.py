@@ -25,7 +25,9 @@ def get_ratio(measurement_dict, verbose=False):
             n = len(_compdict['dlna'])
             if n == 0:
                 ratio = np.nan
-            ratio = np.mean(np.sqrt(np.exp(2 * np.array(_compdict['dlna']))))
+            else:
+                ratio = np.mean(
+                    np.sqrt(np.exp(2 * np.array(_compdict['dlna']))))
 
             # Put into dictionary
             ratiodict[_wtype][_comp] = dict(ratio=ratio, n=n)
@@ -50,7 +52,7 @@ def print_ratiodict(ratiodict: dict):
     print(f"Actual: {get_factor_from_ratiodict(ratiodict):6.4f}\n")
 
 
-def get_factor_from_ratiodict(ratiodict):
+def get_factor_from_ratiodict(ratiodict, verbose=True):
     """Computes the weighted average of the ratios across components"""
 
     ratios = []
@@ -60,9 +62,15 @@ def get_factor_from_ratiodict(ratiodict):
         for _comp, _ratdict in ratiodict["mantle"].items():
 
             # Only use if non-empty
-            if np.isnan(_ratdict["ratio"]) is False:
+            if ~np.isnan(_ratdict["ratio"]):
+                if verbose:
+                    print(f"mantle - {_comp} - R: {_ratdict["ratio"]:4.2f} - N: {_ratdict["n"]:d}")
+
                 nel += _ratdict["n"]
                 ratios.append(_ratdict["ratio"] * float(_ratdict["n"]))
+
+        if verbose:
+            print(ratios, nel)
 
         if len(ratios) != 0:
             ratios = np.array(ratios)/float(nel)
@@ -72,9 +80,16 @@ def get_factor_from_ratiodict(ratiodict):
             for _wtype, _compdict in ratiodict.items():
                 for _comp, _ratdict in _compdict.items():
 
-                    if np.isnan(_ratdict["ratio"]) is False:
+                    if ~np.isnan(_ratdict["ratio"]):
+
+                        if verbose:
+                            print(f"{_wtype:7} - {_comp} - R: {_ratdict["ratio"]:4.2f} - N: {_ratdict["n"]:d}")
+
                         nel += _ratdict["n"]
                         ratios.append(_ratdict["ratio"] * float(_ratdict["n"]))
+
+            if verbose:
+                print(ratios, nel)
 
             if len(ratios) != 0:
                 ratios = np.array(ratios)/float(nel)
@@ -87,9 +102,16 @@ def get_factor_from_ratiodict(ratiodict):
         for _wtype, _compdict in ratiodict.items():
             for _comp, _ratdict in _compdict.items():
 
-                if np.isnan(_ratdict["ratio"]) is False:
+                if ~np.isnan(_ratdict["ratio"]):
+
+                    if verbose:
+                        print(f"{_wtype:7} - {_comp} - R: {_ratdict["ratio"]:4.2f} - N: {_ratdict["n"]:d}")
+
                     nel += _ratdict["n"]
                     ratios.append(_ratdict["ratio"] * float(_ratdict["n"]))
+
+        if verbose:
+            print(ratios, nel)
 
         if len(ratios) != 0:
             ratios = np.array(ratios)/float(nel)
