@@ -23,6 +23,8 @@ def get_ratio(measurement_dict, verbose=False):
 
             # Get number of element
             n = len(_compdict['dlna'])
+            if n == 0:
+                ratio = np.nan
             ratio = np.mean(np.sqrt(np.exp(2 * np.array(_compdict['dlna']))))
 
             # Put into dictionary
@@ -57,10 +59,28 @@ def get_factor_from_ratiodict(ratiodict):
 
         for _comp, _ratdict in ratiodict["mantle"].items():
 
-            nel += _ratdict["n"]
-            ratios.append(_ratdict["ratio"] * float(_ratdict["n"]))
+            # Only use if non-empty
+            if np.isnan(_ratdict["ratio"]):
+                nel += _ratdict["n"]
+                ratios.append(_ratdict["ratio"] * float(_ratdict["n"]))
 
-        ratios = np.array(ratios)/float(nel)
+        if len(ratios) != 0:
+            ratios = np.array(ratios)/float(nel)
+
+        else:
+
+            for _wtype, _compdict in ratiodict.items():
+                for _comp, _ratdict in _compdict.items():
+
+                    if np.isnan(_ratdict["ratio"]):
+                        nel += _ratdict["n"]
+                        ratios.append(_ratdict["ratio"] * float(_ratdict["n"]))
+
+            if len(ratios) != 0:
+                ratios = np.array(ratios)/float(nel)
+            else:
+                raise ValueError(
+                    "Couldn't find proper mean in terms of energy.")
 
     else:
 
@@ -70,7 +90,11 @@ def get_factor_from_ratiodict(ratiodict):
                 nel += _ratdict["n"]
                 ratios.append(_ratdict["ratio"] * float(_ratdict["n"]))
 
-        ratios = np.array(ratios)/float(nel)
+        if len(ratios) != 0:
+            ratios = np.array(ratios)/float(nel)
+        else:
+            raise ValueError(
+                "Couldn't find proper mean in terms of energy.")
 
     return np.sum(ratios)
 
