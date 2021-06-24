@@ -601,8 +601,15 @@ def bin():
     old = lpy.CMTCatalog.from_file_list(args.old)
     new = lpy.CMTCatalog.from_file_list(args.new)
 
+    print("Old:", len(old.cmts))
+    print("New:", len(new.cmts))
+
     # Get overlaps
     ocat, ncat = old.check_ids(new)
+
+    print("After checkid:")
+    print("  Old:", len(ocat.cmts))
+    print("  New:", len(ncat.cmts))
 
     # Writing
     if args.write:
