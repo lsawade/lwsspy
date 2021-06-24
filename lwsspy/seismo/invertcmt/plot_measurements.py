@@ -561,6 +561,14 @@ def get_database_measurements(
         else:
 
             for _wtype in measurements_before.keys():
+
+                # Excape if the first dictionaries didn't have all the waves
+                if _wtype not in before:
+                    before[_wtype] = dict()
+                    before[_wtype].update(measurements_before[_wtype])
+                if _wtype not in after:
+                    after[_wtype] = dict()
+                    after[_wtype].update(measurements_after[_wtype])
                 for _comp in components:
                     for _mtype in before[_wtype][_comp].keys():
 
