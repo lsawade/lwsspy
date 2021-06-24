@@ -10,8 +10,6 @@ from .measurements import get_all_measurements
 from .io import write_fixed_traces
 import numpy as np
 from pprint import pprint
-
-from __future__ import print_function
 import sys
 
 
