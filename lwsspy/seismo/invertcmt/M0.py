@@ -176,14 +176,8 @@ def fix_synthetics(cmtdir, label: Optional[str] = None, verbose=True):
             eprint(f'Couldnt read event for {cmtdir} because {e}.')
         return -1
 
-    if verbose:
-        eprint(obsd)
-
     # Measure the traces
     measurementdict_prefix = get_all_measurements(obsd, synt, event)
-
-    if verbose:
-        eprint(measurementdict_prefix)
 
     # Get factor
     ratiodict = get_ratio(measurementdict_prefix)
@@ -194,6 +188,7 @@ def fix_synthetics(cmtdir, label: Optional[str] = None, verbose=True):
         if verbose:
             eprint(cmtdir, e)
             eprint(ratiodict)
+            eprint(measurementdict_prefix)
         return -1
 
     if verbose:
