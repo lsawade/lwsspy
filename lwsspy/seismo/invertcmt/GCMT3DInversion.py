@@ -2202,3 +2202,96 @@ def bin():
     lpy.plot_optimization(
         optim_list,
         outfile=f"{gcmt3d.cmtdir}/misfit_reduction_history.pdf")
+
+
+def bin_process_final():
+
+    import argparse
+
+    # Get arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument(dest='eventdir', help='event directory',
+                        type=str)
+    parser.add_argument('-i', '--inputfile', dest='inputfile',
+                        help='Input file location',
+                        required=False, type=str, default=None)
+    parser.add_argument('-l', '--label', dest='label',
+                        help='label for cmt in dir',
+                        required=False, type=str, default=None)
+    args = parser.parse_args()
+
+    # Check if soluttion exitst
+    cmtdir = args.eventdir
+    cmtid = os.path.basename(cmtdir)
+    label = args.label
+
+    if label is not None:
+        cmtsolutionfile = os.path.join(cmtdir, cmtid + "_{label}")
+    else:
+        cmtsolutionfile = os.path.join(cmtdir, cmtid + "_{gcmt}")
+
+    inputfile = args.inputfile
+
+    # Get Input parameters
+    if inputfile is None:
+        inputdict = lpy.read_yaml_file(os.path.join(scriptdir, "input.yml"))
+    else:
+        inputdict = lpy.read_yaml_file(inputfile)
+
+    # Get process params
+    if inputdict["processparams"] is None:
+        processdict = lpy.read_yaml_file(
+            os.path.join(scriptdir, "process.yml"))
+    else:
+        processdict = lpy.read_yaml_file(inputdict["processparams"])
+
+    # Set params
+    pardict = inputdict["parameters"]
+    database = inputdict["database"]
+    specfem = inputdict["specfem"]
+    launch_method = inputdict["launch_method"]
+    download_data = inputdict["download_data"]
+    hypo_damping = inputdict["hypo_damping"]
+    damping = inputdict["damping"]
+    duration = inputdict["duration"]
+    overwrite = inputdict["overwrite"]
+    zero_trace = inputdict["zero_trace"]
+    start_label = label
+
+    # Set CPU Affinity
+    lpy.reset_cpu_affinity(verbose=True)
+
+    # Setup the download
+    gcmt3d = GCMT3DInversion(
+        cmtsolutionfile,
+        databasedir=database,
+        specfemdir=specfem,
+        pardict=pardict,
+        processdict=processdict,
+        download_data=download_data,
+        zero_trace=zero_trace,
+        duration=duration,
+        overwrite=overwrite,
+        launch_method=launch_method,
+        damping=damping,
+        hypo_damping=hypo_damping,
+        start_label=start_label,
+        multiprocesses=40)
+
+    # Load and process the synthetic and
+    gcmt3d.process_data()
+    gcmt3d.process_synt()
+
+    # Copy the initial synthetics
+    gcmt3d.copy_init_synt()
+
+    # Window the data
+    with lpy.Timer(plogger=gcmt3d.logger.info):
+        gcmt3d.__window__()
+        gcmt3d.__compute_weights__()
+
+    try:
+        gcmt3d.save_seismograms()
+
+    except Exception as e:
+        print(e)
