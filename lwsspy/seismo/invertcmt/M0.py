@@ -9,6 +9,14 @@ from lwsspy import read_measurements
 from .measurements import get_all_measurements
 from .io import write_fixed_traces
 import numpy as np
+from pprint import pprint
+
+from __future__ import print_function
+import sys
+
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 
 
 def get_ratio(measurement_dict, verbose=False):
@@ -173,7 +181,11 @@ def fix_synthetics(cmtdir, label: Optional[str] = None, verbose=True):
 
     # Get factor
     ratiodict = get_ratio(measurementdict_prefix)
-    factor = get_factor_from_ratiodict(ratiodict)
+    try:
+        factor = get_factor_from_ratiodict(ratiodict)
+    except Exception as e:
+        eprint(e)
+        pprint(ratiodict)
     if verbose:
         print(f"Correction factor: {factor}")
 
