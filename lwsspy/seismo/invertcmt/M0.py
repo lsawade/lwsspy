@@ -182,8 +182,11 @@ def fix_synthetics(cmtdir, label: Optional[str] = None, verbose=True):
     try:
         factor = get_factor_from_ratiodict(ratiodict)
     except Exception as e:
-        eprint(e)
-        pprint(ratiodict)
+        if verbose:
+            eprint(e)
+            pprint(ratiodict)
+        return -1
+
     if verbose:
         print(f"Correction factor: {factor}")
 
