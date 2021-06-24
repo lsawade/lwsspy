@@ -80,7 +80,6 @@ def plot_quakes(latitude, longitude, depth, moment,
     colors = lpy.pick_colors_from_cmap(len(levels), colormap)
     cmap = ListedColormap(colors)
     norm = BoundaryNorm(levels, cmap.N)
-    print(norm)
 
     # Create figure if no axes was given
     if ax is None:

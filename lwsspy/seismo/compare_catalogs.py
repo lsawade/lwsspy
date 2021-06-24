@@ -394,7 +394,7 @@ class CompareCatalogs:
         if stats:
             # Get datastats
             datamean = np.mean(ddata)
-            datastd = np.mean(ddata)
+            datastd = np.std(ddata)
 
             # Check if mean closer to right edge or left edge and putt stats
             # wherever there is more room

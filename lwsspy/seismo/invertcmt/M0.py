@@ -29,6 +29,7 @@ def get_ratio(measurement_dict, verbose=False):
 
             # Get number of element
             n = len(_compdict['dlna'])
+
             if n == 0:
                 ratio = np.nan
             else:
@@ -160,9 +161,10 @@ def fix_synthetics(cmtdir, label: Optional[str] = None, verbose=True):
     # Get output traces
     try:
         obsd, synt = read_output_traces(cmtdir)
+
     except Exception as e:
         if verbose:
-            print(f'Couldnt read traces for {cmtdir} because {e}.')
+            eprint(f'Couldnt read traces for {cmtdir} because {e}.')
         return -1
 
     # Get event
@@ -171,19 +173,26 @@ def fix_synthetics(cmtdir, label: Optional[str] = None, verbose=True):
         event = CMTSource.from_CMTSOLUTION_file(eventfile)
     except Exception as e:
         if verbose:
-            print(f'Couldnt read event for {cmtdir} because {e}.')
+            eprint(f'Couldnt read event for {cmtdir} because {e}.')
         return -1
+
+    if verbose:
+        eprint(obsd)
 
     # Measure the traces
     measurementdict_prefix = get_all_measurements(obsd, synt, event)
 
+    if verbose:
+        eprint(measurementdict_prefix)
+
     # Get factor
     ratiodict = get_ratio(measurementdict_prefix)
+
     try:
         factor = get_factor_from_ratiodict(ratiodict)
     except Exception as e:
         if verbose:
-            eprint(e)
+            eprint(cmtdir, e)
             eprint(ratiodict)
         return -1
 
@@ -192,7 +201,7 @@ def fix_synthetics(cmtdir, label: Optional[str] = None, verbose=True):
 
     if np.isnan(factor) or np.isinf(factor):
         if verbose:
-            print(
+            eprint(
                 f'Couldnt find good factor for {cmtdir} because factor = {factor}.'
             )
         return -1
