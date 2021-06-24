@@ -2207,6 +2207,7 @@ def bin():
 def bin_process_final():
 
     import argparse
+    import sys
 
     # Get arguments
     parser = argparse.ArgumentParser()
@@ -2229,6 +2230,10 @@ def bin_process_final():
         cmtsolutionfile = os.path.join(cmtdir, cmtid + "_{label}")
     else:
         cmtsolutionfile = os.path.join(cmtdir, cmtid + "_{gcmt}")
+
+    if os.path.exists(cmtsolutionfile) is False:
+        print(f"CMT file {cmtsolutionfile} not found.")
+        sys.exit()
 
     inputfile = args.inputfile
 
