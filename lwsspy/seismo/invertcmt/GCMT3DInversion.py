@@ -2227,9 +2227,9 @@ def bin_process_final():
     label = args.label
 
     if label is not None:
-        cmtsolutionfile = os.path.join(cmtdir, cmtid + "_{label}")
+        cmtsolutionfile = os.path.join(cmtdir, cmtid + f"_{label}")
     else:
-        cmtsolutionfile = os.path.join(cmtdir, cmtid + "_{gcmt}")
+        cmtsolutionfile = os.path.join(cmtdir, cmtid + "_gcmt")
 
     if os.path.exists(cmtsolutionfile) is False:
         print(f"CMT file {cmtsolutionfile} not found.")
