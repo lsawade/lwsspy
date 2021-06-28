@@ -132,6 +132,7 @@ def get_measurements_and_windows(
                             f"Window [{winleft}, {winright}] on trace {_tr.id} "
                             f"was not taken into account: {ve}"
                         )
+                        continue
 
                     # Populate the dictionary
                     windows[_component]["id"].append(_tr.id)
