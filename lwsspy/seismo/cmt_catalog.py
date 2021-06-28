@@ -4,13 +4,14 @@ import os
 import time
 from copy import deepcopy
 import inspect
-from typing import List, Union, Iterable
+from typing import List, Optional, Union, Iterable
 from glob import glob
 import _pickle as cPickle
 import numpy as np
 from obspy.core.event import Event
 from obspy import Catalog
 import matplotlib.pyplot as plt
+from obspy.core.utcdatetime import UTCDateTime
 
 from .source import CMTSource
 from . import sourcedecomposition
@@ -412,6 +413,79 @@ class CMTCatalog:
 
         return CMTCatalog(cmtself), CMTCatalog(cmtother)
 
+    def in_catalog(
+            self, event: Union[str, List[str]], verbose=False,
+            thorough_check: bool = False):
+        """Check whether event id is in the catalog or not. If single string
+        is provided it will return the CMTSource if it is in the catalog. If
+        a list of IDs is provided a new catalog containing those events will be 
+        returned. If there is no match a ValueError is raised.
+
+
+        Parameters
+        ----------
+        event : Union[str, List[str]]
+            event id or list of event ids
+        verbose: bool
+            whether to print explanations
+        thorough_check: bool
+            check whether maybe the first letter is wrong
+        """
+
+        if isinstance(event, str):
+            single = True
+            event = [event]
+        else:
+            single = False
+
+        # Loop over cmts and add them to list of they are in the catalog
+        cmts = []
+        for _cmtname in event:
+
+            try:
+                _cmt = self.get_event(_cmtname)
+                cmts.append(_cmt)
+
+            except ValueError as e:
+
+                if thorough_check:
+                    for _letter in ['B', 'S', 'M', 'C']:
+
+                        try:
+                            # Check corrected name
+                            _cmt = self.get_event(_letter + _cmtname[1:])
+                            cmts.append(_cmt)
+                            if verbose:
+                                print(
+                                    f"{_cmtname} had wrong ID: {_letter + _cmtname[1:]}")
+                            break
+
+                        except ValueError as e:
+                            if verbose:
+                                print(
+                                    f"{_cmtname} not {_letter + _cmtname[1:]}")
+
+                            if _letter == 'C':
+                                if verbose:
+                                    print(
+                                        f"Didn't find corresponding events "
+                                        f"for {_cmtname}")
+
+                else:
+                    if verbose:
+                        print(e)
+                        print(
+                            f"Didn't find corresponding events "
+                            f"for {_cmtname}")
+
+        if len(cmts) == 0:
+            raise ValueError("No CMTs in catalog that match the input id(s).")
+
+        if single:
+            return cmts[0]
+        else:
+            return CMTCatalog(cmts)
+
     def cmts2dir(self, outdir: str = "./newcatalog"):
 
         # Create dir if doesn't exist.
@@ -447,3 +521,41 @@ class CMTCatalog:
         # End print
         t1 = time.time()
         print(f"     Done. Elapsed Time: {sec2hhmmss(t1-t0)}")
+
+    def printcmts(self, outfile: Optional[str] = None):
+        """Prints the ids or writes them to a file"""
+
+        outcat = deepcopy(self)
+        outcat.sort()
+
+        if isinstance(outfile, str):
+            with open(outfile, 'w') as f:
+                for _cmt in self:
+                    f.write(_cmt.eventname + "\n")
+        else:
+            for _cmt in self:
+                print(_cmt.eventname)
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+    def __str__(self):
+
+        Mw = self.getvals(vtype="moment_magnitude")
+        utc = self.getvals(vtype="origin_time")
+        lat = self.getvals(vtype="latitude")
+        lon = self.getvals(vtype="longitude")
+
+        string = "CMTCatalog :\n"
+        string += 60 * "-" + "\n"
+        string += "\n"
+        string += f"Event #:{len(self.cmts):.>52}\n"
+        string += f"Starttime:{min(utc).strftime('%Y/%m/%d, %H:%M:%S'):.>50}\n"
+        string += f"Endtime:{max(utc).strftime('%Y/%m/%d, %H:%M:%S'):.>52}\n"
+        string += f"Bounding Box:{'Latitude: ':.>25}{'':.<2}[{np.min(lat):8.3f}, {np.max(lat):8.3f}]\n"
+        string += f"{'Longitude: ':.>39}{'':.<1}[{np.min(lon):8.3f}, {np.max(lon):8.3f}]\n"
+        string += f"Moment Magnitude:{'':.>23}[{np.min(Mw):8.3f}, {np.max(Mw):8.3f}]\n"
+        string += "\n"
+        string += 60 * "-" + "\n"
+
+        return string

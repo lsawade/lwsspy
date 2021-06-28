@@ -116,6 +116,23 @@ def get_measurements_and_windows(
                         win.right, dt, win.time_of_first_sample,
                         event.origin_time)
 
+                    # Measurements
+                    max_cc_value, nshift = lpy.xcorr(wd, ws)
+
+                    # Get fixed window indeces.
+                    try:
+                        istart, iend = win.left, win.right
+                        istart_d, iend_d, istart_s, iend_s = \
+                            lpy.correct_window_index(
+                                istart, iend, nshift, npts)
+                        wd_fix = d[istart_d:iend_d]
+                        ws_fix = s[istart_s:iend_s]
+                    except ValueError as ve:
+                        logger.warning(
+                            f"Window [{winleft}, {winright}] on trace {_tr.id} "
+                            f"was not taken into account: {ve}"
+                        )
+
                     # Populate the dictionary
                     windows[_component]["id"].append(_tr.id)
                     windows[_component]["dt"].append(dt)
@@ -136,16 +153,6 @@ def get_measurements_and_windows(
                     windows[_component]["back_azimuth"].append(
                         _tr.stats.back_azimuth
                     )
-
-                    # Measurements
-                    max_cc_value, nshift = lpy.xcorr(wd, ws)
-
-                    # Get fixed window indeces.
-                    istart, iend = win.left, win.right
-                    istart_d, iend_d, istart_s, iend_s = \
-                        lpy.correct_window_index(istart, iend, nshift, npts)
-                    wd_fix = d[istart_d:iend_d]
-                    ws_fix = s[istart_s:iend_s]
 
                     powerl1 = lpy.power_l1(wd, ws)
                     powerl2 = lpy.power_l2(wd, ws)
