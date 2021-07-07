@@ -783,8 +783,8 @@ def bin():
     #                    d2=False, ylog=False, yrange=[0, 700],
     #                    yinvert=True)
 
-    CC.plot_depth_v_eps_nu()
-    plt.show(block=True)
+    # CC.plot_depth_v_eps_nu()
+    # plt.show(block=True)
     
     # Filter for a minimum depth larger than zero
     # CC = CC.filter(mindict={"depth_in_m": 10000.0})
@@ -802,7 +802,7 @@ def bin():
     # CC.plot_slab_map()
     # outfile=os.path.join(
     #     args.outdir, "catalog_slab_map.pdf"), extent=extent)
-    # CC.plot_summary(outfile=os.path.join(
-    #     args.outdir, "catalog_comparison.pdf"))
-    # CC.plot_depth_v_eps_nu(outfile=os.path.join(
-    #     args.outdir, "depth_v_sourcetype.pdf"))
+    CC.plot_summary(outfile=os.path.join(
+        args.outdir, "catalog_comparison.pdf"))
+    CC.plot_depth_v_eps_nu(outfile=os.path.join(
+        args.outdir, "depth_v_sourcetype.pdf"))
