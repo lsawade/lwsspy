@@ -785,7 +785,7 @@ def bin():
 
     # CC.plot_depth_v_eps_nu()
     # plt.show(block=True)
-    
+
     # Filter for a minimum depth larger than zero
     # CC = CC.filter(mindict={"depth_in_m": 10000.0})
     # for ocmt, ncmt in zip(CC.old, CC.new):
