@@ -17,7 +17,12 @@ def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
-def get_ratio(measurement_dict, verbose=False):
+def get_ratio(measurement_dict, corr: bool = True, verbose=False):
+
+    if corr:
+        val = 'corr_ratio'
+    else:
+        val = 'dlna'
 
     ratiodict = dict()
 
@@ -28,13 +33,16 @@ def get_ratio(measurement_dict, verbose=False):
         for _comp, _compdict in _wtypedict.items():
 
             # Get number of element
-            n = len(_compdict['dlna'])
+            n = len(_compdict[val])
 
             if n == 0:
                 ratio = np.nan
             else:
-                ratio = np.mean(
-                    np.sqrt(np.exp(2 * np.array(_compdict['dlna']))))
+                if val == "dlna":
+                    ratio = np.mean(
+                        np.sqrt(np.exp(2 * np.array(_compdict[val]))))
+                elif val == "corr_ratio":
+                    ratio = np.mean(np.array(_compdict[val]))
 
             # Put into dictionary
             ratiodict[_wtype][_comp] = dict(ratio=ratio, n=n)
@@ -80,7 +88,7 @@ def get_factor_from_ratiodict(ratiodict, verbose=True):
         if verbose:
             print(ratios, nel)
 
-        if len(ratios) != 0:
+        if len(ratios) > 100:
             ratios = np.array(ratios)/float(nel)
 
         else:
@@ -150,7 +158,9 @@ def fix_source(event: CMTSource, factor: float) -> CMTSource:
     return event
 
 
-def fix_synthetics(cmtdir, label: Optional[str] = None, verbose=True):
+def fix_synthetics(
+        cmtdir, label: Optional[str] = None, corr: bool = True,
+        verbose=True):
 
     # Set label
     if label is not None:
@@ -180,7 +190,7 @@ def fix_synthetics(cmtdir, label: Optional[str] = None, verbose=True):
     measurementdict_prefix = get_all_measurements(obsd, synt, event)
 
     # Get factor
-    ratiodict = get_ratio(measurementdict_prefix)
+    ratiodict = get_ratio(measurementdict_prefix, corr=corr)
 
     try:
         factor = get_factor_from_ratiodict(ratiodict)

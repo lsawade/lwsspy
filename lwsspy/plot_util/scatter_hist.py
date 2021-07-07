@@ -233,9 +233,9 @@ def scatter_hist(x, y, nbins, z=None, cmap=None,
     if mult is True:
         ax_scatter.legend(
             loc='best', ncol=1, fontsize="x-small",
-            frameon=False, fancybox=False,
+            frameon=True, fancybox=False,
             numpoints=1, scatterpoints=1,
-            borderaxespad=0.0, borderpad=0.5, handletextpad=0.2,
+            borderaxespad=0.01, borderpad=0.5, handletextpad=0.2,
             labelspacing=0.2, handlelength=1.0)
 
     # make the scatter axes the current axes

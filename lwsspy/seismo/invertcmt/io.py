@@ -34,7 +34,7 @@ def write_fixed_traces(cmtdir: str, fixsynt: dict):
             cPickle.dump(fixsynt[_wtype]["synt"], f)
 
 
-def read_output_traces(cmtdir: str, verbose: bool = True):
+def read_output_traces(cmtdir: str, fix: bool = False, verbose: bool = True):
     """Given an Inversion directory, read the output waveforms
 
     Parameters
@@ -55,33 +55,42 @@ def read_output_traces(cmtdir: str, verbose: bool = True):
     outputdir = os.path.join(cmtdir, "output")
     observeddir = os.path.join(outputdir, "observed")
     syntheticdir = os.path.join(outputdir, "synthetic")
+    synthetic_fix_dir = os.path.join(outputdir, "synthetic_fix")
 
     # Glob all wavetype
     wavedictfiles = glob.glob(os.path.join(observeddir, "*_stream.pkl"))
     wtypes = [os.path.basename(x).split("_")[0] for x in wavedictfiles]
 
-    print(wtypes)
-
     # Read dictionary
     obsd = dict()
     synt = dict()
+    if fix:
+        syntfix = dict()
 
     for _wtype in wtypes:
 
         try:
             tobsd = read_traces(_wtype, observeddir)
             tsynt = read_traces(_wtype, syntheticdir)
+            if fix:
+                tsyntf = read_traces(_wtype, synthetic_fix_dir)
 
             obsd[_wtype] = deepcopy(tobsd)
             synt[_wtype] = dict()
             synt[_wtype]["synt"] = deepcopy(tsynt)
 
+            if fix:
+                syntfix[_wtype] = dict()
+                syntfix[_wtype]["synt"] = deepcopy(tsyntf)
+
         except Exception as e:
             if verbose:
                 print(f"Couldnt read {_wtype} in {cmtdir} because ")
                 print(e)
-
-    return obsd, synt
+    if fix:
+        return obsd, synt, syntfix
+    else:
+        return obsd, synt
 
 
 def read_measurements(cmtdir: str):

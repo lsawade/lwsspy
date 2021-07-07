@@ -2,6 +2,7 @@ from typing import Optional
 import lwsspy as lpy
 from obspy import UTCDateTime, Stream
 import logging
+import numpy as np
 
 
 def get_toffset(
@@ -81,6 +82,7 @@ def get_measurements_and_windows(
         windows[_component]["trace_energy"] = []
         windows[_component]["L1_Power"] = []
         windows[_component]["L2_Power"] = []
+        windows[_component]["corr_ratio"] = []
 
         for _tr in obs:
             if _tr.stats.component == _component \
@@ -177,6 +179,9 @@ def get_measurements_and_windows(
                     )
                     windows[_component]["maxcc"].append(
                         max_cc_value
+                    )
+                    windows[_component]["corr_ratio"].append(
+                        np.sum(wd_fix * ws_fix)/np.sum(ws_fix ** 2)
                     )
                 # Create array with the energy
                 windows[_component]["trace_energy"].extend(

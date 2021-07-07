@@ -242,10 +242,11 @@ def plot_seismogram_by_station(
                 syntrace = None
         else:
             syntrace = None
+
         if newsyn is not None:
 
             try:
-                newsyntrace = syn.select(component=_component)[0]
+                newsyntrace = newsyn.select(component=_component)[0]
             except Exception:
                 logger(
                     f"Synthetic {_component} not available for {network}.{station}")

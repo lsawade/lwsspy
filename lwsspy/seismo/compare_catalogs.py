@@ -329,6 +329,156 @@ class CompareCatalogs:
             plt.savefig(outfile)
             plt.switch_backend(backend)
 
+    @staticmethod
+    def get_change(o, n, d: bool, f: bool):
+        """Getting the change values, if ``d`` is ``False`` the function just
+        returns (o, n).
+
+        Parameters
+        ----------
+        o : arraylike
+            old values
+        n : arraylike
+            new values
+        d : bool
+            compute change
+        f : bool
+            compute fractional change
+
+        Returns
+        -------
+        tuple
+            old, new values
+        """
+
+        if d:
+            if f:
+                o_out = (n - o)/o
+            else:
+                o_out = (n - o)
+            n_out = o_out
+
+        else:
+            o_out = o
+            n_out = n
+        return o_out, n_out
+
+    def plot_2D_scatter(
+            self, param1="depth", param2="M0",
+            d1: bool = True,
+            d2: bool = True,
+            f1: bool = False,
+            f2: bool = False,
+            xlog: bool = False,
+            ylog: bool = False,
+            xrange: Optional[list] = None,
+            yrange: Optional[list] = None,
+            xinvert: bool = False,
+            yinvert: bool = False,
+            nbins: int = 40,
+            outfile: Optional[str] = None):
+        """
+        latitude = lat
+        longitude = lon
+        depth = depth
+        M0 = M0
+        moment_magnitude = moment_mag
+        eps_nu = eps_nu
+
+        d? meaning the change in the parameter, boolean
+
+        f? meaning fractional change, boolean, only used of d? True,
+        """
+
+        if outfile is not None:
+            backend = plt.get_backend()
+            plt.switch_backend('pdf')
+            plt.figure(figsize=(4.5, 3))
+
+        # Get first parameters
+        old1 = getattr(self, "o" + param1)
+        new1 = getattr(self, "n" + param1)
+
+        # Get second parameters
+        old2 = getattr(self, "o" + param2)
+        new2 = getattr(self, "n" + param2)
+
+        # Compute the values to be plotted
+        o1p, n1p = self.get_change(old1, new1, d1, f1)
+        o2p, n2p = self.get_change(old2, new2, d2, f2)
+
+        # Plot 2D scatter histograms
+        if d1 and d2:
+            label = " "
+            axscatter, _, _ = lpy.scatter_hist(
+                n1p,
+                n2p,
+                nbins,
+                label=label,
+                histc=(0.4, 0.4, 1.0),
+                fraction=0.85,
+                mult=False)
+
+        elif (d1 and not d2) or (not d1 and d2):
+            label = " "
+            axscatter, _, _ = lpy.scatter_hist(
+                n1p,
+                n2p,
+                nbins,
+                label=label,
+                histc=(0.4, 0.4, 1.0),
+                fraction=0.85,
+                mult=False)
+
+        else:
+            labels = ["O", "N"]
+            axscatter, _, _ = lpy.scatter_hist(
+                [o1p, n1p],
+                [o2p, n2p],
+                nbins,
+                label=labels,
+                histc=[(0.3, 0.3, 0.9), (0.9, 0.3, 0.3)],
+                fraction=0.85,
+                mult=True)
+
+        # Possibly do stuff with axes
+        if d1 and not d2:
+            xlabel = "d" + param1.capitalize()
+            ylabel = param2.capitalize()
+        elif not d1 and d2:
+            xlabel = param1.capitalize()
+            ylabel = "d" + param2.capitalize()
+        elif not d1 and not d2:
+            xlabel = param1.capitalize()
+            ylabel = param2.capitalize()
+        else:
+            xlabel = "d" + param1.capitalize()
+            ylabel = "d" + param2.capitalize()
+
+        # add labels to plot
+        axscatter.set_xlabel(xlabel)
+        axscatter.set_ylabel(ylabel)
+
+        if ylog:
+            axscatter.set_yscale('log')
+        if xlog:
+            axscatter.set_xscale('log')
+
+        if xrange is not None:
+            axscatter.set_xlim(xrange)
+        if yrange is not None:
+            axscatter.set_ylim(yrange)
+
+        if xinvert:
+            axscatter.invert_xaxis()
+        if yinvert:
+            axscatter.invert_yaxis()
+
+        if outfile is not None:
+            plt.savefig(outfile)
+            plt.switch_backend(backend)
+            plt.close()
+
     def plot_depth_v_eps_nu(self, outfile=None):
 
         if outfile is not None:
@@ -621,6 +771,21 @@ def bin():
                              oldlabel=args.oldlabel, newlabel=args.newlabel,
                              nbins=25)
 
+    # CC.plot_2D_scatter(param1="moment_mag", param2="depth", d1=False,
+    #                    d2=False, xlog=False, ylog=True, yrange=[3, 800],
+    #                    yinvert=True)
+    # CC.plot_2D_scatter(param1="depth", param2="depth", d1=True,
+    #                    d2=False, xlog=False, ylog=False, yrange=[0, 700],
+    #                    yinvert=True)
+    # CC.plot_2D_scatter(param1="depth", param2="time_shift", d1=True,
+    #                    d2=True)
+    # CC.plot_2D_scatter(param1="time_shift", param2="depth", d1=True,
+    #                    d2=False, ylog=False, yrange=[0, 700],
+    #                    yinvert=True)
+
+    CC.plot_depth_v_eps_nu()
+    plt.show(block=True)
+    
     # Filter for a minimum depth larger than zero
     # CC = CC.filter(mindict={"depth_in_m": 10000.0})
     # for ocmt, ncmt in zip(CC.old, CC.new):
@@ -630,14 +795,14 @@ def bin():
     #     print("NEW")
     #     print(ncmt)
 
-    extent = -80, -60, -10, -30
-    extent = None
+    # extent = -80, -60, -10, -30
+    # extent = None
 
     # Comparison figures
     # CC.plot_slab_map()
     # outfile=os.path.join(
     #     args.outdir, "catalog_slab_map.pdf"), extent=extent)
-    CC.plot_summary(outfile=os.path.join(
-        args.outdir, "catalog_comparison.pdf"))
-    CC.plot_depth_v_eps_nu(outfile=os.path.join(
-        args.outdir, "depth_v_sourcetype.pdf"))
+    # CC.plot_summary(outfile=os.path.join(
+    #     args.outdir, "catalog_comparison.pdf"))
+    # CC.plot_depth_v_eps_nu(outfile=os.path.join(
+    #     args.outdir, "depth_v_sourcetype.pdf"))
