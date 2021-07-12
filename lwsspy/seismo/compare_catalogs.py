@@ -912,6 +912,9 @@ def bin():
     parser.add_argument('-w', '--write-cats', dest='write',
                         help='Write catalogs to file', action='store_true',
                         default=False)
+    parser.add_argument('-s', '--spatial', dest='spatial',
+                        help='Create plots for spatial distribution',
+                        action='store_true', default=False)
     parser.add_argument('-ol', '--old-label', dest='oldlabel',
                         help='Old label',
                         required=True, type=str or None)
@@ -976,28 +979,37 @@ def bin():
     # extent = None
 
     # Comparison figures
-    # CC.plot_slab_map()
+    # CC.plot_slab_map(extent=extent)
     # outfile=os.path.join(
-    #     args.outdir, "catalog_slab_map.pdf"), extent=extent)
-    # CC.plot_summary(outfile=os.path.join(
-    #     args.outdir, "catalog_comparison.pdf"))
-    # CC.plot_depth_v_eps_nu(outfile=os.path.join(
-    #     args.outdir, "depth_v_sourcetype.pdf"))
+    #     args.outdir, "catalog_slab_map.pdf"))
 
-    spatial_dir = os.path.join(os.path.join(
-        args.outdir, "spatial_changes"))
-    if os.path.exists(spatial_dir) is False:
-        os.mkdir(spatial_dir)
+    CC.plot_summary(outfile=os.path.join(
+        args.outdir, "catalog_comparison.pdf"))
+    CC.plot_depth_v_eps_nu(outfile=os.path.join(
+        args.outdir, "depth_v_sourcetype.pdf"))
 
-    CC.plot_spatial_distribution(
-        "depth_in_m", outfile=os.path.join(spatial_dir, "spatial_depth.pdf"))
-    CC.plot_spatial_distribution(
-        "time_shift", outfile=os.path.join(spatial_dir, "spatial_time_shift.pdf"))
-    CC.plot_spatial_distribution(
-        "M0", outfile=os.path.join(spatial_dir, "spatial_M0.pdf"))
-    CC.plot_spatial_distribution(
-        "eps_nu", outfile=os.path.join(spatial_dir, "spatial_eps.pdf"))
-    CC.plot_spatial_distribution(
-        "latitude", outfile=os.path.join(spatial_dir, "spatial_lat.pdf"))
-    CC.plot_spatial_distribution(
-        "longitude", outfile=os.path.join(spatial_dir, "spatial_lon.pdf"))
+    if args.spatial:
+        spatial_dir = os.path.join(os.path.join(
+            args.outdir, "spatial_changes"))
+
+        if os.path.exists(spatial_dir) is False:
+            os.mkdir(spatial_dir)
+
+        CC.plot_spatial_distribution(
+            "depth_in_m",
+            outfile=os.path.join(spatial_dir, "spatial_depth.pdf"))
+        CC.plot_spatial_distribution(
+            "time_shift",
+            outfile=os.path.join(spatial_dir, "spatial_time_shift.pdf"))
+        CC.plot_spatial_distribution(
+            "M0",
+            outfile=os.path.join(spatial_dir, "spatial_M0.pdf"))
+        CC.plot_spatial_distribution(
+            "eps_nu",
+            outfile=os.path.join(spatial_dir, "spatial_eps.pdf"))
+        CC.plot_spatial_distribution(
+            "latitude",
+            outfile=os.path.join(spatial_dir, "spatial_lat.pdf"))
+        CC.plot_spatial_distribution(
+            "longitude",
+            outfile=os.path.join(spatial_dir, "spatial_lon.pdf"))
