@@ -682,4 +682,4 @@ def bin_plot_pickles():
             outfile = os.path.join(args.outdir, f"histograms_{_m}.pdf")
             plt.savefig(outfile, format='pdf')
 
-    plt.show(block=True)
+    # plt.show(block=True)

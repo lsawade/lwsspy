@@ -1,12 +1,14 @@
 import os
 from typing import Optional
+
+from matplotlib.cm import ScalarMappable
 import lwsspy as lpy
-from copy import deepcopy
+from copy import copy, deepcopy
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from obspy import Inventory
-from cartopy.crs import PlateCarree, Mollweide
+from cartopy.crs import PlateCarree, Mollweide, Projection
 from matplotlib.colors import ListedColormap, Normalize, BoundaryNorm
 from matplotlib.patches import Rectangle
 from .cmt_catalog import CMTCatalog
@@ -15,19 +17,20 @@ from .plot_quakes import plot_quakes
 from ..maps.plot_map import plot_map
 from ..plot_util.plot_label import plot_label
 from ..plot_util.remove_ticklabels import remove_topright
+from mpl_toolkits.axes_grid1.inset_locator import InsetPosition
 
 
 class CompareCatalogs:
 
     # Old and new parameters
-    olat: np.ndarray
-    nlat: np.ndarray
-    olon: np.ndarray
-    nlon: np.ndarray
+    olatitude: np.ndarray
+    nlatitude: np.ndarray
+    olongitude: np.ndarray
+    nlongitude: np.ndarray
     omoment: np.ndarray
     nmoment: np.ndarray
-    odepth: np.ndarray
-    ndepth: np.ndarray
+    odepth_in_m: np.ndarray
+    ndepth_in_m: np.ndarray
     oeps_nu: np.ndarray
     neps_nu: np.ndarray
 
@@ -69,31 +72,41 @@ class CompareCatalogs:
     def populate(self):
 
         # Old and new values
-        self.olat = self.old.getvals("latitude")
-        self.nlat = self.new.getvals("latitude")
-        self.olon = self.old.getvals("longitude")
-        self.nlon = self.new.getvals("longitude")
+        self.olatitude = self.old.getvals("latitude")
+        self.nlatitude = self.new.getvals("latitude")
+        self.olongitude = self.old.getvals("longitude")
+        self.nlongitude = self.new.getvals("longitude")
         self.oM0 = self.old.getvals("M0")
         self.nM0 = self.new.getvals("M0")
-        self.omoment_mag = self.old.getvals("moment_magnitude")
-        self.nmoment_mag = self.new.getvals("moment_magnitude")
-        self.odepth = self.old.getvals("depth_in_m")/1000.0
-        self.ndepth = self.new.getvals("depth_in_m")/1000.0
+        self.omoment_magnitude = self.old.getvals("moment_magnitude")
+        self.nmoment_magnitude = self.new.getvals("moment_magnitude")
+        self.odepth_in_m = self.old.getvals("depth_in_m")
+        self.ndepth_in_m = self.new.getvals("depth_in_m")
         self.oeps_nu = self.old.getvals("decomp", "eps_nu")
         self.neps_nu = self.new.getvals("decomp", "eps_nu")
         self.otime_shift = self.old.getvals("time_shift")
         self.ntime_shift = self.new.getvals("time_shift")
 
+        self.labeldict = dict(
+            latitude="Lat [$^\circ$]",
+            longitude="Lon [$^\circ$]",
+            M0="M0 [%]",
+            moment_magnitude="$M_W$",
+            time_shift="$t_{cmt}$",
+            eps_nu="$\epsilon$",  # Nu is unused for GCMTs
+            depth_in_m="Z [km]"
+        )
+
         # Number of bins
         # Min max ddepth for cmt plotting
-        self.ddepth = self.ndepth-self.odepth
+        self.ddepth = (self.ndepth_in_m-self.odepth_in_m)/1000.0
         self.maxddepth = np.max(self.ddepth)
         self.minddepth = np.min(self.ddepth)
         self.dd_absmax = np.max(np.abs(
             [np.quantile(np.min(self.ddepth), 0.30),
              np.quantile(np.min(self.ddepth), 0.70)]))
-        self.maxdepth = np.max(self.odepth)
-        self.mindepth = np.min(self.odepth)
+        self.maxdepth = np.max(self.ndepth_in_m)/1000.0
+        self.mindepth = np.min(self.ndepth_in_m)/1000.0
         self.dmbins = np.linspace(-0.5, 0.5 + 0.5 / self.nbins, self.nbins)
         self.ddegbins = np.linspace(-0.1, 0.1 + 0.1 / self.nbins, self.nbins)
         self.dzbins = np.linspace(-self.dd_absmax,
@@ -107,7 +120,8 @@ class CompareCatalogs:
 
         # Plot events
         scatter, ax, l1, l2 = plot_quakes(
-            self.nlat, self.nlon, self.ndepth, self.nmoment_mag, ax=ax,
+            self.nlatitude, self.nlongitude, self.ndepth_in_m/1000.0,
+            self.nmoment_magnitude, ax=ax,
             yoffsetlegend2=0.09, sizefunc=lambda x: (x-(np.min(x)-1))**2.5 + 5)
         ax.set_global()
         plot_map(zorder=0, fill=True)
@@ -160,8 +174,8 @@ class CompareCatalogs:
         msize = 15
 
         plt.scatter(
-            self.ddepth, self.odepth,
-            c=self.depth_cmap(self.depth_norm(self.odepth)),
+            self.ddepth, self.odepth_in_m/1000,
+            c=self.depth_cmap(self.depth_norm(self.odepth_in_m/1000.0)),
             s=msize, marker='o', alpha=0.5, edgecolors='none')
 
         # Custom legend
@@ -177,11 +191,11 @@ class CompareCatalogs:
                    bbox_to_anchor=(0.0, 0.0))
 
         # Zero line
-        plt.plot([0, 0], [0, np.max(self.odepth)],
+        plt.plot([0, 0], [0, np.max(self.odepth_in_m/1000.0)],
                  "k--", lw=1.5)
 
         # Axes properties
-        plt.ylim(([10, np.max(self.odepth)]))
+        plt.ylim(([10, np.max(self.odepth_in_m/1000.0)]))
         plt.xlim(([np.min(self.ddepth), np.max(self.ddepth)]))
         ax.invert_yaxis()
         ax.set_yscale('log')
@@ -206,8 +220,8 @@ class CompareCatalogs:
         norm = BoundaryNorm(levels, cmap.N)
 
         # Get extent in which to include surrounding slabs
-        lats = self.olat
-        lons = self.olon
+        lats = self.olatitude
+        lons = self.olongitude
 
         # Plot map
         proj = Mollweide(central_longitude=160.0)
@@ -224,22 +238,25 @@ class CompareCatalogs:
         lpy.plot_slabs(dss=dss, levels=levels, cmap=cmap, norm=norm)
 
         # Plot CMT as popint or beachball
-        # cdepth = cmap(norm(-1*self.odepth))
+        # cdepth = cmap(norm(-1*self.o/1000.0))
 
         # Old CMTs
         plt.plot(
-            np.vstack((self.olon, self.nlon)),
-            np.vstack((self.olat, self.nlat)), 'k',
+            np.vstack((self.olongitude, self.nlongitude)),
+            np.vstack((self.olatitude, self.nlatitude)), 'k',
             linewidth=0.75, transform=PlateCarree(), zorder=105)
 
-        plt.scatter(lons, lats, c=-1*self.odepth, s=30,
-                    marker='s', edgecolor='k', cmap=cmap, norm=norm,
-                    transform=PlateCarree(), zorder=100)
+        plt.scatter(
+            lons, lats, c=-1*self.odepth_in_m/1000.0, s=30,
+            marker='s', edgecolor='k', cmap=cmap, norm=norm,
+            transform=PlateCarree(), zorder=100)
 
         # New CMTs
-        plt.scatter(self.nlon, self.nlat, c=-1*self.odepth, s=30,
-                    marker='o', edgecolor='k', cmap=cmap, norm=norm,
-                    transform=PlateCarree(), zorder=110)
+        plt.scatter(
+            self.nlongitude, self.nlatitude,
+            c=-1*self.odepth_in_m/1000.0, s=30,
+            marker='o', edgecolor='k', cmap=cmap, norm=norm,
+            transform=PlateCarree(), zorder=110)
 
         # Redo, I think?
         if extent is not None:
@@ -253,6 +270,152 @@ class CompareCatalogs:
             plt.switch_backend(backend)
         else:
             plt.show()
+
+    def plot_spatial_distribution(
+            self, parameter: str, outfile: Optional[str] = None,
+            extent=None):
+        """Plots a 3x3 plots of distributions of changes at different depth
+        ranges for a provided parameter. 
+
+        Parameters
+        ----------
+        parameter : str
+            parameter to plot the changes of
+        outfile : Optional[str], optional
+            outputfile, by default None
+        extent : Iterable, optional
+            arraylike of 4 elements describing the map bounds. Just an input
+            for cartopy's ax.set_extent, by default None, which makes the map 
+            a global map.
+        """
+
+        # Change backend if output is pdf
+        if outfile is not None:
+            backend = plt.get_backend()
+            plt.switch_backend('pdf')
+
+        fig = plt.figure(figsize=(8, 8))
+
+        # Raise error if parameter doesnt exist.
+
+        # Define levels on where to loo
+        levels = [0.0, 10.0, 12.5, 15.0, 20.0, 30.0, 70.0, 120.0,
+                  400.0, 800.0]
+
+        # Get data for parameter in question
+        oparam = copy(getattr(self, "o" + parameter))
+        nparam = copy(getattr(self, "n" + parameter))
+        dparam = nparam - oparam
+
+        if parameter == "eps_nu":
+            oparam = oparam[:, 0]
+            nparam = nparam[:, 0]
+            dparam = dparam[:, 0]
+
+        if parameter == 'depth_in_m':
+            oparam /= 1000.0
+            nparam /= 1000.0
+            dparam /= 1000.0
+
+        if parameter in ["M0"]:
+            dparam /= oparam
+            dparam *= 100.0
+
+        if parameter == "eps_nu":
+            vmin, vmax = -0.2, 0.2
+        else:
+            dparam_absmax = np.max(np.abs(
+                [np.quantile(dparam, 0.05),
+                 np.quantile(dparam, 0.95)]))
+
+            vmin = -dparam_absmax
+            vmax = dparam_absmax
+        vcenter = 0
+        norm = lpy.MidpointNormalize(vmin=vmin, midpoint=vcenter, vmax=vmax)
+        cmap = plt.get_cmap('seismic')
+
+        print(vmin, vmax)
+        # list of pos that have the given depth
+        individualpos = []
+        for top, bottom in zip(levels[:-1], levels[1:]):
+            pos = np.where((top <= self.ndepth_in_m/1000.0) &
+                           (self.ndepth_in_m/1000.0 < bottom))[0]
+            individualpos.append(pos)
+        axes = []
+        map_axes = []
+
+        for _i in range(len(levels[:-1])):
+
+            pos = individualpos[_i]
+            if _i != 0:
+                shareax = None
+            else:
+                shareax = None
+
+            print(_i, len(pos))
+            axes.append(plt.subplot(3, 3, _i + 1))
+            axes[_i].set_title(
+                f"{int(levels[_i]):3d} - {int(levels[_i+1]):3d} km",
+                y=0.925)
+            axes[_i].axis('off')
+
+            # This axes will be adjusted in size
+            mapinset = plt.axes(
+                [0.0, 0.0, 0.1, 0.1],  # This position works DO NOT CHANGE!
+                projection=Mollweide(
+                    central_longitude=self.central_longitude),
+                label=str(_i))
+            ip = InsetPosition(axes[_i], [0.0, 0.2, 1.0, 0.8])
+            mapinset.set_axes_locator(ip)
+            mapinset.set_global()
+            plot_map(ax=mapinset)
+            mapinset.scatter(
+                self.nlongitude[pos], self.nlatitude[pos], s=25,
+                c=dparam[pos],
+                transform=PlateCarree(),
+                cmap=cmap, alpha=1.0, norm=norm, edgecolor='k',
+                linewidth=0.1, zorder=10)
+            if extent is not None:
+                mapinset.set_extent(extent)
+
+            inset = axes[_i].inset_axes([0.2, 0.05, 0.6, 0.15])
+            inset.spines['right'].set_visible(False)
+            inset.spines['top'].set_visible(False)
+            inset.spines['left'].set_visible(False)
+            inset.tick_params(top=False, left=False,
+                              right=False, labelleft=False)
+            inset.minorticks_off()
+            if parameter == "eps_nu":
+                xlim = [vmin, vmax]
+            else:
+                xlim = [np.min(dparam[pos]), np.max(dparam[pos])]
+            inset.set_xlim(xlim)
+            bins = np.linspace(xlim[0], xlim[1], 20)
+            plot_label(
+                inset, f"#: {len(pos)}",
+                fontdict=dict(fontsize="x-small"), box=False, dist=0.0)
+            self.plot_histogram(
+                dparam[pos], bins, facecolor='lightgray', ax=inset, stats=False)
+
+            ylim = inset.get_ylim()
+            inset.plot([0, 0], ylim, 'k', lw=1.0)
+            inset.plot(xlim, [0, 0], 'k', lw=1.0)
+
+        plt.subplots_adjust(
+            left=0.01, right=0.99, bottom=0.125, top=0.95,
+            hspace=0.2, wspace=0.02)
+
+        cax = axes[-2].inset_axes([-0.5, -0.175, 2.0, 0.05])
+        cbar = plt.colorbar(
+            cax=cax, mappable=ScalarMappable(norm=norm, cmap=cmap),
+            orientation='horizontal')
+
+        cbar.set_label(f"Change in {self.labeldict[parameter]}")
+
+        if outfile is not None:
+            plt.savefig(outfile)
+            plt.switch_backend(backend)
+            plt.close(fig)
 
     def plot_summary(self, outfile: Optional[str] = None):
 
@@ -318,7 +481,7 @@ class CompareCatalogs:
         # zbins = np.linspace(-2.5, 2.5, 100)
         ax = fig.add_subplot(GS[2, 2])
         self.plot_histogram(
-            self.ndepth-self.odepth, zbins, facecolor='lightgray',
+            self.ddepth, zbins, facecolor='lightgray',
             statsleft=True)
         remove_topright()
         plt.xlabel("Depth Change [km]")
@@ -329,7 +492,7 @@ class CompareCatalogs:
             plt.savefig(outfile)
             plt.switch_backend(backend)
 
-    @staticmethod
+    @ staticmethod
     def get_change(o, n, d: bool, f: bool):
         """Getting the change values, if ``d`` is ``False`` the function just
         returns (o, n).
@@ -396,16 +559,23 @@ class CompareCatalogs:
             plt.figure(figsize=(4.5, 3))
 
         # Get first parameters
-        old1 = getattr(self, "o" + param1)
-        new1 = getattr(self, "n" + param1)
+        old1 = copy(getattr(self, "o" + param1))
+        new1 = copy(getattr(self, "n" + param1))
 
         # Get second parameters
-        old2 = getattr(self, "o" + param2)
-        new2 = getattr(self, "n" + param2)
+        old2 = copy(getattr(self, "o" + param2))
+        new2 = copy(getattr(self, "n" + param2))
 
         # Compute the values to be plotted
         o1p, n1p = self.get_change(old1, new1, d1, f1)
         o2p, n2p = self.get_change(old2, new2, d2, f2)
+
+        if param1 == "depth_in_m":
+            o1p /= 1000.0
+            n1p /= 1000.0
+        if param2 == "depth_in_m":
+            o2p /= 1000.0
+            n2p /= 1000.0
 
         # Plot 2D scatter histograms
         if d1 and d2:
@@ -443,17 +613,17 @@ class CompareCatalogs:
 
         # Possibly do stuff with axes
         if d1 and not d2:
-            xlabel = "d" + param1.capitalize()
-            ylabel = param2.capitalize()
+            xlabel = "d" + self.labeldict[param1]
+            ylabel = self.labeldict[param2]
         elif not d1 and d2:
-            xlabel = param1.capitalize()
-            ylabel = "d" + param2.capitalize()
+            xlabel = self.labeldict[param1]
+            ylabel = "d" + self.labeldict[param2]
         elif not d1 and not d2:
-            xlabel = param1.capitalize()
-            ylabel = param2.capitalize()
+            xlabel = self.labeldict[param1]
+            ylabel = self.labeldict[param2]
         else:
-            xlabel = "d" + param1.capitalize()
-            ylabel = "d" + param2.capitalize()
+            xlabel = "d" + self.labeldict[param1]
+            ylabel = "d" + self.labeldict[param2]
 
         # add labels to plot
         axscatter.set_xlabel(xlabel)
@@ -488,7 +658,7 @@ class CompareCatalogs:
 
         axscatter, _, _ = lpy.scatter_hist(
             [self.oeps_nu[:, 0], self.neps_nu[:, 0]],
-            [self.odepth, self.ndepth],
+            [self.odepth_in_m/1000.0, self.ndepth_in_m/1000.0],
             self.nbins,
             label=[self.oldlabel, self.newlabel],
             histc=[(0.4, 0.4, 1.0), (1.0, 0.4, 0.4)],
@@ -498,7 +668,8 @@ class CompareCatalogs:
         axscatter.set_xlim((-0.5, 0.5))
         ylim = axscatter.get_ylim()
         axscatter.set_ylim(
-            (ylim[0], 0.95*np.min((np.min(self.ndepth), np.min(self.odepth)))))
+            (ylim[0], 0.95*np.min((np.min(self.ndepth_in_m/1000.0),
+                                   np.min(self.odepth_in_m/1000.0)))))
         axscatter.set_yscale('log')
 
         # Plot clvd labels
@@ -518,7 +689,7 @@ class CompareCatalogs:
 
     def plot_histogram(self, ddata, n_bins, facecolor=(0.7, 0.2, 0.2),
                        alpha=1, chi=False, wmin=None, statsleft: bool = False,
-                       label: str = None, stats: bool = True,
+                       label: str = None, stats: bool = True, ax=None,
                        CI: bool = False):
         """Plots histogram of input data."""
 
@@ -528,7 +699,9 @@ class CompareCatalogs:
             print(f"Datamin: {np.min(ddata)}")
 
         # The histogram of the data
-        ax = plt.gca()
+        if ax is None:
+            ax = plt.gca()
+
         n, bins, _ = ax.hist(ddata, n_bins, facecolor=facecolor,
                              edgecolor=facecolor, alpha=alpha, label=label)
         _, _, _ = ax.hist(ddata, n_bins, color='k', histtype='step')
@@ -770,20 +943,24 @@ def bin():
     CC = lpy.CompareCatalogs(old=ocat, new=ncat,
                              oldlabel=args.oldlabel, newlabel=args.newlabel,
                              nbins=25)
-
-    # CC.plot_2D_scatter(param1="moment_mag", param2="depth", d1=False,
+    # plt.figure(figsize=(4.5, 3))
+    # CC.plot_2D_scatter(param1="moment_magnitude", param2="depth_in_m", d1=False,
     #                    d2=False, xlog=False, ylog=True, yrange=[3, 800],
     #                    yinvert=True)
-    # CC.plot_2D_scatter(param1="depth", param2="depth", d1=True,
+    # plt.figure(figsize=(4.5, 3))
+    # CC.plot_2D_scatter(param1="depth_in_m", param2="depth_in_m", d1=True,
     #                    d2=False, xlog=False, ylog=False, yrange=[0, 700],
     #                    yinvert=True)
-    # CC.plot_2D_scatter(param1="depth", param2="time_shift", d1=True,
+    # plt.figure(figsize=(4.5, 3))
+    # CC.plot_2D_scatter(param1="depth_in_m", param2="time_shift", d1=True,
     #                    d2=True)
-    # CC.plot_2D_scatter(param1="time_shift", param2="depth", d1=True,
+    # plt.figure(figsize=(4.5, 3))
+    # CC.plot_2D_scatter(param1="time_shift", param2="depth_in_m", d1=True,
     #                    d2=False, ylog=False, yrange=[0, 700],
     #                    yinvert=True)
-
+    # plt.figure(figsize=(4.5, 3))
     # CC.plot_depth_v_eps_nu()
+
     # plt.show(block=True)
 
     # Filter for a minimum depth larger than zero
@@ -802,7 +979,25 @@ def bin():
     # CC.plot_slab_map()
     # outfile=os.path.join(
     #     args.outdir, "catalog_slab_map.pdf"), extent=extent)
-    CC.plot_summary(outfile=os.path.join(
-        args.outdir, "catalog_comparison.pdf"))
-    CC.plot_depth_v_eps_nu(outfile=os.path.join(
-        args.outdir, "depth_v_sourcetype.pdf"))
+    # CC.plot_summary(outfile=os.path.join(
+    #     args.outdir, "catalog_comparison.pdf"))
+    # CC.plot_depth_v_eps_nu(outfile=os.path.join(
+    #     args.outdir, "depth_v_sourcetype.pdf"))
+
+    spatial_dir = os.path.join(os.path.join(
+        args.outdir, "spatial_changes"))
+    if os.path.exists(spatial_dir) is False:
+        os.mkdir(spatial_dir)
+
+    CC.plot_spatial_distribution(
+        "depth_in_m", outfile=os.path.join(spatial_dir, "spatial_depth.pdf"))
+    CC.plot_spatial_distribution(
+        "time_shift", outfile=os.path.join(spatial_dir, "spatial_time_shift.pdf"))
+    CC.plot_spatial_distribution(
+        "M0", outfile=os.path.join(spatial_dir, "spatial_M0.pdf"))
+    CC.plot_spatial_distribution(
+        "eps_nu", outfile=os.path.join(spatial_dir, "spatial_eps.pdf"))
+    CC.plot_spatial_distribution(
+        "latitude", outfile=os.path.join(spatial_dir, "spatial_lat.pdf"))
+    CC.plot_spatial_distribution(
+        "longitude", outfile=os.path.join(spatial_dir, "spatial_lon.pdf"))

@@ -1,5 +1,6 @@
 import numpy as np
 from copy import deepcopy, copy
+from typing import Callable
 
 
 def NOP(args):
@@ -546,19 +547,19 @@ class Optimization:
         msave: list = [],
         nb_mem: int = 0,
         # Logger to make your life more beautiful
-        logger: callable = print,
+        logger: Callable = print,
         # Routine
-        compute_cost: callable = NOP,
-        compute_gradient: callable = NOP,
-        compute_cost_and_gradient: callable or None = None,
-        compute_cost_and_grad_and_hess: callable or None = None,
-        descent_direction: callable = NOP,
-        apply_preconditioner: callable = NOP,
-        save_model_to_disk: callable = NOP,
-        save_model_and_gradient: callable = store_grad_and_model,
-        solve: callable = Solve_Optimisation_Problem,
-        get_optim_si_yi: callable = get_optim_si_yi,
-            compute_beta: callable = fletcher_reeves):
+        compute_cost: Callable = NOP,
+        compute_gradient: Callable = NOP,
+        compute_cost_and_gradient: Callable or None = None,
+        compute_cost_and_grad_and_hess: Callable or None = None,
+        descent_direction: Callable = NOP,
+        apply_preconditioner: Callable = NOP,
+        save_model_to_disk: Callable = NOP,
+        save_model_and_gradient: Callable = store_grad_and_model,
+        solve: Callable = Solve_Optimisation_Problem,
+        get_optim_si_yi: Callable = get_optim_si_yi,
+            compute_beta: Callable = fletcher_reeves):
         """Optimization class to run optimize a problem with given cost function
         and cost function gradient.
 
@@ -622,30 +623,30 @@ class Optimization:
             array to save the past gradients, by default []
         msave : list, optional
             array to save past models, by default []
-        compute_cost : callable, optional
+        compute_cost : Callable, optional
             function that computes the cost, by default NOP
-        compute_gradient : callable, optional
+        compute_gradient : Callable, optional
             function that computes the gradient, by default NOP
-        compute_cost_and_gradient : callable or None, optional
+        compute_cost_and_gradient : Callable or None, optional
             function that computes the cost and the gradient at the same time,
             by default None
-        descent_direction : callable, optional
+        descent_direction : Callable, optional
             function that computes the descent direction, by default NOP
-        apply_preconditioner : callable, optional
+        apply_preconditioner : Callable, optional
             function that applies a preconditioner, by default NOP
-        save_model_to_disk : callable, optional
+        save_model_to_disk : Callable, optional
             function that writes the model to disk, not implemented,
             by default NOP
-        save_model_and_gradient : callable, optional
+        save_model_and_gradient : Callable, optional
             funciton that stores model and gradient within the optimization
             class, by default store_grad_and_model
-        solve : callable, optional
+        solve : Callable, optional
             solves the optimization problem,
             by default Solve_Optimisation_Problem
-        get_optim_si_yi : callable, optional
+        get_optim_si_yi : Callable, optional
             function that gets the optimal si and yi,
             by default get_optim_si_yi
-        compute_beta : callable, optional
+        compute_beta : Callable, optional
             function that computes beta, by default fletcher_reeves
         """
 

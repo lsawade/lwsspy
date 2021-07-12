@@ -109,3 +109,18 @@ def read_measurements(cmtdir: str):
 
     except Exception:
         return None
+
+
+def read_measurements_label(cmtdir: str, label: str):
+
+    measurement_pickle = os.path.join(
+        cmtdir, f"measurements_{label}.pkl")
+
+    try:
+        with open(measurement_pickle, "rb") as f:
+            measurements = cPickle.load(f)
+
+        return measurements
+
+    except Exception:
+        return None

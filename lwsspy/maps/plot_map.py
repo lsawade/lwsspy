@@ -11,7 +11,8 @@ steps = [1, 1.5, 1.8, 2, 3, 6, 10]
 
 def plot_map(fill=True, zorder=None, labelstopright: bool = True,
              labelsbottomleft: bool = True, borders: bool = True,
-             rivers: bool = False, lakes: bool = False):
+             rivers: bool = False, lakes: bool = False,
+             ax=None):
     """Plots map into existing axes.
 
     Parameters
@@ -50,7 +51,8 @@ def plot_map(fill=True, zorder=None, labelstopright: bool = True,
 
     """
 
-    ax = plt.gca()
+    if ax is None:
+        ax = plt.gca()
 
     # Put lables all around
     if isinstance(ax.projection, cartopy.crs.PlateCarree):

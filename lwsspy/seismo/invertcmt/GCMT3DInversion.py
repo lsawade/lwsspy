@@ -983,8 +983,8 @@ class GCMT3DInversion:
                 model = np.append(deepcopy(self.scaled_model), 1.0)
             else:
                 model = deepcopy(self.scaled_model)
-            optim_out = optim.solve(optim, model)
-            self.model = deepcopy(optim.model)
+            optim_out = deepcopy(optim.solve(optim, model))
+            self.model = deepcopy(optim_out.model)
             return optim_out
         except Exception as e:
             print(e)
@@ -2118,6 +2118,10 @@ def bin():
             lpy.log_action("DONE with Gauss-Newton.",
                            plogger=gcmt3d.logger.info)
 
+        gcmt3d.logger.info("Shape:")
+        gcmt3d.logger.info(optim_out.model.shape)
+        gcmt3d.logger.info("Size:")
+        gcmt3d.logger.info(optim_out.model.size)
         # Update model and write model
         if gcmt3d.zero_trace:
             gcmt3d.__update_cmt__(optim_out.model[:-1])
