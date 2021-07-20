@@ -298,6 +298,7 @@ class CompareCatalogs:
         if outfile is not None:
             backend = plt.get_backend()
             plt.switch_backend('pdf')
+
         aspect = 10/9.0
         size = 8
         fig = plt.figure(figsize=(size*aspect, size))
@@ -307,6 +308,7 @@ class CompareCatalogs:
         # Define levels on where to loo
         levels = [0.0, 10.0, 12.5, 15.0, 20.0, 30.0, 70.0, 120.0,
                   400.0, 800.0]
+
         if parameter == 'location':
 
             # Get data for parameter in question
@@ -502,10 +504,9 @@ class CompareCatalogs:
             )
 
         if outfile is not None:
-            with plt.rc_context({'image.composite_image': False}):
-                plt.savefig(outfile)
-            plt.switch_backend(backend)
+            plt.savefig(outfile)
             plt.close(fig)
+            plt.switch_backend(backend)
 
     def plot_summary(self, outfile: Optional[str] = None):
 
