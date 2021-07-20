@@ -645,7 +645,7 @@ def bin():
     # Plot the measurements
     for _m in measure:
         plot_measurements(before, after, args.alabel,
-                          args.blabel, mtype=_m, no_after=argparse.no_after)
+                          args.blabel, mtype=_m, no_after=args.no_after)
 
         if args.outdir is not None:
             outfile = os.path.join(args.outdir, f"histograms_{_m}.pdf")
