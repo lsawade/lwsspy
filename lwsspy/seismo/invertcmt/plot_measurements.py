@@ -102,8 +102,9 @@ def plot_measurements(before: dict, after: dict, alabel: Optional[str] = None,
     components = ["Z", "R", "T"]
 
     # Get the amount of colors
-    colors = pick_colors_from_cmap(len(components), cmap='rainbow')
+    # colors = pick_colors_from_cmap(len(components), cmap='rainbow')
     colors = np.array([[0.8, 0, 0, 1], [0, 0.8, 0, 1], [0, 0, 0.8, 1]])
+
     if mtype == "time_shift":
         component_bins = [21, 21, 21]
     else:
@@ -210,7 +211,7 @@ def plot_measurements(before: dict, after: dict, alabel: Optional[str] = None,
                 ax.tick_params(labelbottom=False)
             counter += 1
 
-    plt.show(block=False)
+    # plt.show(block=False)
 
 
 def get_illumination(mat: np.ndarray, minillum: int = 25,
@@ -637,6 +638,10 @@ def bin():
     else:
         measure = args.measure
 
+    if args.outdir is not None:
+        backend = plt.get_backend()
+        plt.switch_backend('pdf')
+
     # Plot the measurements
     for _m in measure:
         plot_measurements(before, after, args.alabel,
@@ -645,6 +650,9 @@ def bin():
         if args.outdir is not None:
             outfile = os.path.join(args.outdir, f"histograms_{_m}.pdf")
             plt.savefig(outfile, format='pdf')
+
+    if args.outdir is not None:
+        plt.switch_backend(backend)
 
 
 def bin_plot_pickles():
@@ -679,6 +687,10 @@ def bin_plot_pickles():
     else:
         measure = args.measure
 
+    if args.outdir is not None:
+        backend = plt.get_backend()
+        plt.switch_backend('pdf')
+
     # Plot the measurements
     for _m in measure:
         plot_measurement_pkl(args.before, args.after, args.alabel,
@@ -688,4 +700,5 @@ def bin_plot_pickles():
             outfile = os.path.join(args.outdir, f"histograms_{_m}.pdf")
             plt.savefig(outfile, format='pdf')
 
-    # plt.show(block=True)
+    if args.outdir is not None:
+        plt.switch_backend(backend)
