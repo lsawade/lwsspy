@@ -75,10 +75,10 @@ def plot_quakes(latitude, longitude, depth, moment,
     print("plotquakes mindepth:", mindepth)
     maxdepth = np.max(depth)
     level_minidx = np.where(levels < mindepth)[0]
-    if isinstance(level_minidx, list) or isinstance(level_minidx, np.ndarray):
-        level_minidx = int(level_minidx[-1])
+    if len(level_minidx) < 1:
+        level_minidx = 0
     else:
-        level_minidx = int(level_minidx)
+        level_minidx = int(level_minidx[-1])
     level_maxidx = int(np.where(levels > maxdepth)[0][0])
 
     # Fix levels
