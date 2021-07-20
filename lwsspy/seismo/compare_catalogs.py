@@ -1110,5 +1110,3 @@ def bin():
         CC.plot_spatial_distribution(
             "location",
             outfile=os.path.join(spatial_dir, "spatial_location.pdf"))
-
-    plt.show(block=True)
