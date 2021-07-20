@@ -13,11 +13,15 @@ from matplotlib.colors import ListedColormap, Normalize, BoundaryNorm
 from matplotlib.patches import Rectangle
 from .cmt_catalog import CMTCatalog
 from .source import CMTSource
+from ..utils.chunks import chunks
 from .plot_quakes import plot_quakes
 from ..maps.plot_map import plot_map
+from ..maps.haversine import haversine
+from ..maps.bearing import bearing
+from ..plot_util.axes_from_axes import axes_from_axes
+from ..plot_util.scatterlegend import scatterlegend
 from ..plot_util.plot_label import plot_label
 from ..plot_util.remove_ticklabels import remove_topright
-from mpl_toolkits.axes_grid1.inset_locator import InsetPosition
 
 
 class CompareCatalogs:
@@ -92,9 +96,10 @@ class CompareCatalogs:
             longitude="Lon [$^\circ$]",
             M0="M0 [%]",
             moment_magnitude="$M_W$",
-            time_shift="$t_{cmt}$",
+            time_shift="$t_{cmt} [s]$",
             eps_nu="$\epsilon$",  # Nu is unused for GCMTs
-            depth_in_m="Z [km]"
+            depth_in_m="Z [km]",
+            location='Location [km]'
         )
 
         # Number of bins
@@ -275,7 +280,7 @@ class CompareCatalogs:
             self, parameter: str, outfile: Optional[str] = None,
             extent=None):
         """Plots a 3x3 plots of distributions of changes at different depth
-        ranges for a provided parameter. 
+        ranges for a provided parameter.
 
         Parameters
         ----------
@@ -285,7 +290,7 @@ class CompareCatalogs:
             outputfile, by default None
         extent : Iterable, optional
             arraylike of 4 elements describing the map bounds. Just an input
-            for cartopy's ax.set_extent, by default None, which makes the map 
+            for cartopy's ax.set_extent, by default None, which makes the map
             a global map.
         """
 
@@ -293,19 +298,33 @@ class CompareCatalogs:
         if outfile is not None:
             backend = plt.get_backend()
             plt.switch_backend('pdf')
-
-        fig = plt.figure(figsize=(8, 8))
+        aspect = 10/9.0
+        size = 8
+        fig = plt.figure(figsize=(size*aspect, size))
 
         # Raise error if parameter doesnt exist.
 
         # Define levels on where to loo
         levels = [0.0, 10.0, 12.5, 15.0, 20.0, 30.0, 70.0, 120.0,
                   400.0, 800.0]
+        if parameter == 'location':
 
-        # Get data for parameter in question
-        oparam = copy(getattr(self, "o" + parameter))
-        nparam = copy(getattr(self, "n" + parameter))
-        dparam = nparam - oparam
+            # Get data for parameter in question
+            olat = copy(self.olatitude)
+            nlat = copy(self.nlatitude)
+            olon = copy(self.olongitude)
+            nlon = copy(self.nlongitude)
+            dlat = nlat - olat
+            dlon = nlon - olon
+            dparam = haversine(olon, olat, nlon, nlat)
+            b = 90 - bearing(olon, olat, nlon, nlat)
+            print(np.min(b), np.mean(b), np.max(b))
+
+        else:
+            # Get data for parameter in question
+            oparam = copy(getattr(self, "o" + parameter))
+            nparam = copy(getattr(self, "n" + parameter))
+            dparam = nparam - oparam
 
         if parameter == "eps_nu":
             oparam = oparam[:, 0]
@@ -330,55 +349,93 @@ class CompareCatalogs:
 
             vmin = -dparam_absmax
             vmax = dparam_absmax
-        vcenter = 0
-        norm = lpy.MidpointNormalize(vmin=vmin, midpoint=vcenter, vmax=vmax)
-        cmap = plt.get_cmap('seismic')
 
-        print(vmin, vmax)
+        # Location, we only have positive values so they change.
+        if parameter == 'location':
+            vmin = 0
+            norm = Normalize(vmin=vmin, vmax=vmax)
+            cmap = plt.get_cmap('inferno')
+            quivers = []
+        else:
+            vcenter = 0
+            norm = lpy.MidpointNormalize(
+                vmin=vmin, midpoint=vcenter, vmax=vmax)
+            cmap = plt.get_cmap('seismic')
+
         # list of pos that have the given depth
         individualpos = []
-        for top, bottom in zip(levels[:-1], levels[1:]):
-            pos = np.where((top <= self.ndepth_in_m/1000.0) &
-                           (self.ndepth_in_m/1000.0 < bottom))[0]
-            individualpos.append(pos)
+        idx_sort = np.argsort(self.ndepth_in_m)
+        pos = np.arange(0, len(self.ndepth_in_m))[idx_sort]
+
+        def split(a, n):
+            k, m = divmod(len(a), n)
+            return (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
+
+        individualpos = split(pos, 9)
+
+        # Create size function with normalization
+        def sizefunc(x):
+            size = np.abs(x)/vmax
+            wlsize = np.where((size < 0.2), 0.01, size)
+            wlsize = np.where((size > 1.0), 1.0, wlsize)
+            return 20*((1 + wlsize)**2)
+
         axes = []
-        map_axes = []
 
-        for _i in range(len(levels[:-1])):
+        for _i, pos in enumerate(individualpos):
 
-            pos = individualpos[_i]
-            if _i != 0:
-                shareax = None
-            else:
-                shareax = None
+            # Get the eq's that are in the certain range
+            dmin = np.min(self.ndepth_in_m[pos]/1000.0)
+            dmax = np.max(self.ndepth_in_m[pos]/1000.0)
 
-            print(_i, len(pos))
+            # Create axes
             axes.append(plt.subplot(3, 3, _i + 1))
             axes[_i].set_title(
-                f"{int(levels[_i]):3d} - {int(levels[_i+1]):3d} km",
-                y=0.925)
+                f"{int(np.round(dmin)):3d} - {int(np.round(dmax)):3d} km",)
+            # y=0.925)
             axes[_i].axis('off')
 
-            # This axes will be adjusted in size
-            mapinset = plt.axes(
-                [0.0, 0.0, 0.1, 0.1],  # This position works DO NOT CHANGE!
-                projection=Mollweide(
-                    central_longitude=self.central_longitude),
-                label=str(_i))
-            ip = InsetPosition(axes[_i], [0.0, 0.2, 1.0, 0.8])
-            mapinset.set_axes_locator(ip)
+            # Create subaaxes
+            mapinset = axes_from_axes(
+                axes[_i], _i, [0.0, 0.2, 1.0, 0.8],
+                projection=Mollweide(central_longitude=self.central_longitude))
             mapinset.set_global()
-            plot_map(ax=mapinset)
-            mapinset.scatter(
-                self.nlongitude[pos], self.nlatitude[pos], s=25,
-                c=dparam[pos],
-                transform=PlateCarree(),
-                cmap=cmap, alpha=1.0, norm=norm, edgecolor='k',
-                linewidth=0.1, zorder=10)
+
+            # Plot map
+            plot_map(ax=mapinset, outline=False, borders=False)
+
+            # DO scatter stuff
+            if parameter == 'location':
+
+                # set displayed arrow length for longest arrow
+                displayed_arrow_length = 25.0
+
+                # calculate scale factor for quiver
+                scale_factor = np.max(dparam)/displayed_arrow_length
+
+                Q = mapinset.quiver(
+                    self.olongitude[pos], self.olatitude[pos],
+                    dlon[pos], dlat[pos], dparam[pos], angles=b[pos],
+                    pivot='tail', cmap=cmap, norm=norm, scale=2.0,
+                    transform=PlateCarree(),  # units='xy', width=100,
+                    width=0.005, linewidth=0.1, edgecolor='k'
+                )
+                quivers.append(Q)
+            else:
+                mapinset.scatter(
+                    self.nlongitude[pos], self.nlatitude[pos],
+                    s=sizefunc(dparam[pos]),
+                    c=dparam[pos],
+                    transform=PlateCarree(),
+                    cmap=cmap, alpha=1.0, norm=norm, edgecolor='k',
+                    linewidth=0.175, zorder=10)
+
             if extent is not None:
                 mapinset.set_extent(extent)
 
-            inset = axes[_i].inset_axes([0.2, 0.05, 0.6, 0.15])
+            # Histogram axis
+            inset = axes_from_axes(
+                axes[_i], _i, [0.2, 0.05, 0.6, 0.1])
             inset.spines['right'].set_visible(False)
             inset.spines['top'].set_visible(False)
             inset.spines['left'].set_visible(False)
@@ -390,30 +447,63 @@ class CompareCatalogs:
             else:
                 xlim = [np.min(dparam[pos]), np.max(dparam[pos])]
             inset.set_xlim(xlim)
-            bins = np.linspace(xlim[0], xlim[1], 20)
-            plot_label(
-                inset, f"#: {len(pos)}",
-                fontdict=dict(fontsize="x-small"), box=False, dist=0.0)
-            self.plot_histogram(
-                dparam[pos], bins, facecolor='lightgray', ax=inset, stats=False)
 
+            # Plot histogram
+            bins = np.linspace(xlim[0], xlim[1], 20)
+            self.plot_histogram(
+                dparam[pos], bins, facecolor='darkgray', outline=False,
+                ax=inset, stats=False)
+
+            # Automatically set eight of the histograms and plot corresponding
+            # Vertical line at zero
             ylim = inset.get_ylim()
             inset.plot([0, 0], ylim, 'k', lw=1.0)
             inset.plot(xlim, [0, 0], 'k', lw=1.0)
+            plot_label(
+                inset, f"#: {len(pos)}",
+                fontdict=dict(fontsize="x-small"), box=False, dist=0.0,
+                location=6)
 
         plt.subplots_adjust(
-            left=0.01, right=0.99, bottom=0.125, top=0.95,
-            hspace=0.2, wspace=0.02)
+            left=0.01, right=0.99, bottom=0.175, top=0.95,
+            hspace=0.25, wspace=0.02)
 
-        cax = axes[-2].inset_axes([-0.5, -0.175, 2.0, 0.05])
-        cbar = plt.colorbar(
-            cax=cax, mappable=ScalarMappable(norm=norm, cmap=cmap),
-            orientation='horizontal')
+        # Parameter is location use the normal colorbar
+        if parameter == 'location':
+            # qk = mapinset.quiverkey(
+            #     Q, 0.5, .5, 10.0, r'10 km', labelpos='N',
+            #     coordinates="figure")
 
-        cbar.set_label(f"Change in {self.labeldict[parameter]}")
+            cax = axes[-2].inset_axes([-0.5, -0.175, 2.0, 0.05])
+            cbar = plt.colorbar(
+                cax=cax, mappable=ScalarMappable(norm=norm, cmap=cmap),
+                orientation='horizontal')
+
+            cbar.set_label(f"Change in {self.labeldict[parameter]}")
+
+        else:
+            # Axes for the scatter legend
+            cax = axes_from_axes(axes[-2], 100, [-0.25, -0.15, 1.5, 0.05])
+            cax.axis('off')
+
+            # Boundaries
+            boundaries = np.linspace(vmin, vmax, 9)
+
+            # Legend done
+            legend = scatterlegend(
+                boundaries, cmap=cmap, norm=norm,
+                sizefunc=sizefunc, loc='upper center', frameon=False,
+                title=f"Change in {self.labeldict[parameter]}",
+                title_fontsize='small',
+                fontsize='x-small',
+                lkw=dict(marker='o', markeredgewidth=0.175,
+                         markeredgecolor='k'),
+                yoffset=-12.5 if outfile is not None else -50  # For PDF output!
+            )
 
         if outfile is not None:
-            plt.savefig(outfile)
+            with plt.rc_context({'image.composite_image': False}):
+                plt.savefig(outfile)
             plt.switch_backend(backend)
             plt.close(fig)
 
@@ -690,6 +780,7 @@ class CompareCatalogs:
     def plot_histogram(self, ddata, n_bins, facecolor=(0.7, 0.2, 0.2),
                        alpha=1, chi=False, wmin=None, statsleft: bool = False,
                        label: str = None, stats: bool = True, ax=None,
+                       outline: bool = True,
                        CI: bool = False):
         """Plots histogram of input data."""
 
@@ -704,7 +795,8 @@ class CompareCatalogs:
 
         n, bins, _ = ax.hist(ddata, n_bins, facecolor=facecolor,
                              edgecolor=facecolor, alpha=alpha, label=label)
-        _, _, _ = ax.hist(ddata, n_bins, color='k', histtype='step')
+        if outline:
+            _, _, _ = ax.hist(ddata, n_bins, color='k', histtype='step')
         text_dict = {
             "fontsize": 'x-small',
             "verticalalignment": 'top',
@@ -864,7 +956,7 @@ class CompareCatalogs:
                 oldlist.pop(_i)
                 newlist.pop(_i)
 
-        # First maxvalues
+        # First minvalues
         for key, value in mindict.items():
 
             # Create empty pop set
@@ -967,14 +1059,14 @@ def bin():
     # plt.show(block=True)
 
     # Filter for a minimum depth larger than zero
-    # CC = CC.filter(mindict={"depth_in_m": 10000.0})
+    CC = CC.filter(maxdict={"M0": 1.5, "latitude": 0.4, "longitude": 0.4})
     # for ocmt, ncmt in zip(CC.old, CC.new):
     #     print(f"\n\nOLD: {(ncmt.depth_in_m - ocmt.depth_in_m)/1000.0}")
     #     print(ocmt)
     #     print(" ")
     #     print("NEW")
     #     print(ncmt)
-
+    # print(len(CC.new))
     # extent = -80, -60, -10, -30
     # extent = None
 
@@ -1010,6 +1102,13 @@ def bin():
         CC.plot_spatial_distribution(
             "latitude",
             outfile=os.path.join(spatial_dir, "spatial_lat.pdf"))
+
         CC.plot_spatial_distribution(
             "longitude",
             outfile=os.path.join(spatial_dir, "spatial_lon.pdf"))
+
+        CC.plot_spatial_distribution(
+            "location",
+            outfile=os.path.join(spatial_dir, "spatial_location.pdf"))
+
+    plt.show(block=True)

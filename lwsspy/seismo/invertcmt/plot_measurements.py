@@ -49,7 +49,7 @@ def plot_measurement_pkl(
         measurement_pickle_after: str,
         alabel: Optional[str] = None,
         blabel: Optional[str] = None,
-        mtype="chi"):
+        mtype="chi", no_after: bool = False):
 
     with open(measurement_pickle_before, "rb") as f:
         measurements_before = cPickle.load(f)
@@ -58,7 +58,7 @@ def plot_measurement_pkl(
 
     plot_measurements(
         measurements_before, measurements_after, mtype=mtype,
-        blabel=blabel, alabel=alabel)
+        blabel=blabel, alabel=alabel, no_after=no_after)
 
 
 def get_measurement(mdict: dict, mtype: str):
@@ -621,6 +621,9 @@ def bin():
                         type=str, default='after')
     parser.add_argument('-b', '--blabel', dest='blabel',
                         type=str, default='before')
+    parser.add_argument('-na', '--no-after', dest='no_after',
+                        help='Plot only the before dataset',
+                        action='store_true', default=False)
 
     args = parser.parse_args()
 
@@ -637,7 +640,7 @@ def bin():
     # Plot the measurements
     for _m in measure:
         plot_measurements(before, after, args.alabel,
-                          args.blabel, mtype=_m)
+                          args.blabel, mtype=_m, no_after=argparse.no_after)
 
         if args.outdir is not None:
             outfile = os.path.join(args.outdir, f"histograms_{_m}.pdf")
@@ -665,6 +668,9 @@ def bin_plot_pickles():
                         type=str, default='after')
     parser.add_argument('-b', '--blabel', dest='blabel',
                         type=str, default='before')
+    parser.add_argument('-na', '--no-after', dest='no_after',
+                        help='Plot only the before dataset',
+                        action='store_true', default=False)
 
     args = parser.parse_args()
 
@@ -676,7 +682,7 @@ def bin_plot_pickles():
     # Plot the measurements
     for _m in measure:
         plot_measurement_pkl(args.before, args.after, args.alabel,
-                             args.blabel, mtype=_m)
+                             args.blabel, mtype=_m, no_after=args.no_after)
 
         if args.outdir is not None:
             outfile = os.path.join(args.outdir, f"histograms_{_m}.pdf")

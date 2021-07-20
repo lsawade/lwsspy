@@ -70,9 +70,11 @@ if "-m" not in sys.argv:
     from .inversion.plot_single_parameter_optimization import plot_single_parameter_optimization  # noqa
 
     # Maps
+    from .maps.bearing import bearing  # noqa
     from .maps.fix_map_extent import fix_map_extent  # noqa
     from .maps.in_extent import in_extent  # noqa
     from .maps.line_buffer import line_buffer  # noqa
+    from .maps.haversine import haversine  # noqa
     from .maps.map_axes import map_axes  # noqa
     from .maps.plot_map import plot_map  # noqa
     from .maps.plot_topography import plot_topography  # noqa
@@ -104,6 +106,7 @@ if "-m" not in sys.argv:
     from .math.SphericalNN import SphericalNN  # noqa
 
     # Plot
+    from.plot_util.axes_from_axes import axes_from_axes  # noqa
     from .plot_util.figcolorbar import figcolorbar  # noqa
     from .plot_util.fixedpointcolornorm import FixedPointColorNorm  # noqa
     from .plot_util.get_aspect import get_aspect  # noqa
@@ -130,6 +133,7 @@ if "-m" not in sys.argv:
     from .plot_util.rgb2dec import rgb_to_dec  # noqa
     from .plot_util.right_align_legend import right_align_legend  # noqa
     from .plot_util.scatter_hist import scatter_hist  # noqa
+    from .plot_util.scatterlegend import scatterlegend  # noqa
     from .plot_util.smooth_nan_image import smooth_nan_image  # noqa
     from .plot_util.trendline import Trendline  # noqa
     from .plot_util.updaterc import updaterc  # noqa
