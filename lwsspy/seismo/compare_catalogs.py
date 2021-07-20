@@ -1019,6 +1019,7 @@ def bin():
     # Get catalogs
     old = lpy.CMTCatalog.from_file_list(args.old)
     new = lpy.CMTCatalog.from_file_list(args.new)
+    new = new.filter(mindict=dict(depth_in_m=0.0))
 
     print("Old:", len(old.cmts))
     print("New:", len(new.cmts))
