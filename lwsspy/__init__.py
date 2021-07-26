@@ -13,6 +13,11 @@ DOWNLOAD_CACHE: str = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
     'download_cache')
 
+FONTDIR: str = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    'plot_util',
+    'fonts')
+
 CONSTANT_DATA: str = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
     'constant_data')

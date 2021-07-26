@@ -18,11 +18,15 @@ Source and Receiver classes of Instaseis.
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 import numpy as np
+from numpy.lib.function_base import copy
 from obspy import UTCDateTime, read_events
 from obspy.core.event import Event
 import warnings
 from . import sourcedecomposition
 from inspect import getmembers, isfunction
+from ..plot_util.axes_from_axes import axes_from_axes
+from ..plot_util.plot_label import plot_label
+import matplotlib.pyplot as plt
 
 
 class CMTSource(object):
@@ -340,7 +344,7 @@ class CMTSource(object):
         Returns
         -------
         tuple
-            matrix with tbp column vectors, corresponding eigenvalues
+            matrix with corresponding eigenvalues, tbp column vectors
         """
         # Get eigenvalues and eigenvectors
         lb, ev = np.linalg.eig(self.fulltensor)
@@ -356,6 +360,84 @@ class CMTSource(object):
         """
         lb, ev = self.tbp
         return lb/self.M0, ev
+
+    @property
+    def fns(self):
+        """
+        Return fault normal and slip vectors
+        """
+        E, tbp = self.tbp
+
+        # Get pressure and tension axes
+        T, _, P = tbp[:, 0], tbp[:, 1], tbp[:, 2]
+
+        # Get two directions
+        TP1 = T+P
+        TP2 = T-P
+
+        # Get unit normals
+        normal = (TP1)/np.sqrt(np.sum(TP1**2))
+        slip = (TP2)/np.sqrt(np.sum(TP2**2))
+
+        return normal, slip
+
+    @property
+    def sdr(self):
+        """
+        Returns
+        -------
+        (strike, dip, rake)
+        """
+
+        # Get fault normal and slip
+        normals = self.fns()
+
+        # Get strike and dip
+        sdrs = []
+        for i in range(len(normals)):
+
+            # Get normal and strike
+            normal, slip = normals[i], normals[-i]
+
+            # Fix polarities
+            normal[:, np.array(normal[2, :] > 0)] *= -1
+            slip[:, np.array(normal[2, :] > 0)] *= -1
+
+            # Get strike and dip
+            strike, dip = self.normal2SD(normal)
+
+            # Get rake
+            rake = np.arctan2(-slip[2], slip[0]*normal[1]-slip[1]*normal[0])
+
+    @staticmethod
+    def normal2sd(normal):
+        """Compute strike and dip from normal
+
+        Parameters
+        ----------
+        normal : [type]
+            [description]
+        """
+
+        strike = np.arctan2(-normal[0], normal[1])
+        dip = np.arctan2((normal[1]**2+normal[0]**2),
+                         np.sqrt((normal[0]*normal[2])**2+(normal[1]*normal[2])**2))
+        strike = np.mod(strike, 2*np.pi)
+
+        return strike, dip
+
+    def beachfig(self):
+        """
+        SDR
+        M0
+        location
+        origin time 
+        centroid time shift
+        half duration
+        3x3 image black 1, white 0
+        """
+
+        plt.figure(figsize=(6, 6))
 
     def decomp(self, dtype="eps_nu"):
         """Returns decomposition based on eignevalues of the moment tensor

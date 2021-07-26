@@ -90,6 +90,8 @@ class CompareCatalogs:
         self.neps_nu = self.new.getvals("decomp", "eps_nu")
         self.otime_shift = self.old.getvals("time_shift")
         self.ntime_shift = self.new.getvals("time_shift")
+        self.odip = self.old.getvals("time_shift")
+        self.ndip = self.new.getvals("time_shift")
 
         self.labeldict = dict(
             latitude="Lat [$^\circ$]",

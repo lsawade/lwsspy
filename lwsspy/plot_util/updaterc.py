@@ -1,6 +1,10 @@
+import matplotlib.font_manager as fm
 import matplotlib
 import os
+import glob
 import platform
+
+FONTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'fonts')
 
 
 def updaterc(rebuild=False):
@@ -14,18 +18,13 @@ def updaterc(rebuild=False):
 
     Last modified: Lucas Sawade, 2020.09.15 01.00 (lsawade@princeton.edu)
     """
-    # if platform.system() == "Darwin":
-    #     # Add Helvetica from own font dir if not available
-    #     # font = _add_Helvetica()
-    #     font = 'sans-serif'
-    # else:
-    #     font = 'LiberationSans-Regular'
 
-    # if rebuild:
-    #     matplotlib.font_manager._rebuild()
+    add_fonts()
 
     params = {
-        'font.family': "Arial",
+        'font.family': 'sans-serif',
+        'font.sans-serif': 'Helvetica',
+        'font.monospace': 'Roboto Mono',
         'font.size': 12,
         # 'pdf.fonttype': 3,
         'font.weight': 'normal',
@@ -85,26 +84,46 @@ def updaterc(rebuild=False):
     matplotlib.rcParams.update(params)
 
 
-# def _add_Helvetica():
+def add_fonts():
 
-#     # Check if Helvetica in system fonts
-#     from matplotlib import font_manager
-#     fonts = [os.path.basename(x).split(".")[0]
-#              for x in font_manager.findSystemFonts(
-#         fontpaths=None)]
-#     fonts.sort()
-#     # print(fonts)
-#     if "HelveticaNeue" in fonts:
-#         pass
-#     elif "Helvetica Neue" in fonts:
-#         pass
-#     elif "Helvetica" in fonts:
-#         return "Helvetica"
-#     else:
-#         font_file = os.path.join(
-#             os.path.dirname(__file__), 'fonts', 'HelveticaNeue.ttc')
-#         font_manager.fontManager.addfont(font_file)
-#     return "Helvetica Neue"
+    # Fonts
+    fontdict = {
+        'Helvetica': os.path.join(FONTS, 'Helvetica.ttc'),
+        'Arial': os.path.join(FONTS, 'Arial.ttf'),
+        'Roboto Mono': os.path.join(FONTS, 'RobotoMono.ttf'),
+        'Roboto Mono Italic': os.path.join(FONTS, 'RobotoMono-Italic.ttf'),
+    }
+
+    for name, fname in fontdict.items():
+        fe = fm.FontEntry(fname=fname, name=name)
+        fm.fontManager.ttflist.insert(0, fe)
+
+    # for fontfile in fontfiles:
+    #     fm.addfont(fontfile)
+
+    # matplotlib.font_manager.get_fontconfig_fonts(fontext='ttf')
+
+    # matplotlib.font_manager.findSystemFonts(fontpaths=None, fontext='ttf')
+    # def _add_Helvetica():
+
+    #     # Check if Helvetica in system fonts
+    #     from matplotlib import font_manager
+    #     fonts = [os.path.basename(x).split(".")[0]
+    #              for x in font_manager.findSystemFonts(
+    #         fontpaths=None)]
+    #     fonts.sort()
+    #     # print(fonts)
+    #     if "HelveticaNeue" in fonts:
+    #         pass
+    #     elif "Helvetica Neue" in fonts:
+    #         pass
+    #     elif "Helvetica" in fonts:
+    #         return "Helvetica"
+    #     else:
+    #         font_file = os.path.join(
+    #             os.path.dirname(__file__), 'fonts', 'HelveticaNeue.ttc')
+    #         font_manager.fontManager.addfont(font_file)
+    #     return "Helvetica Neue"
 
 
 def updaterc_pres(rebuild=False):
