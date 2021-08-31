@@ -92,7 +92,7 @@ def Solve_Optimisation_Problem(optim, model):
         raise ValueError("Optimization algorithm not recognized")
 
     optim.model_ini = deepcopy(model)
-    optim.model = model
+    optim.model = deepcopy(model)
     optim.n = len(model)
 
     if (optim.nb_mem < 1):

@@ -10,8 +10,8 @@ steps = [1, 1.5, 1.8, 2, 3, 6, 10]
 
 
 def plot_map(fill=True, zorder=None, labelstopright: bool = True,
-             labelsbottomleft: bool = True, borders: bool = True,
-             rivers: bool = False, lakes: bool = False,
+             labelsbottomleft: bool = True, borders: bool = False,
+             rivers: bool = False, lakes: bool = False, outline: bool = False,
              ax=None):
     """Plots map into existing axes.
 
@@ -79,13 +79,16 @@ def plot_map(fill=True, zorder=None, labelstopright: bool = True,
     # gl = ax.gridlines(draw_labels=False, linewidth=1, color='lightgray',
     #
     #     alpha=0.5, linestyle='-', zorder=-1.5)
-
+    if outline:
+        edgecolor = 'black'
+    else:
+        edgecolor = 'none'
     # Add land
     if fill:
-        ax.add_feature(cartopy.feature.LAND, zorder=zorder, edgecolor='black',
-                       linewidth=0.5, facecolor=(0.9, 0.9, 0.9))
+        ax.add_feature(cartopy.feature.LAND, zorder=zorder, edgecolor=edgecolor,
+                       linewidth=0.5, facecolor=(0.8, 0.8, 0.8))
     else:
-        ax.add_feature(cartopy.feature.LAND, zorder=zorder, edgecolor='black',
+        ax.add_feature(cartopy.feature.LAND, zorder=zorder, edgecolor=edgecolor,
                        linewidth=0.5, facecolor=(0, 0, 0, 0))
 
     if borders:

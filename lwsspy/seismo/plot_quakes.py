@@ -1,4 +1,6 @@
 from typing import Callable, List, Union, Tuple
+
+from matplotlib.lines import Line2D
 import lwsspy as lpy
 import matplotlib
 import matplotlib.pyplot as plt
@@ -67,9 +69,16 @@ def plot_quakes(latitude, longitude, depth, moment,
                   50.0, 70.0, 200.0, 400.0, 600.0, 700.0]
 
     isort = np.argsort(depth)[::-1]
+
+    # Figure out minimum and maximum indeces of levels for legend.
     mindepth = np.min(depth)
+    print("plotquakes mindepth:", mindepth)
     maxdepth = np.max(depth)
-    level_minidx = int(np.where(levels < mindepth)[0][-1])
+    level_minidx = np.where(levels < mindepth)[0]
+    if len(level_minidx) < 1:
+        level_minidx = 0
+    else:
+        level_minidx = int(level_minidx[-1])
     level_maxidx = int(np.where(levels > maxdepth)[0][0])
 
     # Fix levels
