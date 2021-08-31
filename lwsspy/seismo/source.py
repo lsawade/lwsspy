@@ -20,12 +20,15 @@ from __future__ import (absolute_import, division, print_function,
 import numpy as np
 from numpy.lib.function_base import copy
 from obspy import UTCDateTime, read_events
+from obspy.imaging.beachball import beach
 from obspy.core.event import Event
 import warnings
 from . import sourcedecomposition
 from inspect import getmembers, isfunction
 from ..plot_util.axes_from_axes import axes_from_axes
 from ..plot_util.plot_label import plot_label
+from ..plot_util.get_aspect import get_aspect
+from ..plot_util.midpointcolornorm import MidpointNormalize
 import matplotlib.pyplot as plt
 
 
@@ -37,10 +40,10 @@ class CMTSource(object):
 
     def __init__(self, origin_time=UTCDateTime(0),
                  pde_latitude=0.0, pde_longitude=0.0, mb=0.0, ms=0.0,
-                 pde_depth_in_m=None, region_tag=None, eventname=None,
+                 pde_depth_in_m=0.0, region_tag='', eventname='',
                  cmt_time=UTCDateTime(0), half_duration=0.0, latitude=0.0,
-                 longitude=0.0, depth_in_m=None, m_rr=0.0, m_tt=0.0, m_pp=0.0, m_rt=0.0,
-                 m_rp=0.0, m_tp=0.0):
+                 longitude=0.0, depth_in_m=0.0, m_rr=0.0, m_tt=0.0, m_pp=0.0,
+                 m_rt=0.0, m_rp=0.0, m_tp=0.0):
         """
         :param latitude: latitude of the source in degree
         :param longitude: longitude of the source in degree
@@ -140,6 +143,46 @@ class CMTSource(object):
         event = cat[0]
 
         return cls.from_event(event)
+
+    @classmethod
+    def from_sdr(cls, s, d, r, M0=1.0, **kwargs):
+        """definition from Stein and Wysession
+        s is the strike (phi_f), d is the dip (delta), and r is the slip angle
+        (lambda)."""
+        s = np.radians(90-s)
+        d = np.radians(-d)
+        r = np.radians(r)
+        print(r)
+        # Fault normal
+        n = np.array([
+            -np.sin(d) * np.sin(s),
+            -np.sin(d) * np.cos(s),
+            np.cos(d)
+        ])
+
+        # Slip vector
+        d = np.array([
+            np.cos(r) * np.cos(s) + np.sin(r) * np.cos(d) * np.sin(s),
+            -np.cos(r) * np.sin(s) + np.sin(r) * np.cos(d) * np.cos(s),
+            np.sin(r) * np.sin(d)
+        ])
+
+        # Tension, Pressure, Null Vector
+        t = n + d
+        p = n - d
+        b = np.cross(n, d)
+
+        # Tensor
+        print(n)
+        print(d)
+        # n[np.array(n > 0)] *= -1
+        # d[np.array(n > 0)] *= -1
+        print(n)
+        print(d)
+        mt = M0 * (np.outer(n, d) + np.outer(d, n))
+        print(mt)
+        return cls(m_rr=mt[0, 0], m_tt=mt[1, 1], m_pp=mt[2, 2], m_rt=mt[0, 1],
+                   m_rp=mt[0, 2], m_tp=mt[1, 2])
 
     @classmethod
     def from_event(cls, event: Event):
@@ -390,26 +433,77 @@ class CMTSource(object):
         """
 
         # Get fault normal and slip
-        normals = self.fns()
-
+        normals = self.fns
+        print('Normals')
+        print(normals)
         # Get strike and dip
         sdrs = []
         for i in range(len(normals)):
 
             # Get normal and strike
-            normal, slip = normals[i], normals[-i]
+            normal, slip = normals[i], normals[-(i+1)]
+
+            print("Unaltered:")
+            print(normal)
+            print(slip)
 
             # Fix polarities
-            normal[:, np.array(normal[2, :] > 0)] *= -1
-            slip[:, np.array(normal[2, :] > 0)] *= -1
+            normal[np.array(normal > 0)] *= -1
+            slip[np.array(normal > 0)] *= -1
+
+            print('Fix')
+            print(normal)
+            print(slip)
 
             # Get strike and dip
-            strike, dip = self.normal2SD(normal)
+            strike, dip = self.normal2sd(normal)
+
+            print('SDR')
+            print(strike)
+            print(dip)
 
             # Get rake
-            rake = np.arctan2(-slip[2], slip[0]*normal[1]-slip[1]*normal[0])
+            x = -slip[2]
+            y = slip[0]*normal[1] - slip[1]*normal[0]
+            print(x, y)
+            # rake = np.arctan2(-slip[2], slip[0]*normal[1] - slip[1]*normal[0])
+            rake = np.real(np.arccos(
+                np.cos(strike) * slip[0]
+                + np.sin(strike) * slip[1]
+            ))
 
-    @staticmethod
+            if slip[2] < 0:
+                print("slip neg", np.degrees(rake))
+                # rake *= -1
+                rake = np.pi - rake
+
+            # rake = np.mod(rake, 2*np.pi)
+            # if rake < 0:
+
+            # Fix strike
+            tol = 1e-10
+            strike = np.pi/2-strike
+            if strike < 0:
+                strike += 2*np.pi
+            if np.abs(strike-2*np.pi) < tol\
+                    or np.abs(strike-0.0) < tol:
+                strike = 0.0
+
+            # Fix Rake
+
+            # Fix dip
+            dip = np.pi - dip
+
+            # if rake > np.pi:
+            #     rake - 2*np.pi
+            # if rake < -np.pi:
+            #     rake + 2*np.pi
+
+            sdrs.append(np.degrees((strike, dip, rake)))
+
+        return sdrs
+
+    @ staticmethod
     def normal2sd(normal):
         """Compute strike and dip from normal
 
@@ -419,25 +513,143 @@ class CMTSource(object):
             [description]
         """
 
+        # Strike
         strike = np.arctan2(-normal[0], normal[1])
-        dip = np.arctan2((normal[1]**2+normal[0]**2),
-                         np.sqrt((normal[0]*normal[2])**2+(normal[1]*normal[2])**2))
         strike = np.mod(strike, 2*np.pi)
 
+        # Dip
+        # dip = np.arctan2((normal[1]**2+normal[0]**2),
+        #                  np.sqrt((normal[0]*normal[2])**2+(normal[1]*normal[2])**2))
+        dip = np.arccos(normal[2]/np.sqrt(np.sum(normal**2)))
+
         return strike, dip
+
+    def beach(self):
+        plt.figure(figsize=(2, 2))
+        ax = plt.axes()
+
+        # Plot beach ball
+        bb = beach(self.tensor,
+                   linewidth=2,
+                   facecolor='k',
+                   bgcolor='w',
+                   edgecolor='k',
+                   alpha=1.0,
+                   xy=(0.5, 0.5),
+                   width=300,
+                   size=100,
+                   nofill=False,
+                   zorder=100,
+                   axes=ax)
+        ax.add_collection(bb)
+        ax.axis('off')
 
     def beachfig(self):
         """
         SDR
         M0
         location
-        origin time 
+        origin time
         centroid time shift
         half duration
         3x3 image black 1, white 0
         """
 
-        plt.figure(figsize=(6, 6))
+        plt.figure(figsize=(5.25, 1.75))
+        ax = plt.axes()
+
+        # Plot beach ball
+        bb = beach(self.tensor,
+                   linewidth=2,
+                   facecolor='k',
+                   bgcolor='w',
+                   edgecolor='k',
+                   alpha=1.0,
+                   xy=(0.6, 0.4),
+                   width=200,
+                   size=100,
+                   nofill=False,
+                   zorder=100,
+                   axes=ax)
+        ax.add_collection(bb)
+
+        # Base info string
+        title_string = f'{self.eventname}'
+        header_topleft = 'PDE:'
+
+        topleft = '\n'
+        topleft += f'Magnitudes: '
+        topleft += f'Mw {self.moment_magnitude:4.2f}, '
+        topleft += f'mb {self.mb:4.2f}, '
+        topleft += f'ms {self.ms:4.2f}\n'
+        topleft += f'Origin: {self.origin_time.strftime("%d-%m-%y %H:%M:%S"):>19}\n'
+        topleft += f'Lat, Lon: {"":>1}{self.pde_latitude:>7.2f}, {self.pde_longitude:>7.2f}\n'
+        topleft += f'Depth: {self.pde_depth_in_m/1000:>17.1f} km\n'
+
+        bottomleft = ''
+        bottomleft += f'Time Shift: {self.time_shift:>13} s\n'
+        bottomleft += f'Lat, Lon: {"":>1}{self.latitude:>7.2f}, {self.longitude:>7.2f}\n'
+        bottomleft += f'Depth: {self.depth_in_m/1000:>17.1f} km\n'
+        bottomleft += f'hdur: {self.half_duration:>19} s'
+
+        sdr1, sdr2 = self.sdr
+        bottomright = ''
+        bottomright += f'Strike/Dip/Rake:\n'
+        bottomright += f'{sdr1[0]:3.0f}/{sdr1[1]:3.0f}/{sdr1[2]:4.0f}\n'
+        bottomright += f'{sdr2[0]:3.0f}/{sdr2[1]:3.0f}/{sdr2[2]:4.0f}'
+
+        # Topleft text
+        plot_label(ax, header_topleft, location=1, dist=0.0, box=False,
+                   fontdict=dict(family='monospace', size='x-small',
+                                 fontweight='bold'))
+
+        plot_label(ax, topleft, location=1, dist=0.0, box=False,
+                   fontdict=dict(family='monospace', size='x-small'))
+
+        # Bottom left text
+        header_bottomleft = 'CMT:' + bottomleft.count('\n') * '\n' + '\n'
+
+        plot_label(ax, header_bottomleft, location=3, dist=0.0, box=False,
+                   fontdict=dict(family='monospace', size='x-small',
+                                 fontweight='bold'))
+        plot_label(ax, bottomleft, location=3, dist=0.0, box=False,
+                   fontdict=dict(family='monospace', size='x-small'))
+
+        # Bottom left text
+        # header_bottomleft = 'CMT:' + bottomleft.count('\n') * '\n' + '\n'
+
+        # plot_label(ax, header_bottomleft, location=3, dist=0.0, box=False,
+        #            fontdict=dict(family='monospace', size='x-small',
+        #                          fontweight='bold'))
+        plot_label(ax, bottomright, location=4, dist=0.0, box=False,
+                   fontdict=dict(family='monospace', size='x-small'))
+
+        # Diverging Red to White to Black
+        cmapname = 'RdGy'
+        cmap = plt.get_cmap(cmapname)
+        norm = MidpointNormalize(vmin=-1.0, midpoint=0.0, vmax=1.0)
+
+        # Make the tensor scaled to between -1 to 1
+        absmax = np.max(np.abs(self.tensor))
+        mt = self.fulltensor/absmax
+
+        # Get the aspect of the original and the new axes
+        fraction = 0.2
+        asp = get_aspect(ax)
+        subax = axes_from_axes(
+            ax, 123,
+            extent=[1-fraction*asp, 1-fraction, fraction*asp, fraction])
+        im = plt.imshow(mt, cmap=cmap, norm=norm)
+        subax.axis('off')
+
+        # Create axes for colorbar
+        cfrac = 0.1
+        cax = axes_from_axes(
+            ax, 123, extent=[
+                1 - fraction*asp*(1 + cfrac), 1-fraction,
+                fraction*asp*cfrac, fraction])
+        plt.colorbar(im, cax=cax)
+        cax.axis('off')
 
     def decomp(self, dtype="eps_nu"):
         """Returns decomposition based on eignevalues of the moment tensor

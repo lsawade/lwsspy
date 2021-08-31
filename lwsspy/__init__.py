@@ -126,6 +126,7 @@ if "-m" not in sys.argv:
     from .plot_util.nice_colorbar import nice_colorbar  # noqa
     from .plot_util.pick_colors_from_cmap import pick_colors_from_cmap  # noqa
     from .plot_util.pick_data_from_image import pick_data_from_image  # noqa
+    from .plot_util.plot_font import plot_font  # noqa
     from .plot_util.plot_label import plot_label  # noqa
     from .plot_util.plot_xyz_line import plot_xyz_line  # noqa
     from .plot_util.pz_figure import pz_figure  # noqa

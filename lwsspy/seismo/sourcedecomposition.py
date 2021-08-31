@@ -43,9 +43,6 @@ def iso_clvd_dc(M1, M2, M3):
     # Double Couple (DC)
     Mdc = 1/2 * (M1-M3-np.abs(M1 + M3 - 2*M2))
 
-    # Normalize
-    M = np.abs(Miso) + Mdc + np.abs(Mclvd)
-
     return Miso, Mclvd, Mdc
 
 
@@ -67,9 +64,10 @@ def iso_clvd_dc_norm(M1, M2, M3):
 
     return Miso/M, Mclvd/M, Mdc/M
 
- ########################
- # hexagonal bi‐pyramid #
- ########################
+
+########################
+# hexagonal bi‐pyramid #
+########################
 
 
 def u_v(M1, M2, M3):

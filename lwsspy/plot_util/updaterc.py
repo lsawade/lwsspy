@@ -3,6 +3,7 @@ import matplotlib
 import os
 import glob
 import platform
+import matplotlib.ft2font as ft
 
 FONTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'fonts')
 
@@ -23,8 +24,36 @@ def updaterc(rebuild=False):
 
     params = {
         'font.family': 'sans-serif',
-        'font.sans-serif': 'Helvetica',
-        'font.monospace': 'Roboto Mono',
+        'font.style':   'normal',
+        'font.variant': 'normal',
+        'font.weight':  'normal',
+        'font.stretch': 'normal',
+        'font.size':    12.0,
+        'font.serif':     [
+            'Times New Roman', 'DejaVu Serif', 'Bitstream Vera Serif', 'Computer Modern Roman',
+            'New Century Schoolbook', 'Century Schoolbook L', 'Utopia',
+            'ITC Bookman', 'Bookman', 'Nimbus Roman No9 L',
+            'Times', 'Palatino', 'Charter', 'serif'
+        ],
+        'font.sans-serif': [
+            'Arial', 'Helvetica', 'DejaVu Sans', 'Bitstream Vera Sans',
+            'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana',
+            'Geneva', 'Lucid', 'Avant Garde', 'sans-serif'
+        ],
+        'font.cursive':    [
+            'Apple Chancery', 'Textile', 'Zapf Chancery', 'Sand', 'Script MT',
+            'Felipa', 'Comic Neue', 'Comic Sans MS', 'cursive'
+        ],
+        'font.fantasy':    [
+            'Chicago', 'Charcoal', 'Impact', 'Western', 'Humor Sans', 'xkcd',
+            'fantasy'
+        ],
+        'font.monospace':  [
+            'Roboto Mono', 'Monaco', 'DejaVu Sans Mono',
+            'Bitstream Vera Sans Mono',  'Computer Modern Typewriter',
+            'Andale Mono', 'Nimbus Mono L', 'Courier New', 'Courier', 'Fixed',
+            'Terminal', 'monospace'
+        ],
         'font.size': 12,
         # 'pdf.fonttype': 3,
         'font.weight': 'normal',
@@ -77,31 +106,54 @@ def updaterc(rebuild=False):
         'legend.edgecolor': 'inherit',
         'legend.facecolor': 'w',
         'mathtext.fontset': 'custom',
-        'mathtext.rm': 'Arial',
-        'mathtext.it': 'Arial:italic',
-        'mathtext.bf': 'Arial:bold'
+        'mathtext.rm': 'sans',
+        'mathtext.it': 'sans:italic',
+        'mathtext.bf': 'sans:bold',
+        'mathtext.cal': 'cursive',
+        'mathtext.tt':  'monospace',
+        'mathtext.fallback': 'cm',
+        'mathtext.default': 'it'
     }
+
     matplotlib.rcParams.update(params)
 
 
-def add_fonts():
+def add_fonts(verbose: bool = False):
+
+    # Remove fontlist:
+    for file in glob.glob('~/.matplotlib/font*.json'):
+        os.remove(file)
 
     # Fonts
-    fontdict = {
-        'Helvetica': os.path.join(FONTS, 'Helvetica.ttc'),
-        'Arial': os.path.join(FONTS, 'Arial.ttf'),
-        'Roboto Mono': os.path.join(FONTS, 'RobotoMono.ttf'),
-        'Roboto Mono Italic': os.path.join(FONTS, 'RobotoMono-Italic.ttf'),
-    }
+    fontfiles = glob.glob(os.path.join(FONTS, "*.tt?"))
 
-    for name, fname in fontdict.items():
-        fe = fm.FontEntry(fname=fname, name=name)
+    # for name, fname in fontdict.items():
+    for fname in fontfiles:
+
+        font = ft.FT2Font(fname)
+
+        # Just to verify what kind of fonts are added verifiably
+        if verbose:
+            print(fname, "Scalable:", font.scalable)
+            for style in ('Italic',
+                          'Bold',
+                          'Scalable',
+                          'Fixed sizes',
+                          'Fixed width',
+                          'SFNT',
+                          'Horizontal',
+                          'Vertical',
+                          'Kerning',
+                          'Fast glyphs',
+                          'Multiple masters',
+                          'Glyph names',
+                          'External stream'):
+                bitpos = getattr(ft, style.replace(' ', '_').upper()) - 1
+                print(f"{style+':':17}", bool(font.style_flags & (1 << bitpos)))
+
+        # Actually adding the fonts
+        fe = fm.ttfFontProperty(font)
         fm.fontManager.ttflist.insert(0, fe)
-
-    # for fontfile in fontfiles:
-    #     fm.addfont(fontfile)
-
-    # matplotlib.font_manager.get_fontconfig_fonts(fontext='ttf')
 
     # matplotlib.font_manager.findSystemFonts(fontpaths=None, fontext='ttf')
     # def _add_Helvetica():
