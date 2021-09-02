@@ -152,7 +152,7 @@ class CMTSource(object):
         s = np.radians(90-s)
         d = np.radians(-d)
         r = np.radians(r)
-        print(r)
+
         # Fault normal
         n = np.array([
             -np.sin(d) * np.sin(s),
@@ -173,14 +173,8 @@ class CMTSource(object):
         b = np.cross(n, d)
 
         # Tensor
-        print(n)
-        print(d)
-        # n[np.array(n > 0)] *= -1
-        # d[np.array(n > 0)] *= -1
-        print(n)
-        print(d)
         mt = M0 * (np.outer(n, d) + np.outer(d, n))
-        print(mt)
+
         return cls(m_rr=mt[0, 0], m_tt=mt[1, 1], m_pp=mt[2, 2], m_rt=mt[0, 1],
                    m_rp=mt[0, 2], m_tp=mt[1, 2])
 
@@ -434,8 +428,7 @@ class CMTSource(object):
 
         # Get fault normal and slip
         normals = self.fns
-        print('Normals')
-        print(normals)
+
         # Get strike and dip
         sdrs = []
         for i in range(len(normals)):
@@ -443,61 +436,79 @@ class CMTSource(object):
             # Get normal and strike
             normal, slip = normals[i], normals[-(i+1)]
 
-            print("Unaltered:")
-            print(normal)
-            print(slip)
+            # print("Unaltered:")
+            # print(normal)
+            # print(slip)
 
             # Fix polarities
-            normal[np.array(normal > 0)] *= -1
-            slip[np.array(normal > 0)] *= -1
+            if normal[2] > 0:
+                normal[2] *= -1
+                slip[2] *= -1
 
-            print('Fix')
-            print(normal)
-            print(slip)
+            # print('Fix')
+            # print(normal)
+            # print(slip)
 
             # Get strike and dip
             strike, dip = self.normal2sd(normal)
 
-            print('SDR')
-            print(strike)
-            print(dip)
+            # print('SDR')
+            # print(strike)
+            # print(dip)
 
             # Get rake
             x = -slip[2]
             y = slip[0]*normal[1] - slip[1]*normal[0]
-            print(x, y)
-            # rake = np.arctan2(-slip[2], slip[0]*normal[1] - slip[1]*normal[0])
-            rake = np.real(np.arccos(
-                np.cos(strike) * slip[0]
-                + np.sin(strike) * slip[1]
-            ))
+            rake = - np.arctan2(-slip[2], slip[0] *
+                                normal[1] - slip[1]*normal[0])
+            # rake = np.real(np.arccos(
+            #     np.cos(strike) * slip[0]
+            #     + np.sin(strike) * slip[1]
+            # ))
 
-            if slip[2] < 0:
-                print("slip neg", np.degrees(rake))
-                # rake *= -1
-                rake = np.pi - rake
+            # if slip[2] < 0:
+            #     print("slip neg", np.degrees(rake))
+            #     rake *= -1
+            # rake = np.pi - rake
 
             # rake = np.mod(rake, 2*np.pi)
             # if rake < 0:
+            print('normal:', normal[2])
+            print('slip:', slip[2])
 
             # Fix strike
             tol = 1e-10
-            strike = np.pi/2-strike
-            if strike < 0:
-                strike += 2*np.pi
-            if np.abs(strike-2*np.pi) < tol\
-                    or np.abs(strike-0.0) < tol:
-                strike = 0.0
+            strike = strike + np.pi/2
+
+            print("Solut:", np.degrees(strike),
+                  np.degrees(dip), np.degrees(rake))
+
+            # if strike < 0:
+            #     strike += np.pi
+
+            # if np.abs(strike-2*np.pi) < tol\
+            #         or np.abs(strike-0.0) < tol:
+            #     strike = 0.0
 
             # Fix Rake
 
             # Fix dip
-            dip = np.pi - dip
+            # dip = np.pi - dip
 
-            # if rake > np.pi:
-            #     rake - 2*np.pi
-            # if rake < -np.pi:
-            #     rake + 2*np.pi
+            # if dip > np.pi/2:
+            #     dip = np.pi - dip
+            #     strike = strike + np.pi
+            #     rake = 2 * np.pi - rake
+
+            if strike > 2 * np.pi:
+                strike = strike - 2*np.pi
+            elif strike < 0:
+                strike = strike + 2*np.pi
+
+            if rake > np.pi:
+                rake = rake - 2*np.pi
+            elif rake < -np.pi:
+                rake = rake + 2*np.pi
 
             sdrs.append(np.degrees((strike, dip, rake)))
 
@@ -513,14 +524,14 @@ class CMTSource(object):
             [description]
         """
 
-        # Strike
+        # strike
         strike = np.arctan2(-normal[0], normal[1])
-        strike = np.mod(strike, 2*np.pi)
+        # strike = np.mod(strike, 2*np.pi)
 
-        # Dip
-        # dip = np.arctan2((normal[1]**2+normal[0]**2),
-        #                  np.sqrt((normal[0]*normal[2])**2+(normal[1]*normal[2])**2))
-        dip = np.arccos(normal[2]/np.sqrt(np.sum(normal**2)))
+        # dip
+        dip = np.arctan2((normal[1]**2+normal[0]**2),
+                         np.sqrt((normal[0]*normal[2])**2+(normal[1]*normal[2])**2))
+        # dip = np.arccos(normal[2]/np.sqrt(np.sum(normal**2)))
 
         return strike, dip
 
@@ -557,6 +568,7 @@ class CMTSource(object):
 
         plt.figure(figsize=(5.25, 1.75))
         ax = plt.axes()
+        ax.axis('off')
 
         # Plot beach ball
         bb = beach(self.tensor,
@@ -565,7 +577,7 @@ class CMTSource(object):
                    bgcolor='w',
                    edgecolor='k',
                    alpha=1.0,
-                   xy=(0.6, 0.4),
+                   xy=(0.625, 0.4),
                    width=200,
                    size=100,
                    nofill=False,
@@ -594,7 +606,7 @@ class CMTSource(object):
 
         sdr1, sdr2 = self.sdr
         bottomright = ''
-        bottomright += f'Strike/Dip/Rake:\n'
+        bottomright += f'S/D/R:\n'
         bottomright += f'{sdr1[0]:3.0f}/{sdr1[1]:3.0f}/{sdr1[2]:4.0f}\n'
         bottomright += f'{sdr2[0]:3.0f}/{sdr2[1]:3.0f}/{sdr2[2]:4.0f}'
 
@@ -634,7 +646,7 @@ class CMTSource(object):
         mt = self.fulltensor/absmax
 
         # Get the aspect of the original and the new axes
-        fraction = 0.2
+        fraction = 0.3
         asp = get_aspect(ax)
         subax = axes_from_axes(
             ax, 123,

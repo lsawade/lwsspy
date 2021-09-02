@@ -228,8 +228,12 @@ if "-m" not in sys.argv:
     from .seismo.invertcmt.plot_measurements import compute_window_hists  # noqa
     from .seismo.invertcmt.plot_measurements import plot_window_histograms  # noqa
     from .seismo.invertcmt.plot_slab_location import plot_slab_location  # noqa
-    from .seismo.invertcmt.plot_weights import plot_weightpickle  # noqa
     from .seismo.invertcmt.plot_weights import plot_weights  # noqa
+    from .seismo.invertcmt.plot_weights import plot_weightpickle  # noqa
+    from .seismo.invertcmt.plot_weights import plot_weight_histograms  # noqa
+    from .seismo.invertcmt.plot_weights import plot_weight_histogram_pickle  # noqa
+    from .seismo.invertcmt.plot_weights import plot_final_weights  # noqa
+    from .seismo.invertcmt.plot_weights import plot_final_weight_pickle  # noqa
     from .seismo.invertcmt.process_classifier import filter_scaling  # noqa
     from .seismo.invertcmt.process_classifier import ProcessParams  # noqa
     from .seismo.invertcmt.io import read_output_traces  # noqa
