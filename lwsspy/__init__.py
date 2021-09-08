@@ -13,6 +13,11 @@ DOWNLOAD_CACHE: str = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
     'download_cache')
 
+FONTDIR: str = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    'plot_util',
+    'fonts')
+
 CONSTANT_DATA: str = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
     'constant_data')
@@ -121,6 +126,7 @@ if "-m" not in sys.argv:
     from .plot_util.nice_colorbar import nice_colorbar  # noqa
     from .plot_util.pick_colors_from_cmap import pick_colors_from_cmap  # noqa
     from .plot_util.pick_data_from_image import pick_data_from_image  # noqa
+    from .plot_util.plot_font import plot_font  # noqa
     from .plot_util.plot_label import plot_label  # noqa
     from .plot_util.plot_xyz_line import plot_xyz_line  # noqa
     from .plot_util.pz_figure import pz_figure  # noqa
@@ -222,8 +228,12 @@ if "-m" not in sys.argv:
     from .seismo.invertcmt.plot_measurements import compute_window_hists  # noqa
     from .seismo.invertcmt.plot_measurements import plot_window_histograms  # noqa
     from .seismo.invertcmt.plot_slab_location import plot_slab_location  # noqa
-    from .seismo.invertcmt.plot_weights import plot_weightpickle  # noqa
     from .seismo.invertcmt.plot_weights import plot_weights  # noqa
+    from .seismo.invertcmt.plot_weights import plot_weightpickle  # noqa
+    from .seismo.invertcmt.plot_weights import plot_weight_histograms  # noqa
+    from .seismo.invertcmt.plot_weights import plot_weight_histogram_pickle  # noqa
+    from .seismo.invertcmt.plot_weights import plot_final_weights  # noqa
+    from .seismo.invertcmt.plot_weights import plot_final_weight_pickle  # noqa
     from .seismo.invertcmt.process_classifier import filter_scaling  # noqa
     from .seismo.invertcmt.process_classifier import ProcessParams  # noqa
     from .seismo.invertcmt.io import read_output_traces  # noqa

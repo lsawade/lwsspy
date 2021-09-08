@@ -149,7 +149,8 @@ def plot_measurements(before: dict, after: dict, alabel: Optional[str] = None,
                                 edgecolor=lcolor,
                                 facecolor=fcolor, linewidth=0.5,
                                 linestyle=blinestyle,
-                                histtype='stepfilled')
+                                histtype='stepfilled',
+                                density=True)
             plt.plot([], [], color=colors[_j, :],
                      linewidth=0.75, linestyle=blinestyle, label=blabel)
 
@@ -160,7 +161,8 @@ def plot_measurements(before: dict, after: dict, alabel: Optional[str] = None,
                                     edgecolor=colors[_j, :],
                                     facecolor='none', linewidth=1.25,
                                     linestyle="-",
-                                    histtype='step')
+                                    histtype='step',
+                                    density=True)
                 plt.plot([], [], color=colors[_j, :],
                          linewidth=0.75, linestyle="-", label=alabel)
 
