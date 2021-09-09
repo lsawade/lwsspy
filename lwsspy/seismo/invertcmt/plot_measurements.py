@@ -71,10 +71,6 @@ def get_measurement(mdict: dict, mtype: str):
         # Get the data type from the measurement dictionary
         m = np.array(mdict["dL2"])/np.array(mdict["trace_energy"])
 
-    elif mtype == "misfit":
-        # Get the data type from the measurement dictionary
-        m = np.array(mdict["dlna"])
-
     else:
         m = np.array(mdict[mtype])
 
@@ -581,12 +577,15 @@ def get_database_measurements(
                         adict = measurements_after[_wtype][_comp]
 
                         # Get measurements
-                        b = get_measurement(bdict, _mtype)
-                        a = get_measurement(adict, _mtype)
+                        try:
+                            b = get_measurement(bdict, _mtype)
+                            a = get_measurement(adict, _mtype)
 
-                        # Add to first dictionary
-                        before[_wtype][_comp][_mtype].extend(b)
-                        after[_wtype][_comp][_mtype].extend(a)
+                            # Add to first dictionary
+                            before[_wtype][_comp][_mtype].extend(b)
+                            after[_wtype][_comp][_mtype].extend(a)
+                        except KeyError:
+                            print("Key Error for 'corr_ratio' at: "_cmtloc)
 
     if outdir is not None:
 
