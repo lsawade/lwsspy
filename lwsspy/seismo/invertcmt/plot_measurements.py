@@ -585,7 +585,7 @@ def get_database_measurements(
                             before[_wtype][_comp][_mtype].extend(b)
                             after[_wtype][_comp][_mtype].extend(a)
                         except KeyError:
-                            print("Key Error for 'corr_ratio' at: "_cmtloc)
+                            print(f"Key Error for 'corr_ratio' at: {_cmtloc}")
 
     if outdir is not None:
 
