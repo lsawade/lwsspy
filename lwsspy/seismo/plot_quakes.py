@@ -66,7 +66,7 @@ def plot_quakes(latitude, longitude, depth, moment,
     if levels is None:
         # Get colors
         levels = [0.0, 10.0, 11.0, 12.5, 15.0, 20.0, 25.0,
-                  50.0, 70.0, 200.0, 400.0, 600.0, 700.0]
+                  50.0, 70.0, 200.0, 400.0, 600.0, 700.0, 800.0]
 
     isort = np.argsort(depth)[::-1]
 

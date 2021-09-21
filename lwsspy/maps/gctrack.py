@@ -22,7 +22,8 @@ def gctrack(lat, lon, dist: float = 1.0) -> Tuple[
 
     Returns
     -------
-    tuple(np.ndarray, np.ndarray)
+    tuple(np.ndarray, np.ndarray, np.ndarray)
+        latitudes, longitudes, distances
 
 
     Notes
@@ -32,7 +33,7 @@ def gctrack(lat, lon, dist: float = 1.0) -> Tuple[
         Lucas Sawade (lsawade@princeton.edu)
 
     :Last Modified:
-        2020.04.20 00.30
+        2021.09.15 21.11
 
     """
 
