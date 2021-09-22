@@ -12,7 +12,7 @@ steps = [1, 1.5, 1.8, 2, 3, 6, 10]
 def plot_map(fill=True, zorder=None, labelstopright: bool = True,
              labelsbottomleft: bool = True, borders: bool = False,
              rivers: bool = False, lakes: bool = False, outline: bool = False,
-             ax=None, lw=0.25):
+             ax=None, lw=0.5):
     """Plots map into existing axes.
 
     Parameters
