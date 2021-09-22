@@ -309,7 +309,7 @@ class CompareCatalogs:
 
         # Define levels on where to loo
         levels = [0.0, 10.0, 12.5, 15.0, 20.0, 30.0, 70.0, 120.0,
-                  400.0, 800.0]
+                  300.0, 800.0]
 
         if parameter == 'location':
 
@@ -1072,7 +1072,8 @@ def bin():
     # plt.show(block=True)
 
     # Filter for a minimum depth larger than zero
-    CC = CC.filter(maxdict={"M0": 1.5, "latitude": 0.4, "longitude": 0.4})
+    CC = CC.filter(maxdict={"M0": 1.5, "latitude": 0.4,
+                            "longitude": 0.4, "depth_in_m": 50000.0})
     # for ocmt, ncmt in zip(CC.old, CC.new):
     #     print(f"\n\nOLD: {(ncmt.depth_in_m - ocmt.depth_in_m)/1000.0}")
     #     print(ocmt)
