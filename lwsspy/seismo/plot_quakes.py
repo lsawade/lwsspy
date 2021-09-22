@@ -70,19 +70,20 @@ def plot_quakes(latitude, longitude, depth, moment,
 
     isort = np.argsort(depth)[::-1]
 
-    # Figure out minimum and maximum indeces of levels for legend.
+    # Figure out minimum index of levels for legend.
     mindepth = np.min(depth)
-    print("plotquakes mindepth:", mindepth)
-    maxdepth = np.max(depth)
     level_minidx = np.where(levels < mindepth)[0]
     if len(level_minidx) < 1:
         level_minidx = 0
     else:
         level_minidx = int(level_minidx[-1])
 
-    print("idx", np.where(levels > maxdepth))
-    print(np.where(levels > maxdepth)[0])
-    level_maxidx = int(np.where(levels > maxdepth)[0])
+    # Figure out minimum index of levels for legend.
+    maxdepth = np.max(depth)
+    level_maxidx = np.where(levels > maxdepth)[0]
+    if isinstance(level_maxidx, np.ndarray):
+        level_maxidx = level_maxidx[0]
+    level_maxidx = int(level_maxidx)
 
     # Fix levels
     levels = levels[level_minidx:level_maxidx]
