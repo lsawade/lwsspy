@@ -386,6 +386,15 @@ class CompareCatalogs:
 
         axes = []
 
+        individualpos = []
+        for _i in range(len(levels)-1):
+            pos = np.where(
+                (levels[_i] < self.ndepth_in_m)
+                & (self.ndepth_in_m < levels[_i+1])
+            )
+            if len(pos) != 0:
+                individualpos.append(pos)
+
         for _i, pos in enumerate(individualpos):
 
             # Get the eq's that are in the certain range
