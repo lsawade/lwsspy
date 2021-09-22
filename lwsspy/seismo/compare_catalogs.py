@@ -389,8 +389,8 @@ class CompareCatalogs:
         individualpos = []
         for _i in range(len(levels)-1):
             pos = np.where(
-                (levels[_i] < self.ndepth_in_m)
-                & (self.ndepth_in_m < levels[_i+1])
+                (levels[_i] < self.ndepth_in_m/1000.0)
+                & (self.ndepth_in_m < levels[_i+1]/1000.0)
             )
             if len(pos) != 0:
                 individualpos.append(pos)
