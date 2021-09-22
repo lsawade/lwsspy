@@ -1,3 +1,4 @@
+from math import e
 import os
 from glob import glob
 import numpy as np
@@ -43,12 +44,14 @@ def get_optimization_stats(database):
     ax.set_xlabel("# of iterations")
     ax.set_ylabel("N")
     plt.savefig("iterationstats.pdf")
-    plt.show()
+    # plt.show()
 
 
 def bin():
-
+    plt.switch_backend('pdf')
     import argparse
+    import lwsspy as lpy
+    lpy.updaterc()
 
     # Get arguments
     parser = argparse.ArgumentParser()
