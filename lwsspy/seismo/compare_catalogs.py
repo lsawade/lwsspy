@@ -395,9 +395,6 @@ class CompareCatalogs:
             if len(pos[0]) != 0:
                 individualpos.append(pos)
 
-            print(pos)
-        print(individualpos)
-
         for _i, pos in enumerate(individualpos):
 
             # Get the eq's that are in the certain range

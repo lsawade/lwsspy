@@ -12,7 +12,7 @@ steps = [1, 1.5, 1.8, 2, 3, 6, 10]
 def plot_map(fill=True, zorder=None, labelstopright: bool = True,
              labelsbottomleft: bool = True, borders: bool = False,
              rivers: bool = False, lakes: bool = False, outline: bool = False,
-             ax=None):
+             ax=None, lw=0.25):
     """Plots map into existing axes.
 
     Parameters
@@ -33,6 +33,8 @@ def plot_map(fill=True, zorder=None, labelstopright: bool = True,
         plot rivers. Default False
     lakes : bool 
         plot lakes. Default True
+    lw : float
+        outline width
 
     Returns
     -------
@@ -46,7 +48,7 @@ def plot_map(fill=True, zorder=None, labelstopright: bool = True,
         Lucas Sawade (lsawade@princeton.edu)
 
     :Last Modified:
-        2020.01.07 16.30
+        2021.09.22 11.45
 
 
     """
@@ -75,6 +77,7 @@ def plot_map(fill=True, zorder=None, labelstopright: bool = True,
         )
         ax.grid(linewidth=2, color='black', alpha=0.5, linestyle='--')
 
+    ax.spines['geo'].set_linewidth(lw)
     # Set gridlines
     # gl = ax.gridlines(draw_labels=False, linewidth=1, color='lightgray',
     #
