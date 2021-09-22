@@ -382,7 +382,7 @@ class CompareCatalogs:
             size = np.abs(x)/vmax
             wlsize = np.where((size < 0.2), 0.01, size)
             wlsize = np.where((size > 1.0), 1.0, wlsize)
-            return 20*((1 + wlsize)**2)
+            return 10*((1 + wlsize)**2)
 
         axes = []
 
