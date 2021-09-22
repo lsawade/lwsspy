@@ -393,7 +393,7 @@ class CompareCatalogs:
                 & (self.ndepth_in_m/1000.0 < levels[_i+1])
             )
             if len(pos[0]) != 0:
-                individualpos.append(pos)
+                individualpos.append(pos[0])
 
         for _i, pos in enumerate(individualpos):
 
