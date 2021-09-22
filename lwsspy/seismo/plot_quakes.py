@@ -79,6 +79,9 @@ def plot_quakes(latitude, longitude, depth, moment,
         level_minidx = 0
     else:
         level_minidx = int(level_minidx[-1])
+
+    print("idx", np.where(levels > maxdepth))
+    print(np.where(levels > maxdepth)[0])
     level_maxidx = int(np.where(levels > maxdepth)[0])
 
     # Fix levels
