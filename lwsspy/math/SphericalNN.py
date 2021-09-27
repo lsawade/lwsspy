@@ -104,7 +104,7 @@ class SphericalNN(object):
     def sparse_distance_matrix(self, other: Union[SphericalNN, None] = None,
                                maximum_distance=180.0, sparse: bool = False,
                                km: bool = False):
-        """Computes the sparse distance matrix between two kdtree. if no other 
+        """Computes the sparse distance matrix between two kdtree. if no other
         kdtree is provided, this kdtree is used
 
         Parameters
@@ -151,8 +151,8 @@ class SphericalNN(object):
     def interpolator(self, qlat, qlon, maximum_distance=None,
                      no_weighting=False, k: Optional[int] = None, p: float = 2.0):
         """Spherical interpolation function using the ``SphericalNN`` object.
-        Returns an interpolator that can be used for interpolating the same 
-        set of locations based on the KDTree. The only input the interpolator 
+        Returns an interpolator that can be used for interpolating the same
+        set of locations based on the KDTree. The only input the interpolator
         takes are the data corresponding to the points in the KDTree.
 
         Parameters
@@ -172,8 +172,8 @@ class SphericalNN(object):
             Define maximum number of neighbors to be used for the weighted
             interpolation. Not used if ``no_weighting = True``. Default None
         p : float, optional
-            Exponent to compute the inverse distance weights. Note that in 
-            the limit ``p->inf`` is just a nearest neighbor interpolation. 
+            Exponent to compute the inverse distance weights. Note that in
+            the limit ``p->inf`` is just a nearest neighbor interpolation.
             Default is 2
 
 
@@ -228,6 +228,7 @@ class SphericalNN(object):
             if d.shape == (1,):
                 d = d.reshape((1, 1))
                 inds = inds.reshape((1, 1))
+
             # Filter out distances too far out.
             # Modified Shepard's method
             if maximum_distance is not None:
@@ -238,20 +239,25 @@ class SphericalNN(object):
                 # Compute the weights using modified shepard
                 w = (np.fmax(0, cartd - d) / cartd * d) ** 2
                 wsum = np.sum(w, axis=1)
-                datarows = (wsum != 0)
+                datarows = ~np.isclose(wsum, 0.0)
 
                 def interpolator(data):
                     """Using the weights and indices, we can return an interpolator
                     """
 
                     # Empty array
-                    qdata = np.empty_like(wsum)
+                    qdata = np.empty_like(wsum, dtype=np.float32)
                     qdata[:] = np.nan
 
-                    # interpolation using the weights
-                    qdata[datarows] = np.nansum(
-                        w[datarows, :] * data[inds[datarows]], axis=1) \
-                        / wsum[datarows]
+                    # Check which rows only contain nans
+                    tmp = w[datarows, :] * data[inds[datarows]]
+                    nanrows = np.isnan(tmp[:, 0])
+
+                    # Do interpolation and replace only-nan rows with np.nan
+                    tmp2 = np.nansum(tmp, axis=1) / wsum[datarows]
+                    tmp2[nanrows] = np.nan
+
+                    qdata[datarows] = tmp2
 
                     return qdata.reshape(shp)
 
@@ -261,19 +267,25 @@ class SphericalNN(object):
                 # Compute the weights using modified shepard
                 w = (1 / d) ** p
                 wsum = np.sum(w, axis=1)
-                datarows = (wsum != 0)
+                datarows = ~np.isclose(wsum, 0.0)
 
                 def interpolator(data):
                     """Using the weights and indices, we can return an interpolator
                     """
 
                     # Empty array
-                    qdata = np.empty_like(wsum)
+                    qdata = np.empty_like(wsum, dtype=np.float32)
                     qdata[:] = np.nan
+
+                    # Check which rows only contain nans
+                    tmp = w * data[inds[datarows]]
+                    nanrows = np.isnan(tmp[:, 0])
 
                     # interpolation using the weights
                     qdata[datarows] = np.sum(
-                        w * data[inds[datarows]], axis=1) / wsum[datarows]
+                        tmp, axis=1) / wsum[datarows]
+
+                    qdata[datarows][nanrows] = np.nan
 
                     return qdata.reshape(shp)
 
