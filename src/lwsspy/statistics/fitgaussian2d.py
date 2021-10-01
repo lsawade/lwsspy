@@ -40,11 +40,11 @@ def fitgaussian2d(x, y, data, p0):
 if __name__ == "__main__":
 
     import matplotlib.pyplot as plt
-    from ..plotterc import updaterc
-    from ..plot
-    from ..plotve_ticklabels import remove_yticklabels  \
+    from ..plot import figcolorbar
+    from ..plot import updaterc
+    from ..plot import remove_yticklabels
 
-    from .. import DOCFIGURES
+    from ..base import DOCFIGURES
     updaterc()
 
     # actual m: amplitude, x0, yo, sigma_x, sigma_y, theta, offset
