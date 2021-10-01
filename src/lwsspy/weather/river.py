@@ -40,8 +40,8 @@ class River:
     stage: np.ndarray
 
     def __init__(self, stationnumber: str, flood_stage: float = None,
-                 datadir: str = os.path.join(lpy.DOCFIGURESCRIPTDATA),
-                 figuredir: str = os.path.join(lpy.DOCFIGURES),
+                 datadir: str = os.path.join(lpy.base.DOCFIGURESCRIPTDATA),
+                 figuredir: str = os.path.join(lpy.base.DOCFIGURES),
                  pre_title: str = None, peak=True,
                  save: bool = False,
                  starttime: datetime = datetime(1900, 1, 1),
