@@ -10,6 +10,17 @@ docs/build
 .vscode
 ._.DS_Store
 *.npz
-
 _build
 rivers
+*.svg
+*.pdf
+*.png
+.ipynb_checkpoints
+docs/source/chapters/figures/dem_animation
+docs/source/chapters/figures/scripts/data/C201711191509A.1D.sac
+
+# Negate except filepatterns in figure docs
+!docs/source/chapters/figures/*.png
+!docs/source/chapters/figures/*.pdf
+!docs/source/chapters/figures/*.svg
+
