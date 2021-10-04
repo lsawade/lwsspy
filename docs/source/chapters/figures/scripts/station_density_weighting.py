@@ -7,24 +7,28 @@ from matplotlib.ticker import LogFormatter
 import matplotlib.ticker as ticker
 from matplotlib import gridspec
 
+import lwsspy.base as lbase
+import lwsspy.geo as lgeo
+import lwsspy.plot as lplt
+import lwsspy.maps as lmaps
+import lwsspy.statistics as lstat
 
-import lwsspy as lpy
-lpy.updaterc()
+lplt.updaterc()
 
 
 def plot_station_density(lat, lon, condict=dict(ctype='fracmax', param=0.33),
                          axlist=None):
     # Create GeoWeights class
-    gw = lpy.GeoWeights(lat, lon)
+    gw = lgeo.GeoWeights(lat, lon)
     vref, vcond, ref, cond = gw.get_condition(**condict)
     if axlist is None:
         fig = plt.figure(figsize=(11.5, 3.5))
         plt.subplots_adjust(wspace=0.025, bottom=0.125, left=0.1, right=0.95)
         gs = gridspec.GridSpec(1, 2, width_ratios=[0.3, 0.70], figure=fig)
         ax1 = plt.subplot(gs[0, 0])
-        lpy.plot_label(ax1, 'a)', location=6, box=False)
+        lplt.plot_label(ax1, 'a)', location=6, box=False)
         ax2 = plt.subplot(gs[0, 1], projection=PlateCarree())
-        lpy.plot_label(ax2, 'b)', location=6, box=False)
+        lplt.plot_label(ax2, 'b)', location=6, box=False)
     else:
         ax1, ax2 = axlist
 
@@ -59,8 +63,8 @@ def plot_station_density(lat, lon, condict=dict(ctype='fracmax', param=0.33),
 
     # Plot weighs on a map number stuff
     plt.sca(ax2)
-    lpy.plot_map()
-    lpy.remove_ticklabels(ax2)
+    lmaps.plot_map()
+    lplt.remove_ticklabels(ax2)
     plt.scatter(lon, lat, c=weights, cmap='rainbow',
                 norm=LogNorm(vmin=min(weights), vmax=max(weights)),
                 transform=PlateCarree())
@@ -69,8 +73,8 @@ def plot_station_density(lat, lon, condict=dict(ctype='fracmax', param=0.33),
     # formatter = LogFormatter(10, labelOnlyBase=False)
 
     formatter = ticker.FuncFormatter(lambda y, _: '{:g}'.format(y))
-    cb = lpy.nice_colorbar(orientation='vertical', ticks=[0.3, 0.4, 0.6, 1.0, 1.5, 2.0, 3.0],  # np.arange(0.3, 3.0, 0.3),
-                           format=formatter, aspect=40, pad=0.025)
+    cb = lplt.nice_colorbar(orientation='vertical', ticks=[0.3, 0.4, 0.6, 1.0, 1.5, 2.0, 3.0],  # np.arange(0.3, 3.0, 0.3),
+                            format=formatter, aspect=40, pad=0.025)
     cb.set_label('Weight')
     plt.title(
         f"min: {np.min(weights):4.2f}   "
@@ -87,9 +91,9 @@ lat_us = 0
 lon_us = -90
 width = 360
 height = 180
-x, y = lpy.even2Dpoints(100, width, height, 10)
-x1, y1 = lpy.even2Dpoints(50, 60, 40, 1)
-x2, y2 = lpy.even2Dpoints(50, 50, 120, 3)
+x, y = lstat.even2Dpoints(100, width, height, 10)
+x1, y1 = lstat.even2Dpoints(50, 60, 40, 1)
+x2, y2 = lstat.even2Dpoints(50, 50, 120, 3)
 
 # Combine
 lat = np.hstack((np.array(y), np.array(y1)+lat_eur, np.array(y2)+lat_us))
@@ -112,20 +116,22 @@ cdicts = [
 ]
 for i in range(4):
     ax1 = plt.subplot(gs[i, 0])
-    lpy.plot_label(ax1, f'{labels[i][0]})', location=6, box=False)
+    lplt.plot_label(ax1, f'{labels[i][0]})', location=6, box=False)
     ax2 = plt.subplot(gs[i, 1], projection=PlateCarree())
-    lpy.plot_label(ax2, f'{labels[i][1]})', location=6, box=False)
+    lplt.plot_label(ax2, f'{labels[i][1]})', location=6, box=False)
     plot_station_density(lat, lon, condict=cdicts[i], axlist=[ax1, ax2])
     if i != 3:
         ax1.set_xlabel('')
-        lpy.remove_xticklabels(ax1)
+        lplt.remove_xticklabels(ax1)
 
-plt.savefig(os.path.join(lpy.DOCFIGURES, "station_density_weighting_even.pdf"))
-plt.savefig(os.path.join(lpy.DOCFIGURES, "station_density_weighting_even.svg"))
+plt.savefig(os.path.join(lbase.DOCFIGURES,
+                         "station_density_weighting_even.pdf"))
+plt.savefig(os.path.join(lbase.DOCFIGURES,
+                         "station_density_weighting_even.svg"))
 
 
-x, y = lpy.even2Dpoints(1, width, height, 10)
-x1, y1 = lpy.even2Dpoints(100, 60, 40, 1)
+x, y = lstat.even2Dpoints(1, width, height, 10)
+x1, y1 = lstat.even2Dpoints(100, 60, 40, 1)
 
 # Combine
 lat = np.hstack((np.array(y), np.array(y1)+lat_eur))
@@ -145,22 +151,22 @@ cdicts = [
 ]
 for i in range(4):
     ax1 = plt.subplot(gs[i, 0])
-    lpy.plot_label(ax1, f'{labels[i][0]})', location=6, box=False)
+    lplt.plot_label(ax1, f'{labels[i][0]})', location=6, box=False)
     ax2 = plt.subplot(gs[i, 1], projection=PlateCarree())
-    lpy.plot_label(ax2, f'{labels[i][1]})', location=6, box=False)
+    lplt.plot_label(ax2, f'{labels[i][1]})', location=6, box=False)
     plot_station_density(lat, lon, condict=cdicts[i], axlist=[ax1, ax2])
     if i != 3:
         ax1.set_xlabel('')
-        lpy.remove_xticklabels(ax1)
+        lplt.remove_xticklabels(ax1)
 
-plt.savefig(os.path.join(lpy.DOCFIGURES,
+plt.savefig(os.path.join(lbase.DOCFIGURES,
                          "station_density_weighting_uneven.pdf"))
-plt.savefig(os.path.join(lpy.DOCFIGURES,
+plt.savefig(os.path.join(lbase.DOCFIGURES,
                          "station_density_weighting_uneven.svg"))
 
 
 plt.show()
 
 # plt.switch_backend('pdf')
-# plt.savefig(os.path.join(lpy.DOCFIGURES, "station_density_weighting.pdf"))
-# plt.savefig(os.path.join(lpy.DOCFIGURES, "station_density_weighting.svg"))
+# plt.savefig(os.path.join(lbase.DOCFIGURES, "station_density_weighting.pdf"))
+# plt.savefig(os.path.join(lbase.DOCFIGURES, "station_density_weighting.svg"))

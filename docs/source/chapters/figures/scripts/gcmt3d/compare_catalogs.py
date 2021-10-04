@@ -1,10 +1,11 @@
 import lwsspy as lpy
 # Load Catalogs
-initcat = lpy.CMTCatalog.load("initcat.pkl")
-g3dcat = lpy.CMTCatalog.load("g3dcat.pkl")
+initcat = lpy.seismo.CMTsmo.CMTCatalog.load("initcat.pkl")
+g3dcat = lpy.seismo.CMTsmo.CMTCatalog.load("g3dcat.pkl")
 
 # Create comparison class
-C = lpy.CompareCatalogs(initcat, g3dcat, oldlabel='GCMT', newlabel='GCMT3D+')
+C = lpy.seismo.CompareCatalogs(
+    initcat, g3dcat, oldlabel='GCMT', newlabel='GCMT3D+')
 Cfilt = C.filter(maxdict=dict(depth_in_m=30000.0, M0=.5))
 C.plot_eps_nu()
 

@@ -17,27 +17,27 @@ plt.subplots_adjust(left=0.01, right=0.99,
 
 # Events
 # Get catalog
-gcmt_cat = lpy.CMTCatalog.load(os.path.join(datadir, "gcmtcatalog.pkl"))
+gcmt_cat = lpy.seismo.CMTCatalog.load(os.path.join(datadir, "gcmtcatalog.pkl"))
 filtered_cat = gcmt_cat.filter(
     mindict=dict(moment_magnitude=5.7),
     maxdict=dict(moment_magnitude=7.5))
 
 # Plot Events
 evax = plt.subplot(131, projection=Mollweide(central_longitude=0.0))
-lpy.plot_map(zorder=-1)
+lmaps.plot_map(zorder=-1)
 filtered_cat.plot(ax=evax)
-lpy.plot_label(evax, "a)", location=1, box=False, dist=0.0)
+lplt.plot_label(evax, "a)", location=1, box=False, dist=0.0)
 
 # Stations
 # Get stations
 xml_name = "gcmt3d_station.xml"
 invfile = os.path.join(datadir, xml_name)
-inv = lpy.read_inventory(invfile)
+inv = lpy.seismo.read_inventory(invfile)
 
 # Plot Stations
-stax = plt.subplot(132, projection=Mollweide(central_longitude=0.0))
-lpy.plot_map(zorder=-1)
-lpy.plot_inventory(inv, ax=stax, markersize=5, cmap='Set1')
+stax = plt.subplot(132, projection=Mollweide(central_longitude=0.0))å
+lmaps.plot_map(zorder=-1)
+lpy.seismo.plot_inventory(inv, ax=stax, markersize=5, cmap='Set1')
 # Set legend fontsizes
 legendfontsize = "x-small"
 title_fontsize = "small"
@@ -47,7 +47,7 @@ plt.legend(loc='upper center', title='Networks', frameon=False,
            handletextpad=0.2,  # norderaxespad=-2.5, borderpad=0.5,
            labelspacing=0.2, handlelength=1.0, ncol=7,
            columnspacing=1.0, bbox_transform=stax.transAxes)
-lpy.plot_label(stax, "b)", location=1, box=False, dist=0.0)
+lplt.plot_label(stax, "b)", location=1, box=False, dist=0.0)
 
 # Velocity model
 vname = "GLAD_M25_z100km_vpv.dat"
@@ -55,13 +55,13 @@ vfile = os.path.join(datadir, vname)
 
 vax = plt.subplot(133, projection=Mollweide(central_longitude=0.0))
 cax = vax.inset_axes(bounds=[0.1, -0.16, 0.8, 0.04])
-_, cbar = lpy.plot_specfem_xsec_depth(
+_, cbar = lplt.plot_specfem_xsec_depth(
     vfile, ax=vax, cax=cax, depth=100.0)
 cax.set_title("$v_{P_V}$ [km/s]", fontsize='small')
 plt.xticks(fontsize="x-small")
 
-lpy.plot_label(vax, "c)", location=1, box=False, dist=0.0)
+lplt.plot_label(vax, "c)", location=1, box=False, dist=0.0)
 
-plt.savefig(os.path.join(lpy.DOCFIGURES, "gcmt3d",
+plt.savefig(os.path.join(lbase.DOCFIGURES, "gcmt3d",
                          "events_stations_model.pdf"))
 plt.show(block=True)

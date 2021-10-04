@@ -1,8 +1,10 @@
+# External
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-
-import lwsspy as lpy
+# Internal
+import lwsspy.plot as lplt
+import lwsspy.base as lbase
 
 plt.figure(figsize=(8, 4))
 plt.subplots_adjust(bottom=0.1, top=0.9, left=0.05, right=0.95, hspace=0.1)
@@ -19,13 +21,13 @@ ax.axvline(0, color='black', lw=2)
 ax.xaxis.set_major_locator(plt.MultipleLocator(np.pi / 2))
 ax.xaxis.set_minor_locator(plt.MultipleLocator(np.pi / 12))
 ax.xaxis.set_major_formatter(plt.FuncFormatter(
-    lpy.multiple_formatter(2, number=np.pi, latex='\pi')))
+    lplt.multiple_formatter(2, number=np.pi, latex='\pi')))
 
 ax = plt.subplot(212)
 
 # Create Multiple class containing locators, and formatters
-minor = lpy.Multiple(12, number=np.pi, latex='\pi')
-major = lpy.Multiple(2, number=np.pi, latex='\pi')
+minor = lplt.Multiple(12, number=np.pi, latex='\pi')
+major = lplt.Multiple(2, number=np.pi, latex='\pi')
 
 # Plot
 x = np.linspace(-np.pi, 3*np.pi, 500)
@@ -38,6 +40,6 @@ ax.xaxis.set_major_locator(major.locator)
 ax.xaxis.set_minor_locator(minor.locator)
 ax.xaxis.set_major_formatter(major.formatter)
 
-plt.savefig(os.path.join(lpy.DOCFIGURES,
+plt.savefig(os.path.join(lbase.DOCFIGURES,
                          "multiple_locator.svg"), transparent=True)
 plt.show()

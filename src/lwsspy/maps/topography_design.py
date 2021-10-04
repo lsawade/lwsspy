@@ -8,6 +8,7 @@ from matplotlib.colors import Normalize
 from scipy.signal.windows import tukey
 from scipy.ndimage import gaussian_filter
 from scipy import ndimage, misc
+import lwsspy.plot as lplt
 
 
 def start_stop(a, trigger_val):
@@ -159,7 +160,7 @@ class TopographyDesign:
             )
 
             # Plot lines with linewidth and topo cmap
-            lines, sm = lpy.plot_xyz_line(
+            lines, sm = lplt.plot_xyz_line(
                 self.lon, yt, z, cmap=self.cmap, norm=self.norm,
                 capstyle='round', linewidths=linewidths, zorder=-_i-0.5,
                 clip_on=False
@@ -200,7 +201,7 @@ class TopographyDesign:
             # Plot label
             label = f'N{str(np.abs(_k)).zfill(3)}'  # NXXX deg aximuth
             color = 'w' if self.facecolor == 'k' else 'k'
-            lpy.plot_label(
+            lpy.plot.plot_label(
                 plt.gca(), label, location=1, color=color,
                 box=False, fontdict=dict(fontsize="x-large")
             )

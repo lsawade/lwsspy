@@ -32,20 +32,20 @@ def read_etopo(version='bedrock', **kwargs) -> xr.Dataset:
            f'{urlmod[version]}/grid_registered/netcdf/{available[version]}')
 
     # Get filename
-    zipname = join(lpy.DOWNLOAD_CACHE, available[version])
+    zipname = join(lpy.base.DOWNLOAD_CACHE, available[version])
     fname = zipname[:-3]
 
     # Downloading if not in download cache
     if exists(fname) is False:
         if exists(zipname) is False:
-            lpy.print_action(f"Downloading ETOPO1 - {names[version]}")
-            lpy.downloadfile(url, zipname)
-        lpy.print_action("Unzipping...")
+            lpy.utils.print_action(f"Downloading ETOPO1 - {names[version]}")
+            lpy.shell.downloadfile(url, zipname)
+        lpy.utils.print_action("Unzipping...")
         lpy.ungzip(zipname, fname)
 
     # If only zip left remove zip
     if exists(zipname):
-        lpy.print_action("Removing zipfile...")
+        lpy.utils.print_action("Removing zipfile...")
         os.remove(zipname)
 
     # Get data data

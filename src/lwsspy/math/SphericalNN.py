@@ -10,7 +10,8 @@ import numpy as np
 from scipy.spatial import cKDTree
 
 # Internal
-import lwsspy as lpy
+import lwsspy.math as lmat
+import lwsspy.base as lbase
 
 
 class SphericalNN(object):
@@ -98,7 +99,7 @@ class SphericalNN(object):
             Set of pairs (i, j) where i < j
         """
         distkm = np.abs(2 * np.sin(maximum_distance/2.0 /
-                                   180.0*np.pi)) * lpy.EARTH_RADIUS_KM
+                                   180.0*np.pi)) * lpy.base.EARTH_RADIUS_KM
         return self.kd_tree.query_pairs(distkm, output_type='ndarray')
 
     def sparse_distance_matrix(self, other: Union[SphericalNN, None] = None,
@@ -126,7 +127,7 @@ class SphericalNN(object):
         """
         # Get distance
         distkm = np.abs(2 * np.sin(maximum_distance/2.0 /
-                                   180.0*np.pi)) * lpy.EARTH_RADIUS_KM
+                                   180.0*np.pi)) * lbase.EARTH_RADIUS_KM
 
         # Get tree
         if isinstance(other, SphericalNN):
@@ -144,7 +145,7 @@ class SphericalNN(object):
 
         # Convert form kilometers to degrees.
         if km is False:
-            output_mat *= lpy.KM2DEG
+            output_mat *= lbase.KM2DEG
 
         return output_mat
 
@@ -208,7 +209,7 @@ class SphericalNN(object):
                     qdata = np.where(
                         d <= np.abs(
                             2 * np.sin(maximum_distance/2.0/180.0*np.pi))
-                        * lpy.EARTH_RADIUS_KM,
+                        * lpy.base.EARTH_RADIUS_KM,
                         qdata, np.nan)
 
                 return data[inds].reshape(shp)
@@ -235,7 +236,7 @@ class SphericalNN(object):
 
                 # Get cartesian distance
                 cartd = np.abs(2 * np.sin(maximum_distance/2.0/180.0*np.pi)
-                               * lpy.EARTH_RADIUS_KM)
+                               * lpy.base.EARTH_RADIUS_KM)
 
                 # Compute the weights using my inverse distance metric to avoid
                 # division by 0. Based on 1/(1 + x**2)
@@ -318,9 +319,9 @@ class SphericalNN(object):
         containing x/y/z in meters.
         """
         # Create three arrays containing lat/lng/radius.
-        r = np.ones_like(lat) * lpy.EARTH_RADIUS_KM
+        r = np.ones_like(lat) * lbase.EARTH_RADIUS_KM
 
         # Convert data from lat/lng to x/y/z.
-        x, y, z = lpy.geo2cart(r, lat, lon)
+        x, y, z = lmat.geo2cart(r, lat, lon)
 
         return np.vstack((x, y, z)).T

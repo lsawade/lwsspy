@@ -32,6 +32,8 @@ DOCFIGURES: str = os.path.join(
                 os.path.dirname(
                     os.path.abspath(__file__))))),
     'docs', 'source', 'chapters', 'figures')
+
+DOCFIGURESCRIPTS: str = os.path.join(DOCFIGURES, 'scripts')
 DOCFIGURESCRIPTDATA: str = os.path.join(DOCFIGURES, 'scripts', 'data')
 
 DOWNLOAD_CACHE: str = os.path.join(

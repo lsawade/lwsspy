@@ -135,7 +135,7 @@ def pick_data_from_image(infile: str, outfile: Union[str, None] = None,
     ywin = im.shape[0] * 0.025
 
     # Create and show image
-    lpy.pz_figure()
+    lpy.plot.pz_figure()
     ax = plt.axes()
     plt.imshow(im)
     tit = plt.title("Press any key to start picking values...")
@@ -172,10 +172,10 @@ def pick_data_from_image(infile: str, outfile: Union[str, None] = None,
     zax.plot(xpx, ypx, "b+")
 
     # Convert Pixel to data
-    x = lpy.pixels2data(xpx, imagextent[0], imagextent[1],
-                        extent[0], extent[1], log=logx)
-    y = lpy.pixels2data(ypx, imagextent[3], imagextent[2],
-                        extent[2], extent[3], log=logy)
+    x = lpy.utils.pixels2data(xpx, imagextent[0], imagextent[1],
+                              extent[0], extent[1], log=logx)
+    y = lpy.utils.pixels2data(ypx, imagextent[3], imagextent[2],
+                              extent[2], extent[3], log=logy)
 
     # Output data to file of outfile is not Nonne
     if outfile is not None:

@@ -1,6 +1,6 @@
 import matplotlib
 import matplotlib.pyplot as plt
-import lwsspy as lpy
+import lwsspy.utils as lutils
 
 
 def nice_colorbar(*args, fig: bool = False, **kwargs) -> matplotlib.colorbar.Colorbar:
@@ -25,7 +25,7 @@ def nice_colorbar(*args, fig: bool = False, **kwargs) -> matplotlib.colorbar.Col
 
     # Get normal axes labelsize
     xticklabelsize = matplotlib.rcParams['xtick.labelsize']
-    newlabelsize = lpy.reduce_fontsize(xticklabelsize)
+    newlabelsize = lutils.reduce_fontsize(xticklabelsize)
 
     # Change label size to a good size: 70 % of axes label size
     c = plt.colorbar(*args, **kwargs)

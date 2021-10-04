@@ -33,7 +33,7 @@ def update_colorcycler(N: int, cmap: str = 'viridis',
     """
 
     # Get Colors
-    colors = lpy.pick_colors_from_cmap(N, cmap=cmap)
+    colors = lpy.plot.pick_colors_from_cmap(N, cmap=cmap)
 
     # Set axes
     if ax is None:

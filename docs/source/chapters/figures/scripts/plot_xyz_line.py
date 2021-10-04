@@ -4,8 +4,9 @@ from matplotlib.colors import Normalize
 import numpy as np
 
 # Internal
-import lwsspy as lpy
-lpy.updaterc()
+import lwsspy.plot as lplt
+import lwsspy.base as lbase
+lplt.updaterc()
 
 # Create data
 x = np.linspace(0, 5*np.pi, 10000)
@@ -21,7 +22,7 @@ plt.subplots_adjust(bottom=0.15, top=0.9, left=0.05, right=0.95)
 ax = plt.gca()
 
 # Main function
-lines, sm = lpy.plot_xyz_line(
+lines, sm = lplt.plot_xyz_line(
     x, y, z,
     linewidths=(np.abs(z)+1)**2.0,
     cmap='seismic', norm=norm)
@@ -31,12 +32,13 @@ cbar.set_label(r'$\frac{\mathrm{d}y}{\mathrm{d}x}$', rotation=0, labelpad=10)
 plt.title("Plotting a Line with Adjustable Color and Width")
 
 # For making the figure nicer
-minor = lpy.Multiple(12, number=np.pi, latex='\pi')
-major = lpy.Multiple(2, number=np.pi, latex='\pi')
+minor = lplt.Multiple(12, number=np.pi, latex='\pi')
+major = lplt.Multiple(2, number=np.pi, latex='\pi')
 ax.xaxis.set_major_locator(major.locator)
 ax.xaxis.set_minor_locator(minor.locator)
 ax.xaxis.set_major_formatter(major.formatter)
 
 
-plt.savefig(os.path.join(lpy.DOCFIGURES, "xyz_line.svg"), transparent=True)
+plt.savefig(os.path.join(lbase.DOCFIGURES,
+                         "xyz_line.svg"), transparent=True)
 plt.show()

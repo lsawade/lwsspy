@@ -22,10 +22,9 @@ import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 import matplotlib
 import lwsspy as lpy
-from gcmt3d.plot.plot_util import remove_topright
 from matplotlib.colors import ListedColormap
 
-lpy.updaterc()
+lplt.updaterc()
 
 default_outputdir = os.path.join(
     os.path.dirname(
@@ -88,7 +87,7 @@ def plot_taper(magnitude, *args, ax=None, outdir=None, **kwargs):
     endmag = 8.0
 
     # Compute corners
-    corners = lpy.filter_scaling(
+    corners = lpy.gcmt3d.filter_scaling(
         startcorners, startmag, endcorners, endmag, magnitude)
 
     # Compute tapers
@@ -119,8 +118,8 @@ def plot_tapers(ax=None, outdir=None):
 
     for _i, mm in enumerate(m):
         # Compute corners
-        corners[:, _i] = lpy.filter_scaling(startcorners, startmag,
-                                            endcorners, endmag, mm)
+        corners[:, _i] = lpy.gcmt3d.filter_scaling(startcorners, startmag,
+                                                   endcorners, endmag, mm)
         # Compute tapers
         tapers[:, _i] = sac_cosine_taper(p, corners[:, _i])
 
@@ -130,8 +129,8 @@ def plot_tapers(ax=None, outdir=None):
                        cmap=ListedColormap(plt.get_cmap(
                            'PuBu')(np.linspace(0, 1, 5)), N=5),
                        zorder=-10)
-    lpy.nice_colorbar(pc, orientation="vertical", fraction=0.05, aspect=20,
-                      pad=0.05)
+    lplt.nice_colorbar(pc, orientation="vertical", fraction=0.05, aspect=20,
+                       pad=0.05)
     for _i in range(4):
         plt.plot(corners[_i, :], m, 'k')
     # plt.xlabel("Period [s]")
@@ -159,7 +158,7 @@ def plot_weighting(outdir=None):
 
     for _i, m in enumerate(mw):
 
-        P = lpy.ProcessParams(m, 150000)
+        P = lpy.gcmt3d.ProcessParams(m, 150000)
         P.determine_all()
         # assign
         bodywaveweights[_i] = P.bodywave_weight
@@ -174,7 +173,7 @@ def plot_weighting(outdir=None):
     fig = plt.figure(figsize=(8, 3))
     gs = fig.add_gridspec(1, 8)
     ax1 = fig.add_subplot(gs[0, :3])
-    lpy.plot_label(ax1, "a", aspect=1, location=6, dist=0.025, box=False)
+    lplt.plot_label(ax1, "a", aspect=1, location=6, dist=0.025, box=False)
     plt.subplots_adjust(bottom=0.175, left=0.075, right=0.925, wspace=0.75)
     plt.plot(bodywaveweights, mw, "r", label="Body")
     plt.plot(surfacewaveweights, mw, "b:", label="Surface")
@@ -186,9 +185,9 @@ def plot_weighting(outdir=None):
     ax2 = fig.add_subplot(gs[0, 3:], sharey=ax1)
     ax2.tick_params(labelleft=False)
     ax2.set_xlim((20.0, 450.0))
-    lpy.plot_label(ax2, "Filter Corners",
-                   location=4, dist=0.015, box=False)
-    lpy.plot_label(ax2, "b", location=7, dist=0.025, box=False)
+    lplt.plot_label(ax2, "Filter Corners",
+                    location=4, dist=0.015, box=False)
+    lplt.plot_label(ax2, "b", location=7, dist=0.025, box=False)
 
     for _i in range(4):
         if _i == 0:
@@ -212,7 +211,7 @@ def plot_weighting(outdir=None):
     axins = ax2.inset_axes([-0.05, 0.8, 0.4, 0.25])
     axins.set_rasterization_zorder(-5)
 
-    P2 = lpy.ProcessParams(Mw, 150000)
+    P2 = lpy.gcmt3d.ProcessParams(Mw, 150000)
     P2.determine_all()
 
     # Corners

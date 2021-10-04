@@ -61,7 +61,7 @@ if __name__ == "__main__":
                                 pars={'loc': 0.0, 'scale': 1.0})
 
     import matplotlib.pyplot as plt
-    from ..plot.updaterc import updaterc
+    from ..plot import updaterc
     from .. import DOCFIGURES
     updaterc()
 

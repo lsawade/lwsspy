@@ -1,8 +1,11 @@
 import os
-import lwsspy as lpy
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
-
+# Internal
+import lwsspy.weather as lwthr
+import lwsspy.base as lbase
+import lwsspy.plot as lplt
+lplt.updaterc()
 
 if __name__ == "__main__":
 
@@ -28,11 +31,11 @@ if __name__ == "__main__":
 
 
 # Get Stationname
-with PdfPages(os.path.join(lpy.DOCFIGURES, f"rivers.pdf")) as pdf:
+with PdfPages(os.path.join(lbase.DOCFIGURES, f"rivers.pdf")) as pdf:
     for _student, _station in stations.items():
         print(_station)
         try:
-            r = lpy.River(_station, pre_title=_student, save=False)
+            r = lwthr.River(_station, pre_title=_student, save=False)
             r.populate()
             r.plot_summary()
             # r.plot_stage_v_discharge_evo()

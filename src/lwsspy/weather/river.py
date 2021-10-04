@@ -3,13 +3,17 @@
 
 import os
 from copy import deepcopy
-import lwsspy as lpy
 import numpy as np
 from matplotlib.dates import datestr2num
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from datetime import datetime, timedelta
 import matplotlib.dates as mdates
+
+# Internal
+from .. import base as lbase
+from .. import shell as lshell
+from .. import plot as lplt
 
 
 def naninfmin(a):
@@ -40,15 +44,15 @@ class River:
     stage: np.ndarray
 
     def __init__(self, stationnumber: str, flood_stage: float = None,
-                 datadir: str = os.path.join(lpy.base.DOCFIGURESCRIPTDATA),
-                 figuredir: str = os.path.join(lpy.base.DOCFIGURES),
+                 datadir: str = lbase.DOCFIGURESCRIPTDATA,
+                 figuredir: str = lbase.DOCFIGURES,
                  pre_title: str = None, peak=True,
                  save: bool = False,
                  starttime: datetime = datetime(1900, 1, 1),
                  endtime: datetime = datetime.now(),
                  parameterdict: dict = dict(stage="00065", discharge="00060")):
         """Creates a river class using a stationnumber. The calls can populate
-        itself by downloading and reading the tab separated file of USGS river 
+        itself by downloading and reading the tab separated file of USGS river
         and ocean stations
 
         Parameters
@@ -58,14 +62,14 @@ class River:
         flood_stage : float, optional
             A number in feet the , by default None
         datadir : str, optional
-            directory where to save the river files, by default os.path.join(lpy.DOCFIGURESCRIPTDATA)
+            directory where to save the river files, by default lbase.DOCFIGURESCRIPTDATA
         figuredir : str, optional
-            directory where to save output figures, by default os.path.join(lpy.DOCFIGURES)
+            directory where to save output figures, by default lbase.DOCFIGURES
         pre_title : str, optional
             Plotted in bold without , by default None
         peak : bool, optional
             If True the file for Peak Annual discharge is downloaded, if False
-            the parameterdict has to be populated. Currently supported 
+            the parameterdict has to be populated. Currently supported
             parameters are the stage="00065", and the discharge="00060",
             by default True
         save : bool, optional
@@ -151,7 +155,7 @@ class River:
 
         # Download if I don't have it --> add overwrite flag file?
         if os.path.exists(riverfile) is False:
-            lpy.downloadfile(self.url, riverfile)
+            lshell.downloadfile(self.url, riverfile)
 
         # Load file as string
         with open(riverfile, 'r') as f:
@@ -307,7 +311,7 @@ class River:
         if self.flood_stage is not None:
             # Compute relationship
             istage = np.argsort(self.stage)
-            T = lpy.Trendline(self.stage[istage], self.discharge[istage])
+            T = lplt.Trendline(self.stage[istage], self.discharge[istage])
             T.fit()
 
             # Plot floodstage line
@@ -330,7 +334,7 @@ class River:
 
         # Stage Trendline
         istage = np.argsort(self.stage)
-        T = lpy.Trendline(
+        T = lplt.Trendline(
             self.stage[istage], self.discharge[istage], pred_type='2')
         T.fit()
         x_trend = np.linspace(naninfmin(self.stage),
@@ -344,8 +348,8 @@ class River:
         plt.xlabel(r'Stage [f]')
         plt.ylabel(r'Discharge [f$^3$/s]')
         plt.grid('on')
-        lpy.plot_label(ax, fr'$R^2 = {T.R2:4.2f}$',
-                       location=1, fontdict=dict(fontsize='small'))
+        lplt.plot_label(ax, fr'$R^2 = {T.R2:4.2f}$',
+                            location=1, fontdict=dict(fontsize='small'))
 
         # Set limits
         ax.set_xlim((naninfmin(self.stage),  naninfmax(self.stage)))
@@ -373,8 +377,8 @@ class River:
         plt.title(
             fr"Evolution of the Stage-Discharge Relation")
         loc = mdates.AutoDateLocator()
-        cbar = lpy.nice_colorbar(sc, aspect=40, ticks=loc, fraction=0.05,
-                                 format=mdates.AutoDateFormatter(loc))
+        cbar = lplt.nice_colorbar(sc, aspect=40, ticks=loc, fraction=0.05,
+                                  format=mdates.AutoDateFormatter(loc))
 
     def plot_RI_v_discharge(self):
 
@@ -399,7 +403,7 @@ class River:
         iRI = np.argsort(self.RI)
 
         # Compute Trendline
-        T = lpy.Trendline(self.RI[iRI], discharge[iRI], pred_type='log')
+        T = lplt.Trendline(self.RI[iRI], discharge[iRI], pred_type='log')
         T.fit()
         discharge_predict_100 = T.model(100.0)
 
@@ -421,7 +425,7 @@ class River:
         # Plot labels
         plt.xlabel(r'RI [year]')
         plt.ylabel(r'Discharge [f$^3$/s]')
-        lpy.plot_label(
+        lplt.plot_label(
             ax,
             f'$R^2 = {T.R2:4.2f}$\n'
             f'100yr = {int(discharge_predict_100)}',

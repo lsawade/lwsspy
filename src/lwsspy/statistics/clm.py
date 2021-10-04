@@ -111,7 +111,7 @@ def clm(x: np.ndarray, distr: List[np.ndarray],
 if __name__ == "__main__":
 
     import os
-    from ..plot.updaterc import updaterc
+    from ..plot import updaterc
     from .. import DOCFIGURES
     from .distlist import distlist
     updaterc()

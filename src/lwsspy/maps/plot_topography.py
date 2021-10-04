@@ -5,10 +5,11 @@ from matplotlib.colors import LightSource
 from matplotlib.cm import ScalarMappable
 from scipy.interpolate import griddata
 from scipy.ndimage import gaussian_filter
-
-import lwsspy as lpy
-
 import numpy as np
+
+# Local
+from .. import maps as lmaps
+from .. import plot as lplot
 
 
 def plot_topography(extent: List[float] = [-180.0, 180.0, -90.0, 90.0],
@@ -33,11 +34,11 @@ def plot_topography(extent: List[float] = [-180.0, 180.0, -90.0, 90.0],
     """
 
     # Get topography
-    etopo_bed = lpy.read_etopo()
-    # etopo_ice = lpy.read_etopo(version='ice')
+    etopo_bed = lmaps.read_etopo()
+    # etopo_ice = lpy.maps.read_etopo(version='ice')
 
     # decimate
-    fextent = lpy.fix_map_extent(extent, fraction=0.1)
+    fextent = lmaps.fix_map_extent(extent, fraction=0.1)
     aspect = (fextent[1] - fextent[0])/(fextent[3] - fextent[2])
     grid_bed = etopo_bed.sel(latitude=slice(fextent[2], fextent[3]),
                              longitude=slice(fextent[0], fextent[1]))
@@ -51,8 +52,8 @@ def plot_topography(extent: List[float] = [-180.0, 180.0, -90.0, 90.0],
     ls = LightSource(azdeg=270, altdeg=45)
     ve = 1.0
 
-    cmap = lpy.topocolormap()
-    norm = lpy.FixedPointColorNorm(vmin=-10000, vmax=8000)
+    cmap = lmaps.topocolormap()
+    norm = lplot.FixedPointColorNorm(vmin=-10000, vmax=8000)
 
     # Interpolating 1000x aspect
     mat = gaussian_filter(
@@ -65,6 +66,6 @@ def plot_topography(extent: List[float] = [-180.0, 180.0, -90.0, 90.0],
     #                 extent=fextent,
     #                 zorder=-14)
     if colorbar:
-        cbar = lpy.nice_colorbar(ScalarMappable(
+        cbar = lplot.nice_colorbar(ScalarMappable(
             cmap=cmap, norm=norm), pad=0.125/aspect)
         cbar.set_label("Elevation [m]")

@@ -54,11 +54,11 @@ def plot_single_parameter_optimization(
     plt.ylabel("Norm. Log. Misfit")
 
     ax1 = plt.subplot(122, sharex=ax)
-    lpy.plot_label(ax1, "b)", location=6, box=False)
+    lpy.plot.plot_label(ax1, "b)", location=6, box=False)
     firstlist, lastlist = [], []
     for _opt, _label in zip(optim, labellist):
         firstlist.append(_opt.msave[0, 0])
-        lastlist.append(_opt.msave[0, _opt.current_iter + 1])
+        lastlist.append(_opt.msave[0, _opt.current_iter])
         plt.plot(np.arange(_opt.current_iter + 1),
                  _opt.msave[0, :_opt.current_iter + 1],
                  label=_label)

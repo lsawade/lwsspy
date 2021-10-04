@@ -3,12 +3,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Internal
-from lwsspy import DOCFIGURES  # Location to store figure
-from lwsspy import updaterc    # Makes figure pretty in my opinion
-from lwsspy import Optimization
-from lwsspy import plot_optimization
-from lwsspy import plot_single_parameter_optimization
-updaterc(rebuild=True)
+# Internal
+import lwsspy.plot as lplot
+import lwsspy.utils as lutils
+import lwsspy.base as lbase
+import lwsspy.inversion as linv
+
+lplot.updaterc()
 
 
 def x4(r):
@@ -73,7 +74,7 @@ maxnls = 5
 
 # Prepare optim bfgs
 print(50 * "*", " BFGS ", 54 * "*")
-optim = Optimization("bfgs")
+optim = linv.Optimization("bfgs")
 optim.compute_cost = x4
 optim.compute_grad = x4_prime
 optim.apply_preconditioner = x4_preco
@@ -85,7 +86,7 @@ optim.n = len(model)
 optim_bfgs = optim.solve(optim, model)
 
 # BFGS preco
-optim = Optimization("bfgs")
+optim = linv.Optimization("bfgs")
 optim.compute_cost = x4
 optim.compute_grad = x4_prime
 optim.apply_preconditioner = x4_preco
@@ -98,7 +99,7 @@ optim_pbfgs = optim.solve(optim, model)
 
 print(50 * "*", " Steepest ", 50 * "*")
 # Prepare optim steepest
-optim = Optimization("steepest")
+optim = linv.Optimization("steepest")
 # optim.compute_cost = x4
 # optim.compute_gradient = x4_prime
 optim.compute_cost_and_gradient = cost_and_grad
@@ -111,7 +112,7 @@ optim.n = len(model)
 optim_step = optim.solve(optim, model)
 
 # Steepest preco
-optim = Optimization("steepest")
+optim = linv.Optimization("steepest")
 optim.compute_cost = x4
 optim.compute_gradient = x4_prime
 optim.compute_cost_and_gradient = cost_and_grad
@@ -126,7 +127,7 @@ optim_pstep = optim.solve(optim, model)
 
 print(50 * "*", " NLCG ", 54 * "*")
 # Prepare optim nlcg
-optim = Optimization("nlcg")
+optim = linv.Optimization("nlcg")
 optim.compute_cost = x4
 optim.compute_gradient = x4_prime
 optim.apply_preconditioner = x4_preco
@@ -138,7 +139,7 @@ optim.n = len(model)
 optim_nlcg = optim.solve(optim, model)
 
 # Steepest preco
-optim = Optimization("nlcg")
+optim = linv.Optimization("nlcg")
 optim.compute_cost = x4
 optim.compute_gradient = x4_prime
 optim.apply_preconditioner = x4_preco
@@ -151,7 +152,7 @@ optim_pnlcg = optim.solve(optim, model)
 
 print(50 * "*", " GN ", 54 * "*")
 # Prepare optim nlcg
-optim = Optimization("gn")
+optim = linv.Optimization("gn")
 optim.compute_cost = x4
 optim.compute_gradient = x4_prime
 optim.compute_cost_and_grad_and_hess = cost_and_grad_and_hess
@@ -223,9 +224,12 @@ plt.plot(x[0], x4(x), label=r"$f(x) = x^4 - 4x^2 -2x$")
 # ax2.set_aspect('equal', 'box')
 plt.legend(loc=1)
 plt.title('Model Movement')
-plot_single_parameter_optimization(
-    optim_list, modellabel="x", labellist=labellist)
-plt.show()
+linv.plot_single_parameter_optimization(
+    optim_list, modellabel="x", labellist=labellist,
+    outfile=os.path.join(lbase.DOCFIGURES, "optimization_x4.svg"))
+linv.plot_single_parameter_optimization(
+    optim_list, modellabel="x", labellist=labellist,
+    outfile=os.path.join(lbase.DOCFIGURES, "optimization_x4.pdf"))
 
-plt.savefig(os.path.join(DOCFIGURES, "optimization_x4.svg"))
-plt.savefig(os.path.join(DOCFIGURES, "optimization_x4.pdf"))
+
+plt.show()

@@ -88,7 +88,7 @@ def scatterlegend(
 
     elif orientation == 'v':
         legend = plt.legend(
-            handles, labels, *args, ncol=1,
+            handles[::-1], labels[::-1], *args, ncol=1,
             **kwargs
         )
 

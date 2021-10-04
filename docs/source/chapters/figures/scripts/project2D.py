@@ -4,11 +4,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Internal
-import lwsspy as lpy
-from lwsspy import DOCFIGURES  # Location to store figure
-from lwsspy import updaterc    # Makes figure pretty in my opinion
+import lwsspy.plot as lplt
+import lwsspy.math as lmat
+import lwsspy.base as lbase
 
-lpy.updaterc()
+lplt.updaterc()
 
 # Create data
 x0 = np.array([0, 2, 2, 0])
@@ -18,7 +18,7 @@ yn = np.array([0, 1, 3, 4])
 x0q = np.array([0.5, 1.5, 1.5, 0.5])
 y0q = np.array([0.5, 0.5, 1.5, 1.5])
 
-xnq, ynq = lpy.project2D(x0, y0, xn, yn, x0q, y0q)
+xnq, ynq = lmat.project2D(x0, y0, xn, yn, x0q, y0q)
 
 # Plot figure
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4.5))
@@ -44,5 +44,5 @@ for _x0, _y0, _xn, _yn in zip(x0q, y0q, xnq, ynq):
 fig.legend(loc=8)
 
 # Save figure with rasterization with 300dpi
-plt.savefig(os.path.join(lpy.DOCFIGURES, "project2D.svg"), dpi=300)
+plt.savefig(os.path.join(lbase.DOCFIGURES, "project2D.svg"), dpi=300)
 plt.show()
