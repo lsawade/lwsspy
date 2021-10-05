@@ -7,7 +7,7 @@ Welcome to lwsspy's documentation!
 ==================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
    chapters/matplotlibtips.rst
@@ -15,8 +15,10 @@ Welcome to lwsspy's documentation!
    chapters/seismology.rst
    chapters/hpc-installations.rst
    chapters/paraview.rst
-   chapters/functions.rst
    chapters/one-liners-to-remember.rst
+   chapters/git.rst
+   chapters/functions.rst
+   
 
 Indices and tables
 ==================
