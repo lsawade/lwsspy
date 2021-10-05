@@ -236,7 +236,7 @@ class SphericalNN(object):
 
                 # Get cartesian distance
                 cartd = np.abs(2 * np.sin(maximum_distance/2.0/180.0*np.pi)
-                               * lpy.base.EARTH_RADIUS_KM)
+                               * lbase.EARTH_RADIUS_KM)
 
                 # Compute the weights using my inverse distance metric to avoid
                 # division by 0. Based on 1/(1 + x**2)
@@ -278,7 +278,15 @@ class SphericalNN(object):
                 # Compute the weights using modified shepard
                 # The distance being normalized by the standard deviation of
                 # the closest points
-                w = (1 / (1 + (d / np.nanstd(d[:, 0]))**2)) ** p
+                if np.all(np.nanstd(d[:, 0]) == 0.0):
+                    if np.all(np.nanstd(d[:, :]) == 0.0):
+                        std = 1.0
+                    else:
+                        std = np.nanstd(d[:, :])
+                else:
+                    std = np.nanstd(d[:, 0])
+
+                w = (1 / (1 + d / std)) ** p
 
                 def interpolator(data):
                     """Using the weights and indices, we can return an interpolator

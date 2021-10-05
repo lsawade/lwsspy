@@ -1,6 +1,6 @@
 
 import numpy as np
-import lwsspy as lpy
+import lwsspy.math as lmat
 
 
 def test_cart2sph1():
@@ -13,4 +13,4 @@ def test_cart2sph1():
     xyz = (1/np.sqrt(3), 1/np.sqrt(3), 1/np.sqrt(3))
 
     # Check
-    np.testing.assert_almost_equal(rtp, lpy.cart2sph(*xyz))
+    np.testing.assert_almost_equal(rtp, lmat.cart2sph(*xyz))
