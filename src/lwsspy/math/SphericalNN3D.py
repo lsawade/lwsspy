@@ -10,7 +10,8 @@ import numpy as np
 from scipy.spatial import cKDTree
 
 # Internal
-import lwsspy as lpy
+from .. import base as lbase
+from .. import math as lmat
 
 
 class SphericalNN3D(object):
@@ -80,7 +81,7 @@ class SphericalNN3D(object):
             (distance, indeces) to closest point in kdtree
         """
         distkm = np.abs(2*np.sin(maximum_distance/2.0 /
-                                 180.0*np.pi))*lpy.base.EARTH_RADIUS_KM
+                                 180.0*np.pi))*lbase.EARTH_RADIUS_KM
         points = self.spherical2cartesian(qlat, qlon, d=qd)
         d, i = self.kd_tree.query(
             points, distance_upper_bound=distkm, **kwargs)
@@ -105,7 +106,7 @@ class SphericalNN3D(object):
     #         Set of pairs (i, j) where i < j
     #     """
     #     distkm = np.abs(2 * np.sin(maximum_distance/2.0 /
-    #                                180.0*np.pi)) * lpy.base.EARTH_RADIUS_KM
+    #                                180.0*np.pi)) * lbase.EARTH_RADIUS_KM
     #     return self.kd_tree.query_pairs(distkm, output_type='ndarray')
 
     # def sparse_distance_matrix(self, other: Union[SphericalNN3D, None] = None,
@@ -132,7 +133,7 @@ class SphericalNN3D(object):
     #     """
     #     # Get distance
     #     distkm = np.abs(2 * np.sin(maximum_distance/2.0 /
-    #                                180.0*np.pi)) * lpy.base.EARTH_RADIUS_KM
+    #                                180.0*np.pi)) * lbase.EARTH_RADIUS_KM
 
     #     # Get tree
     #     if isinstance(other, SphericalNN3D):
@@ -150,7 +151,7 @@ class SphericalNN3D(object):
 
     #     # Convert form kilometers to degrees.
     #     if km is False:
-    #         output_mat *= lpy.KM2DEG
+    #         output_mat *= lbase.KM2DEG
 
     #     return output_mat
 
@@ -212,7 +213,7 @@ class SphericalNN3D(object):
     #                 qdata = np.where(
     #                     d <= np.abs(
     #                         2 * np.sin(maximum_distance/2.0/180.0*np.pi))
-    #                     * lpy.base.EARTH_RADIUS_KM,
+    #                     * lbase.EARTH_RADIUS_KM,
     #                     qdata, np.nan)
 
     #             return data[inds].reshape(shp)
@@ -238,7 +239,7 @@ class SphericalNN3D(object):
     #         if maximum_distance is not None:
     #             # Get cartesian distance
     #             cartd = np.abs(2 * np.sin(maximum_distance/2.0/180.0*np.pi)
-    #                            * lpy.base.EARTH_RADIUS_KM)
+    #                            * lbase.EARTH_RADIUS_KM)
 
     #             # Compute the weights using modified shepard
     #             w = (np.fmax(0, cartd - d) / cartd * d) ** 2
@@ -302,9 +303,9 @@ class SphericalNN3D(object):
         objects to an array of shape(len(list), 3) containing x/y/z in meters.
         """
         # Create three arrays containing lat/lng/radius.
-        r = np.ones_like(lat) * lpy.base.EARTH_RADIUS_KM
+        r = np.ones_like(lat) * lbase.EARTH_RADIUS_KM
 
         # Convert data from lat/lng to x/y/z.
-        x, y, z = lpy.math.geo2cart(r - d, lat, lon)
+        x, y, z = lmat.geo2cart(r - d, lat, lon)
 
         return np.vstack((x, y, z)).T

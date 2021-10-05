@@ -1,7 +1,9 @@
 import os
 from os.path import join, dirname, abspath, exists
 import xarray as xr
-import lwsspy as lpy
+from .. import utils as lutil
+from .. import shell as lsh
+from .. import base as lbase
 
 
 def read_etopo(version='bedrock', **kwargs) -> xr.Dataset:
@@ -32,20 +34,20 @@ def read_etopo(version='bedrock', **kwargs) -> xr.Dataset:
            f'{urlmod[version]}/grid_registered/netcdf/{available[version]}')
 
     # Get filename
-    zipname = join(lpy.base.DOWNLOAD_CACHE, available[version])
+    zipname = join(lbase.DOWNLOAD_CACHE, available[version])
     fname = zipname[:-3]
 
     # Downloading if not in download cache
     if exists(fname) is False:
         if exists(zipname) is False:
-            lpy.utils.print_action(f"Downloading ETOPO1 - {names[version]}")
-            lpy.shell.downloadfile(url, zipname)
-        lpy.utils.print_action("Unzipping...")
-        lpy.ungzip(zipname, fname)
+            lutil.print_action(f"Downloading ETOPO1 - {names[version]}")
+            lsh.downloadfile(url, zipname)
+        lutil.print_action("Unzipping...")
+        lsh.ungzip(zipname, fname)
 
     # If only zip left remove zip
     if exists(zipname):
-        lpy.utils.print_action("Removing zipfile...")
+        lutil.print_action("Removing zipfile...")
         os.remove(zipname)
 
     # Get data data

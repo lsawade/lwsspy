@@ -33,7 +33,7 @@ def map_axes(proj: str = "moll", central_longitude=0.0) -> plt.Axes:
     Examples
     --------
 
-    >>> from lwsspy import map_axes
+    >>> from lwsspy.plot import map_axes
     >>> map_axes()
 
     """

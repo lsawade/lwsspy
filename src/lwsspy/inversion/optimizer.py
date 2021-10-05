@@ -46,7 +46,7 @@ def scalar_product(a, b):
 
 
 def Solve_Optimisation_Problem(optim, model):
-    """Takes in class:`lwsspy.Optimization`
+    """Takes in class:`lwsspy.inversion.Optimization`
 
     Parameters
     ----------
@@ -57,7 +57,7 @@ def Solve_Optimisation_Problem(optim, model):
 
     Returns
     -------
-    lwsspy.Optimization
+    lwsspy.inversion.Optimization
         returns a copy of the optimization struct that has been optimized.
 
     Raises

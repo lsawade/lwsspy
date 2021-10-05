@@ -10,12 +10,12 @@ dependencies:
   - matplotlib==3.2.1
   - numpy
   - mypy
+  - autopep8
   - scipy
   - cartopy
   - mpi4py
   - h5py
   - jupyterlab
-  - pyvista
   - pip
   - pip:
     - obspy

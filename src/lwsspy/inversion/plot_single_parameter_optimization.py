@@ -2,7 +2,7 @@ from typing import Union, List
 import numpy as np
 import matplotlib.pyplot as plt
 from .optimizer import Optimization
-import lwsspy as lpy
+from .. import plot as lplt
 
 
 def plot_single_parameter_optimization(
@@ -42,7 +42,7 @@ def plot_single_parameter_optimization(
     plt.figure(figsize=(8, 4))
     plt.subplots_adjust(wspace=0.35, left=0.1, right=0.9)
     ax = plt.subplot(121)
-    lpy.plot.plot_label(ax, "a)", location=6, box=False)
+    lplt.plot_label(ax, "a)", location=6, box=False)
     for _opt, _label in zip(optim, labellist):
         # Get values
         c = _opt.fcost_hist
@@ -54,7 +54,7 @@ def plot_single_parameter_optimization(
     plt.ylabel("Norm. Log. Misfit")
 
     ax1 = plt.subplot(122, sharex=ax)
-    lpy.plot.plot_label(ax1, "b)", location=6, box=False)
+    lplt.plot_label(ax1, "b)", location=6, box=False)
     firstlist, lastlist = [], []
     for _opt, _label in zip(optim, labellist):
         firstlist.append(_opt.msave[0, 0])

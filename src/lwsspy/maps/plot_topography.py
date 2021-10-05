@@ -35,7 +35,7 @@ def plot_topography(extent: List[float] = [-180.0, 180.0, -90.0, 90.0],
 
     # Get topography
     etopo_bed = lmaps.read_etopo()
-    # etopo_ice = lpy.maps.read_etopo(version='ice')
+    # etopo_ice = lmaps.read_etopo(version='ice')
 
     # decimate
     fextent = lmaps.fix_map_extent(extent, fraction=0.1)

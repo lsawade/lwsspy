@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import lwsspy as lpy
+from .. import maps as lmap
+from .. import plot as lplt
 
 xc = np.round(45)
 yc = np.round(45)
@@ -24,7 +25,7 @@ def move_figure(f, x, y):
 
 
 # Create and show image
-fig = pz_figure()
+fig = lplt.pz_figure()
 X, Y, dx, dy = fig.canvas.manager.window.geometry().getRect()
 ax = plt.axes()
 plt.imshow(im)
@@ -41,6 +42,6 @@ zax = plt.axes()
 zax.imshow(im)
 zax.set_xlim((xc - xwin, xc + xwin))
 zax.set_ylim((yc + ywin, yc - ywin))
-PZ = PlotZoom(ax, zax, xc, yc, xwin, ywin)
+PZ = lplt.lotZoom(ax, zax, xc, yc, xwin, ywin)
 PZ.connect()
 plt.show(block=False)

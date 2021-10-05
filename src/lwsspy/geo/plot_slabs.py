@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import lwsspy as lpy
+from .. import geo as lgeo
 from cartopy import crs
 
 
@@ -28,7 +28,7 @@ def plot_slabs(
 
     # get slabs
     if dss is None:
-        dss = lpy.geo.get_slabs()
+        dss = lgeo.get_slabs()
 
     # Create axes if needed
     if ax is None:
@@ -36,7 +36,7 @@ def plot_slabs(
 
     # Get min and max
     if levels is None:
-        vmin, vmax = lpy.geo.get_slab_minmax(dss=dss)
+        vmin, vmax = lgeo.get_slab_minmax(dss=dss)
     else:
         vmin = None
         vmax = None

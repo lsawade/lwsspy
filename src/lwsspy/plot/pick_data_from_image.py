@@ -2,7 +2,8 @@ from typing import Union, Tuple
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import numpy as np
-import lwsspy as lpy
+from .. import plot as lplt
+from .. import utils as lutils
 from .plot_zoom import PlotZoom
 
 
@@ -69,8 +70,8 @@ def pick_data_from_image(infile: str, outfile: Union[str, None] = None,
     For an image with data in linearscale and axes data axis limits of 
     ``[0, 1, 0, 1]`` ``x`` and ``y`` can be picked and saved as follows.
 
-    >>> import lwsspy as lpy
-    >>> x,y = lpy.pick_data_from_image('test.png', 'testdata.csv')
+    >>> import lwsspy.plot as lplt
+    >>> x,y = lplt.pick_data_from_image('test.png', 'testdata.csv')
 
     Change ``.csv`` to  ``.npy`` to save numpy binary file.
 
@@ -135,7 +136,7 @@ def pick_data_from_image(infile: str, outfile: Union[str, None] = None,
     ywin = im.shape[0] * 0.025
 
     # Create and show image
-    lpy.plot.pz_figure()
+    lplt.plot.pz_figure()
     ax = plt.axes()
     plt.imshow(im)
     tit = plt.title("Press any key to start picking values...")
@@ -172,9 +173,9 @@ def pick_data_from_image(infile: str, outfile: Union[str, None] = None,
     zax.plot(xpx, ypx, "b+")
 
     # Convert Pixel to data
-    x = lpy.utils.pixels2data(xpx, imagextent[0], imagextent[1],
+    x = lutils.pixels2data(xpx, imagextent[0], imagextent[1],
                               extent[0], extent[1], log=logx)
-    y = lpy.utils.pixels2data(ypx, imagextent[3], imagextent[2],
+    y = lutils.pixels2data(ypx, imagextent[3], imagextent[2],
                               extent[2], extent[3], log=logy)
 
     # Output data to file of outfile is not Nonne

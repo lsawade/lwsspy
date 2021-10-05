@@ -3,12 +3,11 @@ import matplotlib.pyplot as plt
 from osgeo import gdal, osr
 import cartopy.crs as ccrs
 import numpy as np
-import lwsspy as lpy
 from matplotlib.colors import Normalize
 from scipy.signal.windows import tukey
 from scipy.ndimage import gaussian_filter
 from scipy import ndimage, misc
-import lwsspy.plot as lplt
+from .. import plot as lplt
 
 
 def start_stop(a, trigger_val):
@@ -201,7 +200,7 @@ class TopographyDesign:
             # Plot label
             label = f'N{str(np.abs(_k)).zfill(3)}'  # NXXX deg aximuth
             color = 'w' if self.facecolor == 'k' else 'k'
-            lpy.plot.plot_label(
+            lplt.plot_label(
                 plt.gca(), label, location=1, color=color,
                 box=False, fontdict=dict(fontsize="x-large")
             )

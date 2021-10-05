@@ -2,7 +2,9 @@ import os
 from glob import glob
 import numpy as np
 import netCDF4 as nc
-import lwsspy as lpy
+from .. import base as lbase
+from .. import shell as lsh
+
 
 
 def get_slabs(key='dep'):
@@ -36,18 +38,18 @@ def get_slabs(key='dep'):
 
     # URL that points to tar.gz
     url = "https://www.sciencebase.gov/catalog/file/get/5aa1b00ee4b0b1c392e86467?f=__disk__d5%2F91%2F39%2Fd591399bf4f249ab49ffec8a366e5070fe96e0ba"
-    tarname = os.path.join(lpy.base.DOWNLOAD_CACHE, 'slabs.tar.gz')
-    dirname = os.path.join(lpy.base.DOWNLOAD_CACHE, 'slabs')
+    tarname = os.path.join(lbase.DOWNLOAD_CACHE, 'slabs.tar.gz')
+    dirname = os.path.join(lbase.DOWNLOAD_CACHE, 'slabs')
 
     # If dirname exists nothing needs to be done
     if not os.path.exists(dirname):
 
         # If zip doesn't exist, you gotta download
         if not os.path.exists(tarname):
-            lpy.shell.downloadfile(url, tarname)
+            lsh.downloadfile(url, tarname)
 
         # Then, either way, unzipping has to be done
-        lpy.shell.untar(tarname, dirname)
+        lsh.untar(tarname, dirname)
 
     # Get depths. The extra star, because untarring creates extra dir
     slabfiles = glob(os.path.join(dirname, f'*/*{key}*'))

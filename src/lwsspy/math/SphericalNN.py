@@ -10,8 +10,8 @@ import numpy as np
 from scipy.spatial import cKDTree
 
 # Internal
-import lwsspy.math as lmat
-import lwsspy.base as lbase
+from .. import math as lmat
+from .. import base as lbase
 
 
 class SphericalNN(object):
@@ -99,7 +99,7 @@ class SphericalNN(object):
             Set of pairs (i, j) where i < j
         """
         distkm = np.abs(2 * np.sin(maximum_distance/2.0 /
-                                   180.0*np.pi)) * lpy.base.EARTH_RADIUS_KM
+                                   180.0*np.pi)) * lbase.EARTH_RADIUS_KM
         return self.kd_tree.query_pairs(distkm, output_type='ndarray')
 
     def sparse_distance_matrix(self, other: Union[SphericalNN, None] = None,
@@ -209,7 +209,7 @@ class SphericalNN(object):
                     qdata = np.where(
                         d <= np.abs(
                             2 * np.sin(maximum_distance/2.0/180.0*np.pi))
-                        * lpy.base.EARTH_RADIUS_KM,
+                        * lbase.EARTH_RADIUS_KM,
                         qdata, np.nan)
 
                 return data[inds].reshape(shp)

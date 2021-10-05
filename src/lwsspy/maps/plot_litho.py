@@ -2,7 +2,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from cartopy.crs import PlateCarree
 import numpy as np
-import lwsspy as lpy
+from .. import maps as lmap
 
 
 def plot_litho(which="all", parameter="depth", print_keys: bool = False,
@@ -53,7 +53,7 @@ def plot_litho(which="all", parameter="depth", print_keys: bool = False,
     mods = {"_top": "Top", "_bottom": "Bottom"}
 
     # Read the Litho1.0 file
-    litho = lpy.maps.read_litho()
+    litho = lmap.read_litho()
 
     # Get extent of the dataset
     minlat, maxlat = np.min(litho.latitude), np.max(litho.latitude)
@@ -106,22 +106,22 @@ def plot_litho(which="all", parameter="depth", print_keys: bool = False,
                 # Plot the map
                 plt.sca(axs[_i, _j])
                 # Plot coastlines
-                lpy.maps.plot_map(fill=False)
+                lmap.plot_map(fill=False)
                 # Plot surface
                 axs[_i, _j].imshow(
                     getattr(litho, _key + _v + _parameter)[::-1, :],
                     extent=extent, cmap=cmap, norm=norm)
                 # Make rasterizeable
                 axs[_i, _j].set_rasterization_zorder(-10)  # Important line!
-                lpy.plot.plot_label(
+                lplt.plot_label(
                     axs[_i, _j],
                     f"{boundaries[_key]} {mods[_v]} {parameter.capitalize()}",
                     aspect=2.0, location=1, dist=-0.05)
                 # Remove ticklabels
-                lpy.plot.remove_ticklabels(axs[_i, _j])
+                lplt.remove_ticklabels(axs[_i, _j])
 
             # Add colorbar for the row
-            cbar = lpy.plot.nice_colorbar(
+            cbar = lplt.nice_colorbar(
                 matplotlib.cm.ScalarMappable(cmap=cmap, norm=norm), ax=axs[_i, :])
             if parameter == 'depth':
                 cbar.ax.invert_yaxis()
@@ -137,15 +137,15 @@ def plot_litho(which="all", parameter="depth", print_keys: bool = False,
                 subplot_kw={'projection': PlateCarree()})
             plt.sca(axs)
             axs.set_rasterization_zorder(-10)  # Important line!
-            lpy.maps.plot_map(fill=False)
+            lmap.plot_map(fill=False)
             im = axs.imshow(
                 getattr(litho,  which + "_top" + _parameter)[::-1, :],
                 extent=extent, zorder=-20)
-            lpy.plot.remove_ticklabels(axs)
-            lpy.plot.plot_label(axs,
+            lplt.remove_ticklabels(axs)
+            lplt.plot_label(axs,
                                 f"{boundaries[which]} {mods['_top']} {parameter}",
                                 aspect=2.0, location=1, dist=-0.05)
-            cbar = lpy.plot.nice_colorbar(im)
+            cbar = lplt.nice_colorbar(im)
             if parameter == 'depth':
                 cbar.ax.invert_yaxis()
             cbar.set_label("z [km]")
@@ -170,20 +170,20 @@ def plot_litho(which="all", parameter="depth", print_keys: bool = False,
             # Populating the subplots
             for _j, _v in enumerate(mods.keys()):
                 plt.sca(axs[_j])
-                lpy.maps.plot_map(fill=False)
+                lmap.plot_map(fill=False)
                 axs[_j].imshow(
                     getattr(litho, which + _v + _parameter)[::-1, :],
                     extent=extent, cmap=cmap, norm=norm)
                 axs[_j].set_rasterization_zorder(-10)  # Important line!
-                lpy.plot.plot_label(
+                lplt.plot_label(
                     axs[_j],
                     f"{boundaries[which]} {mods[_v]} {parameter.capitalize()}",
                     aspect=2.0, location=1, dist=-0.05)
 
-                lpy.plot.remove_ticklabels(axs[_j])
+                lplt.remove_ticklabels(axs[_j])
 
             # Add colorbar for the row
-            cbar = lpy.plot.nice_colorbar(
+            cbar = lplt.nice_colorbar(
                 matplotlib.cm.ScalarMappable(cmap=cmap, norm=norm), ax=axs)
             if parameter == 'depth':
                 cbar.ax.invert_yaxis()

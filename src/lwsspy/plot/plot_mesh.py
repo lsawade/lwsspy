@@ -4,13 +4,18 @@ from typing import Optional, List
 import numpy as np
 import pyvista as pv
 import vtkmodules
-import lwsspy as lpy
 import matplotlib.pyplot as plt
 from matplotlib.tri import Triangulation, LinearTriInterpolator
 from copy import deepcopy
 from pyvista import _vtk
 from pyvista.utilities.helpers import generate_plane
 import pyvista
+
+from .. import math as lmat
+from .. import maps as lmaps
+from .. import plot as lplt
+from .. import base as lbase
+
 
 
 def plot_mesh(mesh: pv,
@@ -179,7 +184,7 @@ class MeshPlot():
             self.latitude, self.longitude = lat, lon
 
             # Convert to vector
-            self.initpos = lpy.math.geo2cart(
+            self.initpos = lmat.geo2cart(
                 1.0, self.latitude, self.longitude)
 
         else:
@@ -187,7 +192,7 @@ class MeshPlot():
             self.initpos = np.mean(self.mesh.points, axis=0)
 
             # Get convert to geo location.
-            _, self.latitude, self.longitude = lpy.math.cart2geo(*self.initpos)
+            _, self.latitude, self.longitude = lmat.cart2geo(*self.initpos)
 
         # Set center of the slice to be the init
         self.center = self.initpos
@@ -738,7 +743,7 @@ class MeshPlot():
         self.latitude = latitude
 
         # Compute the center
-        self.center = lpy.math.geo2cart(1.0, self.latitude, self.longitude)
+        self.center = lmat.geo2cart(1.0, self.latitude, self.longitude)
 
         # Compute new rotation matrix using the latitude
         self.rotmat_lat = rotation_matrix(
@@ -757,7 +762,7 @@ class MeshPlot():
         self.longitude = longitude
 
         # Compute center
-        self.center = lpy.math.geo2cart(1.0, self.latitude, self.longitude)
+        self.center = lmat.geo2cart(1.0, self.latitude, self.longitude)
 
         # Compute rotation matrix
         self.rotmat_lon = rotation_matrix(
@@ -832,7 +837,7 @@ class MeshPlot():
         #  Get starting values
         self.clim = self.initclim
         self.center = self.initpos
-        _, self.latitude, self.longitude = lpy.math.cart2geo(*self.initpos)
+        _, self.latitude, self.longitude = lmat.cart2geo(*self.initpos)
 
         # Reset colorbar boundaries
         self.set_colorslider_bounds()
@@ -859,7 +864,7 @@ class MeshPlot():
         slctemp = self.Rslice["slc"].copy(deep=True)
 
         # Get the geographical points
-        _, lat, lon = lpy.math.cart2geo(
+        _, lat, lon = lmat.cart2geo(
             slctemp.points[:, 0], slctemp.points[:, 1], slctemp.points[:, 2])
 
         # Get bounds
@@ -870,7 +875,7 @@ class MeshPlot():
         data = deepcopy(slctemp[self.meshname])
 
         # Set up interpolation
-        snn = lpy.math.SphericalNN(lat, lon)
+        snn = lmat.SphericalNN(lat, lon)
         res = 0.25
         llon, llat = np.meshgrid(
             np.arange(lonmin, lonmax+res, res),
@@ -884,8 +889,8 @@ class MeshPlot():
 
         # Create Map
         fig = plt.figure()
-        ax = lpy.maps.map_axes(proj='carr')
-        lpy.maps.plot_map(zorder=1, borders=False, fill=False)
+        ax = lmaps.map_axes(proj='carr')
+        lmaps.plot_map(zorder=1, borders=False, fill=False)
         ax.set_xlim(lonmin, lonmax)
         ax.set_ylim(latmin, latmax)
 
@@ -893,7 +898,7 @@ class MeshPlot():
         plt.imshow(d[::-1, :], extent=[lonmin, lonmax, latmin,
                                        latmax], cmap=self.cmapname,
                    zorder=-1, vmin=self.clim[0], vmax=self.clim[1])
-        cbar = lpy.plot.nice_colorbar(orientation='horizontal', aspect=40)
+        cbar = lplt.nice_colorbar(orientation='horizontal', aspect=40)
         label = 'Hitcounts' if self.meshname == 'illumination' else "Amplitude"
         cbar.set_label(label)
         plt.title(f"Z = {int(self.depth):d} km")
@@ -957,7 +962,7 @@ class MeshPlot():
 
         if self.debug:
             print("   Triangulate")
-        mesh = pc.delaunay_2d(alpha=0.5*1.5*lpy.DEG2KM)
+        mesh = pc.delaunay_2d(alpha=0.5*1.5*lbase.DEG2KM)
         mesh[self.meshname] = slctemp[self.meshname]
 
         # Get triangles from delauney triangulation to be
@@ -965,7 +970,7 @@ class MeshPlot():
         if self.debug:
             print("   Reshape Triangles")
         xy = np.array(mesh.points[:, 0:2])
-        r, t = lpy.math.cart2pol(xy[:, 0], xy[:, 1])
+        r, t = lmat.cart2pol(xy[:, 0], xy[:, 1])
         findlimt = t + 4 * np.pi
         mint = np.min(findlimt) - 4 * np.pi
         maxt = np.max(findlimt) - 4 * np.pi
@@ -979,8 +984,8 @@ class MeshPlot():
             maxt = 11.25
 
         # Set up intterpolation values
-        dmin = np.min(lpy.base.EARTH_RADIUS_KM - r)
-        dmax = np.max(lpy.base.EARTH_RADIUS_KM - r)
+        dmin = np.min(lbase.EARTH_RADIUS_KM - r)
+        dmax = np.max(lbase.EARTH_RADIUS_KM - r)
         dsamp = np.linspace(dmin, dmax, 1000)
         tsamp = np.linspace(mint, maxt, 1000)
         tt, dd = np.meshgrid(tsamp, dsamp)
@@ -993,10 +998,10 @@ class MeshPlot():
 
         # linear interpolation
         fz = LinearTriInterpolator(triObj, mesh[self.meshname])
-        Z = fz(tt, lpy.base.EARTH_RADIUS_KM - dd)
+        Z = fz(tt, lbase.EARTH_RADIUS_KM - dd)
 
         # Get aspect of the figure
-        aspect = ((maxt - mint)*180/np.pi*lpy.DEG2KM) / (dmax - dmin)
+        aspect = ((maxt - mint)*180/np.pi*lbase.DEG2KM) / (dmax - dmin)
         height = 4.0
         width = height * aspect
 
@@ -1008,7 +1013,7 @@ class MeshPlot():
 
         plt.imshow(
             Z,
-            extent=[mint*180/np.pi*lpy.DEG2KM, maxt*180/np.pi*lpy.DEG2KM,
+            extent=[mint*180/np.pi*lbase.DEG2KM, maxt*180/np.pi*lbase.DEG2KM,
                     dmax, dmin],
             cmap=self.cmapname, vmin=self.clim[0], vmax=self.clim[1],
             rasterized=True)

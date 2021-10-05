@@ -3,7 +3,7 @@ from multiprocessing.pool import Pool
 import numpy as np
 import threading
 from functools import partial
-import lwsspy as lpy
+from .. import utils as lutils
 import time
 
 
@@ -37,7 +37,7 @@ def threadwork(function, args: list or tuple, kwargs: dict or None = None,
     """Embarassingly Parallel multithreading"""
 
     # Get CpuCount
-    Ncpu = lpy.utils.cpu_count()
+    Ncpu = lutils.cpu_count()
 
     # Determine the amount of work to be done
     Nargs = len(args)
@@ -50,7 +50,7 @@ def threadwork(function, args: list or tuple, kwargs: dict or None = None,
     # Cutting the arguments in chunks
     argchunks = []
     for arg in args:
-        argchunks.append(lpy.utils.chunks(arg.tolist(), chunksize))
+        argchunks.append(lutils.chunks(arg.tolist(), chunksize))
 
     # Determine Kwargs,
     if type(kwargs) is None:

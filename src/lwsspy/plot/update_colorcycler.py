@@ -1,6 +1,6 @@
 
 import matplotlib.pyplot as plt
-import lwsspy as lpy
+from .. import plot as lplt
 
 
 def update_colorcycler(N: int, cmap: str = 'viridis',
@@ -33,7 +33,7 @@ def update_colorcycler(N: int, cmap: str = 'viridis',
     """
 
     # Get Colors
-    colors = lpy.plot.pick_colors_from_cmap(N, cmap=cmap)
+    colors = lplt.plot.pick_colors_from_cmap(N, cmap=cmap)
 
     # Set axes
     if ax is None:

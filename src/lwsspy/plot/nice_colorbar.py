@@ -1,6 +1,6 @@
 import matplotlib
 import matplotlib.pyplot as plt
-import lwsspy.utils as lutils
+from .. import utils as lutils
 
 
 def nice_colorbar(*args, fig: bool = False, **kwargs) -> matplotlib.colorbar.Colorbar:

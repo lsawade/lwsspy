@@ -1,5 +1,5 @@
 import numpy as np
-import lwsspy as lpy
+from .. import math as lmat
 import matplotlib.pyplot as plt
 
 
@@ -29,7 +29,7 @@ class GeoWeights:
         self.lat = latitude
         self.lon = longitude
 
-        self.kdtree = lpy.math.SphericalNN(self.lat, self.lon)
+        self.kdtree = lmat.SphericalNN(self.lat, self.lon)
         self.dij = self.kdtree.sparse_distance_matrix()
 
     def get_weights(self, ref: float = 1.0):
