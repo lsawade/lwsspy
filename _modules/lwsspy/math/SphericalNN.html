@@ -1,158 +1,187 @@
 
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>lwsspy.math.SphericalNN &mdash; lwsspy 0.0.1alpha documentation</title>
-  
 
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lwsspy.math.SphericalNN &#8212; LWSSPY</title>
     
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  <link href="../../../_static/css/theme.css" rel="stylesheet" />
+  <link href="../../../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
 
     
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    
+  <link rel="preload" as="script" href="../../../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
-</head>
-
-<body class="wy-body-for-nav">
-
-   
-  <div class="wy-grid-for-nav">
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
     
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-          
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
 
-          
-            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> lwsspy
-          
+    
 
+    <div class="container-xl">
+      <div class="row">
           
-          </a>
-
-          
-            
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-
-          
-        </div>
-
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
         
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/matplotlibtips.html">Tips And Tricks for Matplotlib</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/numpydoctips.html">NumpyDoc Tips</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/seismology.html">Seismology</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/hpc-installations.html">High-Performance-Computing Installations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/paraview.html">Paraview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/functions.html">Aaaalll the functions!</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/one-liners-to-remember.html">One-liners to Remember</a></li>
+      
+      
+      <img src="../../../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">LWSSPY</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p class="caption">
+ <span class="caption-text">
+  Contents:
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../chapters/matplotlibtips.html">
+   Tips And Tricks for Matplotlib
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../chapters/numpydoctips.html">
+   NumpyDoc Tips
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../chapters/hpc-installations.html">
+   High-Performance-Computing Installations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../chapters/bash.html">
+   Limit the number of concurrent jobs in the terminal
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../chapters/one-liners-to-remember.html">
+   One-liners to Remember
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../chapters/git.html">
+   Delete everything and restore what you want
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../chapters/functions.html">
+   Aaaalll the functions!
+  </a>
+ </li>
 </ul>
 
-            
-          
-        </div>
-        
-      </div>
-    </nav>
+    </div>
+</nav> <!-- To handle the deprecated key -->
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">lwsspy</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
-      <li>lwsspy.math.SphericalNN</li>
-    
-    
-      <li class="wy-breadcrumbs-aside">
-        
-      </li>
-    
-  </ul>
-
-  
-  <hr/>
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
             
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/lwsspy/lwsspy"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/lwsspy/lwsspy/issues/new?title=Issue%20on%20page%20%2F_modules/lwsspy/math/SphericalNN.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
   <h1>Source code for lwsspy.math.SphericalNN</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Taken from ObsPy originally, but heavily modified.</span>
@@ -160,14 +189,14 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="c1"># External</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">cKDTree</span>
-<span class="kn">from</span> <span class="nn">obspy.core.inventory</span> <span class="kn">import</span> <span class="n">Station</span>
 
 <span class="c1"># Internal</span>
-<span class="kn">import</span> <span class="nn">lwsspy</span> <span class="k">as</span> <span class="nn">lpy</span>
+<span class="kn">import</span> <span class="nn">lwsspy.math</span> <span class="k">as</span> <span class="nn">lmat</span>
+<span class="kn">import</span> <span class="nn">lwsspy.base</span> <span class="k">as</span> <span class="nn">lbase</span>
 
 
 <div class="viewcode-block" id="SphericalNN"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.math.SphericalNN.SphericalNN">[docs]</a><span class="k">class</span> <span class="nc">SphericalNN</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -201,7 +230,7 @@
 <span class="sd">        Lucas Sawade (lsawade@princeton.edu)</span>
 
 <span class="sd">    :Last Modified:</span>
-<span class="sd">        2020.01.07 19.00</span>
+<span class="sd">        2021.09.29 19.00</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -255,13 +284,13 @@
 <span class="sd">            Set of pairs (i, j) where i &lt; j</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">distkm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">maximum_distance</span><span class="o">/</span><span class="mf">2.0</span> <span class="o">/</span>
-                                   <span class="mf">180.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span> <span class="o">*</span> <span class="n">lpy</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span>
+                                   <span class="mf">180.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span> <span class="o">*</span> <span class="n">lpy</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kd_tree</span><span class="o">.</span><span class="n">query_pairs</span><span class="p">(</span><span class="n">distkm</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s1">&#39;ndarray&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SphericalNN.sparse_distance_matrix"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.math.SphericalNN.SphericalNN.sparse_distance_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">sparse_distance_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SphericalNN</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                <span class="n">maximum_distance</span><span class="o">=</span><span class="mf">180.0</span><span class="p">,</span> <span class="n">sparse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                                <span class="n">km</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Computes the sparse distance matrix between two kdtree. if no other </span>
+        <span class="sd">&quot;&quot;&quot;Computes the sparse distance matrix between two kdtree. if no other</span>
 <span class="sd">        kdtree is provided, this kdtree is used</span>
 
 <span class="sd">        Parameters</span>
@@ -283,7 +312,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Get distance</span>
         <span class="n">distkm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">maximum_distance</span><span class="o">/</span><span class="mf">2.0</span> <span class="o">/</span>
-                                   <span class="mf">180.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span> <span class="o">*</span> <span class="n">lpy</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span>
+                                   <span class="mf">180.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span> <span class="o">*</span> <span class="n">lbase</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span>
 
         <span class="c1"># Get tree</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">SphericalNN</span><span class="p">):</span>
@@ -301,18 +330,19 @@
 
         <span class="c1"># Convert form kilometers to degrees.</span>
         <span class="k">if</span> <span class="n">km</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="n">output_mat</span> <span class="o">*=</span> <span class="n">lpy</span><span class="o">.</span><span class="n">KM2DEG</span>
+            <span class="n">output_mat</span> <span class="o">*=</span> <span class="n">lbase</span><span class="o">.</span><span class="n">KM2DEG</span>
 
         <span class="k">return</span> <span class="n">output_mat</span></div>
 
-<div class="viewcode-block" id="SphericalNN.interp"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.math.SphericalNN.SphericalNN.interp">[docs]</a>    <span class="k">def</span> <span class="nf">interp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">qlat</span><span class="p">,</span> <span class="n">qlon</span><span class="p">,</span> <span class="n">maximum_distance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-               <span class="n">no_weighting</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">):</span>
+<div class="viewcode-block" id="SphericalNN.interpolator"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.math.SphericalNN.SphericalNN.interpolator">[docs]</a>    <span class="k">def</span> <span class="nf">interpolator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qlat</span><span class="p">,</span> <span class="n">qlon</span><span class="p">,</span> <span class="n">maximum_distance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">no_weighting</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Spherical interpolation function using the ``SphericalNN`` object.</span>
+<span class="sd">        Returns an interpolator that can be used for interpolating the same</span>
+<span class="sd">        set of locations based on the KDTree. The only input the interpolator</span>
+<span class="sd">        takes are the data corresponding to the points in the KDTree.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        data : numpy.ndarray</span>
-<span class="sd">            data</span>
 <span class="sd">        qlat : numpy.ndarray</span>
 <span class="sd">            query latitudes</span>
 <span class="sd">        qlon : numpy.ndarray</span>
@@ -326,9 +356,11 @@
 <span class="sd">            interpolation</span>
 <span class="sd">        k : int, optional</span>
 <span class="sd">            Define maximum number of neighbors to be used for the weighted</span>
-<span class="sd">            interpolation. Not used if ``no_weighting = True``. Default 10</span>
+<span class="sd">            interpolation. Not used if ``no_weighting = True``. Default None</span>
 <span class="sd">        p : float, optional</span>
-<span class="sd">            only used if maximum_distance is None. Default is 2</span>
+<span class="sd">            Exponent to compute the inverse distance weights. Note that in</span>
+<span class="sd">            the limit ``p-&gt;inf`` is just a nearest neighbor interpolation.</span>
+<span class="sd">            Default is 2</span>
 
 
 <span class="sd">        Notes</span>
@@ -352,121 +384,174 @@
             <span class="c1"># Get distances and indeces</span>
             <span class="n">d</span><span class="p">,</span> <span class="n">inds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kd_tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
 
-            <span class="c1"># Assign the interpolation data.</span>
-            <span class="n">qdata</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span>
+            <span class="k">def</span> <span class="nf">interpolator</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
 
-            <span class="c1"># Filter out distances too far out.</span>
-            <span class="k">if</span> <span class="n">maximum_distance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">qdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-                    <span class="n">d</span> <span class="o">&lt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">maximum_distance</span><span class="o">/</span><span class="mf">2.0</span><span class="o">/</span><span class="mf">180.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
-                    <span class="o">*</span> <span class="n">lpy</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span><span class="p">,</span>
-                    <span class="n">qdata</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+                <span class="c1"># Assign the interpolation data.</span>
+                <span class="n">qdata</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span>
+
+                <span class="c1"># Filter out distances too far out.</span>
+                <span class="k">if</span> <span class="n">maximum_distance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">qdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                        <span class="n">d</span> <span class="o">&lt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span>
+                            <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">maximum_distance</span><span class="o">/</span><span class="mf">2.0</span><span class="o">/</span><span class="mf">180.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
+                        <span class="o">*</span> <span class="n">lpy</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span><span class="p">,</span>
+                        <span class="n">qdata</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+                <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shp</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
 
-            <span class="c1"># Set K to the max number of poitns if not given</span>
+            <span class="c1"># Set K to the max number of points if not given</span>
             <span class="k">if</span> <span class="n">k</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">k</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kd_tree</span><span class="o">.</span><span class="n">n</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">kd_tree</span><span class="o">.</span><span class="n">n</span><span class="p">:</span>
+                    <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kd_tree</span><span class="o">.</span><span class="n">n</span>
 
             <span class="c1"># Get multiple distances and indeces</span>
             <span class="n">d</span><span class="p">,</span> <span class="n">inds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kd_tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
 
+            <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,):</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="n">inds</span> <span class="o">=</span> <span class="n">inds</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
             <span class="c1"># Filter out distances too far out.</span>
             <span class="c1"># Modified Shepard&#39;s method</span>
             <span class="k">if</span> <span class="n">maximum_distance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
                 <span class="c1"># Get cartesian distance</span>
                 <span class="n">cartd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">maximum_distance</span><span class="o">/</span><span class="mf">2.0</span><span class="o">/</span><span class="mf">180.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
-                               <span class="o">*</span> <span class="n">lpy</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span><span class="p">)</span>
+                               <span class="o">*</span> <span class="n">lbase</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span><span class="p">)</span>
 
-                <span class="c1"># Compute the weights using modified shepard</span>
-                <span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">cartd</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="n">cartd</span> <span class="o">*</span> <span class="n">d</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
-                <span class="n">wsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-                <span class="n">datarows</span> <span class="o">=</span> <span class="p">(</span><span class="n">wsum</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="c1"># Compute the weights using my inverse distance metric to avoid</span>
+                <span class="c1"># division by 0. Based on 1/(1 + x**2)</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">cartd</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span><span class="o">/</span><span class="n">cartd</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">d</span><span class="o">/</span><span class="n">cartd</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">**</span><span class="n">p</span>
 
-                <span class="c1"># interpolation using the weights</span>
-                <span class="n">qdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">wsum</span><span class="p">)</span>
-                <span class="n">qdata</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-                <span class="n">qdata</span><span class="p">[</span><span class="n">datarows</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span>
-                    <span class="n">w</span><span class="p">[</span><span class="n">datarows</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="n">inds</span><span class="p">[</span><span class="n">datarows</span><span class="p">,</span> <span class="p">:]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> \
-                    <span class="o">/</span> <span class="n">wsum</span><span class="p">[</span><span class="n">datarows</span><span class="p">]</span>
+                <span class="k">def</span> <span class="nf">interpolator</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                    <span class="sd">&quot;&quot;&quot;Using the weights and indices, we can return an interpolator</span>
+<span class="sd">                    &quot;&quot;&quot;</span>
+
+                    <span class="c1"># Making sure that the wighted sum does not include weights</span>
+                    <span class="c1"># where there is no data.</span>
+                    <span class="n">tmp_w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">inds</span><span class="p">]),</span> <span class="n">w</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+                    <span class="n">tmp_wsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">tmp_w</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">datarows</span> <span class="o">=</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">tmp_wsum</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+                    <span class="c1"># Empty array</span>
+                    <span class="n">qdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">tmp_wsum</span><span class="p">)</span>
+                    <span class="n">qdata</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+                    <span class="c1"># Check which rows only contain nans</span>
+                    <span class="n">tmp_weights</span> <span class="o">=</span> <span class="n">tmp_w</span><span class="p">[</span><span class="n">datarows</span><span class="p">]</span> <span class="o">/</span> \
+                        <span class="n">tmp_wsum</span><span class="p">[</span><span class="n">datarows</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+
+                    <span class="c1"># Interpolated data</span>
+                    <span class="n">idata</span> <span class="o">=</span> <span class="n">tmp_weights</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="n">inds</span><span class="p">][</span><span class="n">datarows</span><span class="p">]</span>
+                    <span class="n">nanrows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">idata</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+
+                    <span class="c1"># Do interpolation and replace only-nan rows with np.nan</span>
+                    <span class="n">tmp2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">tmp2</span><span class="p">[</span><span class="n">nanrows</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+                    <span class="n">qdata</span><span class="p">[</span><span class="n">datarows</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp2</span>
+
+                    <span class="k">return</span> <span class="n">qdata</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shp</span><span class="p">)</span>
 
             <span class="c1"># Shepard&#39;s method</span>
             <span class="k">else</span><span class="p">:</span>
 
                 <span class="c1"># Compute the weights using modified shepard</span>
-                <span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">d</span><span class="p">)</span> <span class="o">**</span> <span class="n">p</span>
-                <span class="n">wsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-                <span class="n">datarows</span> <span class="o">=</span> <span class="p">(</span><span class="n">wsum</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="c1"># The distance being normalized by the standard deviation of</span>
+                <span class="c1"># the closest points</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">(</span><span class="n">d</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">(</span><span class="n">d</span><span class="p">[:,</span> <span class="p">:])</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">):</span>
+                        <span class="n">std</span> <span class="o">=</span> <span class="mf">1.0</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">(</span><span class="n">d</span><span class="p">[:,</span> <span class="p">:])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">(</span><span class="n">d</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
 
-                <span class="c1"># Empty array</span>
-                <span class="n">qdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">wsum</span><span class="p">)</span>
-                <span class="n">qdata</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">d</span> <span class="o">/</span> <span class="n">std</span><span class="p">))</span> <span class="o">**</span> <span class="n">p</span>
 
-                <span class="c1"># interpolation using the weights</span>
-                <span class="n">qdata</span><span class="p">[</span><span class="n">datarows</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
-                    <span class="n">w</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="n">inds</span><span class="p">[</span><span class="n">datarows</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">wsum</span><span class="p">[</span><span class="n">datarows</span><span class="p">]</span>
+                <span class="k">def</span> <span class="nf">interpolator</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                    <span class="sd">&quot;&quot;&quot;Using the weights and indices, we can return an interpolator</span>
+<span class="sd">                    &quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="n">qdata</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shp</span><span class="p">)</span></div>
+                    <span class="c1"># Making sure that the wighted sum does not include weights</span>
+                    <span class="c1"># where there is no data.</span>
+                    <span class="n">tmp_w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">inds</span><span class="p">]),</span> <span class="n">w</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+                    <span class="n">tmp_wsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">tmp_w</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">datarows</span> <span class="o">=</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">tmp_wsum</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+                    <span class="c1"># Empty array</span>
+                    <span class="n">qdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">tmp_wsum</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                    <span class="n">qdata</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+                    <span class="c1"># Check which rows only contain nans</span>
+                    <span class="n">tmp_weights</span> <span class="o">=</span> <span class="n">tmp_w</span><span class="p">[</span><span class="n">datarows</span><span class="p">]</span> <span class="o">/</span> \
+                        <span class="n">tmp_wsum</span><span class="p">[</span><span class="n">datarows</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+
+                    <span class="c1"># Interpolated data</span>
+                    <span class="n">idata</span> <span class="o">=</span> <span class="n">tmp_weights</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="n">inds</span><span class="p">][</span><span class="n">datarows</span><span class="p">]</span>
+                    <span class="n">nanrows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">idata</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+
+                    <span class="c1"># Do interpolation and replace only-nan rows with np.nan</span>
+                    <span class="n">tmp2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">idata</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">tmp2</span><span class="p">[</span><span class="n">nanrows</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+                    <span class="n">qdata</span><span class="p">[</span><span class="n">datarows</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp2</span>
+
+                    <span class="k">return</span> <span class="n">qdata</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shp</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">interpolator</span></div>
 
 <div class="viewcode-block" id="SphericalNN.spherical2cartesian"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.math.SphericalNN.SphericalNN.spherical2cartesian">[docs]</a>    <span class="o">@</span> <span class="nb">staticmethod</span>
     <span class="k">def</span> <span class="nf">spherical2cartesian</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Converts a list of :class:`~obspy.fdsn.download_status.Station`</span>
-<span class="sd">        objects to an array of shape(len(list), 3) containing x/y/z in meters.</span>
+<span class="sd">        Converts lats and lons to shape(len(list), 3)</span>
+<span class="sd">        containing x/y/z in meters.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Create three arrays containing lat/lng/radius.</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">*</span> <span class="n">lpy</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">*</span> <span class="n">lbase</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span>
 
         <span class="c1"># Convert data from lat/lng to x/y/z.</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">lpy</span><span class="o">.</span><span class="n">geo2cart</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">lmat</span><span class="o">.</span><span class="n">geo2cart</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span><span class="o">.</span><span class="n">T</span></div></div>
 </pre></div>
 
-           </div>
-           
-          </div>
-          <footer>
-  
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>
+              </div>
+              
         
-        &copy; Copyright 2020, Lucas Sawade
+            
 
-    </p>
-  </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-</footer>
 
+<div class='prev-next-bottom'>
+    
+
+</div>
+        
         </div>
+    </div>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By Lucas Sawade<br/>
+        
+            &copy; Copyright 2020, Lucas Sawade.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
       </div>
-
-    </section>
-
-  </div>
+    </div>
   
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script>
+  <script src="../../../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
 
   
-  
-    
-   
-
-</body>
+  </body>
 </html>

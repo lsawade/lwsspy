@@ -115,3 +115,72 @@ possible.
     pip install tables
 
 
+Jupyter Notebooks and Julia
++++++++++++++++++++++++++++
+
+The following will explain how to use an existing ``jupyter`` installation on 
+the cluster, prefentially the base installation one, and run a ``julia`` Kernel 
+jupyter notebook. Essentially what we need to do is create a connection between 
+your julia installation and the jupyter notebook.
+
+**Prerequisits**:
+
+- Anaconda with base environment
+- Base environment contains ``jupyter`` installation
+- Have ``julia`` installed, no environment necessary
+
+**Step 1**: Find the existing jupyter installation
+
+Activate environment (example for tigercpu)
+
+.. code:: bash
+    
+    module load anaconda3
+    # conda activate # automatically activated on tiger
+
+
+Find where Jupyter is 
+
+.. code:: bash
+    
+    which jupyter
+
+
+This should return something like:
+
+.. code:: bash
+
+    /usr/licensed/anaconda3/2020.7/bin/jupyter
+
+
+This we will use later to tell ``IJulia`` how to install 
+its kernel in the already installed ``jupyter`` distribution.
+
+**Step 2**: Install ``IJulia`` using the jupyter environment variable
+
+In the ``julia`` console we want to add the ``IJulia`` packages, and tell the
+installation where ``jupyter`` is using the above found installation.
+
+.. code:: julia
+
+    julia> ENV["JUPYTER"] = "/usr/licensed/anaconda3/2020.7/bin/jupyter"
+
+The install ``IJulia``
+
+.. code:: julia
+
+    julia> ]
+    pkg> add IJulia
+    pkg> build IJulia
+
+This will add the ``julia`` Kernel to the existing jupyter installation.
+
+**Step 3**: Open Jupyter Notebook
+
+Follow these instructions to open the notebook remotely
+
+https://researchcomputing.princeton.edu/support/knowledge-base/jupyter#salloc
+
+The ``julia`` kernel should now be available to choose from.
+
+

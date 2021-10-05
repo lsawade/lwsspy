@@ -1,168 +1,241 @@
 
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>High-Performance-Computing Installations &mdash; lwsspy 0.0.1alpha documentation</title>
-  
 
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>High-Performance-Computing Installations &#8212; LWSSPY</title>
     
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
 
     
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Paraview" href="paraview.html" />
-    <link rel="prev" title="Seismology" href="seismology.html" /> 
-</head>
-
-<body class="wy-body-for-nav">
-
-   
-  <div class="wy-grid-for-nav">
+    <link rel="next" title="Limit the number of concurrent jobs in the terminal" href="bash.html" />
+    <link rel="prev" title="NumpyDoc Tips" href="numpydoctips.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
     
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-          
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
 
-          
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> lwsspy
-          
+    
 
+    <div class="container-xl">
+      <div class="row">
           
-          </a>
-
-          
-            
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="matplotlibtips.html">Tips And Tricks for Matplotlib</a></li>
-<li class="toctree-l1"><a class="reference internal" href="numpydoctips.html">NumpyDoc Tips</a></li>
-<li class="toctree-l1"><a class="reference internal" href="seismology.html">Seismology</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">High-Performance-Computing Installations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#hdf5-in-parallel-with-fortran-support">HDF5 in Parallel with Fortran support</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#mpi4py">mpi4py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id2">h5py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pytables">PyTables</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="paraview.html">Paraview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="functions.html">Aaaalll the functions!</a></li>
-<li class="toctree-l1"><a class="reference internal" href="one-liners-to-remember.html">One-liners to Remember</a></li>
-</ul>
-
-            
-          
-        </div>
-        
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
       
-      <nav class="wy-nav-top" aria-label="top navigation">
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
         
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">lwsspy</a>
-        
-      </nav>
+      
+      
+      <img src="../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">LWSSPY</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p class="caption">
+ <span class="caption-text">
+  Contents:
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="matplotlibtips.html">
+   Tips And Tricks for Matplotlib
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="numpydoctips.html">
+   NumpyDoc Tips
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   High-Performance-Computing Installations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="bash.html">
+   Limit the number of concurrent jobs in the terminal
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="one-liners-to-remember.html">
+   One-liners to Remember
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="git.html">
+   Delete everything and restore what you want
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="functions.html">
+   Aaaalll the functions!
+  </a>
+ </li>
+</ul>
 
+    </div>
+</nav> <!-- To handle the deprecated key -->
 
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-      <li>High-Performance-Computing Installations</li>
-    
-    
-      <li class="wy-breadcrumbs-aside">
-        
-            
-            <a href="../_sources/chapters/hpc-installations.rst.txt" rel="nofollow"> View page source</a>
-          
-        
-      </li>
-    
-  </ul>
-
-  
-  <hr/>
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
             
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/chapters/hpc-installations.rst.txt"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/lwsspy/lwsspy"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/lwsspy/lwsspy/issues/new?title=Issue%20on%20page%20%2Fchapters/hpc-installations.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        <a class="edit-button" href="https://github.com/lwsspy/lwsspy/edit/master/chapters/hpc-installations.rst"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#hdf5-in-parallel-with-fortran-support">
+   HDF5 in Parallel with Fortran support
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#mpi4py">
+   mpi4py
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
+   h5py
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#pytables">
+   PyTables
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#jupyter-notebooks-and-julia">
+   Jupyter Notebooks and Julia
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
   <div class="section" id="high-performance-computing-installations">
 <h1>High-Performance-Computing Installations<a class="headerlink" href="#high-performance-computing-installations" title="Permalink to this headline">¶</a></h1>
 <p>On thist page, I’m documenting the different ways of installing packages for
@@ -257,62 +330,105 @@ pip install tables
 </pre></div>
 </div>
 </div>
+<div class="section" id="jupyter-notebooks-and-julia">
+<h2>Jupyter Notebooks and Julia<a class="headerlink" href="#jupyter-notebooks-and-julia" title="Permalink to this headline">¶</a></h2>
+<p>The following will explain how to use an existing <code class="docutils literal notranslate"><span class="pre">jupyter</span></code> installation on
+the cluster, prefentially the base installation one, and run a <code class="docutils literal notranslate"><span class="pre">julia</span></code> Kernel
+jupyter notebook. Essentially what we need to do is create a connection between
+your julia installation and the jupyter notebook.</p>
+<p><strong>Prerequisits</strong>:</p>
+<ul class="simple">
+<li><p>Anaconda with base environment</p></li>
+<li><p>Base environment contains <code class="docutils literal notranslate"><span class="pre">jupyter</span></code> installation</p></li>
+<li><p>Have <code class="docutils literal notranslate"><span class="pre">julia</span></code> installed, no environment necessary</p></li>
+</ul>
+<p><strong>Step 1</strong>: Find the existing jupyter installation</p>
+<p>Activate environment (example for tigercpu)</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>module load anaconda3
+<span class="c1"># conda activate # automatically activated on tiger</span>
+</pre></div>
+</div>
+<p>Find where Jupyter is</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>which jupyter
+</pre></div>
+</div>
+<p>This should return something like:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/usr/licensed/anaconda3/2020.7/bin/jupyter
+</pre></div>
+</div>
+<p>This we will use later to tell <code class="docutils literal notranslate"><span class="pre">IJulia</span></code> how to install
+its kernel in the already installed <code class="docutils literal notranslate"><span class="pre">jupyter</span></code> distribution.</p>
+<p><strong>Step 2</strong>: Install <code class="docutils literal notranslate"><span class="pre">IJulia</span></code> using the jupyter environment variable</p>
+<p>In the <code class="docutils literal notranslate"><span class="pre">julia</span></code> console we want to add the <code class="docutils literal notranslate"><span class="pre">IJulia</span></code> packages, and tell the
+installation where <code class="docutils literal notranslate"><span class="pre">jupyter</span></code> is using the above found installation.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">julia</span><span class="o">&gt;</span> <span class="nb">ENV</span><span class="p">[</span><span class="s">&quot;JUPYTER&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;/usr/licensed/anaconda3/2020.7/bin/jupyter&quot;</span>
+</pre></div>
+</div>
+<p>The install <code class="docutils literal notranslate"><span class="pre">IJulia</span></code></p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">julia</span><span class="o">&gt;</span> <span class="p">]</span>
+<span class="n">pkg</span><span class="o">&gt;</span> <span class="n">add</span> <span class="n">IJulia</span>
+<span class="n">pkg</span><span class="o">&gt;</span> <span class="n">build</span> <span class="n">IJulia</span>
+</pre></div>
+</div>
+<p>This will add the <code class="docutils literal notranslate"><span class="pre">julia</span></code> Kernel to the existing jupyter installation.</p>
+<p><strong>Step 3</strong>: Open Jupyter Notebook</p>
+<p>Follow these instructions to open the notebook remotely</p>
+<p><a class="reference external" href="https://researchcomputing.princeton.edu/support/knowledge-base/jupyter#salloc">https://researchcomputing.princeton.edu/support/knowledge-base/jupyter#salloc</a></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">julia</span></code> kernel should now be available to choose from.</p>
+</div>
 </div>
 
 
-           </div>
-           
-          </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="paraview.html" class="btn btn-neutral float-right" title="Paraview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="seismology.html" class="btn btn-neutral float-left" title="Seismology" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+              </div>
+              
+        
+            
+
+
+
+<div class='prev-next-bottom'>
+    
+    <div id="prev">
+        <a class="left-prev" href="numpydoctips.html" title="previous page">
+            <i class="prevnext-label fas fa-angle-left"></i>
+            <div class="prevnext-info">
+                <p class="prevnext-label">previous</p>
+                <p class="prevnext-title">NumpyDoc Tips</p>
+            </div>
+        </a>
+    </div>
+     <div id="next">
+        <a class="right-next" href="bash.html" title="next page">
+            <div class="prevnext-info">
+                <p class="prevnext-label">next</p>
+                <p class="prevnext-title">Limit the number of concurrent jobs in the terminal</p>
+            </div>
+            <i class="prevnext-label fas fa-angle-right"></i>
+        </a>
+     </div>
+
+</div>
+        
+        </div>
+    </div>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By Lucas Sawade<br/>
+        
+            &copy; Copyright 2020, Lucas Sawade.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
     </div>
   
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2020, Lucas Sawade
-
-    </p>
-  </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
-
-</footer>
-
-        </div>
-      </div>
-
-    </section>
-
-  </div>
-  
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script>
+  <script src="../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
 
   
-  
-    
-   
-
-</body>
+  </body>
 </html>

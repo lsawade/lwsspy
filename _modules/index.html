@@ -1,156 +1,187 @@
 
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Overview: module code &mdash; lwsspy 0.0.1alpha documentation</title>
-  
 
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Overview: module code &#8212; LWSSPY</title>
     
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
 
     
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
-</head>
-
-<body class="wy-body-for-nav">
-
-   
-  <div class="wy-grid-for-nav">
+    <link rel="search" title="Search" href="../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
     
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-          
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
 
-          
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> lwsspy
-          
+    
 
+    <div class="container-xl">
+      <div class="row">
           
-          </a>
-
-          
-            
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-
-          
-        </div>
-
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
         
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../chapters/matplotlibtips.html">Tips And Tricks for Matplotlib</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../chapters/numpydoctips.html">NumpyDoc Tips</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../chapters/seismology.html">Seismology</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../chapters/hpc-installations.html">High-Performance-Computing Installations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../chapters/paraview.html">Paraview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../chapters/functions.html">Aaaalll the functions!</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../chapters/one-liners-to-remember.html">One-liners to Remember</a></li>
+      
+      
+      <img src="../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">LWSSPY</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p class="caption">
+ <span class="caption-text">
+  Contents:
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../chapters/matplotlibtips.html">
+   Tips And Tricks for Matplotlib
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../chapters/numpydoctips.html">
+   NumpyDoc Tips
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../chapters/hpc-installations.html">
+   High-Performance-Computing Installations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../chapters/bash.html">
+   Limit the number of concurrent jobs in the terminal
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../chapters/one-liners-to-remember.html">
+   One-liners to Remember
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../chapters/git.html">
+   Delete everything and restore what you want
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../chapters/functions.html">
+   Aaaalll the functions!
+  </a>
+ </li>
 </ul>
 
-            
-          
-        </div>
-        
-      </div>
-    </nav>
+    </div>
+</nav> <!-- To handle the deprecated key -->
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">lwsspy</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-      <li>Overview: module code</li>
-    
-    
-      <li class="wy-breadcrumbs-aside">
-        
-      </li>
-    
-  </ul>
-
-  
-  <hr/>
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
             
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/lwsspy/lwsspy"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/lwsspy/lwsspy/issues/new?title=Issue%20on%20page%20%2F_modules/index.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
   <h1>All modules for which code is available</h1>
 <ul><li><a href="lwsspy/inversion/optimizer.html">lwsspy.inversion.optimizer</a></li>
 <li><a href="lwsspy/maps/fix_map_extent.html">lwsspy.maps.fix_map_extent</a></li>
@@ -173,42 +204,14 @@
 <li><a href="lwsspy/math/rodrigues.html">lwsspy.math.rodrigues</a></li>
 <li><a href="lwsspy/math/rotation_matrix.html">lwsspy.math.rotation_matrix</a></li>
 <li><a href="lwsspy/math/sph2cart.html">lwsspy.math.sph2cart</a></li>
-<li><a href="lwsspy/plot_util/figcolorbar.html">lwsspy.plot_util.figcolorbar</a></li>
-<li><a href="lwsspy/plot_util/fixedpointcolornorm.html">lwsspy.plot_util.fixedpointcolornorm</a></li>
-<li><a href="lwsspy/plot_util/nice_colorbar.html">lwsspy.plot_util.nice_colorbar</a></li>
-<li><a href="lwsspy/plot_util/pick_data_from_image.html">lwsspy.plot_util.pick_data_from_image</a></li>
-<li><a href="lwsspy/plot_util/plot_label.html">lwsspy.plot_util.plot_label</a></li>
-<li><a href="lwsspy/plot_util/remove_ticklabels.html">lwsspy.plot_util.remove_ticklabels</a></li>
-<li><a href="lwsspy/plot_util/updaterc.html">lwsspy.plot_util.updaterc</a></li>
-<li><a href="lwsspy/plot_util/view_colormap.html">lwsspy.plot_util.view_colormap</a></li>
-<li><a href="lwsspy/seismo/cmt2inv.html">lwsspy.seismo.cmt2inv</a></li>
-<li><a href="lwsspy/seismo/cmt2stationxml.html">lwsspy.seismo.cmt2stationxml</a></li>
-<li><a href="lwsspy/seismo/cmtdir2stationxmldir.html">lwsspy.seismo.cmtdir2stationxmldir</a></li>
-<li><a href="lwsspy/seismo/gaussiant.html">lwsspy.seismo.gaussiant</a></li>
-<li><a href="lwsspy/seismo/inv2stationxml.html">lwsspy.seismo.inv2stationxml</a></li>
-<li><a href="lwsspy/seismo/perturb_cmt.html">lwsspy.seismo.perturb_cmt</a></li>
-<li><a href="lwsspy/seismo/process/compare_trace.html">lwsspy.seismo.process.compare_trace</a></li>
-<li><a href="lwsspy/seismo/process/process.html">lwsspy.seismo.process.process</a></li>
-<li><a href="lwsspy/seismo/process/process_wrapper.html">lwsspy.seismo.process.process_wrapper</a></li>
-<li><a href="lwsspy/seismo/process/rotate.html">lwsspy.seismo.process.rotate</a></li>
-<li><a href="lwsspy/seismo/process/rotate_utils.html">lwsspy.seismo.process.rotate_utils</a></li>
-<li><a href="lwsspy/seismo/source.html">lwsspy.seismo.source</a></li>
-<li><a href="lwsspy/seismo/specfem/cmt2STATIONS.html">lwsspy.seismo.specfem.cmt2STATIONS</a></li>
-<li><a href="lwsspy/seismo/specfem/cmt2rundir.html">lwsspy.seismo.specfem.cmt2rundir</a></li>
-<li><a href="lwsspy/seismo/specfem/cmt2simdir.html">lwsspy.seismo.specfem.cmt2simdir</a></li>
-<li><a href="lwsspy/seismo/specfem/cmtdir2rundirs.html">lwsspy.seismo.specfem.cmtdir2rundirs</a></li>
-<li><a href="lwsspy/seismo/specfem/cmtdir2simdirs.html">lwsspy.seismo.specfem.cmtdir2simdirs</a></li>
-<li><a href="lwsspy/seismo/specfem/createsimdir.html">lwsspy.seismo.specfem.createsimdir</a></li>
-<li><a href="lwsspy/seismo/specfem/getsimdirSTATIONS.html">lwsspy.seismo.specfem.getsimdirSTATIONS</a></li>
-<li><a href="lwsspy/seismo/specfem/inv2STATIONS.html">lwsspy.seismo.specfem.inv2STATIONS</a></li>
-<li><a href="lwsspy/seismo/specfem/plot_csv_depth_slice.html">lwsspy.seismo.specfem.plot_csv_depth_slice</a></li>
-<li><a href="lwsspy/seismo/specfem/plot_specfem_xsec_depth.html">lwsspy.seismo.specfem.plot_specfem_xsec_depth</a></li>
-<li><a href="lwsspy/seismo/specfem/read_parfile.html">lwsspy.seismo.specfem.read_parfile</a></li>
-<li><a href="lwsspy/seismo/specfem/read_specfem_xsec_depth.html">lwsspy.seismo.specfem.read_specfem_xsec_depth</a></li>
-<li><a href="lwsspy/seismo/specfem/stationxml2STATIONS.html">lwsspy.seismo.specfem.stationxml2STATIONS</a></li>
-<li><a href="lwsspy/seismo/specfem/stationxmldir2STATIONSdir.html">lwsspy.seismo.specfem.stationxmldir2STATIONSdir</a></li>
-<li><a href="lwsspy/seismo/specfem/write_parfile.html">lwsspy.seismo.specfem.write_parfile</a></li>
-<li><a href="lwsspy/seismo/validate_cmt.html">lwsspy.seismo.validate_cmt</a></li>
+<li><a href="lwsspy/plot/figcolorbar.html">lwsspy.plot.figcolorbar</a></li>
+<li><a href="lwsspy/plot/fixedpointcolornorm.html">lwsspy.plot.fixedpointcolornorm</a></li>
+<li><a href="lwsspy/plot/nice_colorbar.html">lwsspy.plot.nice_colorbar</a></li>
+<li><a href="lwsspy/plot/pick_data_from_image.html">lwsspy.plot.pick_data_from_image</a></li>
+<li><a href="lwsspy/plot/plot_label.html">lwsspy.plot.plot_label</a></li>
+<li><a href="lwsspy/plot/remove_ticklabels.html">lwsspy.plot.remove_ticklabels</a></li>
+<li><a href="lwsspy/plot/updaterc.html">lwsspy.plot.updaterc</a></li>
+<li><a href="lwsspy/plot/view_colormap.html">lwsspy.plot.view_colormap</a></li>
 <li><a href="lwsspy/statistics/clm.html">lwsspy.statistics.clm</a></li>
 <li><a href="lwsspy/statistics/distlist.html">lwsspy.statistics.distlist</a></li>
 <li><a href="lwsspy/statistics/errorellipse.html">lwsspy.statistics.errorellipse</a></li>
@@ -226,50 +229,38 @@
 <li><a href="lwsspy/weather/weather.html">lwsspy.weather.weather</a></li>
 </ul>
 
-           </div>
-           
-          </div>
-          <footer>
-  
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>
+              </div>
+              
         
-        &copy; Copyright 2020, Lucas Sawade
+            
 
-    </p>
-  </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-</footer>
 
+<div class='prev-next-bottom'>
+    
+
+</div>
+        
         </div>
+    </div>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By Lucas Sawade<br/>
+        
+            &copy; Copyright 2020, Lucas Sawade.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
       </div>
-
-    </section>
-
-  </div>
+    </div>
   
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script>
+  <script src="../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
 
   
-  
-    
-   
-
-</body>
+  </body>
 </html>

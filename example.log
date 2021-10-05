@@ -1,0 +1,5 @@
+[2021-10-05 11:09:23.649] - test_output - DEBUG   : debug message (test_output.py:32)
+[2021-10-05 11:09:23.650] - test_output - INFO    : info message
+[2021-10-05 11:09:23.650] - test_output - WARNING : warn message
+[2021-10-05 11:09:23.650] - test_output - ERROR   : error message (test_output.py:35)
+[2021-10-05 11:09:23.650] - test_output - CRITICAL: critical message (test_output.py:36)

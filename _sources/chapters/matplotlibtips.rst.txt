@@ -64,9 +64,7 @@ transparent. Simply save your figure using
     plt.savefig(<output_filename>, transparent=True)
 
 
-See :ref:`station-map` for a use of the figure. Note that the rtd-themes 
-background is not white, but off white, if the figure background would be 
-visible, you would see it. For a converse example, see :ref:`partial-rasterize`.
+For a converse example, see :ref:`partial-rasterize`.
 
 
 Multiple Locator for the Axes
@@ -97,3 +95,17 @@ a ``LineCollection`` and returns the ``LineCollection`` as well as a
   :language: python
 
 .. image:: figures/xyz_line.svg
+
+
+An example using the ``lwsspy.plot_xyz_line`` of ancient reef topography 
+in Nevada.
+
+.. image:: figures/nevada_dem.png
+
+
+rotational view.
+
+
+.. raw:: html
+
+    <video width="100%" height="auto" controls src="../_static/hello.mp4" type="video/mp4" autoplay loop></video>

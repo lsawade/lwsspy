@@ -1,0 +1,468 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lwsspy.plot.updaterc &#8212; LWSSPY</title>
+    
+  <link href="../../../_static/css/theme.css" rel="stylesheet" />
+  <link href="../../../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    
+  <link rel="preload" as="script" href="../../../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../../../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">LWSSPY</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p class="caption">
+ <span class="caption-text">
+  Contents:
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../chapters/matplotlibtips.html">
+   Tips And Tricks for Matplotlib
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../chapters/numpydoctips.html">
+   NumpyDoc Tips
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../chapters/hpc-installations.html">
+   High-Performance-Computing Installations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../chapters/bash.html">
+   Limit the number of concurrent jobs in the terminal
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../chapters/one-liners-to-remember.html">
+   One-liners to Remember
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../chapters/git.html">
+   Delete everything and restore what you want
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../chapters/functions.html">
+   Aaaalll the functions!
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/lwsspy/lwsspy"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/lwsspy/lwsspy/issues/new?title=Issue%20on%20page%20%2F_modules/lwsspy/plot/updaterc.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <h1>Source code for lwsspy.plot.updaterc</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">matplotlib.font_manager</span> <span class="k">as</span> <span class="nn">fm</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">matplotlib.ft2font</span> <span class="k">as</span> <span class="nn">ft</span>
+
+<span class="n">FONTS</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s1">&#39;fonts&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="updaterc"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.plot.updaterc.updaterc">[docs]</a><span class="k">def</span> <span class="nf">updaterc</span><span class="p">(</span><span class="n">rebuild</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Updates the rcParams to something generic that looks ok good out of</span>
+<span class="sd">    the box.</span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">        rebuild (bool):</span>
+<span class="sd">            Rebuilds fontcache incase it needs it.</span>
+
+<span class="sd">    Last modified: Lucas Sawade, 2020.09.15 01.00 (lsawade@princeton.edu)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">add_fonts</span><span class="p">()</span>
+
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;font.family&#39;</span><span class="p">:</span> <span class="s1">&#39;sans-serif&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;font.style&#39;</span><span class="p">:</span>   <span class="s1">&#39;normal&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;font.variant&#39;</span><span class="p">:</span> <span class="s1">&#39;normal&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;font.weight&#39;</span><span class="p">:</span>  <span class="s1">&#39;normal&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;font.stretch&#39;</span><span class="p">:</span> <span class="s1">&#39;normal&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;font.size&#39;</span><span class="p">:</span>    <span class="mf">12.0</span><span class="p">,</span>
+        <span class="s1">&#39;font.serif&#39;</span><span class="p">:</span>     <span class="p">[</span>
+            <span class="s1">&#39;Times New Roman&#39;</span><span class="p">,</span> <span class="s1">&#39;DejaVu Serif&#39;</span><span class="p">,</span> <span class="s1">&#39;Bitstream Vera Serif&#39;</span><span class="p">,</span> <span class="s1">&#39;Computer Modern Roman&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;New Century Schoolbook&#39;</span><span class="p">,</span> <span class="s1">&#39;Century Schoolbook L&#39;</span><span class="p">,</span> <span class="s1">&#39;Utopia&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;ITC Bookman&#39;</span><span class="p">,</span> <span class="s1">&#39;Bookman&#39;</span><span class="p">,</span> <span class="s1">&#39;Nimbus Roman No9 L&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Times&#39;</span><span class="p">,</span> <span class="s1">&#39;Palatino&#39;</span><span class="p">,</span> <span class="s1">&#39;Charter&#39;</span><span class="p">,</span> <span class="s1">&#39;serif&#39;</span>
+        <span class="p">],</span>
+        <span class="s1">&#39;font.sans-serif&#39;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s1">&#39;Arial&#39;</span><span class="p">,</span> <span class="s1">&#39;Helvetica&#39;</span><span class="p">,</span> <span class="s1">&#39;DejaVu Sans&#39;</span><span class="p">,</span> <span class="s1">&#39;Bitstream Vera Sans&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Computer Modern Sans Serif&#39;</span><span class="p">,</span> <span class="s1">&#39;Lucida Grande&#39;</span><span class="p">,</span> <span class="s1">&#39;Verdana&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Geneva&#39;</span><span class="p">,</span> <span class="s1">&#39;Lucid&#39;</span><span class="p">,</span> <span class="s1">&#39;Avant Garde&#39;</span><span class="p">,</span> <span class="s1">&#39;sans-serif&#39;</span>
+        <span class="p">],</span>
+        <span class="s1">&#39;font.cursive&#39;</span><span class="p">:</span>    <span class="p">[</span>
+            <span class="s1">&#39;Apple Chancery&#39;</span><span class="p">,</span> <span class="s1">&#39;Textile&#39;</span><span class="p">,</span> <span class="s1">&#39;Zapf Chancery&#39;</span><span class="p">,</span> <span class="s1">&#39;Sand&#39;</span><span class="p">,</span> <span class="s1">&#39;Script MT&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Felipa&#39;</span><span class="p">,</span> <span class="s1">&#39;Comic Neue&#39;</span><span class="p">,</span> <span class="s1">&#39;Comic Sans MS&#39;</span><span class="p">,</span> <span class="s1">&#39;cursive&#39;</span>
+        <span class="p">],</span>
+        <span class="s1">&#39;font.fantasy&#39;</span><span class="p">:</span>    <span class="p">[</span>
+            <span class="s1">&#39;Chicago&#39;</span><span class="p">,</span> <span class="s1">&#39;Charcoal&#39;</span><span class="p">,</span> <span class="s1">&#39;Impact&#39;</span><span class="p">,</span> <span class="s1">&#39;Western&#39;</span><span class="p">,</span> <span class="s1">&#39;Humor Sans&#39;</span><span class="p">,</span> <span class="s1">&#39;xkcd&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;fantasy&#39;</span>
+        <span class="p">],</span>
+        <span class="s1">&#39;font.monospace&#39;</span><span class="p">:</span>  <span class="p">[</span>
+            <span class="s1">&#39;Roboto Mono&#39;</span><span class="p">,</span> <span class="s1">&#39;Monaco&#39;</span><span class="p">,</span> <span class="s1">&#39;DejaVu Sans Mono&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Bitstream Vera Sans Mono&#39;</span><span class="p">,</span>  <span class="s1">&#39;Computer Modern Typewriter&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Andale Mono&#39;</span><span class="p">,</span> <span class="s1">&#39;Nimbus Mono L&#39;</span><span class="p">,</span> <span class="s1">&#39;Courier New&#39;</span><span class="p">,</span> <span class="s1">&#39;Courier&#39;</span><span class="p">,</span> <span class="s1">&#39;Fixed&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Terminal&#39;</span><span class="p">,</span> <span class="s1">&#39;monospace&#39;</span>
+        <span class="p">],</span>
+        <span class="s1">&#39;font.size&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+        <span class="c1"># &#39;pdf.fonttype&#39;: 3,</span>
+        <span class="s1">&#39;font.weight&#39;</span><span class="p">:</span> <span class="s1">&#39;normal&#39;</span><span class="p">,</span>
+        <span class="c1"># &#39;pdf.fonttype&#39;: 42,</span>
+        <span class="c1"># &#39;ps.fonttype&#39;: 42,</span>
+        <span class="c1"># &#39;ps.useafm&#39;: True,</span>
+        <span class="c1"># &#39;pdf.use14corefonts&#39;: True,</span>
+        <span class="s1">&#39;axes.unicode_minus&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s1">&#39;axes.labelweight&#39;</span><span class="p">:</span> <span class="s1">&#39;normal&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;axes.labelsize&#39;</span><span class="p">:</span> <span class="s1">&#39;small&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;axes.titlesize&#39;</span><span class="p">:</span> <span class="s1">&#39;medium&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;axes.linewidth&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;axes.grid&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s1">&#39;grid.color&#39;</span><span class="p">:</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;grid.linestyle&#39;</span><span class="p">:</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;grid.alpha&#39;</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span>
+        <span class="s1">&#39;xtick.labelsize&#39;</span><span class="p">:</span> <span class="s1">&#39;small&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;xtick.direction&#39;</span><span class="p">:</span> <span class="s1">&#39;out&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;xtick.top&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw label on the top</span>
+        <span class="s1">&#39;xtick.bottom&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw label on the bottom</span>
+        <span class="s1">&#39;xtick.minor.visible&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;xtick.major.top&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;xtick.major.bottom&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis bottom major ticks</span>
+        <span class="s1">&#39;xtick.major.size&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;xtick.major.width&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;xtick.minor.top&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis top minor ticks</span>
+        <span class="s1">&#39;xtick.minor.bottom&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis bottom minor ticks</span>
+        <span class="s1">&#39;xtick.minor.width&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;xtick.minor.size&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;ytick.labelsize&#39;</span><span class="p">:</span> <span class="s1">&#39;small&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ytick.direction&#39;</span><span class="p">:</span> <span class="s1">&#39;out&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ytick.left&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw label on the top</span>
+        <span class="s1">&#39;ytick.right&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw label on the bottom</span>
+        <span class="s1">&#39;ytick.minor.visible&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;ytick.major.left&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;ytick.major.right&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis bottom major ticks</span>
+        <span class="s1">&#39;ytick.major.size&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;ytick.major.width&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;ytick.minor.left&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis top minor ticks</span>
+        <span class="s1">&#39;ytick.minor.right&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis bottom minor ticks</span>
+        <span class="s1">&#39;ytick.minor.size&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;ytick.minor.width&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;legend.fancybox&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s1">&#39;legend.frameon&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;legend.loc&#39;</span><span class="p">:</span> <span class="s1">&#39;best&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;legend.numpoints&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;legend.fontsize&#39;</span><span class="p">:</span> <span class="s1">&#39;small&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;legend.framealpha&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;legend.scatterpoints&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s1">&#39;legend.edgecolor&#39;</span><span class="p">:</span> <span class="s1">&#39;inherit&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;legend.facecolor&#39;</span><span class="p">:</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;mathtext.fontset&#39;</span><span class="p">:</span> <span class="s1">&#39;custom&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;mathtext.rm&#39;</span><span class="p">:</span> <span class="s1">&#39;sans&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;mathtext.it&#39;</span><span class="p">:</span> <span class="s1">&#39;sans:italic&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;mathtext.bf&#39;</span><span class="p">:</span> <span class="s1">&#39;sans:bold&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;mathtext.cal&#39;</span><span class="p">:</span> <span class="s1">&#39;cursive&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;mathtext.tt&#39;</span><span class="p">:</span>  <span class="s1">&#39;monospace&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;mathtext.fallback&#39;</span><span class="p">:</span> <span class="s1">&#39;cm&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;mathtext.default&#39;</span><span class="p">:</span> <span class="s1">&#39;it&#39;</span>
+    <span class="p">}</span>
+
+    <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">params</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">add_fonts</span><span class="p">(</span><span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+
+    <span class="c1"># Remove fontlist:</span>
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;~/.matplotlib/font*.json&#39;</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+    <span class="c1"># Fonts</span>
+    <span class="n">fontfiles</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FONTS</span><span class="p">,</span> <span class="s2">&quot;*.tt?&quot;</span><span class="p">))</span>
+
+    <span class="c1"># for name, fname in fontdict.items():</span>
+    <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">fontfiles</span><span class="p">:</span>
+
+        <span class="n">font</span> <span class="o">=</span> <span class="n">ft</span><span class="o">.</span><span class="n">FT2Font</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+
+        <span class="c1"># Just to verify what kind of fonts are added verifiably</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;Scalable:&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">.</span><span class="n">scalable</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">style</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Italic&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Bold&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Scalable&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Fixed sizes&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Fixed width&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;SFNT&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Horizontal&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Vertical&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Kerning&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Fast glyphs&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Multiple masters&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;Glyph names&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;External stream&#39;</span><span class="p">):</span>
+                <span class="n">bitpos</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ft</span><span class="p">,</span> <span class="n">style</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">style</span><span class="o">+</span><span class="s1">&#39;:&#39;</span><span class="si">:</span><span class="s2">17</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">(</span><span class="n">font</span><span class="o">.</span><span class="n">style_flags</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bitpos</span><span class="p">)))</span>
+
+        <span class="c1"># Actually adding the fonts</span>
+        <span class="n">fe</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">ttfFontProperty</span><span class="p">(</span><span class="n">font</span><span class="p">)</span>
+        <span class="n">fm</span><span class="o">.</span><span class="n">fontManager</span><span class="o">.</span><span class="n">ttflist</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">fe</span><span class="p">)</span>
+
+    <span class="c1"># matplotlib.font_manager.findSystemFonts(fontpaths=None, fontext=&#39;ttf&#39;)</span>
+    <span class="c1"># def _add_Helvetica():</span>
+
+    <span class="c1">#     # Check if Helvetica in system fonts</span>
+    <span class="c1">#     from matplotlib import font_manager</span>
+    <span class="c1">#     fonts = [os.path.basename(x).split(&quot;.&quot;)[0]</span>
+    <span class="c1">#              for x in font_manager.findSystemFonts(</span>
+    <span class="c1">#         fontpaths=None)]</span>
+    <span class="c1">#     fonts.sort()</span>
+    <span class="c1">#     # print(fonts)</span>
+    <span class="c1">#     if &quot;HelveticaNeue&quot; in fonts:</span>
+    <span class="c1">#         pass</span>
+    <span class="c1">#     elif &quot;Helvetica Neue&quot; in fonts:</span>
+    <span class="c1">#         pass</span>
+    <span class="c1">#     elif &quot;Helvetica&quot; in fonts:</span>
+    <span class="c1">#         return &quot;Helvetica&quot;</span>
+    <span class="c1">#     else:</span>
+    <span class="c1">#         font_file = os.path.join(</span>
+    <span class="c1">#             os.path.dirname(__file__), &#39;fonts&#39;, &#39;HelveticaNeue.ttc&#39;)</span>
+    <span class="c1">#         font_manager.fontManager.addfont(font_file)</span>
+    <span class="c1">#     return &quot;Helvetica Neue&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">updaterc_pres</span><span class="p">(</span><span class="n">rebuild</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Updates the rcParams to something generic that looks ok good out of</span>
+<span class="sd">    the box.</span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">        rebuild (bool):</span>
+<span class="sd">            Rebuilds fontcache incase it needs it.</span>
+
+<span class="sd">    Last modified: Lucas Sawade, 2020.09.15 01.00 (lsawade@princeton.edu)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;font.family&#39;</span><span class="p">:</span> <span class="s1">&#39;Helvetica Neue&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;pdf.fonttype&#39;</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+        <span class="s1">&#39;font.weight&#39;</span><span class="p">:</span> <span class="s1">&#39;bold&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;axes.labelweight&#39;</span><span class="p">:</span> <span class="s1">&#39;bold&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;axes.labelsize&#39;</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span>
+        <span class="s1">&#39;axes.titlesize&#39;</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span>
+        <span class="s1">&#39;axes.linewidth&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s1">&#39;axes.grid&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;grid.color&#39;</span><span class="p">:</span> <span class="s2">&quot;lightgrey&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;xtick.labelsize&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+        <span class="s1">&#39;xtick.direction&#39;</span><span class="p">:</span> <span class="s1">&#39;inout&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;xtick.top&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw label on the top</span>
+        <span class="s1">&#39;xtick.bottom&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw label on the bottom</span>
+        <span class="s1">&#39;xtick.minor.visible&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;xtick.major.top&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;xtick.major.bottom&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis bottom major ticks</span>
+        <span class="s1">&#39;xtick.major.size&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;xtick.major.width&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;xtick.minor.top&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis top minor ticks</span>
+        <span class="s1">&#39;xtick.minor.bottom&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis bottom minor ticks</span>
+        <span class="s1">&#39;xtick.minor.width&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;xtick.minor.size&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;ytick.labelsize&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+        <span class="s1">&#39;ytick.direction&#39;</span><span class="p">:</span> <span class="s1">&#39;inout&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ytick.left&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw label on the top</span>
+        <span class="s1">&#39;ytick.right&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw label on the bottom</span>
+        <span class="s1">&#39;ytick.minor.visible&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;ytick.major.left&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;ytick.major.right&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis bottom major ticks</span>
+        <span class="s1">&#39;ytick.major.size&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;ytick.major.width&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;ytick.minor.left&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis top minor ticks</span>
+        <span class="s1">&#39;ytick.minor.right&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># draw x axis bottom minor ticks</span>
+        <span class="s1">&#39;ytick.minor.size&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;ytick.minor.width&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># draw x axis top major ticks</span>
+        <span class="s1">&#39;legend.fancybox&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s1">&#39;legend.frameon&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;legend.loc&#39;</span><span class="p">:</span> <span class="s1">&#39;best&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;legend.numpoints&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;legend.fontsize&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+        <span class="s1">&#39;legend.framealpha&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;legend.scatterpoints&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s1">&#39;legend.edgecolor&#39;</span><span class="p">:</span> <span class="s1">&#39;inherit&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;legend.facecolor&#39;</span><span class="p">:</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;mathtext.fontset&#39;</span><span class="p">:</span> <span class="s1">&#39;stix&#39;</span><span class="p">,</span>
+        <span class="c1"># &#39;mathtext.rm&#39;: &#39;Helvetica&#39;,</span>
+        <span class="c1"># &#39;mathtext.it&#39;: &#39;Helvetica:italic&#39;,</span>
+        <span class="c1"># &#39;mathtext.bf&#39;: &#39;Helvetica:bold&#39;</span>
+    <span class="p">}</span>
+    <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">rebuild</span><span class="p">:</span>
+        <span class="n">matplotlib</span><span class="o">.</span><span class="n">font_manager</span><span class="o">.</span><span class="n">_rebuild</span><span class="p">()</span>
+</pre></div>
+
+              </div>
+              
+        
+            
+
+
+
+<div class='prev-next-bottom'>
+    
+
+</div>
+        
+        </div>
+    </div>
+    <footer class="footer">
+    <div class="container">
+      <p>
+        
+          By Lucas Sawade<br/>
+        
+            &copy; Copyright 2020, Lucas Sawade.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../../../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+
+  
+  </body>
+</html>
