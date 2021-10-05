@@ -36,7 +36,14 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'numpydoc',
+    'myst'
 ]
+
+# source_suffix = {
+#     '.rst': 'restructuredtext',
+#     '.txt': 'markdown',
+#     '.md': 'markdown',
+# }
 
 numpydoc_show_class_members = False
 
@@ -57,4 +64,20 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_title = "LWSSPY"
+html_logo = "chapters/figures/logo.png"
+html_favicon = "chapters/figures/favicon.ico"
+
+html_theme = 'sphinx_book_theme'
+
+# Add any paths that contain custom static files (such as style sheets) here,
+# relative to this directory. They are copied after the builtin static files,
+# so a file named "default.css" will overwrite the builtin "default.css".
+html_static_path = ['_static']
+
+html_theme_options = {
+    "repository_url": "https://github.com/lwsspy/lwsspy",
+    "use_issues_button": True,
+    "use_repository_button": True,
+    "use_edit_page_button": True,
+}

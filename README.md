@@ -1,4 +1,4 @@
-# Collection of my codes.
+# Collection of my standard codes.
 
 Here I'm going to collect all codes hat I create. I will edit them etc.
 `lwsspy` is the complement to `lwss`, which is for matlab codes.
@@ -30,7 +30,7 @@ we can install the rest of the functions via `pip`.
 
 1. `conda env create -f summitenv.yml`
 2. Check the documentation for the installation of Parallel HDF5 on the cluster, and
-subsequent installations of `mpi4py`, and `h5py`.
+   subsequent installations of `mpi4py`, and `h5py`.
 3. `pip install summitreq.yml`
 
 

@@ -24,9 +24,9 @@ def nostdout():
 def print_bar(string: str):
     """Prints Bar divider for code output.
 
-    WARNING
-    -------
-    Will be deprecated in favor of log_bar
+    .. warning::
+
+        Will be deprecated in favor of log_bar
 
 
     Parameters
@@ -83,9 +83,9 @@ def log_bar(string, plogger: Callable = print):
 def print_action(string: str):
     """Prints action statement.
 
-    WARNING
-    -------
-    Will be deprecated in favor of log_action
+    .. warning::
+
+        Will be deprecated in favor of log_action
 
 
     Parameters
@@ -131,9 +131,9 @@ def log_action(string: str, plogger: Callable = print):
 def print_section(string: str):
     """Prints section divider for code output
 
-    WARNING
-    -------
-    Will be deprecated in favor of log_section
+    .. warning::
+
+        Will be deprecated in favor of log_section
 
     Parameters
     ----------

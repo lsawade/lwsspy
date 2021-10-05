@@ -3,18 +3,18 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to lwsspy's documentation!
-==================================
+LWSSPY Documentation
+====================
+
 
 .. toctree::
    :maxdepth: 3
    :caption: Contents:
-
+   
    chapters/matplotlibtips.rst
    chapters/numpydoctips.rst
-   chapters/seismology.rst
    chapters/hpc-installations.rst
-   chapters/paraview.rst
+   chapters/bash.rst
    chapters/one-liners-to-remember.rst
    chapters/git.rst
    chapters/functions.rst
