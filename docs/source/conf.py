@@ -36,7 +36,6 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'numpydoc',
-    'myst'
 ]
 
 # source_suffix = {
