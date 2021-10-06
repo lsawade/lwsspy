@@ -111,7 +111,6 @@ def updaterc(rebuild=False):
         'mathtext.bf': 'sans:bold',
         'mathtext.cal': 'cursive',
         'mathtext.tt':  'monospace',
-        'mathtext.fallback': 'cm',
         'mathtext.default': 'it'
     }
 
