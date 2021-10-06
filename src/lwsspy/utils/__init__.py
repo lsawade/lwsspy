@@ -1,6 +1,5 @@
 # IO
 from .io import dump_json  # noqa
-from .io import load_asdf  # noqa
 from .io import load_json  # noqa
 from .io import loadxy_csv  # noqa
 from .io import loadmat  # noqa

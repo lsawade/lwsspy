@@ -3,7 +3,6 @@
 Some important and simple IO help functions.
 
 :copyright:
-    Wenjie Lei (lei@princeton.edu) Year? pyasdf
     Lucas Sawade (lsawade@princeton.edu) 2019
 
 :license:
@@ -19,9 +18,6 @@ import json
 import yaml
 import logging
 import numpy as np
-from pyasdf import ASDFDataSet
-from obspy import Stream, Inventory
-from obspy import read_inventory
 import scipy.io as spio
 
 # Internal imports
@@ -238,76 +234,3 @@ def _get_mpi_comm():
 #     # Get ID from source
 #     return cmtsource.eventname
 
-
-def load_asdf(filename: str, no_event=False):
-    """Takes in a filename of an asdf file and outputs event, inventory,
-    and stream with the traces. Note that this is only good for asdffiles
-    with one set of traces event and stations since the function will get the
-    first/only waveform tag from the dataset
-
-    Args:
-        filename: ASDF filename. "somethingsomething.h5"
-
-    Returns:
-        Event, Inventory, Stream
-    """
-
-    ds = ASDFDataSet(filename)
-
-    # Create empty streams and inventories
-    inv = Inventory()
-    st = Stream()
-
-    # Get waveform tag
-    tag = list(ds.waveform_tags)[0]
-    for station in ds.waveforms.list():
-        try:
-            st += getattr(ds.waveforms[station], tag)
-            inv += ds.waveforms[station].StationXML
-        except Exception as e:
-            print(e)
-
-    # Choose not to load an event from the asdf file (pycmt3d's event doesn't
-    # output an event...)
-    if not no_event:
-        ev = ds.events[0]
-        del ds
-
-        return ev, inv, st
-    else:
-        del ds
-        return inv, st
-
-
-def flex_read_stations(filenames: str or list):
-    """ Takes in a list of strings and tries to read them as inventories
-    Creates a single inventory, not an aggregate of inventories
-
-    :param filename: station file(s). wildcards permitted.
-    :return: `obspy.Inventory`
-    """
-
-    if type(filenames) is str:
-        filenames = [filenames]
-
-    inv = Inventory()
-    for _file in filenames:
-        try:
-            add_inv = read_inventory(_file)
-            for network in add_inv:
-                if len(inv.select(network=network.code)) == 0:
-                    inv.networks.append(network)
-                else:
-                    new_network = inv.select(network=network.code)[0]
-                    # print(new_network)
-                    for station in network:
-                        if len(new_network.select(station=station.code)) == 0:
-                            new_network.stations.append(station)
-
-                    inv = inv.remove(network=network.code)
-                    inv.networks.append(new_network)
-
-        except Exception as e:
-            print("%s could not be read. Error: %s" % (_file, e))
-
-    return inv
