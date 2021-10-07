@@ -15,7 +15,7 @@ import os
 from obspy import UTCDateTime
 import lwsspy as lpy
 import matplotlib.pyplot as plt
-lpy.updaterc()
+lplt.updaterc()
 
 # Get the GCMT3D data directory
 datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
@@ -34,7 +34,7 @@ invfile = os.path.join(datadir, xml_name)
 
 # Write inventory after downloading
 if os.path.exists(invfile):
-    inv = lpy.read_inventory(invfile)
+    inv = lpy.seismo.read_inventory(invfile)
 else:
     # Download metadata
     start = UTCDateTime(1976, 1, 1)
@@ -42,8 +42,8 @@ else:
     duration = end - start
 
     # Download the data
-    inv = lpy.download_data(start, duration=duration, network=networksstring,
-                            station=None, dtype='stations')
+    inv = lpy.seismo.download_data(start, duration=duration, network=networksstring,
+                                   station=None, dtype='stations')
 
     # Write it to the script data directory
     inv.write(invfile, "STATIONXML")
@@ -54,13 +54,13 @@ plt.subplots_adjust(bottom=0.05, top=1.0, left=0.01, right=0.99,
                     wspace=0.0)
 
 # Create map axes
-ax = lpy.map_axes(proj='moll')
+ax = lmaps.map_axes(proj='moll')
 
 # Plot continents
-lpy.plot_map()
+lmaps.plot_map()
 
 # Plot inventory
-lpy.plot_inventory(inv, markersize=7, cmap='Set1')
+lplt.plot_inventory(inv, markersize=7, cmap='Set1')
 
 # Create Legend
 plt.legend(loc='lower center', frameon=False, fancybox=False,
@@ -69,6 +69,7 @@ plt.legend(loc='lower center', frameon=False, fancybox=False,
            labelspacing=0.2, handlelength=1.0, ncol=ncol,
            columnspacing=1.0)
 
-plt.savefig(os.path.join(lpy.DOCFIGURES, "station_map.svg"), dpi=300,
+plt.savefig(os.path.join(lbase.DOCFIGURES, "station_map.svg"), dpi=300,
             transparent=True)
-plt.savefig(os.path.join(lpy.DOCFIGURES, "station_map.pdf"), transparent=True)
+plt.savefig(os.path.join(lbase.DOCFIGURES,
+                         "station_map.pdf"), transparent=True)

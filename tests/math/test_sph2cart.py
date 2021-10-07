@@ -1,6 +1,6 @@
 
 import numpy as np
-import lwsspy as lpy
+import lwsspy.math as lmat
 
 
 def test_sph2cart1():
@@ -13,7 +13,7 @@ def test_sph2cart1():
     xyz = (1/np.sqrt(3), 1/np.sqrt(3), 1/np.sqrt(3))
 
     # Check
-    np.testing.assert_almost_equal(xyz, lpy.sph2cart(*rtp))
+    np.testing.assert_almost_equal(xyz, lmat.sph2cart(*rtp))
 
 
 def test_sph2cart2():
@@ -26,7 +26,7 @@ def test_sph2cart2():
     xyz = (1/np.sqrt(3), -1/np.sqrt(3), 1/np.sqrt(3))
 
     # Check
-    np.testing.assert_almost_equal(xyz, lpy.sph2cart(*rtp))
+    np.testing.assert_almost_equal(xyz, lmat.sph2cart(*rtp))
 
 
 def test_sph2cart3():
@@ -39,7 +39,7 @@ def test_sph2cart3():
     xyz = (-1/np.sqrt(3), -1/np.sqrt(3), 1/np.sqrt(3))
 
     # Check
-    np.testing.assert_almost_equal(xyz, lpy.sph2cart(*rtp))
+    np.testing.assert_almost_equal(xyz, lmat.sph2cart(*rtp))
 
 
 def test_sph2cart4():
@@ -52,4 +52,4 @@ def test_sph2cart4():
     xyz = (-1/np.sqrt(3), 1/np.sqrt(3), 1/np.sqrt(3))
 
     # Check
-    np.testing.assert_almost_equal(xyz, lpy.sph2cart(*rtp))
+    np.testing.assert_almost_equal(xyz, lmat.sph2cart(*rtp))

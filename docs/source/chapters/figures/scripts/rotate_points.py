@@ -3,8 +3,14 @@ import numpy as np
 from mpl_toolkits import mplot3d
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon as MPoly
-import lwsspy as lpy
 from cartopy.crs import PlateCarree
+# Internal
+import lwsspy.math as lmat
+import lwsspy.plot as lplt
+import lwsspy.base as lbase
+import lwsspy.maps as lmaps
+
+lplt.updaterc()
 
 # Circle around Z-axis
 r = 1
@@ -18,9 +24,9 @@ z = r*np.cos(theta)*np.ones_like(phi)
 points = np.vstack((x, y, z))
 
 # Rotate from Z-axis to other points
-Rx = lpy.Ra2b((0, 0, 1), (1, 0, 0))
-Ry = lpy.Ra2b((0, 0, 1), (0, 1, 0))
-R = lpy.Ra2b((0, 0, 1), (1, 1.5, 0.5))
+Rx = lmat.Ra2b((0, 0, 1), (1, 0, 0))
+Ry = lmat.Ra2b((0, 0, 1), (0, 1, 0))
+R = lmat.Ra2b((0, 0, 1), (1, 1.5, 0.5))
 rotations = [Rx, Ry, R]
 labels = ["x", "y", "p"]
 
@@ -39,7 +45,7 @@ for _rot, _lab in zip(rotations, labels):
     rpoints = _rot @ points
     plt.plot(rpoints[0, :], rpoints[1, :], rpoints[2, :], label=_lab)
 
-plt.savefig(os.path.join(lpy.DOCFIGURES,
+plt.savefig(os.path.join(lbase.DOCFIGURES,
                          "rotation_Ra2b.svg"), transparent=True)
 
 
@@ -54,14 +60,14 @@ lat = y*10
 delta = 4
 
 # Compute buffer
-pp, circles = lpy.line_buffer(lat, lon, delta=delta)
-# _, circles, _, _ = lpy.plot_line_buffer(lat, lon, delta=delta)
+pp, circles = lmaps.line_buffer(lat, lon, delta=delta)
+# _, circles, _, _ = lmaps.plot_line_buffer(lat, lon, delta=delta)
 
 fig = plt.figure(figsize=(10, 5))
 ax = plt.subplot(121, projection=PlateCarree())
-lpy.plot_map()
+lmaps.plot_map()
 plt.plot(lon, lat, 'k-', marker='.')
-lpy.remove_ticklabels_topright(ax)
+lplt.remove_ticklabels_topright(ax)
 plt.title('Circles used to build polygon')
 
 Ncircles = len(circles)
@@ -71,15 +77,16 @@ for _i, coords in enumerate(circles):
     plt.plot(coords[0], coords[1], c=cmap(_i/Ncircles))
 
 ax = plt.subplot(122, projection=PlateCarree())
-lpy.plot_map()
+lmaps.plot_map()
 plt.plot(lon, lat, 'k-', marker='.')
-p = MPoly(pp, fc=(0.7, 0.3, 0.9), ec='none', alpha=0.33)
-ax.add_patch(p)
-lpy.remove_yticklabels(ax)
-lpy.remove_ticklabels_topright(ax)
+for _p in pp:
+    p = MPoly(_p, fc=(0.7, 0.3, 0.9), ec='none', alpha=0.33)
+    ax.add_patch(p)
+lplt.remove_yticklabels(ax)
+lplt.remove_ticklabels_topright(ax)
 plt.title('Polygon from union of circles')
 
-plt.savefig(os.path.join(lpy.DOCFIGURES,
+plt.savefig(os.path.join(lbase.DOCFIGURES,
                          "buffer_from_rotated_circles.svg"), transparent=True)
 
 plt.show(block=True)

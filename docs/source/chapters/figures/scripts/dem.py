@@ -3,11 +3,12 @@ import matplotlib.pyplot as plt
 from osgeo import gdal, osr
 import cartopy.crs as ccrs
 import numpy as np
-import lwsspy as lpy
+
 from matplotlib.colors import Normalize
 from scipy.signal.windows import tukey
 from scipy.ndimage import gaussian_filter
 from scipy import ndimage, misc
+import lwsspy.maps as lmaps
 
 
 def read_maloof_dem(filename):
@@ -52,7 +53,7 @@ def read_maloof_dem(filename):
 area = 'nevada'
 ftype = 'dem'
 filename = f'/Users/lucassawade/Google Drive/RyansDEMs/drone_derived_{ftype}_{area}.tif'
-# animationdir = os.path.join(lpy.DOCFIGURES, "dem_animation")
+# animationdir = os.path.join(lbase.DOCFIGURES, "dem_animation")
 
 # Get the file
 lat, lon, data, projection, extent = read_maloof_dem(filename)
@@ -85,6 +86,6 @@ ax.tick_params()
 plt.show()
 
 
-T = TopographyDesign(lat, lon, data)
+T = lmaps.TopographyDesign(lat, lon, data)
 
 T.plot()

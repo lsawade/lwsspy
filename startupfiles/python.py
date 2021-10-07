@@ -19,7 +19,20 @@ if os.getenv("CONDA_DEFAULT_ENV", None) == "lwsspy":
     from glob import glob
 
     # LWSSPY import
-    from lwsspy import *
+    from lwsspy.base.constants import *
+    from lwsspy.geo import *
+    from lwsspy.gcmt3d import *
+    from lwsspy.inversion import *
+    from lwsspy.maps import *
+    from lwsspy.math import *
+    from lwsspy.pizza import *
+    from lwsspy.plot import *
+    from lwsspy.seismo import *
+    from lwsspy.shell import *
+    from lwsspy.signal import *
+    from lwsspy.statistics import *
+    from lwsspy.utils import *
+    from lwsspy.weather import *
 
     # meshslice import
     # from meshslice import *

@@ -1,7 +1,7 @@
 
 
 import numpy as np
-import lwsspy as lpy
+import lwsspy.signal as lsig
 from scipy.signal.windows import hann as taper
 
 
@@ -12,7 +12,7 @@ def test_dlna():
     d = np.random.random(100)
 
     # Compute dlna
-    max_cc, tshift = lpy.xcorr(d, d)
+    max_cc, tshift = lsig.xcorr(d, d)
 
     # Check if computation is ok.
     assert abs(max_cc - 1.0) <= 1E-12
@@ -29,9 +29,9 @@ def test_correct_index():
         return a * np.sin(3*times + 0.25*np.pi) * taper(len(times))
 
     istart, iend = 300, 700
-    _, nshift = lpy.xcorr(data, forward(model))
+    _, nshift = lsig.xcorr(data, forward(model))
     nshift
-    istart_d, iend_d, istart_s, iend_s = lpy.correct_window_index(
+    istart_d, iend_d, istart_s, iend_s = lsig.correct_window_index(
         istart, iend, nshift, len(times))
 
     d_test_i, d_test_f = (340, 740)

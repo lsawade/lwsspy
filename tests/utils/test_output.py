@@ -1,4 +1,4 @@
-import lwsspy as lpy
+import lwsspy.utils as lutil
 from logging import Logger
 import logging
 
@@ -18,7 +18,7 @@ def test_loggers():
     fh.setLevel(logging.DEBUG)
 
     # create formatter
-    formatter = lpy.CustomFormatter()
+    formatter = lutil.CustomFormatter()
 
     # add formatter to ch
     sh.setFormatter(formatter)

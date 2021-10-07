@@ -64,9 +64,7 @@ transparent. Simply save your figure using
     plt.savefig(<output_filename>, transparent=True)
 
 
-See :ref:`station-map` for a use of the figure. Note that the rtd-themes 
-background is not white, but off white, if the figure background would be 
-visible, you would see it. For a converse example, see :ref:`partial-rasterize`.
+For a converse example, see :ref:`partial-rasterize`.
 
 
 Multiple Locator for the Axes

@@ -3,9 +3,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Internal
-from lwsspy import DOCFIGURES  # Location to store figure
-from lwsspy import updaterc    # Makes figure pretty in my opinion
-updaterc()
+import lwsspy.plot as lplt
+import lwsspy.base as lbase
+
+lplt.updaterc()
 
 # Create vector
 x = np.linspace(-1, 1, 100)
@@ -39,8 +40,8 @@ for _i in range(4):
 # Adjusting the plots
 plt.subplots_adjust(hspace=0.125, wspace=0.125)
 
-# Saving 
-plt.savefig(os.path.join(DOCFIGURES, 'remove_labels.svg'))
+# Saving
+plt.savefig(os.path.join(lbase.DOCFIGURES, 'remove_labels.svg'))
 
 # And showing for good measure
 plt.show()

@@ -1,6 +1,6 @@
 
 import numpy as np
-import lwsspy as lpy
+import lwsspy.math as lmat
 
 
 def test_cart2geo1():
@@ -13,7 +13,7 @@ def test_cart2geo1():
     xyz = (1/np.sqrt(3), 1/np.sqrt(3), 1/np.sqrt(3))
 
     # Check
-    np.testing.assert_almost_equal(rtp, lpy.cart2geo(*xyz))
+    np.testing.assert_almost_equal(rtp, lmat.cart2geo(*xyz))
 
 
 def test_cart2geo2():
@@ -26,7 +26,7 @@ def test_cart2geo2():
     xyz = (1/np.sqrt(3), -1/np.sqrt(3), 1/np.sqrt(3))
 
     # Check
-    np.testing.assert_almost_equal(rtp, lpy.cart2geo(*xyz))
+    np.testing.assert_almost_equal(rtp, lmat.cart2geo(*xyz))
 
 
 def test_cart2geo3():
@@ -39,7 +39,7 @@ def test_cart2geo3():
     xyz = (-1/np.sqrt(3), -1/np.sqrt(3), 1/np.sqrt(3))
 
     # Check
-    np.testing.assert_almost_equal(rtp, lpy.cart2geo(*xyz))
+    np.testing.assert_almost_equal(rtp, lmat.cart2geo(*xyz))
 
 
 def test_cart2geo4():
@@ -52,4 +52,4 @@ def test_cart2geo4():
     xyz = (-1/np.sqrt(3), 1/np.sqrt(3), 1/np.sqrt(3))
 
     # Check
-    np.testing.assert_almost_equal(rtp, lpy.cart2geo(*xyz))
+    np.testing.assert_almost_equal(rtp, lmat.cart2geo(*xyz))

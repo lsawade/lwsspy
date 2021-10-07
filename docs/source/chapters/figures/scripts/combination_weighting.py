@@ -1,11 +1,17 @@
 import os
-import lwsspy as lpy
+import lwsspy.base as lbase
+import lwsspy.geo as lgeo
+import lwsspy.maps as lmaps
+import lwsspy.plot as lplt
+import lwsspy.statistics as lstat
 import numpy as np
 import matplotlib.pyplot as plt
 from cartopy.crs import PlateCarree, AzimuthalEquidistant
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from matplotlib.colors import LogNorm
+
+lplt.updaterc()
 
 # Create some different even2D points to create artificial station densities.
 lat_eur = 53
@@ -14,9 +20,9 @@ lat_us = 0
 lon_us = -90
 width = 360
 height = 180
-x, y = lpy.even2Dpoints(100, width, height, 10)
-x1, y1 = lpy.even2Dpoints(50, 60, 40, 1)
-x2, y2 = lpy.even2Dpoints(50, 50, 120, 3)
+x, y = lstat.even2Dpoints(100, width, height, 10)
+x1, y1 = lstat.even2Dpoints(50, 60, 40, 1)
+x2, y2 = lstat.even2Dpoints(50, 50, 120, 3)
 
 # Combine
 lat = np.hstack((np.array(y), np.array(y1)+lat_eur, np.array(y2)+lat_us))
@@ -26,10 +32,10 @@ lon = np.hstack((np.array(x), np.array(x1)+lon_eur, np.array(x2)+lon_us))
 lat0 = 25
 lon0 = -50
 nbins = 12
-azi_weights = lpy.azi_weights(lat0, lon0, lat, lon, nbins=nbins, p=0.5)
+azi_weights = lgeo.azi_weights(lat0, lon0, lat, lon, nbins=nbins, p=0.5)
 
 # Get Geoweights
-gw = lpy.GeoWeights(lat, lon)
+gw = lgeo.GeoWeights(lat, lon)
 _, _, ref, _ = gw.get_condition()
 geo_weights = gw.get_weights(ref)
 
@@ -40,17 +46,17 @@ weights /= np.sum(weights)/len(weights)
 
 def plot_weights(ax, weights):
 
-    lpy.plot_map()
+    lmaps.plot_map()
     plt.scatter(lon, lat, c=weights, cmap="RdBu_r",
-                norm=lpy.MidPointLogNorm(vmin=min(weights), vmax=max(weights),
-                                         midpoint=1.0),
+                norm=lplt.MidPointLogNorm(vmin=min(weights), vmax=max(weights),
+                                          midpoint=1.0),
                 edgecolors='k', linewidths=0.5,
                 transform=PlateCarree())
     formatter = ticker.FuncFormatter(lambda y, _: '{:g}'.format(y))
-    cb = lpy.nice_colorbar(orientation='horizontal', ticks=[0.3, 0.4, 0.6, 1.0, 1.5, 2.0, 3.0],  # np.arange(0.3, 3.0, 0.3),
-                           format=formatter, aspect=40, pad=0.075)
+    cb = lplt.nice_colorbar(orientation='horizontal', ticks=[0.3, 0.4, 0.6, 1.0, 1.5, 2.0, 3.0],  # np.arange(0.3, 3.0, 0.3),
+                            format=formatter, aspect=40, pad=0.075)
     cb.set_label("Weights")
-    lpy.plot_label(
+    lplt.plot_label(
         ax,
         f"min: {np.min(weights):3.2f}\n"
         f"max: {np.max(weights):3.2f}\n"
@@ -80,6 +86,6 @@ plot_weights(ax, weights)
 plt.title("Combined Weights", fontdict=dict(fontsize='small'))
 
 
-plt.savefig(os.path.join(lpy.DOCFIGURES, "combination_weighting.pdf"))
-plt.savefig(os.path.join(lpy.DOCFIGURES, "combination_weighting.svg"))
+plt.savefig(os.path.join(lbase.DOCFIGURES, "combination_weighting.pdf"))
+plt.savefig(os.path.join(lbase.DOCFIGURES, "combination_weighting.svg"))
 plt.show()

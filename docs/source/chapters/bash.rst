@@ -3,11 +3,11 @@ Limit the number of concurrent jobs in the terminal
 
 This is a function I found on 
 `StackOverflow <https://stackoverflow.com/questions/1537956/bash-limit-the-number-of-concurrent-jobs>`_,
- that seems to do the trick. It is ``user3769065``'s answer bulding on 
- ``tangens``'s answer. It defines a function that contains a ``while`` loop that
- will loop until less than a given concurrent jobs are executed. 
- So, if it is executed after every single background task is placed it will 
- simply start every job until a given limit is reached s
+that seems to do the trick. It is ``user3769065``'s answer bulding on 
+``tangens``'s answer. It defines a function that contains a ``while`` loop that
+will loop until less than a given concurrent jobs are executed. 
+So, if it is executed after every single background task is placed it will 
+simply start every job until a given limit is reached s
 
 
 .. code:: bash
@@ -101,8 +101,6 @@ Combining a joblimit and a status check
 
         #!/bin/bash
 
-
-
         job_limit () {
             # Test for single positive integer input
             if (( $# == 1 )) && [[ $1 =~ ^[1-9][0-9]*$ ]]
@@ -127,7 +125,6 @@ Combining a joblimit and a status check
                 done
             fi
         }
-        
         
         # Some function that takes a long time to process
         longprocess() {

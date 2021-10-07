@@ -1,11 +1,13 @@
 import os
 import matplotlib.pyplot as plt
-import lwsspy as lpy
+import lwsspy.base as lbase
+import lwsspy.plot as lplt
+import lwsspy.maps as lmaps
 
-lpy.updaterc()
+lplt.updaterc()
 
-lpy.plot_litho(which='all', parameter='depth', cmap="Spectral")
-plt.savefig(os.path.join(lpy.DOCFIGURES, "litho1_depth.svg"), dpi=300)
-lpy.plot_litho(which='lower_crust', parameter='depth', cmap="Spectral")
-plt.savefig(os.path.join(lpy.DOCFIGURES,
+lmaps.plot_litho(which='all', parameter='depth', cmap="Spectral")
+plt.savefig(os.path.join(lbase.DOCFIGURES, "litho1_depth.svg"), dpi=300)
+lmaps.plot_litho(which='lower_crust', parameter='depth', cmap="Spectral")
+plt.savefig(os.path.join(lbase.DOCFIGURES,
                          "litho1_lower_crust_bottom_depth.svg"), dpi=300)

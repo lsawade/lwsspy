@@ -1,28 +1,24 @@
-name: lwsspy
 channels:
   - conda-forge
   - defaults
 dependencies:
   - python>=3.7
   - ipython
-  - flake
   - pytest
-  - matplotlib==3.2.1
+  - matplotlib
   - numpy
   - mypy
+  - autopep8
   - scipy
   - cartopy
   - mpi4py
-  - h5py
-  - jupyterlab
-  - pyvista
+  - netcdf4
+  - gdal
   - pip
   - pip:
-    - obspy
     - xarray
     - beautifulsoup4
-    - pyasdf
     - pyyaml
     - sphinx
-    - sphinx_rtd_theme
-    - git+git://github.com/wjlei1990/pyflex.git@merge
+    - numpydoc
+    - sphinx_book_theme

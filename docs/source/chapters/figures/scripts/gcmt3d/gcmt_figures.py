@@ -8,10 +8,10 @@ import cartopy
 from cartopy.crs import PlateCarree, Mollweide
 import numpy as np
 
-lpy.updaterc()
+lplt.updaterc()
 
 # GCMT Catalog main data to plot
-npzfilename = os.path.join(lpy.DOCFIGURESCRIPTDATA, "gcmt.npz")
+npzfilename = os.path.join(lbase.DOCFIGURESCRIPTDATA, "gcmt.npz")
 
 if os.path.exists(npzfilename):
     # Load data
@@ -27,12 +27,12 @@ if os.path.exists(npzfilename):
 
 else:
     # Read Catalog
-    cat = lpy.read_gcmt_catalog()
+    cat = lpy.seismo.read_gcmt_catalog()
 
     # Create list of things that is easy to handle (not obspy event.)
     cmts = []
     for event in cat:
-        cmts.append(lpy.CMTSource.from_event(event))
+        cmts.append(lpy.seismo.CMTSource.from_event(event))
 
     latitude = []
     longitude = []
@@ -71,31 +71,33 @@ else:
 ###########################   SCATTER #########################################
 
 # Create png
-_, ax, _, _ = lpy.plot_quakes(latitude, longitude, depth, moment,
-                              cmap='rainbow_r', yoffsetlegend=0.05)
-outnamepng = os.path.join(lpy.DOCFIGURES, "gcmt3d", "gcmt_depth_moment.png")
+_, ax, _, _ = lpy.seismo.plot_quakes(latitude, longitude, depth, moment,
+                                     cmap='rainbow_r', yoffsetlegend=0.05)
+outnamepng = os.path.join(
+    lbase.DOCFIGURES, "gcmt3d", "gcmt_depth_moment.png")
 plt.savefig(outnamepng)
 plt.close()
 
 # Create vectors
-_, ax, _, _ = lpy.plot_quakes(latitude, longitude, depth, moment,
-                              cmap='rainbow_r', yoffsetlegend=0.05)
-outnamepdf = os.path.join(lpy.DOCFIGURES, "gcmt3d", "gcmt_depth_moment.pdf")
+_, ax, _, _ = lpy.seismo.plot_quakes(latitude, longitude, depth, moment,
+                                     cmap='rainbow_r', yoffsetlegend=0.05)
+outnamepdf = os.path.join(
+    lbase.DOCFIGURES, "gcmt3d", "gcmt_depth_moment.pdf")
 plt.savefig(outnamepdf)
 
 # Scatter submap
-_, ax, _, _ = lpy.plot_quakes(latitude, longitude, depth, moment,
-                              cmap='rainbow_r', yoffsetlegend=0.0)
+_, ax, _, _ = lpy.seismo.plot_quakes(latitude, longitude, depth, moment,
+                                     cmap='rainbow_r', yoffsetlegend=0.0)
 fig = ax.figure
 fig.set_size_inches(6, 10)
 plt.subplots_adjust(left=0.025, right=0.975, bottom=0.03, top=1.0)
 ax.set_extent([160, 185, -50, -10])
 
-outnamepng = os.path.join(lpy.DOCFIGURES, "gcmt3d",
+outnamepng = os.path.join(lbase.DOCFIGURES, "gcmt3d",
                           "gcmt_depth_moment_tonga.png")
 plt.savefig(outnamepng, dpi=300)
 
-outnamepdf = os.path.join(lpy.DOCFIGURES, "gcmt3d",
+outnamepdf = os.path.join(lbase.DOCFIGURES, "gcmt3d",
                           "gcmt_depth_moment_tonga.pdf")
 plt.savefig(outnamepdf)
 plt.close()
@@ -115,32 +117,32 @@ plt.figure(figsize=(5, 6.5))
 plt.subplots_adjust(left=0.025, right=0.975, bottom=0.15, top=0.95)
 ax1 = plt.subplot(211, projection=Mollweide(central_longitude=-150.0))
 ax1.set_global()
-lpy.plot_map(zorder=-1)
-lpy.plot_quakes(latitude, longitude, depth, rmoment, ax=ax1,
-                cmap='rainbow_r', legend=False)
-lpy.plot_label(ax1, "a)", box=False)
-lpy.plot_label(ax1, f"N: {len(depth)}", location=2, box=False,
-               fontdict=dict(fontsize='x-small'))
+lmaps.plot_map(zorder=-1)
+lpy.seismo.plot_quakes(latitude, longitude, depth, rmoment, ax=ax1,
+                       cmap='rainbow_r', legend=False)
+lplt.plot_label(ax1, "a)", box=False)
+lplt.plot_label(ax1, f"N: {len(depth)}", location=2, box=False,
+                fontdict=dict(fontsize='x-small'))
 plt.title("GCMT Events")
 ax2 = plt.subplot(212, projection=Mollweide(central_longitude=-150.0))
 ax2.set_global()
-lpy.plot_map(zorder=-1)
-lpy.plot_quakes(latitude[selection], longitude[selection],
-                depth[selection], moment[selection], ax=ax2,
-                cmap='rainbow_r')
-lpy.plot_label(ax2, "b)", box=False)
-lpy.plot_label(ax2, f"N: {len(depth[selection])}", location=2, box=False,
-               fontdict=dict(fontsize='x-small'))
+lmaps.plot_map(zorder=-1)
+lpy.seismo.plot_quakes(latitude[selection], longitude[selection],
+                       depth[selection], moment[selection], ax=ax2,
+                       cmap='rainbow_r')
+lplt.plot_label(ax2, "b)", box=False)
+lplt.plot_label(ax2, f"N: {len(depth[selection])}", location=2, box=False,
+                fontdict=dict(fontsize='x-small'))
 plt.title(f"GCMT Events {lsel} $\leq M_w \leq$ {hsel}")
 
 
 # Save as PNG
-outnamepng = os.path.join(lpy.DOCFIGURES, "gcmt3d",
+outnamepng = os.path.join(lbase.DOCFIGURES, "gcmt3d",
                           "gcmt_depth_moment_compare.png")
 plt.savefig(outnamepng, dpi=300)
 
 # Save as PDF
-outnamepdf = os.path.join(lpy.DOCFIGURES, "gcmt3d",
+outnamepdf = os.path.join(lbase.DOCFIGURES, "gcmt3d",
                           "gcmt_depth_moment_compare.pdf")
 plt.savefig(outnamepdf)
 
@@ -152,34 +154,34 @@ plt.subplots_adjust(left=0.025, right=0.975,
                     bottom=0.15, top=0.95, wspace=0.05)
 ax1 = plt.subplot(121, projection=Mollweide(central_longitude=-150.0))
 ax1.set_global()
-lpy.plot_map(zorder=-1)
-lpy.plot_quakes(latitude, longitude, depth, rmoment, ax=ax1,
-                cmap='rainbow_r', legend=True, xoffsetlegend=0.525)
-lpy.plot_label(ax1, "a)", box=False)
-lpy.plot_label(ax1, f"N: {len(depth)}", location=2, box=False,
-               fontdict=dict(fontsize='x-small'))
+lmaps.plot_map(zorder=-1)
+lpy.seismo.plot_quakes(latitude, longitude, depth, rmoment, ax=ax1,
+                       cmap='rainbow_r', legend=True, xoffsetlegend=0.525)
+lplt.plot_label(ax1, "a)", box=False)
+lplt.plot_label(ax1, f"N: {len(depth)}", location=2, box=False,
+                fontdict=dict(fontsize='x-small'))
 plt.title("GCMT Events")
 ax2 = plt.subplot(122, projection=Mollweide(central_longitude=-150.0))
 ax2.set_global()
-lpy.plot_map(zorder=-1)
-scatter, ax, l1, l2 = lpy.plot_quakes(
+lmaps.plot_map(zorder=-1)
+scatter, ax, l1, l2 = lpy.seismo.plot_quakes(
     latitude[selection], longitude[selection],
     depth[selection], moment[selection], ax=ax2,
     cmap='rainbow_r', legend=False)
 
-lpy.plot_label(ax2, "b)", box=False)
-lpy.plot_label(ax2, f"N: {len(depth[selection])}", location=2, box=False,
-               fontdict=dict(fontsize='x-small'))
+lplt.plot_label(ax2, "b)", box=False)
+lplt.plot_label(ax2, f"N: {len(depth[selection])}", location=2, box=False,
+                fontdict=dict(fontsize='x-small'))
 
 plt.title(f"GCMT Events {lsel} $\leq M_w \leq$ {hsel}")
 
 
 # Save as PNG
-outnamepng = os.path.join(lpy.DOCFIGURES, "gcmt3d",
+outnamepng = os.path.join(lbase.DOCFIGURES, "gcmt3d",
                           "gcmt_depth_moment_compare_side.png")
 plt.savefig(outnamepng, dpi=300)
 
 # Save as PDF
-outnamepdf = os.path.join(lpy.DOCFIGURES, "gcmt3d",
+outnamepdf = os.path.join(lbase.DOCFIGURES, "gcmt3d",
                           "gcmt_depth_moment_compare_side.pdf")
 plt.savefig(outnamepdf)

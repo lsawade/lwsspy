@@ -1,5 +1,5 @@
 import numpy as np
-import lwsspy as lpy
+import lwsspy.signal as lsig
 
 
 def test_dlna():
@@ -9,7 +9,7 @@ def test_dlna():
     d = np.random.random(100)
 
     # Compute dlna
-    dlnA = lpy.dlna(d, d)
+    dlnA = lsig.dlna(d, d)
 
     # Check if computation is ok.
     assert abs(dlnA) <= 1E-12

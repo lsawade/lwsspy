@@ -4,21 +4,20 @@ import numpy as np
 import logging
 
 # Internal
-import lwsspy as lpy
-from lwsspy import DOCFIGURES  # Location to store figure
-from lwsspy import updaterc    # Makes figure pretty in my opinion
-from lwsspy import Optimization
-from lwsspy import plot_model_history
-from lwsspy import plot_optimization
+import lwsspy.plot as lplt
+import lwsspy.utils as lutils
+import lwsspy.base as lbase
+import lwsspy.inversion as linv
 
-updaterc()
+
+lplt.updaterc()
 
 # create logger
 logger = logging.getLogger(f"Optimizer")
 logger.setLevel(logging.DEBUG)
 logger.handlers = []
 logger.propagate = False
-formatter = lpy.CustomFormatter()
+formatter = lutils.CustomFormatter()
 sh = logging.StreamHandler()
 sh.setLevel(logging.DEBUG)
 sh.setFormatter(formatter)
@@ -95,7 +94,7 @@ nls = 20
 
 # Prepare optim bfgs
 logger.info(50 * "*", " BFGS ", 54 * "*")
-optim = Optimization("bfgs")
+optim = linv.Optimization("bfgs")
 optim.logger = logger.info
 optim.compute_cost = rosenbrock
 optim.compute_gradient = rosenbrock_prime
@@ -108,7 +107,7 @@ optim.n = len(model)
 optim_bfgs = optim.solve(optim, model)
 
 # BFGS preco
-optim = Optimization("bfgs")
+optim = linv.Optimization("bfgs")
 optim.logger = logger.info
 optim.compute_cost = rosenbrock
 optim.compute_gradient = rosenbrock_prime
@@ -122,7 +121,7 @@ optim_pbfgs = optim.solve(optim, model)
 
 logger.info(50 * "*", " Steepest ", 50 * "*")
 # Prepare optim steepest
-optim = Optimization("steepest")
+optim = linv.Optimization("steepest")
 optim.logger = logger.info
 optim.compute_cost = rosenbrock
 optim.compute_gradient = rosenbrock_prime
@@ -135,7 +134,7 @@ optim.n = len(model)
 optim_step = optim.solve(optim, model)
 
 # Steepest preco
-optim = Optimization("steepest")
+optim = linv.Optimization("steepest")
 optim.logger = logger.info
 optim.compute_cost = rosenbrock
 optim.compute_gradient = rosenbrock_prime
@@ -150,7 +149,7 @@ optim_pstep = optim.solve(optim, model)
 
 logger.info(50 * "*", " NLCG ", 54 * "*")
 # Prepare optim nlcg
-optim = Optimization("nlcg")
+optim = linv.Optimization("nlcg")
 optim.logger = logger.info
 optim.compute_cost = rosenbrock
 optim.compute_gradient = rosenbrock_prime
@@ -163,7 +162,7 @@ optim.n = len(model)
 optim_nlcg = optim.solve(optim, model)
 
 # Steepest preco
-optim = Optimization("nlcg")
+optim = linv.Optimization("nlcg")
 optim.logger = logger.info
 optim.compute_cost = rosenbrock
 optim.compute_gradient = rosenbrock_prime
@@ -177,7 +176,7 @@ optim_pnlcg = optim.solve(optim, model)
 
 # Gauss-Newton
 logger.info(50 * "*", " Gauss-Newton ", 50 * "*")
-optim = Optimization("gn")
+optim = linv.Optimization("gn")
 optim.logger = logger.info
 optim.compute_cost_and_grad_and_hess = compute_cost_and_grad_and_hess
 optim.is_preco = False
@@ -243,10 +242,14 @@ plt.xlim(0.4, 1.6)
 plt.ylim(0.8, 2.4)
 plt.legend(loc=3)
 plt.title('Model Movement')
+
+plt.savefig(os.path.join(lbase.DOCFIGURES, "optimization.svg"))
+# plt.savefig(os.path.join(lbase.DOCFIGURES, "optimization.pdf"))
+
 plt.show()
 
-# plot_model_history(optim_gn, outfile="./testhist.pdf")
-# plot_optimization(optim_gn, outfile="./testoptim.pdf")
+# linv.plot_model_history(optim_gn, outfile="./testhist.pdf")
+# linv.plot_optimization(optim_gn, outfile="./testoptim.pdf")
 
 
 # print(optim_gn.msave)

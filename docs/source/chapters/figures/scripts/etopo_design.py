@@ -8,13 +8,15 @@ from scipy.signal.windows import tukey
 from scipy.interpolate import interpn
 from cartopy.crs import PlateCarree
 import cartopy.crs as ccrs
-import lwsspy as lpy
+import lwsspy.maps as lmaps
+import lwsspy.plot as lplt
+import lwsspy.base as lbase
 
 # Get topography
-etopo = lpy.read_etopo()
+etopo = lmaps.read_etopo()
 etopodata = etopo.bedrock.data
-etopocmap = lpy.topocolormap()
-etoponorm = lpy.FixedPointColorNorm(vmin=-10000, vmax=8000)
+etopocmap = lmaps.topocolormap()
+etoponorm = lplt.FixedPointColorNorm(vmin=-10000, vmax=8000)
 
 # Get subset
 latx = 39.15, 43.96
@@ -64,7 +66,7 @@ iax_pos = [a.x1-(w+pad)*a.width, a.y1-(h+pad) *
            a.height, w*a.width, h*a.height]
 iax = fig.add_axes(iax_pos, projection=PlateCarree())
 iax.axis('on')
-lpy.plot_map()
+lmaps.plot_map()
 iax.set_xlim(-130, -110)
 iax.set_ylim(30, 50)
 
@@ -74,9 +76,9 @@ rect = patches.Rectangle((minlon, minlat), (maxlon-minlon), (maxlat-minlat),
                          linewidth=1, edgecolor='r', facecolor='none')
 iax.add_patch(rect)
 
-lpy.remove_ticklabels(iax)
-lpy.remove_ticks(iax)
-plt.savefig(os.path.join(lpy.DOCFIGURES, "etopo_design_map.png"),
+lplt.remove_ticklabels(iax)
+lplt.remove_ticks(iax)
+plt.savefig(os.path.join(lbase.DOCFIGURES, "etopo_design_map.png"),
             transparent=True, dpi=300)
 
 # Defining the step
@@ -117,7 +119,7 @@ for _i, _ilat in enumerate(nlat[::ny]):
                      edgecolor='none', zorder=-_i)
 
     # Plot lines with linewidth and topo cmap
-    lines, sm = lpy.plot_xyz_line(
+    lines, sm = lplt.plot_xyz_line(
         x, y, z, cmap="rainbow", norm=norm,
         capstyle='round', linewidths=linewidths, zorder=-_i-0.5,
         clip_on=False)
@@ -125,7 +127,7 @@ ax.set_xlim(minlon, maxlon)
 ax.set_ylim(minlat, maxlat + dy * exagy)
 
 
-plt.savefig(os.path.join(lpy.DOCFIGURES, "etopo_design_lat.png"), dpi=300)
+plt.savefig(os.path.join(lbase.DOCFIGURES, "etopo_design_lat.png"), dpi=300)
 
 
 fc = 'k'
@@ -150,7 +152,7 @@ for _i, _ilon in enumerate(nlon[::nx]):
                      edgecolor='none', zorder=-_i)
 
     # Plot lines with linewidth and topo cmap
-    lines, sm = lpy.plot_xyz_line(
+    lines, sm = lplt.plot_xyz_line(
         x, y, z, cmap="rainbow", norm=norm,
         capstyle='round', linewidths=linewidths, zorder=-_i-0.5,
         clip_on=False)
@@ -159,4 +161,4 @@ ax.set_xlim(minlat, maxlat)
 ax.set_ylim(minlon, maxlon + dx * exagx)
 plt.subplots_adjust(left=0.0, right=1.0, bottom=0.0, top=1.0)  # 1.0+yrat)
 
-plt.savefig(os.path.join(lpy.DOCFIGURES, "etopo_design_lon.png"), dpi=300)
+plt.savefig(os.path.join(lbase.DOCFIGURES, "etopo_design_lon.png"), dpi=300)
