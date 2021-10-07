@@ -36,10 +36,18 @@ import numpy as np
 def rodrigues(r):
     """Matrix that rotates points so that points have new orientation.
 
+
     Parameters
     ----------
-    r : numpy.ndarray
+
+
+    r: numpy.ndarray
         new normal vector
+
+
+    Notes
+    -----
+
 
     Edited from:
     https://github.com/robEllenberg/comps-plugins/blob/master/python/rodrigues.py
