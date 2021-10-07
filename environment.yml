@@ -5,7 +5,7 @@ dependencies:
   - python>=3.7
   - ipython
   - pytest
-  - matplotlib==3.2.1
+  - matplotlib
   - numpy
   - mypy
   - autopep8
