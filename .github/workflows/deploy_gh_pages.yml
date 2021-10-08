@@ -65,14 +65,14 @@ jobs:
         with:
           pre-build-command: "python -m pip install numpydoc"
           build-command: "sphinx-build -b html . _build"
-          docs-folder: "docs/source/"
+          docs-folder: "docs/"
         
       # Great extra actions to compose with:
       # Create an artifact of the html output.
-      - uses: actions/upload-artifact@v1
-        with:
-          name: DocumentationHTML
-          path: docs/source/_build/html/
+      # - uses: actions/upload-artifact@v1
+      #   with:
+      #     name: DocumentationHTML
+      #     path: docs/_build/html/
 
       - name: Commit documentation changes
         shell: bash -l {0}

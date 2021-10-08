@@ -5,8 +5,8 @@
 # from the environment for the first two.
 SPHINXOPTS    ?=
 SPHINXBUILD   ?= sphinx-build
-SOURCEDIR     = docs/source
-BUILDDIR      = docs/build
+SOURCEDIR     = docs/
+BUILDDIR      = docs/_build
 
 GH_PAGES_SOURCES = docs Makefile src
 
