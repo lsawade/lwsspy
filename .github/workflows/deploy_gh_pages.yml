@@ -60,11 +60,14 @@ jobs:
         run: |
           conda info
           conda list
+      - name: Install lwsspy
+        shell: bash -l {0}
+        run: pip install -e .
 
       # # Standard drop-in approach that should work for most people.
       - uses: ammaraskar/sphinx-action@master
         with:
-          pre-build-command: "${CONDA}/bin/activate lwsspy"
+          # pre-build-command: "${CONDA}/bin/activate lwsspy"
           # build-command: "sphinx-build -b html . _build"
           docs-folder: "docs/"
         
