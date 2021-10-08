@@ -64,15 +64,16 @@ jobs:
       - uses: ammaraskar/sphinx-action@master
         with:
           # pre-build-command: "python -m pip install -r r"
-          build-command: "sphinx-build -b html . _build"
+          # build-command: "sphinx-build -b html . _build"
           docs-folder: "docs/"
         
       # Great extra actions to compose with:
       # Create an artifact of the html output.
-      # - uses: actions/upload-artifact@v1
-      #   with:
-      #     name: DocumentationHTML
-      #     path: docs/_build/html/
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: DocumentationHTML
+          path: docs/_build/html/
 
       - name: Commit documentation changes
         shell: bash -l {0}
