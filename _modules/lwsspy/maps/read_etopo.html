@@ -68,7 +68,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p class="caption">
+        <p class="caption" role="heading">
  <span class="caption-text">
   Contents:
  </span>
@@ -186,7 +186,9 @@
 <span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span><span class="p">,</span> <span class="n">dirname</span><span class="p">,</span> <span class="n">abspath</span><span class="p">,</span> <span class="n">exists</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
-<span class="kn">import</span> <span class="nn">lwsspy</span> <span class="k">as</span> <span class="nn">lpy</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">lutil</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">shell</span> <span class="k">as</span> <span class="n">lsh</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">base</span> <span class="k">as</span> <span class="n">lbase</span>
 
 
 <div class="viewcode-block" id="read_etopo"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.maps.read_etopo.read_etopo">[docs]</a><span class="k">def</span> <span class="nf">read_etopo</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s1">&#39;bedrock&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
@@ -217,20 +219,20 @@
            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">urlmod</span><span class="p">[</span><span class="n">version</span><span class="p">]</span><span class="si">}</span><span class="s1">/grid_registered/netcdf/</span><span class="si">{</span><span class="n">available</span><span class="p">[</span><span class="n">version</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="c1"># Get filename</span>
-    <span class="n">zipname</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">lpy</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">DOWNLOAD_CACHE</span><span class="p">,</span> <span class="n">available</span><span class="p">[</span><span class="n">version</span><span class="p">])</span>
+    <span class="n">zipname</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">lbase</span><span class="o">.</span><span class="n">DOWNLOAD_CACHE</span><span class="p">,</span> <span class="n">available</span><span class="p">[</span><span class="n">version</span><span class="p">])</span>
     <span class="n">fname</span> <span class="o">=</span> <span class="n">zipname</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
 
     <span class="c1"># Downloading if not in download cache</span>
     <span class="k">if</span> <span class="n">exists</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">exists</span><span class="p">(</span><span class="n">zipname</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="n">lpy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">print_action</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Downloading ETOPO1 - </span><span class="si">{</span><span class="n">names</span><span class="p">[</span><span class="n">version</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">lpy</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">downloadfile</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">zipname</span><span class="p">)</span>
-        <span class="n">lpy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">print_action</span><span class="p">(</span><span class="s2">&quot;Unzipping...&quot;</span><span class="p">)</span>
-        <span class="n">lpy</span><span class="o">.</span><span class="n">ungzip</span><span class="p">(</span><span class="n">zipname</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+            <span class="n">lutil</span><span class="o">.</span><span class="n">print_action</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Downloading ETOPO1 - </span><span class="si">{</span><span class="n">names</span><span class="p">[</span><span class="n">version</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">lsh</span><span class="o">.</span><span class="n">downloadfile</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">zipname</span><span class="p">)</span>
+        <span class="n">lutil</span><span class="o">.</span><span class="n">print_action</span><span class="p">(</span><span class="s2">&quot;Unzipping...&quot;</span><span class="p">)</span>
+        <span class="n">lsh</span><span class="o">.</span><span class="n">ungzip</span><span class="p">(</span><span class="n">zipname</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
 
     <span class="c1"># If only zip left remove zip</span>
     <span class="k">if</span> <span class="n">exists</span><span class="p">(</span><span class="n">zipname</span><span class="p">):</span>
-        <span class="n">lpy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">print_action</span><span class="p">(</span><span class="s2">&quot;Removing zipfile...&quot;</span><span class="p">)</span>
+        <span class="n">lutil</span><span class="o">.</span><span class="n">print_action</span><span class="p">(</span><span class="s2">&quot;Removing zipfile...&quot;</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">zipname</span><span class="p">)</span>
 
     <span class="c1"># Get data data</span>
