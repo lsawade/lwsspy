@@ -64,12 +64,19 @@ jobs:
         shell: bash -l {0}
         run: pip install -e .
 
-      # # Standard drop-in approach that should work for most people.
-      - uses: ammaraskar/sphinx-action@master
-        with:
-          # pre-build-command: "${CONDA}/bin/activate lwsspy"
-          # build-command: "sphinx-build -b html . _build"
-          docs-folder: "docs/"
+      - name: Make Docs
+        shell: bash -l {0}
+        run: |
+          cd docs/
+          make html
+          cd -
+
+      # # # Standard drop-in approach that should work for most people.
+      # - uses: ammaraskar/sphinx-action@master
+      #   with:
+      #     # pre-build-command: "${CONDA}/bin/activate lwsspy"
+      #     # build-command: "sphinx-build -b html . _build"
+      #     docs-folder: "docs/"
         
       # Great extra actions to compose with:
       # Create an artifact of the html output.
