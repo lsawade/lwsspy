@@ -62,7 +62,6 @@ jobs:
           conda list
       # Standard drop-in approach that should work for most people.
       - uses: ammaraskar/sphinx-action@master
-        shell: bash -l {0}
         with:
           build-command: "sphinx-build -b html . _build"
           docs-folder: "docs/source/"
@@ -90,7 +89,6 @@ jobs:
 
       # Push the changes
       - name: Push changes
-        shell: bash -l {0}
         uses: ad-m/github-push-action@master
         with:
           branch: gh-pages
