@@ -13,7 +13,7 @@ on:
 jobs:
 
   build-and-deploy:
-    name: Build and gh-pages
+    name: Build Documentation and Push
     runs-on: ubuntu-latest
     steps:
 
@@ -64,7 +64,7 @@ jobs:
       # # Standard drop-in approach that should work for most people.
       - uses: ammaraskar/sphinx-action@master
         with:
-          pre-build-command: "bash -l . && conda activate lwsspy"
+          pre-build-command: "${CONDA}/bin/activate lwsspy"
           # build-command: "sphinx-build -b html . _build"
           docs-folder: "docs/"
         
