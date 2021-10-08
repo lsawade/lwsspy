@@ -49,10 +49,12 @@ jobs:
           environment-file: environment.yml
           python-version: 3.8
           auto-activate-base: false
-      - run: $CONDA/bin/activate test
-      - run: conda info
-      - run: conda list
-      - run: conda config --show
+      - run: |
+          $CONDA/bin/activate test
+          conda info
+          conda list
+          conda config --show
+
       # - name: Install dependencies
       #   run: |
       #     python -m pip install --upgrade pip
