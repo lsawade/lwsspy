@@ -70,7 +70,6 @@ jobs:
       # Great extra actions to compose with:
       # Create an artifact of the html output.
       - uses: actions/upload-artifact@v1
-        shell: bash -l {0}
         with:
           name: DocumentationHTML
           path: docs/source/_build/html/
