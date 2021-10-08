@@ -47,15 +47,14 @@ jobs:
       #     activate-environment: lwsspy
       #     environment-file: environment.yml
       #     use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
-      - uses: conda-incubator/setup-miniconda@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
         with:
-          environment-file: environment.yml
-          use-only-tar-bz2: true
-          activate-environment: lwsspy
-          # auto-activate-base: false
-      # - name: Conda info
-      #   shell: bash -l {0}
-      # - run: $CONDA/bin/activate lwsspy
+          python-version: 3.8
+      run: |
+        # $CONDA is an environment variable pointing to the root of the 
+        # miniconda directory
+        $CONDA/bin/conda env update --file environment.yml --name base
       - run: |
           conda info
           conda list
