@@ -1,17 +1,21 @@
 name: sphinx
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-env:
-  DEFAULT_BRANCH: "main"
+# env:
+#   DEFAULT_BRANCH: "main"
   #SPHINXOPTS: "-W --keep-going -T"
   # ^-- If these SPHINXOPTS are enabled, then be strict about the builds and fail on any warnings
 
 jobs:
+
   build-and-deploy:
     name: Build and gh-pages
     runs-on: ubuntu-latest
-    steps:
-      
+    steps:      
       # https://github.com/marketplace/actions/checkout
       - name: Start actions
         uses: actions/checkout@v2
@@ -45,12 +49,13 @@ jobs:
       #     use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
       - uses: conda-incubator/setup-miniconda@v2
         with:
-          activate-environment: lwsspy
           environment-file: environment.yml
+          use-only-tar-bz2: true
+          activate-environment: lwsspy
           # auto-activate-base: false
       # - name: Conda info
       #   shell: bash -l {0}
-      - run: $CONDA/bin/activate lwsspy
+      # - run: $CONDA/bin/activate lwsspy
       - run: |
           conda info
           conda list
