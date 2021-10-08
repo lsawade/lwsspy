@@ -48,10 +48,10 @@ jobs:
           activate-environment: lwsspy
           environment-file: environment.yml
           # auto-activate-base: false
-      - name: Conda info
-        shell: bash -l {0}
-        run: |
-          $CONDA/bin/activate lwsspy
+      # - name: Conda info
+      #   shell: bash -l {0}
+      - run: $CONDA/bin/activate lwsspy
+      - run: |
           conda info
           conda list
           conda config --show
