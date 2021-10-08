@@ -27,6 +27,7 @@ points = np.vstack((x, y, z))
 Rx = lmat.Ra2b((0, 0, 1), (1, 0, 0))
 Ry = lmat.Ra2b((0, 0, 1), (0, 1, 0))
 R = lmat.Ra2b((0, 0, 1), (1, 1.5, 0.5))
+
 rotations = [Rx, Ry, R]
 labels = ["x", "y", "p"]
 
