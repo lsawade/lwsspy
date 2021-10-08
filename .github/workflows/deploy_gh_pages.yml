@@ -60,11 +60,11 @@ jobs:
         run: |
           conda info
           conda list
-          
+
       # # Standard drop-in approach that should work for most people.
       - uses: ammaraskar/sphinx-action@master
         with:
-          # pre-build-command: "bash -l . && conda activate lwsspy"
+          pre-build-command: "bash -l . && conda activate lwsspy"
           # build-command: "sphinx-build -b html . _build"
           docs-folder: "docs/"
         
