@@ -49,7 +49,6 @@ jobs:
       #     environment-file: environment.yml
       #     python-version: 3.8
       #     auto-activate-base: false
-      - run: conda activate lwsspy
       - run: conda info
       - run: conda list
       - run: conda config --show
