@@ -17,7 +17,6 @@ LWSSPY Documentation
    chapters/bash.rst
    chapters/one-liners-to-remember.rst
    chapters/git.rst
-   chapters/functions.rst
    
 
 Indices and tables
