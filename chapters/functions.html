@@ -32,6 +32,7 @@
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -69,7 +70,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p class="caption">
+        <p class="caption" role="heading">
  <span class="caption-text">
   Contents:
  </span>
@@ -477,7 +478,7 @@ have not been implemented yet.</span><a class="headerlink" href="#id5" title="Pe
 </div>
 <dl class="py function">
 <dt class="sig sig-object py" id="lwsspy.maps.read_etopo.read_etopo">
-<span class="sig-prename descclassname"><span class="pre">lwsspy.maps.read_etopo.</span></span><span class="sig-name descname"><span class="pre">read_etopo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bedrock'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">xarray.core.dataset.Dataset</span><a class="reference internal" href="../_modules/lwsspy/maps/read_etopo.html#read_etopo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.maps.read_etopo.read_etopo" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">lwsspy.maps.read_etopo.</span></span><span class="sig-name descname"><span class="pre">read_etopo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bedrock'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">xarray.core.dataset.Dataset</span></span></span><a class="reference internal" href="../_modules/lwsspy/maps/read_etopo.html#read_etopo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.maps.read_etopo.read_etopo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads/Downloads etopo1 into the download_cache folder for use.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -498,7 +499,7 @@ have not been implemented yet.</span><a class="headerlink" href="#id5" title="Pe
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lwsspy.maps.read_litho.read_litho">
-<span class="sig-prename descclassname"><span class="pre">lwsspy.maps.read_litho.</span></span><span class="sig-name descname"><span class="pre">read_litho</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">xarray.core.dataset.Dataset</span><a class="reference internal" href="../_modules/lwsspy/maps/read_litho.html#read_litho"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.maps.read_litho.read_litho" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">lwsspy.maps.read_litho.</span></span><span class="sig-name descname"><span class="pre">read_litho</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">xarray.core.dataset.Dataset</span></span></span><a class="reference internal" href="../_modules/lwsspy/maps/read_litho.html#read_litho"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.maps.read_litho.read_litho" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads in the Litho model</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -714,17 +715,115 @@ the given axis by theta radians.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>r</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>new normal vector</p>
-</dd>
-<dt><strong>Edited from:</strong></dt><dd></dd>
-<dt><strong>https://github.com/robEllenberg/comps-plugins/blob/master/python/rodrigues.py</strong></dt><dd></dd>
-<dt><strong>Theory:</strong></dt><dd></dd>
-<dt><strong>https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula</strong></dt><dd></dd>
-<dt><strong>:Author:</strong></dt><dd><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
-</dd>
-<dt><strong>:Last Modified:</strong></dt><dd><p>2020.01.06 11.00</p>
+<dt><strong>r: numpy.ndarray</strong></dt><dd><p>new normal vector</p>
 </dd>
 </dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Edited from:
+<a class="reference external" href="https://github.com/robEllenberg/comps-plugins/blob/master/python/rodrigues.py">https://github.com/robEllenberg/comps-plugins/blob/master/python/rodrigues.py</a></p>
+<p>Theory:
+<a class="reference external" href="https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula">https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd>
+<dt class="field-even">Last Modified</dt>
+<dd class="field-even"><p>2020.01.06 11.00</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lwsspy.math.Ra2b.Ra2b">
+<span class="sig-prename descclassname"><span class="pre">lwsspy.math.Ra2b.</span></span><span class="sig-name descname"><span class="pre">Ra2b</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/Ra2b.html#Ra2b"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.math.Ra2b.Ra2b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets rotation matrix for R3 vectors that rotates a -&gt; b. This is the
+linear algebra version of rodriquez formula. See Notes for the long
+explanation. Theory:
+<a class="reference external" href="https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula">https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>a: np.ndarray</strong></dt><dd><p>vector to rotate from</p>
+</dd>
+<dt><strong>b: np.ndarray</strong></dt><dd><p>vector to rotate to</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>np.ndarray 3x3 rotation matrix</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This is an inline equation embedded <span class="math notranslate nohighlight">\(a^2 + b^2 = c^2\)</span> in text.</p>
+<p>Let <span class="math notranslate nohighlight">\(\hat{\mathbf{a}}\)</span> and <span class="math notranslate nohighlight">\(\hat{\mathbf{a}}\)</span> be unit vectors,
+and <span class="math notranslate nohighlight">\(\theta\)</span> the angle between the two vectors. Also, let
+<span class="math notranslate nohighlight">\(\mathbf{k} = \hat{\mathbf{a}} \times \hat{\mathbf{b}}\)</span>, <span class="math notranslate nohighlight">\(s =
+\sin \theta = ||\mathbf{k}||\)</span>, and <span class="math notranslate nohighlight">\(c = \cos \theta =
+\hat{\mathbf{a}} \cdot \hat{\mathbf{b}}\)</span>. Then, the rotation matrix to
+rotate <span class="math notranslate nohighlight">\(\hat{\mathbf{a}}\)</span> to <span class="math notranslate nohighlight">\(\hat{\mathbf{b}}\)</span> is given by
+Equation <a class="reference internal" href="#equation-rotationmatrix">(1)</a></p>
+<div class="math notranslate nohighlight" id="equation-rotationmatrix">
+<span class="eqno">(1)<a class="headerlink" href="#equation-rotationmatrix" title="Permalink to this equation">¶</a></span>\[\mathbf{R} = \mathbf{I} 
+    + \mathbf{K} 
+    + \frac{1}{1+c} \mathbf{K} \cdot \mathbf{K},\]</div>
+<p>where  <span class="math notranslate nohighlight">\(\mathbf{K}\)</span> is the skew-symmetric cross-product matrix of
+<span class="math notranslate nohighlight">\(\mathbf{k}\)</span>, which is essentially a cross-product operator. Such that
+<span class="math notranslate nohighlight">\(\mathbf{k} \times \mathbf{v} = \mathbf{K} \cdot \mathbf{v}\)</span>.</p>
+<div class="math notranslate nohighlight" id="equation-crossproductmatrix">
+<span class="eqno">(2)<a class="headerlink" href="#equation-crossproductmatrix" title="Permalink to this equation">¶</a></span>\[\begin{split}\mathbf{K}=\left[
+    \begin{array}{ccc}
+        0 &amp; -k_{z} &amp; k_{y} \\ 
+    k_{z} &amp; 0 &amp; -k_{x} \\ 
+    -k_{y} &amp; k_{x} &amp; 0
+    \end{array}
+\right].\end{split}\]</div>
+<p>From <a class="reference external" href="https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula">https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula</a> it may seem
+that some form of angle is needed but fret not. Since we
+are defining <span class="math notranslate nohighlight">\(\mathbf{k}\)</span> as the cross-product between the two vectors
+that define the rotation the <span class="math notranslate nohighlight">\(\sin \theta\)</span> cancels and the 
+<span class="math notranslate nohighlight">\(1-\cos \theta\)</span> can be simplified using the quantities <span class="math notranslate nohighlight">\(s\)</span> and
+<span class="math notranslate nohighlight">\(c\)</span>. This is due to the fact that for the rotation matrix equation on
+Wiki <span class="math notranslate nohighlight">\(\mathbf{k}\)</span> has to be a unit vector, meaning it has to be 
+normalized.</p>
+<div class="math notranslate nohighlight" id="equation-normalizek">
+<span class="eqno">(3)<a class="headerlink" href="#equation-normalizek" title="Permalink to this equation">¶</a></span>\[\mathbf{k}=\frac{\mathbf{a} \times \mathbf{b}}
+    {|\mathbf{a} \times \mathbf{b}|} 
+        =\frac{\mathbf{a} \times \mathbf{b}}
+    {|\mathbf{a}||\mathbf{b}| \sin \theta}.\]</div>
+<p>Since we don’t normalize <span class="math notranslate nohighlight">\(\mathbf{k}\)</span>, we need to apply 
+<span class="math notranslate nohighlight">\(\frac{1}{\sin \theta} = \frac{1}{s}\)</span> to each cross product 
+operation. And Wiki’s</p>
+<div class="math notranslate nohighlight" id="equation-rotationmatrixwiki">
+<span class="eqno">(4)<a class="headerlink" href="#equation-rotationmatrixwiki" title="Permalink to this equation">¶</a></span>\[\mathbf{R} = \mathbf{I} 
+    + \sin \theta \mathbf{K} 
+    + (1- \cos \theta) \mathbf{K} \cdot \mathbf{K},\]</div>
+<p>becomes</p>
+<div class="math notranslate nohighlight" id="equation-rotationmatrixnonesimple">
+<span class="eqno">(5)<a class="headerlink" href="#equation-rotationmatrixnonesimple" title="Permalink to this equation">¶</a></span>\[\mathbf{R} = \mathbf{I} 
+    + \frac{s}{s}\mathbf{K} 
+    + \frac{1 - c}{s^2} \mathbf{K} \cdot \mathbf{K}.\]</div>
+<p>Finally we use</p>
+<div class="math notranslate nohighlight" id="equation-simplification">
+<span class="eqno">(6)<a class="headerlink" href="#equation-simplification" title="Permalink to this equation">¶</a></span>\[\frac{1 - c}{s^2} 
+    = \frac{1 - c}{1-c^2} 
+    = \frac{1 - c}{(1-c)(1+c)} 
+    = \frac{1}{1+c}\]</div>
+<p>to simplify and end up with</p>
+<div class="math notranslate nohighlight" id="equation-simplified">
+<span class="eqno">(7)<a class="headerlink" href="#equation-simplified" title="Permalink to this equation">¶</a></span>\[\mathbf{R} = \mathbf{I} 
+    + \mathbf{K} 
+    + \frac{1}{1+c} \mathbf{K} \cdot \mathbf{K},\]</div>
+<p>which is the Rotation matrix built in the function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd>
+<dt class="field-even">Last Modified</dt>
+<dd class="field-even"><p>2021.10.07 18.00</p>
 </dd>
 </dl>
 </dd></dl>
@@ -734,7 +833,7 @@ the given axis by theta radians.</p>
 <h3>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="lwsspy.math.convm.convm">
-<span class="sig-prename descclassname"><span class="pre">lwsspy.math.convm.</span></span><span class="sig-name descname"><span class="pre">convm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.ndarray</span><a class="reference internal" href="../_modules/lwsspy/math/convm.html#convm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.math.convm.convm" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">lwsspy.math.convm.</span></span><span class="sig-name descname"><span class="pre">convm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../_modules/lwsspy/math/convm.html#convm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.math.convm.convm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implements Matlab’s conv(x, y, ‘same’)</p>
 <dl class="simple">
 <dt>Args:</dt><dd><dl class="simple">
@@ -980,7 +1079,7 @@ to a color in the blue/turquise range.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lwsspy.plot.nice_colorbar.nice_colorbar">
-<span class="sig-prename descclassname"><span class="pre">lwsspy.plot.nice_colorbar.</span></span><span class="sig-name descname"><span class="pre">nice_colorbar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">matplotlib.colorbar.Colorbar</span><a class="reference internal" href="../_modules/lwsspy/plot/nice_colorbar.html#nice_colorbar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.plot.nice_colorbar.nice_colorbar" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">lwsspy.plot.nice_colorbar.</span></span><span class="sig-name descname"><span class="pre">nice_colorbar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">matplotlib.colorbar.Colorbar</span></span></span><a class="reference internal" href="../_modules/lwsspy/plot/nice_colorbar.html#nice_colorbar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.plot.nice_colorbar.nice_colorbar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates nicely formatted colorbar. <code class="docutils literal notranslate"><span class="pre">*args</span></code> and <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> are parsed 
 to <code class="docutils literal notranslate"><span class="pre">plt.colorbar(*args,</span> <span class="pre">**kwargs)</span></code></p>
 <dl class="field-list simple">
@@ -1004,7 +1103,7 @@ to <code class="docutils literal notranslate"><span class="pre">plt.colorbar(*ar
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lwsspy.plot.pick_data_from_image.pick_data_from_image">
-<span class="sig-prename descclassname"><span class="pre">lwsspy.plot.pick_data_from_image.</span></span><span class="sig-name descname"><span class="pre">pick_data_from_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">infile</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfile</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0,</span> <span class="pre">1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logx</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logy</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">,</span> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/lwsspy/plot/pick_data_from_image.html#pick_data_from_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.plot.pick_data_from_image.pick_data_from_image" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">lwsspy.plot.pick_data_from_image.</span></span><span class="sig-name descname"><span class="pre">pick_data_from_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">infile</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfile</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0,</span> <span class="pre">1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logx</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logy</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">,</span> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/lwsspy/plot/pick_data_from_image.html#pick_data_from_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.plot.pick_data_from_image.pick_data_from_image" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function’s purpose is the replication of previously published data.
 The function ttakes in an image filename containing a graph that is
 cropped to axes boundaries and the data extent. One can then pick the data
@@ -1099,8 +1198,8 @@ and the main window.</p>
 <p class="rubric">Examples</p>
 <p>For an image with data in linearscale and axes data axis limits of 
 <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0,</span> <span class="pre">1]</span></code> <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> can be picked and saved as follows.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">lwsspy</span> <span class="k">as</span> <span class="nn">lpy</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">lpy</span><span class="o">.</span><span class="n">pick_data_from_image</span><span class="p">(</span><span class="s1">&#39;test.png&#39;</span><span class="p">,</span> <span class="s1">&#39;testdata.csv&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">lwsspy.plot</span> <span class="k">as</span> <span class="nn">lplt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">lplt</span><span class="o">.</span><span class="n">pick_data_from_image</span><span class="p">(</span><span class="s1">&#39;test.png&#39;</span><span class="p">,</span> <span class="s1">&#39;testdata.csv&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Change <code class="docutils literal notranslate"><span class="pre">.csv</span></code> to  <code class="docutils literal notranslate"><span class="pre">.npy</span></code> to save numpy binary file.</p>
@@ -1315,7 +1414,7 @@ guess of the Gaussian parameters and invertes for optttimized parameters.</p>
 <img alt="../_images/fitgaussian2d.svg" src="../_images/fitgaussian2d.svg" /></div>
 <dl class="py function">
 <dt class="sig sig-object py" id="lwsspy.statistics.distlist.distlist">
-<span class="sig-prename descclassname"><span class="pre">lwsspy.statistics.distlist.</span></span><span class="sig-name descname"><span class="pre">distlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/lwsspy/statistics/distlist.html#distlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.statistics.distlist.distlist" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">lwsspy.statistics.distlist.</span></span><span class="sig-name descname"><span class="pre">distlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/lwsspy/statistics/distlist.html#distlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.statistics.distlist.distlist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates list of some distributions</p>
 <dl class="simple">
 <dt>Args:</dt><dd><dl class="simple">
@@ -1336,7 +1435,7 @@ guess of the Gaussian parameters and invertes for optttimized parameters.</p>
 </div>
 <dl class="py function">
 <dt class="sig sig-object py" id="lwsspy.statistics.clm.clm">
-<span class="sig-prename descclassname"><span class="pre">lwsspy.statistics.clm.</span></span><span class="sig-name descname"><span class="pre">clm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/lwsspy/statistics/clm.html#clm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.statistics.clm.clm" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">lwsspy.statistics.clm.</span></span><span class="sig-name descname"><span class="pre">clm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/lwsspy/statistics/clm.html#clm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.statistics.clm.clm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function that takes a list of distributions of length N and shows that
 the central limit theorem holds.</p>
 <dl class="simple">
@@ -1382,8 +1481,7 @@ limits are not actually correct, and this plot is solely for illustration.</span
 <p>Some important and simple IO help functions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">copyright</dt>
-<dd class="field-odd"><p>Wenjie Lei (<a class="reference external" href="mailto:lei&#37;&#52;&#48;princeton&#46;edu">lei<span>&#64;</span>princeton<span>&#46;</span>edu</a>) Year? pyasdf
-Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>) 2019</p>
+<dd class="field-odd"><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>) 2019</p>
 </dd>
 <dt class="field-even">license</dt>
 <dd class="field-even"><p>GNU General Public License, Version 3
@@ -1391,39 +1489,9 @@ Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;p
 </dd>
 </dl>
 <dl class="py function">
-<dt class="sig sig-object py" id="lwsspy.utils.io.flex_read_stations">
-<span class="sig-prename descclassname"><span class="pre">lwsspy.utils.io.</span></span><span class="sig-name descname"><span class="pre">flex_read_stations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filenames</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/io.html#flex_read_stations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.utils.io.flex_read_stations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Takes in a list of strings and tries to read them as inventories
-Creates a single inventory, not an aggregate of inventories</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>filename</strong> – station file(s). wildcards permitted.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><cite>obspy.Inventory</cite></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="lwsspy.utils.io.is_mpi_env">
 <span class="sig-prename descclassname"><span class="pre">lwsspy.utils.io.</span></span><span class="sig-name descname"><span class="pre">is_mpi_env</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/io.html#is_mpi_env"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.utils.io.is_mpi_env" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test if current environment is MPI or not</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="lwsspy.utils.io.load_asdf">
-<span class="sig-prename descclassname"><span class="pre">lwsspy.utils.io.</span></span><span class="sig-name descname"><span class="pre">load_asdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_event</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/utils/io.html#load_asdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.utils.io.load_asdf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Takes in a filename of an asdf file and outputs event, inventory,
-and stream with the traces. Note that this is only good for asdffiles
-with one set of traces event and stations since the function will get the
-first/only waveform tag from the dataset</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>filename: ASDF filename. “somethingsomething.h5”</p>
-</dd>
-<dt>Returns:</dt><dd><p>Event, Inventory, Stream</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">

@@ -70,7 +70,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p class="caption">
+        <p class="caption" role="heading">
  <span class="caption-text">
   Contents:
  </span>
@@ -249,7 +249,7 @@ simply start every job until a given limit is reached s</p>
 
             <span class="c1"># Wait for any job to finish</span>
             <span class="nv">command</span><span class="o">=</span><span class="s1">&#39;wait &#39;</span><span class="si">${</span><span class="nv">joblist</span><span class="p">[0]</span><span class="si">}</span>
-            <span class="k">for</span> job in <span class="si">${</span><span class="nv">joblist</span><span class="p">[@]:</span><span class="nv">1</span><span class="si">}</span>
+            <span class="k">for</span> job <span class="k">in</span> <span class="si">${</span><span class="nv">joblist</span><span class="p">[@]:</span><span class="nv">1</span><span class="si">}</span>
             <span class="k">do</span>
                 <span class="nv">command</span><span class="o">+=</span><span class="s1">&#39; || wait &#39;</span><span class="nv">$job</span>
             <span class="k">done</span>
@@ -287,7 +287,7 @@ longprocess<span class="o">()</span> <span class="o">{</span>
 
 <span class="nv">pids</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
 <span class="c1"># Run five concurrent processes</span>
-<span class="k">for</span> i in <span class="o">{</span><span class="m">1</span>..5<span class="o">}</span><span class="p">;</span> <span class="k">do</span>
+<span class="k">for</span> i <span class="k">in</span> <span class="o">{</span><span class="m">1</span>..5<span class="o">}</span><span class="p">;</span> <span class="k">do</span>
         <span class="o">(</span> longprocess <span class="o">)</span> <span class="p">&amp;</span>
         <span class="c1"># store PID of process</span>
         <span class="nv">pids</span><span class="o">+=</span><span class="s2">&quot; </span><span class="nv">$!</span><span class="s2">&quot;</span>
@@ -295,7 +295,7 @@ longprocess<span class="o">()</span> <span class="o">{</span>
 
 <span class="c1"># Wait for all processes to finish, will take max 14s</span>
 <span class="c1"># as it waits in order of launch, not order of finishing</span>
-<span class="k">for</span> p in <span class="nv">$pids</span><span class="p">;</span> <span class="k">do</span>
+<span class="k">for</span> p <span class="k">in</span> <span class="nv">$pids</span><span class="p">;</span> <span class="k">do</span>
         <span class="k">if</span> <span class="nb">wait</span> <span class="nv">$p</span><span class="p">;</span> <span class="k">then</span>
                 <span class="nb">echo</span> <span class="s2">&quot;Process </span><span class="nv">$p</span><span class="s2"> success&quot;</span>
         <span class="k">else</span>
@@ -329,7 +329,7 @@ job_limit <span class="o">()</span> <span class="o">{</span>
 
             <span class="c1"># Wait for any job to finish</span>
             <span class="nv">command</span><span class="o">=</span><span class="s1">&#39;wait &#39;</span><span class="si">${</span><span class="nv">joblist</span><span class="p">[0]</span><span class="si">}</span>
-            <span class="k">for</span> job in <span class="si">${</span><span class="nv">joblist</span><span class="p">[@]:</span><span class="nv">1</span><span class="si">}</span>
+            <span class="k">for</span> job <span class="k">in</span> <span class="si">${</span><span class="nv">joblist</span><span class="p">[@]:</span><span class="nv">1</span><span class="si">}</span>
             <span class="k">do</span>
                 <span class="nv">command</span><span class="o">+=</span><span class="s1">&#39; || wait &#39;</span><span class="nv">$job</span>
             <span class="k">done</span>
@@ -351,7 +351,7 @@ longprocess<span class="o">()</span> <span class="o">{</span>
 <span class="nv">indeces</span><span class="o">=()</span>
 <span class="nv">pids</span><span class="o">=()</span>
 <span class="c1"># Run five concurrent processes</span>
-<span class="k">for</span> i in <span class="o">{</span><span class="m">1</span>..10<span class="o">}</span><span class="p">;</span> <span class="k">do</span>
+<span class="k">for</span> i <span class="k">in</span> <span class="o">{</span><span class="m">1</span>..10<span class="o">}</span><span class="p">;</span> <span class="k">do</span>
         <span class="o">(</span> longprocess <span class="o">)</span> <span class="p">&amp;</span>
 
         <span class="c1"># store PID of process</span>
@@ -364,7 +364,7 @@ longprocess<span class="o">()</span> <span class="o">{</span>
 <span class="c1"># Wait for all processes to finish, will take max 14s</span>
 <span class="c1"># as it waits in order of launch, not order of finishing</span>
 
-<span class="k">for</span> i in <span class="si">${</span><span class="p">!pids[@]</span><span class="si">}</span><span class="p">;</span> <span class="k">do</span>
+<span class="k">for</span> i <span class="k">in</span> <span class="si">${</span><span class="p">!pids[@]</span><span class="si">}</span><span class="p">;</span> <span class="k">do</span>
         <span class="k">if</span> <span class="nb">wait</span> <span class="si">${</span><span class="nv">pids</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span><span class="si">}</span><span class="p">;</span> <span class="k">then</span>
                 <span class="nb">echo</span> <span class="s2">&quot;Process </span><span class="si">${</span><span class="nv">indeces</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">${</span><span class="nv">pids</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span><span class="si">}</span><span class="s2"> success&quot;</span>
         <span class="k">else</span>

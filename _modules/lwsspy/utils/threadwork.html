@@ -68,7 +68,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p class="caption">
+        <p class="caption" role="heading">
  <span class="caption-text">
   Contents:
  </span>
@@ -188,7 +188,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">import</span> <span class="nn">lwsspy</span> <span class="k">as</span> <span class="nn">lpy</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">lutils</span>
 <span class="kn">import</span> <span class="nn">time</span>
 
 
@@ -222,7 +222,7 @@
     <span class="sd">&quot;&quot;&quot;Embarassingly Parallel multithreading&quot;&quot;&quot;</span>
 
     <span class="c1"># Get CpuCount</span>
-    <span class="n">Ncpu</span> <span class="o">=</span> <span class="n">lpy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
+    <span class="n">Ncpu</span> <span class="o">=</span> <span class="n">lutils</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
 
     <span class="c1"># Determine the amount of work to be done</span>
     <span class="n">Nargs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
@@ -235,7 +235,7 @@
     <span class="c1"># Cutting the arguments in chunks</span>
     <span class="n">argchunks</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
-        <span class="n">argchunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lpy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">chunks</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">chunksize</span><span class="p">))</span>
+        <span class="n">argchunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lutils</span><span class="o">.</span><span class="n">chunks</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">chunksize</span><span class="p">))</span>
 
     <span class="c1"># Determine Kwargs,</span>
     <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

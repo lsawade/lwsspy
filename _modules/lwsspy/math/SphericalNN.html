@@ -68,7 +68,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p class="caption">
+        <p class="caption" role="heading">
  <span class="caption-text">
   Contents:
  </span>
@@ -195,8 +195,8 @@
 <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">cKDTree</span>
 
 <span class="c1"># Internal</span>
-<span class="kn">import</span> <span class="nn">lwsspy.math</span> <span class="k">as</span> <span class="nn">lmat</span>
-<span class="kn">import</span> <span class="nn">lwsspy.base</span> <span class="k">as</span> <span class="nn">lbase</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">math</span> <span class="k">as</span> <span class="n">lmat</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">base</span> <span class="k">as</span> <span class="n">lbase</span>
 
 
 <div class="viewcode-block" id="SphericalNN"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.math.SphericalNN.SphericalNN">[docs]</a><span class="k">class</span> <span class="nc">SphericalNN</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -284,7 +284,7 @@
 <span class="sd">            Set of pairs (i, j) where i &lt; j</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">distkm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">maximum_distance</span><span class="o">/</span><span class="mf">2.0</span> <span class="o">/</span>
-                                   <span class="mf">180.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span> <span class="o">*</span> <span class="n">lpy</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span>
+                                   <span class="mf">180.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span> <span class="o">*</span> <span class="n">lbase</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kd_tree</span><span class="o">.</span><span class="n">query_pairs</span><span class="p">(</span><span class="n">distkm</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s1">&#39;ndarray&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SphericalNN.sparse_distance_matrix"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.math.SphericalNN.SphericalNN.sparse_distance_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">sparse_distance_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SphericalNN</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -394,7 +394,7 @@
                     <span class="n">qdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
                         <span class="n">d</span> <span class="o">&lt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span>
                             <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">maximum_distance</span><span class="o">/</span><span class="mf">2.0</span><span class="o">/</span><span class="mf">180.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
-                        <span class="o">*</span> <span class="n">lpy</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span><span class="p">,</span>
+                        <span class="o">*</span> <span class="n">lbase</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span><span class="p">,</span>
                         <span class="n">qdata</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
 
                 <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shp</span><span class="p">)</span>

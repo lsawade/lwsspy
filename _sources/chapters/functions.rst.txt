@@ -69,6 +69,8 @@ Coordinate Transformations
 
 .. autofunction:: lwsspy.math.rodrigues.rodrigues
 
+.. autofunction:: lwsspy.math.Ra2b.Ra2b
+
 
 Miscellaneous
 -------------
