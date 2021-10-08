@@ -1,4 +1,4 @@
-name: sphinx
+name: Documentation
 on:
   push:
     branches: [ main ]
@@ -62,17 +62,21 @@ jobs:
           conda list
       # Standard drop-in approach that should work for most people.
       - uses: ammaraskar/sphinx-action@master
+        shell: bash -l {0}
         with:
-          docs-folder: "docs/source"
-      
+          build-command: "sphinx-build -b html . _build"
+          docs-folder: "docs/source/"
+        
       # Great extra actions to compose with:
       # Create an artifact of the html output.
       - uses: actions/upload-artifact@v1
+        shell: bash -l {0}
         with:
           name: DocumentationHTML
           path: docs/source/_build/html/
 
       - name: Commit documentation changes
+        shell: bash -l {0}
         run: |
           git clone https://github.com/lwsspy/lwsspy.git --branch gh-pages --single-branch gh-pages
           cp -r docs/source/_build/html/* gh-pages/
@@ -87,6 +91,7 @@ jobs:
 
       # Push the changes
       - name: Push changes
+        shell: bash -l {0}
         uses: ad-m/github-push-action@master
         with:
           branch: gh-pages
