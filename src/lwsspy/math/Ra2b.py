@@ -100,7 +100,7 @@ def Ra2b(a, b):
 
     to simplify and end up with
 
-    .. math:: :label: simplification    
+    .. math:: :label: simplified
 
         \mathbf{R} = \mathbf{I} 
             + \mathbf{K} 

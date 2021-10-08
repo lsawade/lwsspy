@@ -67,7 +67,7 @@ jobs:
       
       - name: Install Doc Reqs
         shell: bash -l {0}
-        run: pip install -r requirements.txt
+        run: pip install -r docs/requirements.txt
       
       - name: Make Docs
         shell: bash -l {0}
