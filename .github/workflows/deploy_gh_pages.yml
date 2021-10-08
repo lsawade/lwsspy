@@ -15,51 +15,48 @@ jobs:
   build-and-deploy:
     name: Build and gh-pages
     runs-on: ubuntu-latest
-    steps:      
+    steps:
+
       # https://github.com/marketplace/actions/checkout
       - name: Start actions
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
           lfs: true
-      # Cache Conda environment installation
-      # - name: Cache conda
-      #   uses: actions/cache@v2
-      #   env:
-      #     # Increase this value to reset cache if etc/example-environment.yml has not changed
-      #     CACHE_NUMBER: 0
-      #   with:
-      #     path: ~/conda_pkgs_dir
-      #     key:
-      #       ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
-      #       hashFiles('environment.yml') }}
-      # # Cache pip installations
-      # - name: Cache pip
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: ~/.cache/pip
-      #     key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-pip-
-      #       ${{ runner.os }}-
-      # - uses: conda-incubator/setup-miniconda@v2
-      #   with:
-      #     activate-environment: lwsspy
-      #     environment-file: environment.yml
-      #     use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
-      - uses: conda-incubator/setup-miniconda@v2
+
+      # Cache Conda environment installattion
+      - name: Cache conda
+        uses: actions/cache@v2
+        env:
+          # Increase this value to reset cache if etc/example-environment.yml has not changed
+          CACHE_NUMBER: 0
         with:
-          activate-environment: test
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
+            hashFiles('environment.yml') }}
+      
+      # Setting Up Cache pip installations
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            ${{ runner.os }}-
+      - name: Prepare environment
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: lwsspy
           environment-file: environment.yml
-          python-version: 3.8
+          # python-version: 3.8
           auto-activate-base: false
           use-only-tar-bz2: true
+      # To keep Conda activated you have to use 'shell: bash -l {0}' line
+      # To specifiy the shell
       - name: INFO using bash shell
         shell: bash -l {0}
-        run: |
-          conda info
-          conda list
-      - name: INFO no shell spec
         run: |
           conda info
           conda list
