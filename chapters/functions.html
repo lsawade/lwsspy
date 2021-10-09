@@ -863,6 +863,55 @@ operation. And Wiki’s</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="lwsspy.math.logistic.logistic">
+<span class="sig-prename descclassname"><span class="pre">lwsspy.math.logistic.</span></span><span class="sig-name descname"><span class="pre">logistic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/logistic.html#logistic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.math.logistic.logistic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Customizable logistic function. You can define stretch center top and 
+bottom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">float or arraylike</span></dt><dd><p>x values</p>
+</dd>
+<dt><strong>x0</strong><span class="classifier">float, optional</span></dt><dd><p>center of the , by default 0.0</p>
+</dd>
+<dt><strong>t</strong><span class="classifier">float, optional</span></dt><dd><p>topline, by default 1.0</p>
+</dd>
+<dt><strong>k</strong><span class="classifier">float, optional</span></dt><dd><p>length from baseline to max, by default 1.0</p>
+</dd>
+<dt><strong>b</strong><span class="classifier">float, optional</span></dt><dd><p>baseline shift, by default 0.0</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>like x</dt><dd><p>logistic function output</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>A twist on the classic logistic function to be able to set base- and topline
+for simple modification. The function is defined as</p>
+<div class="math notranslate nohighlight" id="equation-logistic">
+<span class="eqno">(8)<a class="headerlink" href="#equation-logistic" title="Permalink to this equation">¶</a></span>\[f(x)= \frac{t-b}{1+e^{-\frac{2 \pi}{k}\left(x-x_{0}\right)}} + b,\]</div>
+<p>where <span class="math notranslate nohighlight">\(b\)</span> is the baseline, and <span class="math notranslate nohighlight">\(t\)</span> is the topline.
+<span class="math notranslate nohighlight">\(k\)</span> is defined as the length <span class="math notranslate nohighlight">\(\Delta x\)</span> from <span class="math notranslate nohighlight">\(x_0\)</span> to 
+where <span class="math notranslate nohighlight">\(f(x) \sim t\)</span> or <span class="math notranslate nohighlight">\(f(x) \sim b\)</span>. Hence, I call it a twist
+on the classic logistic function because k is no longer defining the slope.
+The original <span class="math notranslate nohighlight">\(k_{\mathrm{original}}\)</span> is defined as</p>
+<div class="math notranslate nohighlight" id="equation-mod">
+<span class="eqno">(9)<a class="headerlink" href="#equation-mod" title="Permalink to this equation">¶</a></span>\[k_{\mathrm{original}} = \frac{2*\pi}{k}.\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Authors</dt>
+<dd class="field-odd"><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd>
+<dt class="field-even">Last Modified</dt>
+<dd class="field-even"><p>2021.10.12 22.00</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="lwsspy.math.magnitude.magnitude">
 <span class="sig-prename descclassname"><span class="pre">lwsspy.math.magnitude.</span></span><span class="sig-name descname"><span class="pre">magnitude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/math/magnitude.html#magnitude"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.math.magnitude.magnitude" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the magnitude of a number</p>
@@ -1343,6 +1392,43 @@ matrices.</p>
 <div class="figure align-default" id="id7">
 <img alt="../_images/error_ellipse.svg" src="../_images/error_ellipse.svg" /><p class="caption"><span class="caption-text">Generating the error ellipse for a covarying dataset.</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
 </div>
+<dl class="py function">
+<dt class="sig sig-object py" id="lwsspy.statistics.gaussian.gaussian">
+<span class="sig-prename descclassname"><span class="pre">lwsspy.statistics.gaussian.</span></span><span class="sig-name descname"><span class="pre">gaussian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/statistics/gaussian.html#gaussian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.statistics.gaussian.gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create Gaussian pulse.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>t</strong></dt><dd><p>time vector</p>
+</dd>
+<dt><strong>to</strong></dt><dd><p>time in the center</p>
+</dd>
+<dt><strong>sig</strong></dt><dd><p>standard deviation</p>
+</dd>
+<dt><strong>amp</strong></dt><dd><p>amplitude</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>arraylike</dt><dd><p>vector with same size of t containing the corresponding pulse</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<div class="math notranslate nohighlight" id="equation-gaussian">
+<span class="eqno">(10)<a class="headerlink" href="#equation-gaussian" title="Permalink to this equation">¶</a></span>\[f(a, x, t_0, \sigma) = ae^{-0.5 \left[\frac{t-t_0}{\sigma}\right]^2}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Authors</dt>
+<dd class="field-odd"><p>Lucas Sawade (<a class="reference external" href="mailto:lsawade&#37;&#52;&#48;princeton&#46;edu">lsawade<span>&#64;</span>princeton<span>&#46;</span>edu</a>)</p>
+</dd>
+<dt class="field-even">Last Modified</dt>
+<dd class="field-even"><p>2021.10.12 22.00</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="lwsspy.statistics.gaussian2d.gaussian2d">
 <span class="sig-prename descclassname"><span class="pre">lwsspy.statistics.gaussian2d.</span></span><span class="sig-name descname"><span class="pre">gaussian2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amplitude</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xo</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yo</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_x</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_y</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lwsspy/statistics/gaussian2d.html#gaussian2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lwsspy.statistics.gaussian2d.gaussian2d" title="Permalink to this definition">¶</a></dt>
