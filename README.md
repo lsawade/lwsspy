@@ -1,9 +1,16 @@
-# Collection of my standard codes.
 
-Here I'm going to collect all codes hat I create. I will edit them etc.
-`lwsspy` is the complement to `lwss`, which is for matlab codes.
+<img src="docs/chapters/figures/logo.png" alt="drawing" width="200"/>
+
+[![Documentation](https://github.com/lwsspy/lwsspy/actions/workflows/deploy_gh_pages.yml/badge.svg?branch=main)](https://github.com/lwsspy/lwsspy/actions/workflows/deploy_gh_pages.yml)
+[![Tests](https://github.com/lwsspy/lwsspy/actions/workflows/test_package.yml/badge.svg?branch=main)](https://github.com/lwsspy/lwsspy/actions/workflows/test_package.yml)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+<!-- |__Deployment__  | __[![PyPI version](https://badge.fury.io/py/lwsspy.gcmt3d.svg)](https://badge.fury.io/py/lwsspy.gcmt3d)__| -->
 
 ---
+
+The offical documentation for LWSSPY can be found here: [Documentation]
+
+
 
 ## Installation
 
@@ -70,3 +77,5 @@ To run the lines in ipython.ipy. The lines are the following:
 %load_ext autoreload
 %autoreload 2
 ```
+
+[Documentation]: <https://lwsspy.github.io/lwsspy.gcmt3d>

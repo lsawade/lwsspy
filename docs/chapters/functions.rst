@@ -72,12 +72,16 @@ Coordinate Transformations
 .. autofunction:: lwsspy.math.Ra2b.Ra2b
 
 
+
+
 Miscellaneous
 -------------
 
 .. autofunction:: lwsspy.math.convm.convm
 
 .. autofunction:: lwsspy.math.eigsort.eigsort
+
+.. autofunction:: lwsspy.math.logistic.logistic
 
 .. autofunction:: lwsspy.math.magnitude.magnitude
 
@@ -120,6 +124,8 @@ Statistics
 .. figure:: figures/error_ellipse.svg
 
     Generating the error ellipse for a covarying dataset.
+
+.. autofunction:: lwsspy.statistics.gaussian.gaussian
 
 .. autofunction:: lwsspy.statistics.gaussian2d.gaussian2d
 
