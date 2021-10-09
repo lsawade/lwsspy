@@ -85,7 +85,7 @@ zc = zc/np.max(zc)
 # Use logistic function to compute alpha
 alpha = lmat.logistic(rr, k=0.3, x0=0.85, t=0.0, b=1.0)
 
-norm = Normalize(vmin=0.0, vmax=1.0)
+norm = Normalize(vmin=0.0, vmax=2.0)
 plt.figure()
 plt.imshow(1.0*np.ones_like(zc), cmap='gray_r', alpha=zc*alpha, norm=norm)
 plt.axis('off')
