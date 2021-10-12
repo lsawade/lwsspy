@@ -2,7 +2,7 @@ import matplotlib.font_manager as fm
 import matplotlib
 import os
 import glob
-import platform
+
 import matplotlib.ft2font as ft
 
 FONTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'fonts')

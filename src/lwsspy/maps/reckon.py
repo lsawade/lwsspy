@@ -42,4 +42,8 @@ def reckon(lat, lon, distance, bearing):
     lat2 = lat2/np.pi*180
     lon2 = lon2/np.pi*180
 
+    # Correct the longitude lattitude values
+    lon2 = np.where(lon2 < -180.0, lon2+360.0, lon2)
+    lon2 = np.where(lon2 > 180.0, lon2-360.0, lon2)
+
     return lat2, lon2

@@ -1,3 +1,4 @@
+
 <img src="docs/chapters/figures/logo.png" alt="drawing" width="200"/>
 
 [![Documentation](https://github.com/lwsspy/lwsspy/actions/workflows/deploy_gh_pages.yml/badge.svg?branch=main)](https://github.com/lwsspy/lwsspy/actions/workflows/deploy_gh_pages.yml)
@@ -9,7 +10,7 @@
 
 The offical documentation for LWSSPY can be found here: [Documentation]
 
-
+# LWSSPY
 
 ## Installation
 

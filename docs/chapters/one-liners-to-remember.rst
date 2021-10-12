@@ -16,12 +16,12 @@ retain.
 
 .. code:: bash
     
-    rsync -av --prune-empty-dirs \
-        --include="*/" \
-        --include="<yourpattern>" \
-        --exclude="*" 
-        source_dir/
-        destination_dir
+rsync -av --prune-empty-dirs \
+    --include="*/" \
+    --include="<yourpattern>" \
+    --exclude="*" \
+    source_dir/ \
+    destination_dir
 
 Note that ``source_dir`` and/or ``destination_dir`` can be remote locations,
 but it is important that source_dir is followed by a ``/``, otherwise 

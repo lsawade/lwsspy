@@ -56,13 +56,13 @@ jobs:
           conda info
           conda list
 
-      - name: Install lwsspy
-        shell: bash -l {0}
-        run: pip install -e .
+      # - name: Install lwsspy
+      #   shell: bash -l {0}
+      #   run: pip install -e .
       
-      - name: Install Doc Reqs
-        shell: bash -l {0}
-        run: pip install -r docs/requirements.txt
+      # - name: Install Doc Reqs
+      #   shell: bash -l {0}
+      #   run: pip install -r docs/requirements.txt
       
       - name: Make Docs
         shell: bash -l {0}

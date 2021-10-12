@@ -8,6 +8,7 @@ from .geo2cart import geo2cart  # noqa
 from .cart2geo import cart2geo  # noqa
 from .cart2sph import cart2sph  # noqa
 from .cart2pol import cart2pol  # noqa
+from .interpolatecurve import interpolatecurve  # noqa
 from .logistic import logistic  # noqa
 from .magnitude import magnitude  # noqa
 from .pol2cart import pol2cart  # noqa

@@ -19,3 +19,7 @@ dependencies:
     - xarray
     - beautifulsoup4
     - pyyaml
+    - sphinx
+    - sphinx_book_theme
+    - numpydoc
+    - -e .

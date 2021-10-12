@@ -33,7 +33,7 @@ def distance(x, y, x0: float, y0: float):
     return np.sqrt((x - x0)**2 + (y - y0) ** 2)
 
 
-def even2Dpoints(n, width, height, radius):
+def even2Dpoints(n, width, height, radius, seed=None):
     """Creates evenly distributed points in 2D space.
 
     Parameters
@@ -56,7 +56,10 @@ def even2Dpoints(n, width, height, radius):
     # Initialize empty array
     x = []
     y = []
-    np.random.seed(1234)
+
+    if seed:
+        np.random.seed(seed)
+
     while len(x) < n:
         flag = True
         # Get candidate

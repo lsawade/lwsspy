@@ -26,7 +26,7 @@ def haversine(lon1, lat1, lon2, lat2):
     Returns
     -------
     array
-        disttance in km for a spherical earth with r = 6371 km.
+        distance in km for a spherical earth with r = 6371 km.
     """
 
     lon1, lat1, lon2, lat2 = map(np.radians, [lon1, lat1, lon2, lat2])
