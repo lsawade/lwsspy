@@ -24,6 +24,7 @@ from .remove_ticklabels import remove_ticklabels  # noqa
 from .remove_ticklabels import remove_ticks  # noqa
 from .remove_ticklabels import remove_ticklabels_bottomleft  # noqa
 from .remove_ticklabels import remove_ticklabels_topright  # noqa
+from .remove_ticklabels import remove_topright  # noqa
 from .rgb2dec import rgb_to_dec  # noqa
 from .right_align_legend import right_align_legend  # noqa
 from .scatter_hist import scatter_hist  # noqa
