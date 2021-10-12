@@ -241,14 +241,10 @@
 2. you know exactly the file pattern that
 but need to get only this files from directories tress that you need to
 retain.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rsync -av --prune-empty-dirs <span class="se">\</span>
-    --include<span class="o">=</span><span class="s2">&quot;*/&quot;</span> <span class="se">\</span>
-    --include<span class="o">=</span><span class="s2">&quot;&lt;yourpattern&gt;&quot;</span> <span class="se">\</span>
-    --exclude<span class="o">=</span><span class="s2">&quot;*&quot;</span>
-    source_dir/
-    destination_dir
-</pre></div>
-</div>
+<dl class="simple">
+<dt>rsync -av –prune-empty-dirs </dt><dd><p>–include=”<em>/” –include=”&lt;yourpattern&gt;” –exclude=”</em>” source_dir/ destination_dir</p>
+</dd>
+</dl>
 <p>Note that <code class="docutils literal notranslate"><span class="pre">source_dir</span></code> and/or <code class="docutils literal notranslate"><span class="pre">destination_dir</span></code> can be remote locations,
 but it is important that source_dir is followed by a <code class="docutils literal notranslate"><span class="pre">/</span></code>, otherwise
 <code class="docutils literal notranslate"><span class="pre">source_dir</span></code>’s content will be saved in <code class="docutils literal notranslate"><span class="pre">destination_dir</span></code>.
