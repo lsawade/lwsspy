@@ -169,14 +169,25 @@ def scatter_hist(x, y, nbins, z=None, cmap=None,
     dx = maxx - minx
     dy = maxy - miny
 
+    # Histogram settings
+    if xlog:
+        if minx < 1.0:
+            minx = 1.0
+        binsx = np.logspace(np.log10(minx), np.log10(maxx), nbins + 1)
+    else:
+        binsx = np.linspace(minx, maxx, nbins + 1)
+
+    if ylog:
+        if miny < 1.0:
+            miny = 1
+        binsy = np.logspace(np.log10(miny), np.log10(maxy), nbins + 1)
+    else:
+        binsy = np.linspace(miny, maxy, nbins + 1)
+
     # Set limits with buffer
     prec = 0.05
     ax_scatter.set_xlim((minx - prec * dx, maxx + prec * dx))
     ax_scatter.set_ylim((miny - prec * dy, maxy + prec * dy))
-
-    # Histogram settings
-    binsx = np.linspace(minx, maxx, nbins + 1)
-    binsy = np.linspace(miny, maxy, nbins + 1)
 
     for _i, (x, y, c, l) in enumerate(zip(xl, yl, cl, ll)):
         # Plot y histogram
