@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 This script is loaded at installation add the location of this script to the
 .bashrc as 
@@ -42,3 +44,6 @@ if os.getenv("CONDA_DEFAULT_ENV", None) == "lwsspy":
 
     # Set matplotlib tot interactivate mode
     ion()
+
+
+

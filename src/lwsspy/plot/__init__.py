@@ -14,6 +14,7 @@ from .multiple_formatter import Multiple  # noqa
 from .nice_colorbar import nice_colorbar  # noqa
 from .pick_colors_from_cmap import pick_colors_from_cmap  # noqa
 from .pick_data_from_image import pick_data_from_image  # noqa
+from .plot_binnedstats import plot_binnedstats  # noqa
 from .plot_font import plot_font  # noqa
 from .plot_label import plot_label  # noqa
 from .plot_xyz_line import plot_xyz_line  # noqa
