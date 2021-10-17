@@ -14,7 +14,7 @@ def plot_binnedstats(
         x, values, bins=10, range=None,
         plotdict: dict = plotdict, orientation: str = 'horizontal',
         quantile: Union[float, list] = 0.25,
-        quantilemarkers: list = None):
+        quantilemarkers: list = None, log: bool = False):
     """Plots stats for each bin. Available stats are: ``mean``, ``std``, 
     ``median``, ``quantile``, [``blines``]. ``blines`` is not technically a 
     statistic, it plots bars of the width of the bins in form of bars from 
@@ -49,6 +49,8 @@ def plot_binnedstats(
         plot a single or multiple quantiles, by default 0.25
     quantilemarkers : list, optional
         if provided must match the number of quantiles, by default None
+    log : bool, optional
+        difference in computing the bin centers.
 
 
     Notes
@@ -69,7 +71,12 @@ def plot_binnedstats(
             x, values, bins=bins, statistic='mean', range=range)
 
         # Get bin centers
-        binc = mn.bin_edges[:-1] + .5 * np.diff(mn.bin_edges)
+        if log:
+            logbins = np.log10(mn.bin_edges)
+            binc = logbins[:-1] + .5 * np.diff(logbins)
+            binc = 10**binc
+        else:
+            binc = mn.bin_edges[:-1] + .5 * np.diff(mn.bin_edges)
 
         if orientation == "horizontal":
             plt.plot(binc, mn.statistic, **plotdict['mean'])
