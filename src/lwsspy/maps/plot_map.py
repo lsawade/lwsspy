@@ -56,32 +56,9 @@ def plot_map(fill=True, zorder=None, labelstopright: bool = True,
     if ax is None:
         ax = plt.gca()
 
-    # Put lables all around
-    if isinstance(ax.projection, cartopy.crs.PlateCarree):
-
-        # Set xticks Should be automated, but I just don't know how rn
-        # ax.set_xticks([-180, -135, -90, -45, 0, 45,
-        #                90, 135, 180], crs=ax.projection)
-        # ax.set_yticks([-90, -45, 0,  45, 90], crs=ax.projection)
-
-        # Set label formatter
-        degree_locator = mticker.MaxNLocator(nbins=9, steps=steps)
-        ax.xaxis.set_major_locator(degree_locator)
-        ax.yaxis.set_major_locator(degree_locator)
-        ax.xaxis.set_major_formatter(LongitudeFormatter())
-        ax.yaxis.set_major_formatter(LatitudeFormatter())
-
-        ax.tick_params(
-            labeltop=labelstopright, labelright=labelstopright,
-            labelbottom=labelsbottomleft, labelleft=labelsbottomleft
-        )
-        ax.grid(linewidth=2, color='black', alpha=0.5, linestyle='--')
-
+    # Change outline width
     ax.spines['geo'].set_linewidth(lw)
-    # Set gridlines
-    # gl = ax.gridlines(draw_labels=False, linewidth=1, color='lightgray',
-    #
-    #     alpha=0.5, linestyle='-', zorder=-1.5)
+
     if outline:
         edgecolor = 'black'
     else:
