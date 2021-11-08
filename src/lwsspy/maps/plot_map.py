@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import cartopy
 from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
-from cartopy.crs import PlateCarree, Mollweide
+from cartopy.crs import PlateCarree, Mollweide, UTM
 
 # steps = [0.01, 0.025, 0.05, 0.1, 0.25, 0.5,
 #          1, 1.5, 2, 2.5, 5, 10, 15, 20, 25, 30, 45]
