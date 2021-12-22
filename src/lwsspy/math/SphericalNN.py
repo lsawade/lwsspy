@@ -150,7 +150,7 @@ class SphericalNN(object):
         return output_mat
 
     def interpolator(self, qlat, qlon, maximum_distance=None,
-                     no_weighting=False, k: Optional[int] = None, p: float = 2.0):
+                     no_weighting=False, k: Optional[int] = 10, p: float = 2.0):
         """Spherical interpolation function using the ``SphericalNN`` object.
         Returns an interpolator that can be used for interpolating the same
         set of locations based on the KDTree. The only input the interpolator
@@ -171,7 +171,7 @@ class SphericalNN(object):
             interpolation
         k : int, optional
             Define maximum number of neighbors to be used for the weighted
-            interpolation. Not used if ``no_weighting = True``. Default None
+            interpolation. Not used if ``no_weighting = True``. Default 10
         p : float, optional
             Exponent to compute the inverse distance weights. Note that in
             the limit ``p->inf`` is just a nearest neighbor interpolation.
@@ -181,13 +181,14 @@ class SphericalNN(object):
         Notes
         -----
 
+        It is always recommended to set k, since k may or may not be dependent 
+        on the data you want to interpolate.
+
         In the future, I may add a variable weighting function for the
         weighted interpolation.
 
         Please refer to https://en.wikipedia.org/wiki/Inverse_distance_weighting
         for the interpolation weighting.
-
-
         """
 
         # Get query points in cartesian
