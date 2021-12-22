@@ -49,7 +49,7 @@ def test_interpolator_max_dist():
 
     # Create interpolator
     inter = snn.interpolator(
-        np.array([1]), np.array([1]), maximum_distance=14.0)
+        np.array([7.5]), np.array([7.5]), maximum_distance=5.0)
 
     # interpolation
     assert_array_almost_equal(inter(data), np.array([3.0]), decimal=4)

@@ -233,7 +233,7 @@ class SphericalNN(object):
 
                 # Get multiple distances and indeces
                 d, inds = self.kd_tree.query(
-                    points, k=k, distance_upper_bound=cartd*1.01)
+                    points, k=k)  # Do not add this: distance_upper_bound=cartd*1.01)
 
                 if d.shape == (1,):
                     d = d.reshape((1, 1))
