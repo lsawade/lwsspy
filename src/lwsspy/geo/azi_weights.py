@@ -1,6 +1,6 @@
 import numpy as np
-from obspy.geodetics.base import gps2dist_azimuth
-
+# from obspy.geodetics.base import gps2dist_azimuth
+from ..maps.bearing import bearing
 
 
 def azi_weights(lat0, lon0, lat, lon, weights=None, nbins=12, p=0.5):
@@ -27,7 +27,7 @@ def azi_weights(lat0, lon0, lat, lon, weights=None, nbins=12, p=0.5):
     -------
     arraylike
         weights of for the 'other points'
-    
+
     Notes
     -----
 
@@ -37,11 +37,11 @@ def azi_weights(lat0, lon0, lat, lon, weights=None, nbins=12, p=0.5):
     :Last Modified:
         2021.03.16 16.30
 
-    """         
+    """
 
-    # Compute azimuth 
-    def azfunc(lat1, lon1): return gps2dist_azimuth(lat0, lon0, lat1, lon1)[1]
-    vazfunc = np.vectorize(azfunc) # (not faster, but no loop necessary)
+    # Compute azimuth
+    def azfunc(lat1, lon1): return bearing(lon0, lat0, lon1, lat1)
+    vazfunc = np.vectorize(azfunc)  # (not faster, but no loop necessary)
 
     # Compute
     az = vazfunc(lat, lon)
