@@ -223,13 +223,6 @@ class SphericalNN(object):
                 if k > self.kd_tree.n:
                     k = self.kd_tree.n
 
-            # Get multiple distances and indeces
-            d, inds = self.kd_tree.query(points, k=k)
-
-            if d.shape == (1,):
-                d = d.reshape((1, 1))
-                inds = inds.reshape((1, 1))
-
             # Filter out distances too far out.
             # Modified Shepard's method
             if maximum_distance is not None:
@@ -237,6 +230,14 @@ class SphericalNN(object):
                 # Get cartesian distance
                 cartd = np.abs(2 * np.sin(maximum_distance/2.0/180.0*np.pi)
                                * lbase.EARTH_RADIUS_KM)
+
+                # Get multiple distances and indeces
+                d, inds = self.kd_tree.query(
+                    points, k=k, distance_upper_bound=cartd*1.01)
+
+                if d.shape == (1,):
+                    d = d.reshape((1, 1))
+                    inds = inds.reshape((1, 1))
 
                 # Compute the weights using my inverse distance metric to avoid
                 # division by 0. Based on 1/(1 + x**2)
@@ -274,6 +275,14 @@ class SphericalNN(object):
 
             # Shepard's method
             else:
+
+                # Get multiple distances and indeces
+                d, inds = self.kd_tree.query(
+                    points, k=k)
+
+                if d.shape == (1,):
+                    d = d.reshape((1, 1))
+                    inds = inds.reshape((1, 1))
 
                 # Compute the weights using modified shepard
                 # The distance being normalized by the standard deviation of

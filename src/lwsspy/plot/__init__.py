@@ -19,6 +19,7 @@ from .plot_font import plot_font  # noqa
 from .plot_label import plot_label  # noqa
 from .plot_xyz_line import plot_xyz_line  # noqa
 from .pz_figure import pz_figure  # noqa
+from .rectangle_from_extent import rectangle_from_extent  # noqa
 from .remove_ticklabels import remove_xticklabels  # noqa
 from .remove_ticklabels import remove_yticklabels  # noqa
 from .remove_ticklabels import remove_ticklabels  # noqa

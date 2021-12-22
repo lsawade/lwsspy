@@ -25,6 +25,16 @@ def overlap(pointa1, pointa2, pointb1, pointb2):
         [description]
     """
 
+    # Check if any of the end points are the same
+    if (np.allclose(pointa1, pointb1) and np.allclose(pointa2, pointb2)) \
+       or (np.allclose(pointa1, pointb2) and np.allclose(pointa2, pointb1)):
+        return True
+
+    # If segments are not the same, check if the have the same endpoints
+    elif np.allclose(pointa1, pointb1) or np.allclose(pointa1, pointb2) \
+            or np.allclose(pointa2, pointb2) or np.allclose(pointa2, pointb1):
+        return False
+
     # Convert to cartesian
     a1 = geo2cart(1, *pointa1)
     a2 = geo2cart(1, *pointa2)
@@ -42,9 +52,9 @@ def overlap(pointa1, pointa2, pointb1, pointb2):
 
     # Check distances
     ad = np.arccos(np.dot(a1, a2))
+    bd = np.arccos(np.dot(b1, b2))
     ta1 = np.arccos(np.dot(normab1, a1))
     ta2 = np.arccos(np.dot(normab1, a2))
-    bd = np.arccos(np.dot(b1, b2))
     tb1 = np.arccos(np.dot(normab1, b1))
     tb2 = np.arccos(np.dot(normab1, b2))
 
@@ -53,5 +63,7 @@ def overlap(pointa1, pointa2, pointb1, pointb2):
     rb1 = np.arccos(np.dot(normab2, b1))
     rb2 = np.arccos(np.dot(normab2, b2))
 
-    return (np.isclose(ad, ta1+ta2) and np.isclose(bd, tb1+tb2)) or \
-        (np.isclose(ad, ra1+ra2) and np.isclose(bd, rb1+rb2))
+    check1 = (np.isclose(ad, ta1+ta2) & np.isclose(bd, tb1+tb2))
+    check2 = (np.isclose(ad, ra1+ra2) & np.isclose(bd, rb1+rb2))
+
+    return check1 or check2

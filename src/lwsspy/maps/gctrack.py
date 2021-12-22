@@ -19,7 +19,7 @@ def geodiff(lat, lon):
         )
     )
 
-    dists = mat[:, 0] / (2.0 * lbase.EARTH_RADIUS_M * np.pi / 360.0)
+    dists = mat[:, 0] / lbase.EARTH_RADIUS_M / np.pi * 180
     az = mat[:, 1]
 
     return dists, az
@@ -110,10 +110,10 @@ def gctrack(
     # Get tracks between segments that are far apart
     dists, az = geodiff(lat, lon)
 
-    # if np.any(dists/100 < dist):
-    #     raise ValueError(
-    #         "Final deltadeg between points in tracks should be at least "
-    #         "100 times less smallest distance between waypoints.")
+    if np.any(dists/100 < dist):
+        raise ValueError(
+            "Final deltadeg between points in tracks should be at least "
+            "100 times less smallest distance between waypoints.")
 
     if not constantdist:
         updated_dist = []
@@ -159,7 +159,7 @@ def gctrack(
     utrack = utrack[np.sort(idx), :]
 
     # Get distances along the new track
-    udists, _ = geodiff(utrack[:, 1], utrack[:, 0])
+    udists, _ = geodiff(utrack[:, 0], utrack[:, 1])
 
     # Compute cumulative distance
     M = len(utrack[:, 0])

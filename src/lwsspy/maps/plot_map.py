@@ -12,7 +12,7 @@ steps = [1, 1.5, 1.8, 2, 3, 6, 10]
 def plot_map(fill=True, zorder=None, labelstopright: bool = True,
              labelsbottomleft: bool = True, borders: bool = False,
              rivers: bool = False, lakes: bool = False, outline: bool = False,
-             ax=None, lw=0.5):
+             oceanbg=None, ax=None, lw=0.5):
     """Plots map into existing axes.
 
     Parameters
@@ -71,6 +71,10 @@ def plot_map(fill=True, zorder=None, labelstopright: bool = True,
     else:
         ax.add_feature(cartopy.feature.LAND, zorder=zorder, edgecolor=edgecolor,
                        linewidth=0.5, facecolor=(0, 0, 0, 0))
+
+    if oceanbg:
+        ax.add_feature(cartopy.feature.OCEAN, zorder=zorder, edgecolor='none',
+                       linewidth=0.5, facecolor=oceanbg)
 
     if borders:
         ax.add_feature(cartopy.feature.BORDERS,
