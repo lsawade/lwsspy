@@ -150,7 +150,7 @@ class SphericalNN(object):
         return output_mat
 
     def interpolator(self, qlat, qlon, maximum_distance=None,
-                     no_weighting=False, k: Optional[int] = None, p: float = 2.0):
+                     no_weighting=False, k: Optional[int] = 10, p: float = 2.0):
         """Spherical interpolation function using the ``SphericalNN`` object.
         Returns an interpolator that can be used for interpolating the same
         set of locations based on the KDTree. The only input the interpolator
@@ -171,7 +171,7 @@ class SphericalNN(object):
             interpolation
         k : int, optional
             Define maximum number of neighbors to be used for the weighted
-            interpolation. Not used if ``no_weighting = True``. Default None
+            interpolation. Not used if ``no_weighting = True``. Default 10
         p : float, optional
             Exponent to compute the inverse distance weights. Note that in
             the limit ``p->inf`` is just a nearest neighbor interpolation.
@@ -181,13 +181,14 @@ class SphericalNN(object):
         Notes
         -----
 
+        It is always recommended to set k, since k may or may not be dependent 
+        on the data you want to interpolate.
+
         In the future, I may add a variable weighting function for the
         weighted interpolation.
 
         Please refer to https://en.wikipedia.org/wiki/Inverse_distance_weighting
         for the interpolation weighting.
-
-
         """
 
         # Get query points in cartesian
@@ -223,13 +224,6 @@ class SphericalNN(object):
                 if k > self.kd_tree.n:
                     k = self.kd_tree.n
 
-            # Get multiple distances and indeces
-            d, inds = self.kd_tree.query(points, k=k)
-
-            if d.shape == (1,):
-                d = d.reshape((1, 1))
-                inds = inds.reshape((1, 1))
-
             # Filter out distances too far out.
             # Modified Shepard's method
             if maximum_distance is not None:
@@ -237,6 +231,14 @@ class SphericalNN(object):
                 # Get cartesian distance
                 cartd = np.abs(2 * np.sin(maximum_distance/2.0/180.0*np.pi)
                                * lbase.EARTH_RADIUS_KM)
+
+                # Get multiple distances and indeces
+                d, inds = self.kd_tree.query(
+                    points, k=k)  # Do not add this: distance_upper_bound=cartd*1.01)
+
+                if d.shape == (1,):
+                    d = d.reshape((1, 1))
+                    inds = inds.reshape((1, 1))
 
                 # Compute the weights using my inverse distance metric to avoid
                 # division by 0. Based on 1/(1 + x**2)
@@ -274,6 +276,14 @@ class SphericalNN(object):
 
             # Shepard's method
             else:
+
+                # Get multiple distances and indeces
+                d, inds = self.kd_tree.query(
+                    points, k=k)
+
+                if d.shape == (1,):
+                    d = d.reshape((1, 1))
+                    inds = inds.reshape((1, 1))
 
                 # Compute the weights using modified shepard
                 # The distance being normalized by the standard deviation of

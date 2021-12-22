@@ -5,13 +5,14 @@ from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
 from cartopy.crs import Mollweide, PlateCarree
 import numpy as np
 from numpy.lib import meshgrid
+from copy import deepcopy
 from .slabkdtree import SlabKDTree
 from ..maps.plot_map import plot_map
 from ..maps.gctrack import gctrack
 from ..plot.nice_colorbar import nice_colorbar
 from ..plot.axes_from_axes import axes_from_axes
 from ..plot.plot_label import plot_label
-from ..constants import abc
+from ..base.constants import abc
 
 tonga_dict = dict(
     # Some point at the coast
@@ -71,7 +72,7 @@ def plot_slab_slices(slice_dict: dict = tonga_dict):
         if check:
             slab_list.append(_i)
 
-    fig = plt.figure(figsize=(9, 6))
+    fig = plt.figure(figsize=(9, 4))
     gs = GridSpec(nrows=1, ncols=2, wspace=0.05, width_ratios=[1, 1.25])
     gs_slice = GridSpecFromSubplotSpec(
         nrows=N, ncols=1,
@@ -87,13 +88,13 @@ def plot_slab_slices(slice_dict: dict = tonga_dict):
     # Normalize so that all slabs have the same colorspace
     norm = Normalize(vmin=0.0, vmax=600.0)
     for _slab in slab_list:
-        tmp_lon = np.where(
-            skt.lon_list[_slab] < 0.0, skt.lon_list[_slab] + 360.0, skt.lon_list[_slab])
+        # tmp_lon = np.where(
+        #     skt.lon_list[_slab] < 0.0, skt.lon_list[_slab] + 360.0, skt.lon_list[_slab])
 
         slabimg = plt.pcolormesh(
-            tmp_lon, skt.lat_list[_slab],
+            skt.lon_list[_slab], skt.lat_list[_slab],
             -skt.data_list[_slab]['dep'], transform=PlateCarree(),
-            cmap='rainbow_r', shading='auto', norm=norm)
+            cmap='rainbow_r', shading='auto', norm=norm, rasterized=True)
 
     cax = axes_from_axes(mapax, 999, caxextent)
     nice_colorbar(cax=cax, orientation='vertical', label='Depth [km]')
@@ -114,6 +115,7 @@ def plot_slab_slices(slice_dict: dict = tonga_dict):
 
         if c180 is True:
             lons = np.where(lons < 0.0, lons + 360.0, lons)
+
         tracks.append((lats, lons, dists))
 
         mapax.plot(lons, lats, 'k', markeredgecolor='k',

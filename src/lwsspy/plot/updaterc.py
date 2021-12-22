@@ -56,6 +56,7 @@ def updaterc(rebuild=False):
         ],
         'font.size': 12,
         # 'pdf.fonttype': 3,
+        'figure.dpi': 140,
         'font.weight': 'normal',
         # 'pdf.fonttype': 42,
         # 'ps.fonttype': 42,

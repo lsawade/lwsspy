@@ -3,7 +3,7 @@ from ..math.SphericalNN import SphericalNN
 from .get_slabs import get_slabs
 import numpy as np
 import _pickle as pickle
-from .. import DOWNLOAD_CACHE
+from ..base.constants import DOWNLOAD_CACHE
 from ..utils.output import print_action
 
 

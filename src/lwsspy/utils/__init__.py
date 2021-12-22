@@ -22,6 +22,7 @@ from .add_years import add_years  # noqa
 from .cpu_count import cpu_count  # noqa
 from .chunks import chunks  # noqa
 from .date2year import date2year  # noqa
+from .fields_view import fields_view  # noqa
 from .get_unique_lists import get_unique_lists  # noqa
 from .increase_fontsize import increase_fontsize  # noqa
 from .multiwrapper import poolcontext  # noqa
