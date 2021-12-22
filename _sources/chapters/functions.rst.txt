@@ -150,6 +150,15 @@ Statistics
     Showing that the central limit theorem holds. Note that the convolution
     limits are not actually correct, and this plot is solely for illustration.
 
+.. autofunction:: lwsspy.statistics.plot_binnedstats.plot_binnedstats
+
+.. figure:: figures/clm.svg
+
+    Showing that the central limit theorem holds. Note that the convolution
+    limits are not actually correct, and this plot is solely for illustration.
+
+
+
 Utilities
 +++++++++
 

@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>lwsspy.math.SphericalNN &#8212; LWSSPY</title>
     
-  <link href="../../../_static/css/theme.css" rel="stylesheet" />
-  <link href="../../../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+  <link href="../../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -25,7 +25,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
     
-  <link rel="preload" as="script" href="../../../_static/js/index.1c5a1a01449ed65a7b51.js">
+  <link rel="preload" as="script" href="../../../_static/js/index.be7d3bbb2ef33a8344ce.js">
 
     <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
@@ -36,7 +36,10 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
     
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
@@ -68,7 +71,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <p class="caption" role="heading">
+        <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Contents:
  </span>
@@ -335,7 +338,7 @@
         <span class="k">return</span> <span class="n">output_mat</span></div>
 
 <div class="viewcode-block" id="SphericalNN.interpolator"><a class="viewcode-back" href="../../../chapters/functions.html#lwsspy.math.SphericalNN.SphericalNN.interpolator">[docs]</a>    <span class="k">def</span> <span class="nf">interpolator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qlat</span><span class="p">,</span> <span class="n">qlon</span><span class="p">,</span> <span class="n">maximum_distance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                     <span class="n">no_weighting</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">):</span>
+                     <span class="n">no_weighting</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Spherical interpolation function using the ``SphericalNN`` object.</span>
 <span class="sd">        Returns an interpolator that can be used for interpolating the same</span>
 <span class="sd">        set of locations based on the KDTree. The only input the interpolator</span>
@@ -356,7 +359,7 @@
 <span class="sd">            interpolation</span>
 <span class="sd">        k : int, optional</span>
 <span class="sd">            Define maximum number of neighbors to be used for the weighted</span>
-<span class="sd">            interpolation. Not used if ``no_weighting = True``. Default None</span>
+<span class="sd">            interpolation. Not used if ``no_weighting = True``. Default 10</span>
 <span class="sd">        p : float, optional</span>
 <span class="sd">            Exponent to compute the inverse distance weights. Note that in</span>
 <span class="sd">            the limit ``p-&gt;inf`` is just a nearest neighbor interpolation.</span>
@@ -366,13 +369,14 @@
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 
+<span class="sd">        It is always recommended to set k, since k may or may not be dependent </span>
+<span class="sd">        on the data you want to interpolate.</span>
+
 <span class="sd">        In the future, I may add a variable weighting function for the</span>
 <span class="sd">        weighted interpolation.</span>
 
 <span class="sd">        Please refer to https://en.wikipedia.org/wiki/Inverse_distance_weighting</span>
 <span class="sd">        for the interpolation weighting.</span>
-
-
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Get query points in cartesian</span>
@@ -408,13 +412,6 @@
                 <span class="k">if</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">kd_tree</span><span class="o">.</span><span class="n">n</span><span class="p">:</span>
                     <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kd_tree</span><span class="o">.</span><span class="n">n</span>
 
-            <span class="c1"># Get multiple distances and indeces</span>
-            <span class="n">d</span><span class="p">,</span> <span class="n">inds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kd_tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,):</span>
-                <span class="n">d</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-                <span class="n">inds</span> <span class="o">=</span> <span class="n">inds</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-
             <span class="c1"># Filter out distances too far out.</span>
             <span class="c1"># Modified Shepard&#39;s method</span>
             <span class="k">if</span> <span class="n">maximum_distance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -422,6 +419,14 @@
                 <span class="c1"># Get cartesian distance</span>
                 <span class="n">cartd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">maximum_distance</span><span class="o">/</span><span class="mf">2.0</span><span class="o">/</span><span class="mf">180.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
                                <span class="o">*</span> <span class="n">lbase</span><span class="o">.</span><span class="n">EARTH_RADIUS_KM</span><span class="p">)</span>
+
+                <span class="c1"># Get multiple distances and indeces</span>
+                <span class="n">d</span><span class="p">,</span> <span class="n">inds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kd_tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+                    <span class="n">points</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>  <span class="c1"># Do not add this: distance_upper_bound=cartd*1.01)</span>
+
+                <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,):</span>
+                    <span class="n">d</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="n">inds</span> <span class="o">=</span> <span class="n">inds</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 
                 <span class="c1"># Compute the weights using my inverse distance metric to avoid</span>
                 <span class="c1"># division by 0. Based on 1/(1 + x**2)</span>
@@ -459,6 +464,14 @@
 
             <span class="c1"># Shepard&#39;s method</span>
             <span class="k">else</span><span class="p">:</span>
+
+                <span class="c1"># Get multiple distances and indeces</span>
+                <span class="n">d</span><span class="p">,</span> <span class="n">inds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kd_tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+                    <span class="n">points</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,):</span>
+                    <span class="n">d</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="n">inds</span> <span class="o">=</span> <span class="n">inds</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 
                 <span class="c1"># Compute the weights using modified shepard</span>
                 <span class="c1"># The distance being normalized by the standard deviation of</span>
@@ -523,13 +536,8 @@
               </div>
               
         
-            
-
-
-
-<div class='prev-next-bottom'>
-    
-
+            <!-- Previous / next buttons -->
+<div class='prev-next-area'>
 </div>
         
         </div>
@@ -550,8 +558,7 @@
       </div>
     </div>
   
-  <script src="../../../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+  <script src="../../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
 
-  
   </body>
 </html>
