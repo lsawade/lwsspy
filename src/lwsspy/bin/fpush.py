@@ -2,9 +2,8 @@
 """
 
 This file contains a script that if located on princeton servers copies 
-to tigress-web temp folder, and if not on princeton servers secure copies to
-the same folder. Since this is a publicly accessible server. This 
-quick-and-dirty function should not be used for sensitive files.
+to tigress/lsawade temp folder, and if not on princeton servers secure copies to
+the same folder. This works only if used with VPN or tigressgateway.
 
 """
 
@@ -17,7 +16,7 @@ def bin():
     # Server Location
     username = "lsawade"
     hostname = "tigressdata.princeton.edu"
-    tempfolder = "/tigress/lsawade/public_html/temp"
+    tempfolder = "/tigress/lsawade/temp"
 
     # Current Host
     current_host = socket.gethostname()
@@ -31,8 +30,8 @@ def bin():
 
     if "princeton" in current_host:
         check_call(
-            f'cp -r {filename} {tempfolder}/{filename}', shell=True)
+            f'cp -r {tempfolder}/{filename} {filename} ', shell=True)
     else:
         check_call(
-            f'scp -r {filename} {username}@{hostname}:{tempfolder}/{filename}',
+            f'scp -r {username}@{hostname}:{tempfolder}/{filename} {filename}',
             shell=True)
