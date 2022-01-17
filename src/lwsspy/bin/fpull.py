@@ -2,10 +2,22 @@
 
 """
 
+Usage: 
+
+    fpull <filename1> <filename2> ... <filenameN>
+
 This file contains a script that if located on princeton servers copies from
 tigress/temp folder, and if not on Princeton servers secure copies from the same
 folder. This only works if used with VPN or tigressgateway. Otherwise, Duo 
-access is required.
+access is required. Works for any number of files.
+
+
+:Author:
+    Lucas Sawade (lsawade-at-princeton.edu)
+
+:Last Modified:
+    2021.01.17 11.45
+
 
 """
 
@@ -25,7 +37,7 @@ def bin():
 
     # Check if argument is given
     if len(argv) == 1:
-        print("You need to provide a filename. Usage: fpull <filenname/dirname>")
+        print(__doc__)
         exit()
     else:
         filename = argv[1]
@@ -37,3 +49,7 @@ def bin():
         check_call(
             f'scp -r {username}@{hostname}:{tempfolder}/{filename} ./',
             shell=True)
+
+
+if __name__ == "__main__":
+    bin()

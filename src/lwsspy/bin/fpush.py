@@ -1,9 +1,22 @@
 #!/usr/bin/env python
 """
 
-This file contains a script that if located on princeton servers copies 
-to tigress/lsawade temp folder, and if not on princeton servers secure copies to
-the same folder. This works only if used with VPN or tigressgateway.
+Usage: 
+
+    fpull filename
+
+The filename can contain wildcards, but must then be enclosed in quotes.
+
+The script contains a script that if located on princeton servers copies 
+to tigress/lsawade temp folder, and if not on princeton servers secure copies 
+to the same folder. This works only if used with VPN or tigressgateway.
+
+
+:Author:
+    Lucas Sawade (lsawade-at-princeton.edu)
+
+:Last Modified:
+    2021.01.17 11.45
 
 """
 
@@ -39,3 +52,7 @@ def bin():
         check_call(
             f'scp -r {filename} {username}@{hostname}:{tempfolder}/',
             shell=True)
+
+
+if __name__ == "__main__":
+    bin()
