@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 """
 
 This file contains a script that if located on princeton servers copies from
@@ -31,8 +32,8 @@ def bin():
 
     if "princeton" in current_host:
         check_call(
-            f'cp -r {tempfolder}/{filename} {filename}', shell=True)
+            f'cp -r {tempfolder}/{filename} ./', shell=True)
     else:
         check_call(
-            f'scp -r {username}@{hostname}:{tempfolder}/{filename} {filename}',
+            f'scp -r {username}@{hostname}:{tempfolder}/{filename} ./',
             shell=True)

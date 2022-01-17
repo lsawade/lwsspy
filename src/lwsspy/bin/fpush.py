@@ -27,15 +27,15 @@ def bin():
         print("You need to provide a filename. Usage: fpush <filenname/dirname>")
         exit()
     else:
-        filename = argv[1]
+        filename = argv[1:]
 
-    # Remove all previous paths
-    destname = os.path.basename(filename)
+        if isinstance(filename, list):
+            filename = " ".join(filename)
 
     if "princeton" in current_host:
         check_call(
-            f'cp -r {filename} {tempfolder}/{destname} ', shell=True)
+            f'cp -r {filename} {tempfolder}/ ', shell=True)
     else:
         check_call(
-            f'scp -r {filename} {username}@{hostname}:{tempfolder}/{destname}',
+            f'scp -r {filename} {username}@{hostname}:{tempfolder}/',
             shell=True)
