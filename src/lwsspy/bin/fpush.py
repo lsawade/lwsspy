@@ -7,6 +7,7 @@ the same folder. This works only if used with VPN or tigressgateway.
 
 """
 
+import os
 from subprocess import check_call
 import socket
 from sys import argv, exit
@@ -27,6 +28,9 @@ def bin():
         exit()
     else:
         filename = argv[1]
+
+    # Remove all previous paths
+    filename = os.path.basename(filename)
 
     if "princeton" in current_host:
         check_call(
