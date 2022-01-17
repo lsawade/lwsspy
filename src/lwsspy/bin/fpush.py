@@ -30,12 +30,12 @@ def bin():
         filename = argv[1]
 
     # Remove all previous paths
-    filename = os.path.basename(filename)
+    destname = os.path.basename(filename)
 
     if "princeton" in current_host:
         check_call(
-            f'cp -r {filename} {tempfolder}/{filename} ', shell=True)
+            f'cp -r {filename} {tempfolder}/{destname} ', shell=True)
     else:
         check_call(
-            f'scp -r {filename} {username}@{hostname}:{tempfolder}/{filename}',
+            f'scp -r {filename} {username}@{hostname}:{tempfolder}/{destname}',
             shell=True)
