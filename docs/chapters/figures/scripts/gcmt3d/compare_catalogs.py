@@ -58,7 +58,8 @@ plot_label(ax, f"\n$\\mu$ = {np.mean(old_eps_nu[:,0]):7.4f}\n"
                f"$\\sigma$ = {np.std(old_eps_nu[:,0]):7.4f}\n"
                f"GCMT3D+\n$\\mu$ = {np.mean(new_eps_nu[:,0]):7.4f}\n"
                f"$\\sigma$ = {np.std(new_eps_nu[:,0]):7.4f}\n",
-               location=2, box=False, fontdict=dict(fontsize='small', fontfamily="monospace"))
+               location=2, box=False, fontdict=dict(fontsize='small',
+                                                    fontfamily="monospace"))
 plot_label(ax, "CLVD-", location=6, box=False, fontdict=dict(fontsize='small'))
 plot_label(ax, "CLVD+", location=7, box=False, fontdict=dict(fontsize='small'))
 plot_label(ax, "DC", location=14, box=False, fontdict=dict(fontsize='small'))
