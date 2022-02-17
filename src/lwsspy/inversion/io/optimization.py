@@ -21,7 +21,6 @@ from lwsspy.inversion.io.cost import cost
 from lwsspy.inversion.io.gradient import gradient
 from lwsspy.inversion.io.hessian import hessian
 from lwsspy.inversion.io.descent import descent
-from lwsspy.inversion.io.import_problem import import_problem
 
 # These are the functions that are basefunction
 from lwsspy.inversion.io.log import clear_log
