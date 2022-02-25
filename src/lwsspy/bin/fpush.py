@@ -3,7 +3,7 @@
 
 Usage: 
 
-    fpull filename
+    fpush filename
 
 The filename can contain wildcards, but must then be enclosed in quotes.
 
@@ -37,7 +37,7 @@ def bin():
 
     # Check if argument is given
     if len(argv) == 1:
-        print("You need to provide a filename. Usage: fpush <filenname/dirname>")
+        print(__doc__)
         exit()
     else:
         filename = argv[1:]
