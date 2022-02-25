@@ -75,7 +75,7 @@ def optimdir(outdir):
         hessdir, descdir, optdir
 
 
-outdir = "/Users/lucassawade/optimizationdir"
+outdir = "/home/lsawade/optimizationdir"
 # problem_module = "/Users/lucassawade/lwsspy/lwsspy/src/lwsspy/inversion/io/problem/__init__.py"
 
 # problem = import_problem(problem_module)
