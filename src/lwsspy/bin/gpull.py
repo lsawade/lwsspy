@@ -55,7 +55,7 @@ def gpull():
 
     # Get command line arguments
     # Check if argument is given
-    if (len(argv) != 3) or (argv[1] == '-h') or (argv[1] == '--help'):
+    if (len(argv) != 4) or (argv[1] == '-h') or (argv[1] == '--help'):
         print(__doc__)
         exit()
     else:
