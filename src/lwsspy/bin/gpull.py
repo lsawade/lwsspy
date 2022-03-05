@@ -44,7 +44,7 @@ def sub_gpull(remote, remotepath, path='.'):
     userid = 'lsawade'
 
     # Define command
-    cmd = f'rsync -a --exclude=.git {userid}@{remote}:{remotepath} {path}'
+    cmd = f'rsync -a --exclude=.git --exclude="*.egg-info" {userid}@{remote}:{remotepath} {path}'
     print(cmd)
 
     # Execute
