@@ -1,3 +1,4 @@
+from datetime import datetime
 import multiprocessing
 from typing import Callable, Iterable, Optional, List
 import queue
@@ -26,14 +27,13 @@ def get_results(
 
 
 def process_wrapper(queue, _i, processfunc, verbose, *args, **kwargs):
-    print(verbose)
     if verbose:
-        print(f"START: Process {_i} -- {processfunc.__name__}()")
+        print(f"START: Process {_i} -- {datetime.now()} -- {processfunc.__name__}()")
 
     queue.put((_i, processfunc(*args, **kwargs)))
-    
+
     if verbose:
-        print(f"STOP:  Process {_i}.")
+        print(f"STOP:  Process {_i} -- {datetime.now()}")
 
 
 def multiwrapper(
