@@ -26,12 +26,9 @@ def get_results(
 
 
 def process_wrapper(queue, _i, processfunc, verbose, *args, **kwargs):
-    print(f'Putting {args[0]} in the queue.. ')
     queue.put((_i, processfunc(*args, **kwargs)))
     if verbose:
-        print(f"Process {args[0]} done.")
-
-    print(f'Done{args[0]}')
+        print(f"Process {_i} done.")
 
 
 def multiwrapper(
