@@ -26,9 +26,14 @@ def get_results(
 
 
 def process_wrapper(queue, _i, processfunc, verbose, *args, **kwargs):
-    queue.put((_i, processfunc(*args, **kwargs)))
+    print(verbose)
     if verbose:
-        print(f"Process {_i} done.")
+        print(f"START: Process {_i}")
+
+    queue.put((_i, processfunc(*args, **kwargs)))
+    
+    if verbose:
+        print(f"STOP:  Process {_i>}.")
 
 
 def multiwrapper(
