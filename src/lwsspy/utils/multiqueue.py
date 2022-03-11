@@ -26,9 +26,12 @@ def get_results(
 
 
 def process_wrapper(queue, _i, processfunc, verbose, *args, **kwargs):
+    print(f'Putting {args[0]} in the queue.. ')
     queue.put((_i, processfunc(*args, **kwargs)))
     if verbose:
         print(f"Process {args[0]} done.")
+
+    print(f'Done{args[0]}')
 
 
 def multiwrapper(
@@ -87,6 +90,7 @@ def multiwrapper(
 
         # Then start the process and append it to the list.
         pro.start()
+        pro.daemon = True
         jobs.append(pro)
 
     if verbose:
@@ -106,8 +110,8 @@ def multiwrapper(
     #     print(f"Print before joining {_i}")
     #     pro.join()
 
-    if verbose:
-        print("Finished joining")
+    # if verbose:
+    #     print("Finished joining")
 
     # Then, the results are gathered. This function is rather important.
     results = get_results(jobs, q)
