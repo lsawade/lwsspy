@@ -90,7 +90,6 @@ def multiwrapper(
 
         # Then start the process and append it to the list.
         pro.start()
-        pro.daemon = True
         jobs.append(pro)
 
     if verbose:
