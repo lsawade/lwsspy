@@ -28,7 +28,7 @@ def get_results(
 def process_wrapper(queue, _i, processfunc, verbose, *args, **kwargs):
     print(verbose)
     if verbose:
-        print(f"START: Process {_i}")
+        print(f"START: Process {_i} -- {processfunc.__name__}")
 
     queue.put((_i, processfunc(*args, **kwargs)))
     
