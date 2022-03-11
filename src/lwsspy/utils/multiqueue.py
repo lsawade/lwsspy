@@ -33,7 +33,7 @@ def process_wrapper(queue, _i, processfunc, verbose, *args, **kwargs):
     queue.put((_i, processfunc(*args, **kwargs)))
     
     if verbose:
-        print(f"STOP:  Process {_i>}.")
+        print(f"STOP:  Process {_i}.")
 
 
 def multiwrapper(
