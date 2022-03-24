@@ -30,6 +30,7 @@ from .multiwrapper import starmap_with_kwargs  # noqa
 from .pixels2data import pixels2data  # noqa
 from .reduce_fontsize import reduce_fontsize  # noqa
 from .reset_cpu_affinity import reset_cpu_affinity  # noqa
+from .retry import retry  # noqa
 from .sec2hhmmss import sec2hhmmss  # noqa
 from .sec2hhmmss import sec2timestamp  # noqa
 from .threadwork import threadwork  # noqa
