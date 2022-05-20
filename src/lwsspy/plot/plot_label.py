@@ -10,15 +10,17 @@ def plot_label(ax: matplotlib.axes.Axes, label: str, aspect: float = 1,
                **kwargs):
     """Plots label one of the corners of the plot.
 
-    Plot locations are set as follows::
+    Plot locations are set as follows
 
-           6   14   7 
+    .. literal::
+
+        18  6  14  7 
             --------
          5 |1      2|  8
         13 |        | 15
-        12 |3      4|  9
+        12 |3  17  4|  9
             --------
-          11   16  10
+            11 16 10
 
 
     Parameters
@@ -128,9 +130,13 @@ def plot_label(ax: matplotlib.axes.Axes, label: str, aspect: float = 1,
                 verticalalignment='top', transform=ax.transAxes,
                 bbox=boxdict, fontdict=fontdict, **kwargs)
     elif location == 17:
-        ax.text(- dist, 1.0 + dist * aspect, label,
-                horizontalalignment='right', verticalalignment='bottom',
+        ax.text(0.5, dist * aspect, label,
+                horizontalalignment='center', verticalalignment='bottom',
                 transform=ax.transAxes, bbox=boxdict,
+                fontdict=fontdict, **kwargs)
+    elif location == 18:
+        ax.text(0-dist, 1.0 + dist * aspect, label, horizontalalignment='right',
+                verticalalignment='bottom', transform=ax.transAxes, bbox=boxdict,
                 fontdict=fontdict, **kwargs)
     else:
         raise ValueError("Other corners not defined.")

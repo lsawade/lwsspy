@@ -67,7 +67,7 @@ def plot_map(fill=True, zorder=None, labelstopright: bool = True,
     # Add land
     if fill:
         ax.add_feature(cartopy.feature.LAND, zorder=zorder, edgecolor=edgecolor,
-                       linewidth=0.5, facecolor=(0.8, 0.8, 0.8))
+                       linewidth=0.5, facecolor=(0.9, 0.9, 0.9))
     else:
         ax.add_feature(cartopy.feature.LAND, zorder=zorder, edgecolor=edgecolor,
                        linewidth=0.5, facecolor=(0, 0, 0, 0))

@@ -6,7 +6,7 @@ from scipy.fft import fft, ifft, fftfreq
 # Internal
 import lwsspy.base as lbase
 import lwsspy.plot as lplt
-import lwsspy.seismo as lseis
+import lwsspy.wavelets as lwave
 lplt.updaterc()
 
 # Setup time vector
@@ -21,8 +21,8 @@ f0 = 20.0  # Dominant frequency
 freq = fftfreq(Nt, dt)[:maxnt]
 
 # Compute Gaussians
-g = lseis.gaussiant(t, t0=t0, f0=f0)
-dg = lseis.dgaussiant(t, t0=t0, f0=f0)
+g = lwave.gaussian.g(t, t0=t0, f0=f0)
+dg = lwave.gaussian.dg(t, t0=t0, f0=f0)
 
 # Compute Spectrums
 fg = np.abs(fft(g))[:maxnt]
