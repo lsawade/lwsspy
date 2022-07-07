@@ -2,9 +2,15 @@
 This script creates figure 1 (a,b,c) of the gcmt3d article.
 """
 import os
-import lwsspy as lpy
+import numpy as np
+import lwsspy.base as lbase
+import lwsspy.seismo as lseis
+import lwsspy.plot as lplt
+import lwsspy.maps as lmaps
 import matplotlib.pyplot as plt
 from cartopy.crs import Mollweide
+
+lplt.updaterc()
 
 # Get the GCMT3D data directory
 datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
@@ -17,10 +23,15 @@ plt.subplots_adjust(left=0.01, right=0.99,
 
 # Events
 # Get catalog
-gcmt_cat = lpy.seismo.CMTCatalog.load(os.path.join(datadir, "gcmtcatalog.pkl"))
-filtered_cat = gcmt_cat.filter(
-    mindict=dict(moment_magnitude=5.7),
-    maxdict=dict(moment_magnitude=7.5))
+gcmt_cat = lseis.CMTCatalog.load(os.path.join(datadir, "gcmtcatalog.pkl"))
+
+# filter events
+gcmt3d_cat = lseis.CMTCatalog.load(os.path.join(datadir, "gcmt3d+.pkl"))
+print("GCMT3D", len(gcmt3d_cat))
+# Filter ids
+filtered_cat, _ = gcmt_cat.check_ids(gcmt3d_cat)
+# filtered_cat = gcmt3d_cat
+print("GCMT(GCMT3D)", len(filtered_cat))
 
 # Plot Events
 evax = plt.subplot(131, projection=Mollweide(central_longitude=0.0))
@@ -32,12 +43,12 @@ lplt.plot_label(evax, "a)", location=1, box=False, dist=0.0)
 # Get stations
 xml_name = "gcmt3d_station.xml"
 invfile = os.path.join(datadir, xml_name)
-inv = lpy.seismo.read_inventory(invfile)
+inv = lseis.read_inventory(invfile)
 
 # Plot Stations
-stax = plt.subplot(132, projection=Mollweide(central_longitude=0.0))å
+stax = plt.subplot(132, projection=Mollweide(central_longitude=0.0))
 lmaps.plot_map(zorder=-1)
-lpy.seismo.plot_inventory(inv, ax=stax, markersize=5, cmap='Set1')
+lseis.plot_inventory(inv, ax=stax, markersize=5, cmap='Set1')
 # Set legend fontsizes
 legendfontsize = "x-small"
 title_fontsize = "small"
@@ -55,8 +66,7 @@ vfile = os.path.join(datadir, vname)
 
 vax = plt.subplot(133, projection=Mollweide(central_longitude=0.0))
 cax = vax.inset_axes(bounds=[0.1, -0.16, 0.8, 0.04])
-_, cbar = lplt.plot_specfem_xsec_depth(
-    vfile, ax=vax, cax=cax, depth=100.0)
+_, cbar = lseis.plot_specfem_xsec_depth(vfile, ax=vax, cax=cax, depth=100.0)
 cax.set_title("$v_{P_V}$ [km/s]", fontsize='small')
 plt.xticks(fontsize="x-small")
 
@@ -64,4 +74,5 @@ lplt.plot_label(vax, "c)", location=1, box=False, dist=0.0)
 
 plt.savefig(os.path.join(lbase.DOCFIGURES, "gcmt3d",
                          "events_stations_model.pdf"))
+
 plt.show(block=True)

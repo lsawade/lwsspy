@@ -11,6 +11,7 @@ from .midpointcolornorm import MidpointNormalize  # noqa
 from .midpointlognorm import MidPointLogNorm  # noqa
 from .multiple_formatter import multiple_formatter  # noqa
 from .multiple_formatter import Multiple  # noqa
+from .mscatter import mscatter  # noqa
 from .nice_colorbar import nice_colorbar  # noqa
 from .pick_colors_from_cmap import pick_colors_from_cmap  # noqa
 from .pick_data_from_image import pick_data_from_image  # noqa
