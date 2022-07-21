@@ -1,4 +1,6 @@
 import imp
+
+from matplotlib.cm import ScalarMappable
 from . import ot
 import matplotlib.pyplot as plt
 import numpy as np
@@ -6,14 +8,21 @@ from .. import plot as lplt
 
 
 def plot_OTWaveform(otw: ot.Waveform):
-    _, axes = plt.subplots(2, 2, figsize=(6, 6))
+    _, axes = plt.subplots(2, 2, figsize=(8, 5))
     plt.subplots_adjust(wspace=0.1, hspace=0.3)
+
+    extension = 0.05
+    utmin, utmax = np.min(otw.ut), np.max(otw.ut)
+    usmin, usmax = np.min(otw.us), np.max(otw.us)
+    umin, umax = np.minimum(utmin, usmin), np.maximum(utmax, usmax)
+    du = umax - umin
+    ulims = umin - 0.5 * extension * du, umax + 0.5 * extension * du
 
     # Plot observed
     axes[0, 0].plot([np.min(otw.tt), np.max(otw.tt)], [0, 0], 'k:', lw=0.75)
     axes[0, 0].plot(otw.tt, otw.ut)
     axes[0, 0].set_xlim(np.min(otw.tt), np.max(otw.tt))
-    axes[0, 0].set_ylim(otw.unorm[0], otw.unorm[1])
+    axes[0, 0].set_ylim(ulims)
     axes[0, 0].set_xlabel(f'$t$ [s]')
     axes[0, 0].set_ylabel(f'Amplitude $u$')
     axes[0, 0].set_title('Target: Observed')
@@ -22,7 +31,7 @@ def plot_OTWaveform(otw: ot.Waveform):
     axes[0, 1].plot([np.min(otw.ts), np.max(otw.ts)], [0, 0], 'k:', lw=0.75)
     axes[0, 1].plot(otw.ts, otw.us)
     axes[0, 1].set_xlim(np.min(otw.ts), np.max(otw.ts))
-    axes[0, 1].set_ylim(otw.unorm[0], otw.unorm[1])
+    axes[0, 1].set_ylim(ulims)
     axes[0, 1].set_xlabel(f'$t$ [s]')
     axes[0, 1].set_title('Source: Synthetic')
 
@@ -93,6 +102,52 @@ def plot_OTW_FP(otw: ot.Waveform):
                     colors='k', linewidths=0.25, levels=30)
 
 
+def plot_OTW_2D_PDF(otw: ot.Waveform):
+
+    if otw.fingerprint_computed is False:
+        otw.fingerprints()
+
+    # Create figure
+    fig, axes = plt.subplots(1, 2, figsize=(8, 4))
+    # subplots_adjust(wspace=0.4)
+
+    # #### BOTTOM ROW scaled and fingerprinted
+    # Observed
+    # axes[0].plot([np.min(tn0), np.max(tn0)], [baseline, baseline], 'k:', lw=0.75)
+    axes[0].plot(otw.ttn, otw.utn, 'k')
+    axes[0].set_xlim(np.min(otw.ttn), np.max(otw.ttn))
+    axes[0].set_title('Observed/Target')
+
+    # Predicted
+    # axes[1].plot([np.min(tn1), np.max(tn1)], [baseline, baseline], 'k:', lw=0.75)
+    axes[1].plot(otw.tsn, otw.usn, 'k')
+    axes[1].set_xlim(np.min(otw.tsn), np.max(otw.tsn))
+    axes[1].set_title('Synthetic/Source')
+
+    # Set limits
+    axes[0].set_ylim(0, 1)
+    axes[1].set_ylim(0, 1)
+
+    # Setting ticklabels
+    axes[1].tick_params(labelleft=False, labelright=True)
+    axes[0].tick_params(labelleft=False)
+    axes[1].tick_params(labelleft=False)
+
+    # Setting axes labels
+    axes[0].set_xlabel('Time $t\prime$ [s]')
+    axes[1].set_xlabel('Time $t\prime$ [s]')
+    axes[0].set_ylabel('Amplitude $u\prime$')
+
+    # Plot contours
+    pc = axes[0].pcolormesh(
+        otw.dtt, otw.dut, otw.ptn.T, cmap='rainbow', vmin=0, vmax=np.max(otw.ptn))
+    axes[1].pcolormesh(
+        otw.dts, otw.dus, otw.psn.T, cmap='rainbow', vmin=0, vmax=np.max(otw.ptn))
+    fig.colorbar(
+        ScalarMappable(norm=pc.norm, cmap=pc.cmap), ax=axes,
+        orientation='horizontal', fraction=0.05, shrink=0.6, aspect=40, pad=0.2)
+
+
 def plot_OTW_FP_MARG(otw: ot.Waveform):
 
     # Create figure
@@ -107,7 +162,7 @@ def plot_OTW_FP_MARG(otw: ot.Waveform):
 
     # Predicted
     # axes[1].plot([np.min(tn1), np.max(tn1)], [baseline, baseline], 'k:', lw=0.75)
-    axes[0, 1].plot(otw.ts, otw.us, 'k')
+    axes[0, 1].plot(otw.ts, otw.us, 'r')
     axes[0, 1].set_xlim(np.min(otw.ts), np.max(otw.ts))
     axes[0, 1].set_title('Synthetic/Source')
 
@@ -122,7 +177,7 @@ def plot_OTW_FP_MARG(otw: ot.Waveform):
 
     # Predicted
     # axes[1].plot([np.min(tn1), np.max(tn1)], [baseline, baseline], 'k:', lw=0.75)
-    axes[1, 1].plot(otw.tsn, otw.usn, 'k')
+    axes[1, 1].plot(otw.tsn, otw.usn, 'r')
     axes[1, 1].set_xlim(np.min(otw.tsn), np.max(otw.tsn))
 
     # Set limits
@@ -190,15 +245,15 @@ def plot_OTW_FP_MARG(otw: ot.Waveform):
     sourceyax.spines.top.set_visible(False)
 
     # Set labels
-    targetxax.set_xlabel("Time $t\prime$ [s]")
-    sourcexax.set_xlabel("Time $t\prime$ [s]")
+    targetxax.set_xlabel("Time $t\prime$")
+    sourcexax.set_xlabel("Time $t\prime$")
     targetyax.set_ylabel('Amplitude $u\prime$')
 
     # Plot marginal distributions
     targetxax.fill_between(otw.MargT.y, otw.MargT.gn, color=(0.8, 0.8, 0.8))
     targetyax.fill_betweenx(otw.MargU.y, otw.MargU.gn, color=(0.8, 0.8, 0.8))
-    sourcexax.fill_between(otw.MargT.x, otw.MargT.fn, color=(0.8, 0.8, 0.8))
-    sourceyax.fill_betweenx(otw.MargU.x, otw.MargU.fn, color=(0.8, 0.8, 0.8))
+    sourcexax.fill_between(otw.MargT.x, otw.MargT.fn, color=(0.9, 0.7, 0.7))
+    sourceyax.fill_betweenx(otw.MargU.x, otw.MargU.fn, color=(0.9, 0.7, 0.7))
 
     lplt.plot_label(axes[0, 0], 'a)', location=6, box=False)
     lplt.plot_label(axes[0, 1], 'b)', location=6, box=False)
@@ -215,7 +270,7 @@ def plot_OTW_FP_MARG_COMP(otw: ot.Waveform, noFP=True):
     # #### TOP ROW unscaled #####
     axes[0].plot(otw.tt, otw.ut, 'k', label='Observed')
     axes[0].set_xlim(np.min(otw.tt), np.max(otw.tt))
-    axes[0].set_title('Source(red) and Target (black) after inversion')
+    # axes[0].set_title('Target (black) and Source(red) ')
 
     # Predicted
     # axes[1].plot([np.min(tn1), np.max(tn1)], [baseline, baseline], 'k:', lw=0.75)
@@ -231,14 +286,14 @@ def plot_OTW_FP_MARG_COMP(otw: ot.Waveform, noFP=True):
 
     # #### BOTTOM ROW scaled and fingerprinted
     # Observed
-    axes[1].plot(otw.ttn, otw.utn, 'k')
+    axes[1].plot(otw.ttn, otw.utn, 'k', label='Target/Obs')
     axes[1].set_xlim(np.min(otw.ttn), np.max(otw.ttn))
 
     # Predicted
     # axes[1].plot([np.min(tn1), np.max(tn1)], [baseline, baseline], 'k:', lw=0.75)
-    axes[1].plot(otw.tsn, otw.usn, 'r')
+    axes[1].plot(otw.tsn, otw.usn, 'r', label='Source/Syn')
     axes[1].set_xlim(np.min(otw.tsn), np.max(otw.tsn))
-
+    axes[1].legend(loc='upper left', frameon=False)
     # Set limits
     axes[1].set_ylim(0, 1)
 
@@ -281,7 +336,7 @@ def plot_OTW_FP_MARG_COMP(otw: ot.Waveform, noFP=True):
     pyax.spines.top.set_visible(False)
 
     # Set labels
-    pxax.set_xlabel("Time $t\prime$ [s]")
+    pxax.set_xlabel("Time $t\prime$")
     pyax.set_ylabel('Amplitude $u\prime$')
 
     # Plot marginal distributions
@@ -316,7 +371,7 @@ def plot_OTW_FP_D(otw: ot.Waveform):
     # axes[1].tick_params(labelleft=False)
 
     # Setting axes labels
-    axes[3].set_xlabel('Time $t\prime$ [s]')
+    axes[3].set_xlabel('Time $t\prime$')
 
     # Setting titles
     axes[0].set_title('$d_{ij}$')
@@ -351,9 +406,10 @@ def plot_rays(otw: ot.Waveform, npts: int = 250):
 
     lw = 1.0
     ls = '-'
-    ax.plot(otw.tsn, otw.usn, 'k', lw=lw, ls=ls)
+    x, = ax.plot(otw.tsn, otw.usn, 'k', lw=lw, ls=ls,
+                 label=r'$\mathbf{x}(\lambda, \mathbf{x}_k, \mathbf{x}_{k+1})$')
     ax.set_ylim(0, 1)
-    ax.set_xlabel('Time $t\prime$ [s]')
+    ax.set_xlabel('Time $t\prime$')
     ax.set_ylabel('Amplitude $u\prime$')
 
     # Get random rays
@@ -375,11 +431,12 @@ def plot_rays(otw: ot.Waveform, npts: int = 250):
     pusk = otw.dus[jds].flatten()
 
     #
-    ax.plot(np.vstack((ptsk, tlam)), np.vstack(
-        (pusk, ulam)), c=(0.8, 0.2, 0.2), lw=0.5)
-    ax.scatter(ptsk, pusk, c='k', s=.5, zorder=10)
+    pl = ax.plot(np.vstack((ptsk, tlam)), np.vstack(
+        (pusk, ulam)), c=(0.8, 0.2, 0.2), lw=0.5, label='Distances')
+    ps = ax.scatter(ptsk, pusk, c='k', s=.5, zorder=10, label=r'$\mathbf{p}$')
     ax.scatter(tlam, ulam, c='k', s=.5, zorder=10)
     ax.set_xlim(np.min(otw.tsn), np.max(otw.tsn))
+    plt.legend(handles=(pl[0], ps, x), loc='lower left')
 
 
 def plot_lambdas(otw: ot.Waveform):
@@ -395,7 +452,7 @@ def plot_lambdas(otw: ot.Waveform):
     ax.plot(otw.tsn, otw.usn, 'k', lw=lw, ls=ls)
     ax.set_xlim(np.min(otw.tsn), np.max(otw.tsn))
     ax.set_ylim(0, 1)
-    ax.set_xlabel('Time $t\prime$ [s]')
+    ax.set_xlabel('Time $t\prime$')
     ax.set_ylabel('Amplitude $u\prime$')
 
     p = ax.pcolormesh(

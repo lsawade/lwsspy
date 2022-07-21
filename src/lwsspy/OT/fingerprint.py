@@ -142,13 +142,13 @@ def fingerprint_and_diff(t: np.ndarray, u: np.ndarray, nt: int, nu: int):
             dddukp1 = np.dot(dddx, dxdukp1)
 
             # C.9 Error in this equation it should be u(lambda)
-            # dij_k[i, j] = (1-lmds[kl])/d[i, j] * (uclose - pu[j])
+            # dij_k[i, j] = (1-lmds[kl])/d[i, j] * (xclose[1, kl] - pu[j])
             # dij_k[i, j] = (1-lmds[kl])/d[i, j] * (u[kl] - pu[j])
             dij_k[i, j] = ddduk
 
             # C.10 Error in this equation it should be u(lambda)
-            # dij_kp1[i, j] = lmds[kl]/d[i, j] * (uclose - pu[j])
-            # dij_kp1[i, j] = lmds[kl]/d[i, j]s * (u[kl+1] - pu[j])
+            # dij_kp1[i, j] = lmds[kl]/d[i, j] * (xclose[1, kl+1] - pu[j])
+            # dij_kp1[i, j] = lmds[kl]/d[i, j] * (u[kl+1] - pu[j])
             dij_kp1[i, j] = dddukp1
 
     return pt, pu, d, lambdas, dij_k, dij_kp1, idk
@@ -169,12 +169,12 @@ def compute_dxduk(xk: np.ndarray, xkp1: np.ndarray, p: np.ndarray, lmd: float):
         x(lambda, xk, xk+1) = (1-lambda) * xk + lamdba * xkp1
 
     Some definitions
-        lamda = g()/h(),            
+        lamda = g()/h()
     where
         g = (p - xk) dot (xk+1 - xk)
         h = || xk+1 - xk ||^2.
 
-    so dlam/duk = dgduk * h - g * dhduk
+    so dlam/duk = (dgduk * h - g * dhduk)/h^2
     """
 
     # Get difference
@@ -185,16 +185,21 @@ def compute_dxduk(xk: np.ndarray, xkp1: np.ndarray, p: np.ndarray, lmd: float):
     h = np.dot(dx, dx)
 
     # Derivatives of the numerator and denominator as a function of uk
-    dgduk = - ((xkp1[1] - xk[1]) + (p[1] - xk[1]))
-    dhduk = 2 * (xk[1] - xkp1[1])
+    dgduk = - (2*xk[1] - xkp1[1] - p[1])
+    dhduk = - 2 * (xkp1[1] - xk[1])
 
     # Derivatives of the numerator and denominator as a function of uk
     dgdukp1 = (p[1] - xk[1])
     dhdukp1 = 2 * (xkp1[1] - xk[1])
 
     # Get derivatives of lambda wrt. uk and ukp1
-    dlmdduk = (dgduk * h - g * dhduk)/h**2
-    dlmddukp1 = (dgdukp1 * h - g * dhdukp1)/h**2
+    if (lmd == 0.0) or (lmd == 1.0):
+        dlmdduk = 0
+        dlmddukp1 = 0
+
+    else:
+        dlmdduk = (dgduk * h - g * dhduk)/h**2
+        dlmddukp1 = (dgdukp1 * h - g * dhdukp1)/h**2
 
     # Get derivatives of x wrt. lamda uk and ukp1. Here it's important to note
     # x is directly dependent on uk and ukp1, but also on lambda which itself is

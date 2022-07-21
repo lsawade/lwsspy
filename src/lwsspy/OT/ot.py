@@ -211,8 +211,8 @@ class Waveform:
             du = np.diff(self.unorm)
 
             # Compute ubar
-            ubart = 1/du * (self.ut - self.unorm[0] - self.unorm[1])
-            ubars = 1/du * (self.us - self.unorm[0] - self.unorm[1])
+            ubart = 1/du * (2*self.ut - self.unorm[0] - self.unorm[1])
+            ubars = 1/du * (2*self.us - self.unorm[0] - self.unorm[1])
 
             # Scale the waveforms
             self.utn = 0.5 + 1/np.pi * np.arctan(ubart)
@@ -354,13 +354,14 @@ class Waveform:
         self.dWudm = np.zeros(Nm)
 
         for i, dudmi in enumerate(dudm):
+
             self.dWudm[i] = np.sum(
-                self.dWuduk * dudmi[self.idk] +
-                self.dWudukp1 * dudmi[self.idk])
+                (self.dWuduk * dudmi[self.idk]) +
+                self.dWudukp1 * dudmi[self.idk+1])
 
             self.dWtdm[i] = np.sum(
                 self.dWtduk * dudmi[self.idk] +
-                self.dWtdukp1 * dudmi[self.idk])
+                self.dWtdukp1 * dudmi[self.idk+1])
 
         self.dWdm = self.alpha * self.dWtdm + (1-self.alpha) * self.dWudm
 

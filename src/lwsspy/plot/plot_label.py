@@ -14,7 +14,7 @@ def plot_label(ax: matplotlib.axes.Axes, label: str, aspect: float = 1,
 
     .. literal::
 
-        18  6  14  7 
+        18  6  14   7 
             --------
          5 |1      2|  8
         13 |        | 15
