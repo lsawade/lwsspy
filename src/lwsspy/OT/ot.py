@@ -367,6 +367,59 @@ class Waveform:
 
         return self.dWdm
 
+    def compute_dWdu(self):
+
+        # Computing the derivatives with respect to amplitude
+        self.dWtdu = np.zeros_like(self.us)
+        self.dWudu = np.zeros_like(self.us)
+
+        # Get indeces
+        unq, ids = np.unique(self.idk.flatten(), return_inverse=True)
+        unqkp1, idskp1 = np.unique(self.idk.flatten() + 1, return_inverse=True)
+
+        # Compute bincount
+        self.dWtdu[unq] = np.bincount(ids, self.dWtduk.flatten())
+        self.dWtdu[unqkp1] += np.bincount(idskp1, self.dWtdukp1.flatten())
+        self.dWudu[unq] = np.bincount(ids, self.dWuduk.flatten())
+        self.dWudu[unqkp1] += np.bincount(idskp1, self.dWudukp1.flatten())
+
+        self.dWdu = self.alpha * self.dWtdu + (1-self.alpha) * self.dWudu
+
+        return self.dWdu, self.dWtdu, self.dWudu
+
+    def __compute_dWdu_loop__(self):
+
+        # Computing the derivatives with respect to amplitude
+        self.dWtdu = np.zeros_like(self.us)
+        self.dWudu = np.zeros_like(self.us)
+
+        # Get indeces
+        # unq, ids = np.unique(self.idk-1, return_inverse=True)
+        # print('idk', np.min(self.idk), np.max(self.idk))
+        # unq, ids = np.unique(self.idk.flatten(), return_inverse=True)
+        # unqkp1, idskp1 = np.unique(self.idk.flatten()+1, return_inverse=True)
+
+        # print('unq', np.min(unq), np.max(unq))
+        # print('unqp1', np.min(unqkp1), np.max(unqkp1))
+        # print('ids', np.min(ids), np.max(ids))
+        # print('idkp1', np.min(idskp1), np.max(idskp1))
+
+        # # Compute bincount
+        # self.dWtdu[unq] = np.bincount(ids, self.dWtduk.flatten())
+        # self.dWtdu[unqkp1] += np.bincount(idskp1, self.dWtdukp1.flatten())
+        # self.dWudu[unq] = np.bincount(ids, self.dWtduk.flatten())
+        # self.dWudu[unqkp1] += np.bincount(idskp1, self.dWtdukp1.flatten())
+        from tqdm import tqdm
+        for i in tqdm(range(len(self.us))):
+            self.dWtdu[i] = np.sum(self.dWtduk[self.idk == i])
+            self.dWtdu[i] += np.sum(self.dWtdukp1[self.idk == i - 1])
+            self.dWudu[i] = np.sum(self.dWuduk[self.idk == i])
+            self.dWudu[i] += np.sum(self.dWudukp1[self.idk == i - 1])
+
+        self.dWdu = self.alpha * self.dWtdu + (1-self.alpha) * self.dWudu
+
+        return self.dWdu, self.dWtdu, self.dWudu
+
     def dWduk_FD(self):
         """Here both the derivatives of W, W_t, and W_u with respect to the
         height of the waveforms are going to be computed."""
