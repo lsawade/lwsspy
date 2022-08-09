@@ -42,13 +42,9 @@ def bin():
     else:
         filename = argv[1]
 
-    if "princeton" in current_host:
-        check_call(
-            f'cp -r {tempfolder}/{filename} ./', shell=True)
-    else:
-        check_call(
-            f'scp -r {username}@{hostname}:{tempfolder}/{filename} ./',
-            shell=True)
+    check_call(
+        f'scp -r {username}@{hostname}:{tempfolder}/{filename} ./',
+        shell=True)
 
 
 if __name__ == "__main__":
